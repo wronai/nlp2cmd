@@ -154,6 +154,7 @@ class EnvironmentAnalyzer:
             "version": platform.version(),
             "machine": platform.machine(),
             "processor": platform.processor() or "unknown",
+            "python_version": platform.python_version(),
         }
 
     def _get_shell_info(self) -> dict[str, str]:

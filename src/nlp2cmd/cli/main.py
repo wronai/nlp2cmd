@@ -20,6 +20,7 @@ from rich.syntax import Syntax
 from nlp2cmd import NLP2CMD
 from nlp2cmd.adapters import (
     DockerAdapter,
+    DQLAdapter,
     KubernetesAdapter,
     ShellAdapter,
     SQLAdapter,
@@ -39,6 +40,7 @@ def get_adapter(dsl: str, context: dict[str, Any]):
         "shell": lambda: ShellAdapter(environment_context=context),
         "docker": lambda: DockerAdapter(),
         "kubernetes": lambda: KubernetesAdapter(),
+        "dql": lambda: DQLAdapter(),
     }
 
     if dsl == "auto":
@@ -323,7 +325,7 @@ class InteractiveSession:
 @click.option("-i", "--interactive", is_flag=True, help="Start interactive mode")
 @click.option(
     "-d", "--dsl",
-    type=click.Choice(["auto", "sql", "shell", "docker", "kubernetes"]),
+    type=click.Choice(["auto", "sql", "shell", "docker", "kubernetes", "dql"]),
     default="auto",
     help="DSL type"
 )

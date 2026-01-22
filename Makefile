@@ -5,6 +5,7 @@
 #   make help          - Show this help
 #   make install       - Install dependencies
 #   make test          - Run all tests
+#   make test-examples - Run all examples
 #   make test-e2e      - Run E2E tests
 #   make docker-build  - Build Docker images
 #   make docker-up     - Start services
@@ -13,7 +14,7 @@
 
 .PHONY: help install test test-unit test-e2e lint format clean \
         docker-build docker-up docker-down docker-test docker-e2e \
-        dev demo
+        dev demo test-examples
 
 # Default target
 .DEFAULT_GOAL := help
@@ -45,6 +46,7 @@ help: ## Show this help message
 	@echo "$(YELLOW)Examples:$(NC)"
 	@echo "  make install       # Install in development mode"
 	@echo "  make test          # Run all tests"
+	@echo "  make test-examples # Run all examples"
 	@echo "  make docker-up     # Start Docker services"
 	@echo "  make demo          # Run the demo"
 
@@ -142,6 +144,40 @@ docker-ps: ## Show running containers
 
 demo: ## Run the end-to-end demo
 	$(PYTHON) examples/architecture/end_to_end_demo.py
+
+test-examples: ## Run all examples to test functionality
+	@echo "$(BLUE)Testing all examples...$(NC)"
+	@echo "$(YELLOW)Architecture examples:$(NC)"
+	$(PYTHON) examples/architecture/end_to_end_demo.py
+	@echo ""
+	@echo "$(YELLOW)Docker examples:$(NC)"
+	$(PYTHON) examples/docker/basic_docker.py
+	$(PYTHON) examples/docker/file_repair.py
+	@echo ""
+	@echo "$(YELLOW)Kubernetes examples:$(NC)"
+	$(PYTHON) examples/kubernetes/basic_kubernetes.py
+	@echo ""
+	@echo "$(YELLOW)Pipeline examples:$(NC)"
+	$(PYTHON) examples/pipelines/infrastructure_health.py
+	$(PYTHON) examples/pipelines/log_analysis.py
+	@echo ""
+	@echo "$(YELLOW)Shell examples:$(NC)"
+	$(PYTHON) examples/shell/basic_shell.py
+	$(PYTHON) examples/shell/environment_analysis.py
+	$(PYTHON) examples/shell/feedback_loop.py
+	@echo ""
+	@echo "$(YELLOW)SQL examples:$(NC)"
+	@for file in examples/sql/*.py; do \
+		if [ -f "$$file" ]; then \
+			echo "Running $$file..."; \
+			$(PYTHON) "$$file"; \
+		fi; \
+	done
+	@echo ""
+	@echo "$(YELLOW)Validation examples:$(NC)"
+	$(PYTHON) examples/validation/safety_validation.py
+	@echo ""
+	@echo "$(GREEN)All examples completed!$(NC)"
 
 repl: ## Start interactive REPL
 	$(PYTHON) -m $(PROJECT_NAME).cli

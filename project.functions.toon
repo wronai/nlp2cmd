@@ -1,0 +1,1326 @@
+project: nlp2cmd
+generated: "2026-01-22T21:06:31.917560"
+modules[69]{path,lang,items}:
+  tests/conftest.py,python,19
+  tests/__init__.py,python,0
+  tests/iterative/test_iter_2_regex.py,python,41
+  tests/iterative/test_iter_3_templates.py,python,43
+  tests/iterative/__init__.py,python,0
+  tests/iterative/test_iter_0_baseline.py,python,25
+  tests/iterative/test_iter_1_keywords.py,python,40
+  tests/unit/test_core_comprehensive.py,python,34
+  tests/unit/test_thermodynamic.py,python,30
+  tests/unit/test_adapters.py,python,21
+  tests/unit/test_core.py,python,16
+  tests/unit/test_router.py,python,24
+  tests/unit/test_adapters_comprehensive.py,python,21
+  tests/unit/test_executor.py,python,39
+  tests/unit/test_validators_comprehensive.py,python,49
+  tests/unit/test_environment.py,python,24
+  tests/unit/test_feedback_comprehensive.py,python,38
+  tests/unit/test_planner_aggregator.py,python,35
+  tests/unit/test_registry.py,python,36
+  tests/unit/test_schemas_feedback.py,python,23
+  tests/unit/test_schemas_comprehensive.py,python,43
+  tests/e2e/test_registry_validation.py,python,27
+  tests/e2e/conftest.py,python,25
+  tests/e2e/__init__.py,python,0
+  tests/e2e/test_complete_flow.py,python,24
+  tests/e2e/test_domain_scenarios.py,python,27
+  tests/integration/__init__.py,python,0
+  tests/integration/test_workflows.py,python,28
+  src/nlp2cmd/__init__.py,python,0
+  src/nlp2cmd/core.py,python,23
+  src/nlp2cmd/schemas/__init__.py,python,23
+  src/nlp2cmd/generation/regex.py,python,10
+  src/nlp2cmd/generation/keywords.py,python,7
+  src/nlp2cmd/generation/__init__.py,python,0
+  src/nlp2cmd/generation/templates.py,python,14
+  src/nlp2cmd/generation/pipeline.py,python,16
+  src/nlp2cmd/validators/__init__.py,python,13
+  src/nlp2cmd/planner/__init__.py,python,7
+  src/nlp2cmd/cli/__init__.py,python,0
+  src/nlp2cmd/cli/main.py,python,13
+  src/nlp2cmd/aggregator/__init__.py,python,11
+  src/nlp2cmd/registry/__init__.py,python,22
+  src/nlp2cmd/thermodynamic/energy_models.py,python,18
+  src/nlp2cmd/thermodynamic/__init__.py,python,24
+  src/nlp2cmd/executor/__init__.py,python,18
+  src/nlp2cmd/adapters/dql.py,python,13
+  src/nlp2cmd/adapters/base.py,python,10
+  src/nlp2cmd/adapters/docker.py,python,18
+  src/nlp2cmd/adapters/__init__.py,python,0
+  src/nlp2cmd/adapters/kubernetes.py,python,22
+  src/nlp2cmd/adapters/sql.py,python,15
+  src/nlp2cmd/adapters/shell.py,python,18
+  src/nlp2cmd/environment/__init__.py,python,15
+  src/nlp2cmd/feedback/__init__.py,python,19
+  src/nlp2cmd/router/__init__.py,python,9
+  examples/docker/file_repair.py,python,4
+  examples/docker/basic_docker.py,python,1
+  examples/architecture/end_to_end_demo.py,python,7
+  examples/sql/basic_sql.py,python,1
+  examples/sql/advanced_sql.py,python,1
+  examples/sql/sql_workflows.py,python,2
+  examples/sql/llm_integration.py,python,6
+  examples/shell/environment_analysis.py,python,2
+  examples/shell/feedback_loop.py,python,1
+  examples/shell/basic_shell.py,python,1
+  examples/kubernetes/basic_kubernetes.py,python,1
+  examples/pipelines/infrastructure_health.py,python,6
+  examples/pipelines/log_analysis.py,python,4
+  examples/validation/config_validation.py,python,3
+
+function_details:
+  tests/conftest.py:
+    functions[19]{name,kind,sig,loc,async,lines,cc,does}:
+      sql_adapter,function,() -> None,25-36,false,12,1,Provide a configured SQL adapter.
+      sql_adapter_strict,function,() -> None,40-49,false,10,1,Provide a SQL adapter with strict safety policy.
+      shell_adapter,function,() -> None,53-62,false,10,1,Provide a configured Shell adapter.
+      shell_adapter_strict,function,() -> None,66-72,false,7,1,Provide a Shell adapter with strict safety policy.
+      docker_adapter,function,() -> None,76-78,false,3,1,Provide a configured Docker adapter.
+      kubernetes_adapter,function,() -> None,82-84,false,3,1,Provide a configured Kubernetes adapter.
+      nlp2cmd_sql,function,(sql_adapter) -> None,88-90,false,3,1,Provide NLP2CMD instance with SQL adapter.
+      nlp2cmd_shell,function,(shell_adapter) -> None,94-96,false,3,1,Provide NLP2CMD instance with Shell adapter.
+      schema_registry,function,() -> None,100-102,false,3,1,Provide a SchemaRegistry instance.
+      feedback_analyzer,function,() -> None,106-108,false,3,1,Provide a FeedbackAnalyzer instance.
+      environment_analyzer,function,() -> None,112-114,false,3,1,Provide an EnvironmentAnalyzer instance.
+      temp_dir,function,() -> None,118-121,false,4,1,Provide a temporary directory for test files.
+      sample_dockerfile,function,(temp_dir) -> None,125-136,false,12,1,Create a sample Dockerfile for testing.
+      sample_compose,function,(temp_dir) -> None,140-162,false,23,1,Create a sample docker-compose.yml for testing.
+      sample_env,function,(temp_dir) -> None,166-178,false,13,1,Create a sample .env file for testing.
+      sample_k8s_deployment,function,(temp_dir) -> None,182-215,false,34,1,Create a sample Kubernetes deployment for testing.
+      sql_test_plans,function,() -> None,220-252,false,33,1,Provide sample SQL execution plans.
+      shell_test_plans,function,() -> None,256-275,false,20,1,Provide sample Shell execution plans.
+      pytest_configure,function,(config) -> None,279-289,false,11,1,Configure custom markers.
+  tests/iterative/test_iter_2_regex.py:
+    functions[41]{name,kind,sig,loc,async,lines,cc,does}:
+      TestRegexEntityExtractor.extractor,method,() -> RegexEntityExtractor,16-17,false,2,1,extractor
+      TestRegexEntityExtractor.test_sql_extract_table_from_polish,method,(extractor) -> None,21-24,false,4,1,Test table extraction from Polish text.
+      TestRegexEntityExtractor.test_sql_extract_table_from_english,method,(extractor) -> None,26-29,false,4,2,Test table extraction from English text.
+      TestRegexEntityExtractor.test_sql_extract_limit,method,(extractor) -> None,31-34,false,4,1,Test limit extraction.
+      TestRegexEntityExtractor.test_sql_extract_limit_polish_suffix,method,(extractor) -> None,36-39,false,4,1,Test limit extraction with Polish suffix.
+      TestRegexEntityExtractor.test_sql_extract_where_field_value,method,(extractor) -> None,41-45,false,5,1,Test WHERE clause extraction.
+      TestRegexEntityExtractor.test_sql_extract_order_by,method,(extractor) -> None,47-51,false,5,1,Test ORDER BY extraction.
+      TestRegexEntityExtractor.test_sql_extract_aggregation,method,(extractor) -> None,53-56,false,4,2,Test aggregation function extraction.
+      TestRegexEntityExtractor.test_sql_filters_post_processing,method,(extractor) -> None,58-64,false,7,2,Test that filters are post-processed correctly.
+      TestRegexEntityExtractor.test_shell_extract_path,method,(extractor) -> None,68-71,false,4,1,Test path extraction.
+      TestRegexEntityExtractor.test_shell_extract_path_with_tilde,method,(extractor) -> None,73-77,false,5,3,Test path extraction with tilde.
+      TestRegexEntityExtractor.test_shell_extract_file_pattern,method,(extractor) -> None,79-83,false,5,1,Test file pattern extraction.
+      TestRegexEntityExtractor.test_shell_extract_file_pattern_with_asterisk,method,(extractor) -> None,85-88,false,4,1,Test file pattern extraction with asterisk.
+      TestRegexEntityExtractor.test_shell_extract_size,method,(extractor) -> None,90-95,false,6,3,Test file size extraction.
+      TestRegexEntityExtractor.test_shell_extract_process_name,method,(extractor) -> None,97-100,false,4,1,Test process name extraction.
+      TestRegexEntityExtractor.test_docker_extract_container_name,method,(extractor) -> None,104-107,false,4,1,Test container name extraction.
+      TestRegexEntityExtractor.test_docker_extract_image,method,(extractor) -> None,109-112,false,4,1,Test image name extraction.
+      TestRegexEntityExtractor.test_docker_extract_port,method,(extractor) -> None,114-121,false,8,2,Test port extraction.
+      TestRegexEntityExtractor.test_docker_extract_port_mapping,method,(extractor) -> None,123-129,false,7,2,Test port mapping extraction.
+      TestRegexEntityExtractor.test_docker_extract_tail_lines,method,(extractor) -> None,131-134,false,4,1,Test tail lines extraction.
+      TestRegexEntityExtractor.test_k8s_extract_resource_type,method,(extractor) -> None,138-142,false,5,1,Test resource type extraction.
+      TestRegexEntityExtractor.test_k8s_extract_namespace,method,(extractor) -> None,144-147,false,4,1,Test namespace extraction.
+      TestRegexEntityExtractor.test_k8s_extract_namespace_flag,method,(extractor) -> None,149-152,false,4,1,Test namespace extraction from -n flag.
+      TestRegexEntityExtractor.test_k8s_extract_replica_count,method,(extractor) -> None,154-157,false,4,1,Test replica count extraction.
+      TestRegexEntityExtractor.test_k8s_extract_selector,method,(extractor) -> None,159-163,false,5,2,Test selector extraction.
+      TestExtractionPostProcessing.extractor,method,() -> RegexEntityExtractor,170-171,false,2,1,extractor
+      TestExtractionPostProcessing.test_sql_filters_structure,method,(extractor) -> None,173-183,false,11,3,Test SQL filters are properly structured.
+      TestExtractionPostProcessing.test_sql_ordering_structure,method,(extractor) -> None,185-194,false,10,3,Test SQL ordering is properly structured.
+      TestExtractionPostProcessing.test_shell_path_normalization,method,(extractor) -> None,196-201,false,6,2,Test shell path normalization.
+      TestExtractionPostProcessing.test_k8s_resource_type_normalization,method,(extractor) -> None,203-207,false,5,1,Test Kubernetes resource type normalization.
+      TestExtractedEntityMetadata.extractor,method,() -> RegexEntityExtractor,214-215,false,2,1,extractor
+      TestExtractedEntityMetadata.test_extraction_includes_source_pattern,method,(extractor) -> None,217-224,false,8,3,Test that extraction result includes source pattern.
+      TestExtractedEntityMetadata.test_extraction_includes_confidence,method,(extractor) -> None,226-231,false,6,2,Test that extraction result includes confidence.
+      TestCustomPatterns.test_add_custom_pattern,method,() -> None,237-244,false,8,1,Test adding custom patterns.
+      TestCustomPatterns.test_custom_patterns_dict,method,() -> None,246-257,false,12,1,Test initializing with custom patterns dict.
+      TestHelperMethods.extractor,method,() -> RegexEntityExtractor,264-265,false,2,1,extractor
+      TestHelperMethods.test_extract_all_numbers,method,(extractor) -> None,267-272,false,6,1,Test extracting all numbers from text.
+      TestHelperMethods.test_extract_quoted_strings,method,(extractor) -> None,274-278,false,5,1,Test extracting quoted strings.
+      TestRegexAccuracy.extractor,method,() -> RegexEntityExtractor,334-335,false,2,1,extractor
+      TestRegexAccuracy.test_eval_case,method,"(extractor, test_case) -> None",338-352,false,15,6,Test individual evaluation case.
+      TestRegexAccuracy.test_overall_extraction_rate,method,(extractor) -> None,354-375,false,22,6,Calculate overall entity extraction rate.
+  tests/iterative/test_iter_3_templates.py:
+    functions[43]{name,kind,sig,loc,async,lines,cc,does}:
+      TestTemplateGenerator.generator,method,() -> TemplateGenerator,23-24,false,2,1,generator
+      TestTemplateGenerator.test_sql_select_basic,method,(generator) -> None,28-40,false,13,1,Test basic SQL SELECT generation.
+      TestTemplateGenerator.test_sql_select_all_columns,method,(generator) -> None,42-52,false,11,2,Test SQL SELECT with all columns.
+      TestTemplateGenerator.test_sql_select_with_where,method,(generator) -> None,54-68,false,15,1,Test SQL SELECT with WHERE clause.
+      TestTemplateGenerator.test_sql_select_with_limit,method,(generator) -> None,70-79,false,10,1,Test SQL SELECT with LIMIT.
+      TestTemplateGenerator.test_sql_select_with_order,method,(generator) -> None,81-94,false,14,1,Test SQL SELECT with ORDER BY.
+      TestTemplateGenerator.test_sql_aggregate,method,(generator) -> None,96-110,false,15,1,Test SQL aggregate query.
+      TestTemplateGenerator.test_shell_find,method,(generator) -> None,114-124,false,11,1,Test shell find command.
+      TestTemplateGenerator.test_shell_list,method,(generator) -> None,126-136,false,11,1,Test shell list command.
+      TestTemplateGenerator.test_shell_grep,method,(generator) -> None,138-148,false,11,1,Test shell grep command.
+      TestTemplateGenerator.test_docker_list,method,(generator) -> None,152-162,false,11,1,Test docker list command.
+      TestTemplateGenerator.test_docker_logs,method,(generator) -> None,164-175,false,12,1,Test docker logs command.
+      TestTemplateGenerator.test_docker_exec,method,(generator) -> None,177-187,false,11,1,Test docker exec command.
+      TestTemplateGenerator.test_k8s_get,method,(generator) -> None,191-202,false,12,1,Test kubectl get command.
+      TestTemplateGenerator.test_k8s_scale,method,(generator) -> None,204-215,false,12,1,Test kubectl scale command.
+      TestTemplateGenerator.test_k8s_logs,method,(generator) -> None,217-227,false,11,1,Test kubectl logs command.
+      TestTemplateCustomization.test_add_custom_template,method,() -> None,233-246,false,14,1,Test adding custom templates.
+      TestTemplateCustomization.test_custom_templates_dict,method,() -> None,248-260,false,13,1,Test initializing with custom templates dict.
+      TestTemplateCustomization.test_list_templates,method,() -> None,262-272,false,11,1,Test listing available templates.
+      TestRuleBasedPipeline.pipeline,method,() -> RuleBasedPipeline,279-280,false,2,1,pipeline
+      TestRuleBasedPipeline.test_pipeline_sql_select,method,(pipeline) -> None,284-291,false,8,1,Test pipeline for SQL SELECT.
+      TestRuleBasedPipeline.test_pipeline_sql_with_filter,method,(pipeline) -> None,293-298,false,6,1,Test pipeline for SQL with filter.
+      TestRuleBasedPipeline.test_pipeline_sql_with_limit,method,(pipeline) -> None,300-305,false,6,1,Test pipeline for SQL with limit.
+      TestRuleBasedPipeline.test_pipeline_shell_find,method,(pipeline) -> None,309-315,false,7,1,Test pipeline for shell find.
+      TestRuleBasedPipeline.test_pipeline_shell_process,method,(pipeline) -> None,317-321,false,5,1,Test pipeline for shell process.
+      TestRuleBasedPipeline.test_pipeline_docker_list,method,(pipeline) -> None,325-331,false,7,1,Test pipeline for docker list.
+      TestRuleBasedPipeline.test_pipeline_docker_logs,method,(pipeline) -> None,333-338,false,6,1,Test pipeline for docker logs.
+      TestRuleBasedPipeline.test_pipeline_k8s_get,method,(pipeline) -> None,342-348,false,7,1,Test pipeline for kubectl get.
+      TestRuleBasedPipeline.test_pipeline_k8s_scale,method,(pipeline) -> None,350-355,false,6,1,Test pipeline for kubectl scale.
+      TestRuleBasedPipeline.test_pipeline_unknown_input,method,(pipeline) -> None,359-365,false,7,1,Test pipeline with unknown input.
+      TestRuleBasedPipeline.test_pipeline_empty_input,method,(pipeline) -> None,367-372,false,6,1,Test pipeline with empty input.
+      TestPipelineResult.test_to_plan,method,() -> None,378-395,false,18,1,Test conversion to execution plan.
+      TestPipelineMetrics.test_metrics_recording,method,() -> None,401-450,false,50,1,Test recording pipeline results.
+      TestPipelineMetrics.test_metrics_report,method,() -> None,452-474,false,23,1,Test generating metrics report.
+      TestPipelineFactory.test_create_pipeline_default,method,() -> None,480-487,false,8,1,Test creating default pipeline.
+      TestPipelineFactory.test_create_pipeline_custom_threshold,method,() -> None,489-493,false,5,1,Test creating pipeline with custom threshold.
+      TestPipelineFactory.test_create_pipeline_custom_patterns,method,() -> None,495-507,false,13,1,Test creating pipeline with custom patterns.
+      TestPipelinePerformance.pipeline,method,() -> RuleBasedPipeline,514-515,false,2,1,pipeline
+      TestPipelinePerformance.test_pipeline_latency,method,(pipeline) -> None,517-531,false,15,2,Test that pipeline latency is reasonable (<50ms).
+      TestPipelinePerformance.test_pipeline_throughput,method,(pipeline) -> None,533-552,false,20,1,Test pipeline throughput.
+      TestPipelineAccuracy.pipeline,method,() -> RuleBasedPipeline,579-580,false,2,1,pipeline
+      TestPipelineAccuracy.test_eval_case,method,"(pipeline, text, expected_domain, expected_contains) -> None",583-592,false,10,2,Test individual evaluation case.
+      TestPipelineAccuracy.test_overall_accuracy,method,(pipeline) -> None,594-619,false,26,5,Calculate overall end-to-end accuracy.
+  tests/iterative/test_iter_0_baseline.py:
+    functions[25]{name,kind,sig,loc,async,lines,cc,does}:
+      TestBaselineAdapters.test_sql_select_basic,method,() -> None,26-41,false,16,1,Test basic SELECT generation.
+      TestBaselineAdapters.test_sql_select_with_filter,method,() -> None,43-61,false,19,1,Test SELECT with WHERE clause.
+      TestBaselineAdapters.test_sql_select_with_limit,method,() -> None,63-77,false,15,1,Test SELECT with LIMIT.
+      TestBaselineAdapters.test_sql_insert,method,() -> None,79-94,false,16,1,Test INSERT generation.
+      TestBaselineAdapters.test_sql_update,method,() -> None,96-113,false,18,1,Test UPDATE generation.
+      TestBaselineAdapters.test_sql_aggregate,method,() -> None,115-131,false,17,1,Test aggregate query generation.
+      TestBaselineAdapters.test_shell_find_files,method,() -> None,135-147,false,13,2,Test file search command generation.
+      TestBaselineAdapters.test_shell_list_directory,method,() -> None,149-160,false,12,3,Test directory listing command.
+      TestBaselineAdapters.test_shell_process_list,method,() -> None,162-175,false,14,3,Test process listing command.
+      TestBaselineAdapters.test_docker_list_containers,method,() -> None,179-192,false,14,1,Test container listing command.
+      TestBaselineAdapters.test_docker_run_container,method,() -> None,194-207,false,14,3,Test container run command.
+      TestBaselineAdapters.test_docker_logs,method,() -> None,209-223,false,15,1,Test container logs command.
+      TestBaselineAdapters.test_docker_exec,method,() -> None,225-239,false,15,1,Test container exec command.
+      TestBaselineAdapters.test_k8s_get_pods,method,() -> None,243-257,false,15,1,Test kubectl get pods command.
+      TestBaselineAdapters.test_k8s_scale_deployment,method,() -> None,259-275,false,17,1,Test kubectl scale command.
+      TestBaselineAdapters.test_k8s_logs,method,() -> None,277-292,false,16,1,Test kubectl logs command.
+      TestBaselineAdapters.test_k8s_describe,method,() -> None,294-308,false,15,1,Test kubectl describe command.
+      TestBaselinePerformance.adapters,method,"() -> dict[str, Any]",315-322,false,8,1,Create all adapters.
+      TestBaselinePerformance.test_generation_latency,method,(adapters) -> None,324-368,false,45,4,Measure DSL generation latency.
+      TestBaselinePerformance.test_adapter_coverage,method,(adapters) -> None,370-395,false,26,6,Verify adapter coverage across domains.
+      TestBaselineSyntaxValidation.test_sql_syntax_validation,method,() -> None,401-413,false,13,3,Test SQL syntax validation.
+      TestBaselineSyntaxValidation.test_docker_syntax_validation,method,() -> None,415-422,false,8,1,Test Docker command validation.
+      TestBaselineSyntaxValidation.test_k8s_syntax_validation,method,() -> None,424-431,false,8,1,Test Kubernetes command validation.
+      TestBaselineAccuracy.adapters,method,() -> None,466-472,false,7,1,adapters
+      TestBaselineAccuracy.test_eval_case,method,"(adapters, test_case) -> None",475-484,false,10,2,Test each evaluation case.
+  tests/iterative/test_iter_1_keywords.py:
+    functions[40]{name,kind,sig,loc,async,lines,cc,does}:
+      TestKeywordIntentDetector.detector,method,() -> KeywordIntentDetector,17-18,false,2,1,detector
+      TestKeywordIntentDetector.test_sql_select_polish,method,(detector) -> None,22-27,false,6,1,Test SQL select detection in Polish.
+      TestKeywordIntentDetector.test_sql_select_english,method,(detector) -> None,29-33,false,5,1,Test SQL select detection in English.
+      TestKeywordIntentDetector.test_sql_select_with_table,method,(detector) -> None,35-39,false,5,1,Test SQL select with table reference.
+      TestKeywordIntentDetector.test_sql_insert_polish,method,(detector) -> None,41-45,false,5,1,Test SQL insert detection in Polish.
+      TestKeywordIntentDetector.test_sql_update_polish,method,(detector) -> None,47-51,false,5,1,Test SQL update detection in Polish.
+      TestKeywordIntentDetector.test_sql_delete_polish,method,(detector) -> None,53-57,false,5,1,Test SQL delete detection in Polish.
+      TestKeywordIntentDetector.test_sql_aggregate,method,(detector) -> None,59-63,false,5,1,Test SQL aggregate detection.
+      TestKeywordIntentDetector.test_shell_find_polish,method,(detector) -> None,67-71,false,5,1,Test shell find detection in Polish.
+      TestKeywordIntentDetector.test_shell_find_english,method,(detector) -> None,73-76,false,4,1,Test shell find detection in English.
+      TestKeywordIntentDetector.test_shell_list,method,(detector) -> None,78-81,false,4,1,Test shell list detection.
+      TestKeywordIntentDetector.test_shell_process,method,(detector) -> None,83-87,false,5,1,Test shell process detection.
+      TestKeywordIntentDetector.test_shell_disk,method,(detector) -> None,89-93,false,5,1,Test shell disk detection.
+      TestKeywordIntentDetector.test_shell_grep,method,(detector) -> None,95-99,false,5,1,Test shell grep detection.
+      TestKeywordIntentDetector.test_docker_list_polish,method,(detector) -> None,103-107,false,5,1,Test docker list detection in Polish.
+      TestKeywordIntentDetector.test_docker_list_english,method,(detector) -> None,109-112,false,4,1,Test docker list detection in English.
+      TestKeywordIntentDetector.test_docker_run,method,(detector) -> None,114-118,false,5,1,Test docker run detection.
+      TestKeywordIntentDetector.test_docker_logs,method,(detector) -> None,120-124,false,5,1,Test docker logs detection.
+      TestKeywordIntentDetector.test_docker_compose,method,(detector) -> None,126-130,false,5,1,Test docker compose detection.
+      TestKeywordIntentDetector.test_k8s_get_pods_polish,method,(detector) -> None,134-138,false,5,1,Test k8s get pods detection in Polish.
+      TestKeywordIntentDetector.test_k8s_get_pods_english,method,(detector) -> None,140-143,false,4,1,Test k8s get pods detection in English.
+      TestKeywordIntentDetector.test_k8s_scale,method,(detector) -> None,145-149,false,5,1,Test k8s scale detection.
+      TestKeywordIntentDetector.test_k8s_logs,method,(detector) -> None,151-155,false,5,1,Test k8s logs detection.
+      TestKeywordIntentDetector.test_k8s_describe,method,(detector) -> None,157-161,false,5,1,Test k8s describe detection.
+      TestKeywordIntentDetector.test_unknown_input,method,(detector) -> None,165-169,false,5,1,Test unknown input returns unknown domain.
+      TestKeywordIntentDetector.test_ambiguous_input,method,(detector) -> None,171-176,false,6,1,Test ambiguous input with multiple possible domains.
+      TestDetectionConfidence.detector,method,() -> KeywordIntentDetector,183-184,false,2,1,detector
+      TestDetectionConfidence.test_high_confidence_with_domain_keywords,method,(detector) -> None,186-195,false,10,2,Test that domain-specific keywords boost confidence.
+      TestDetectionConfidence.test_longer_keywords_boost_confidence,method,(detector) -> None,197-206,false,10,1,Test that longer keyword matches have higher confidence.
+      TestDetectAll.detector,method,() -> KeywordIntentDetector,213-214,false,2,1,detector
+      TestDetectAll.test_detect_all_returns_sorted_results,method,(detector) -> None,216-222,false,7,2,Test detect_all returns results sorted by confidence.
+      TestDetectAll.test_detect_all_no_duplicates,method,(detector) -> None,224-232,false,9,2,Test detect_all returns unique domain/intent pairs.
+      TestCustomPatterns.test_add_custom_pattern,method,() -> None,238-247,false,10,1,Test adding custom patterns.
+      TestCustomPatterns.test_custom_patterns_dict,method,() -> None,249-262,false,14,1,Test initializing with custom patterns dict.
+      TestKeywordDetectorPerformance.detector,method,() -> KeywordIntentDetector,269-270,false,2,1,detector
+      TestKeywordDetectorPerformance.test_detection_latency,method,(detector) -> None,272-291,false,20,3,Test that detection is fast (<10ms).
+      TestKeywordDetectorPerformance.test_bulk_detection_throughput,method,(detector) -> None,293-312,false,20,3,Test throughput with many detections.
+      TestKeywordAccuracy.detector,method,() -> KeywordIntentDetector,369-370,false,2,1,detector
+      TestKeywordAccuracy.test_eval_case,method,"(detector, text, expected_domain, expected_intent) -> None",373-380,false,8,1,Test individual evaluation case.
+      TestKeywordAccuracy.test_overall_accuracy,method,(detector) -> None,382-405,false,24,4,Calculate overall accuracy on dataset.
+  tests/unit/test_core_comprehensive.py:
+    functions[34]{name,kind,sig,loc,async,lines,cc,does}:
+      TestTransformResult.test_success_status,method,() -> None,26-38,false,13,1,Test successful transformation result.
+      TestTransformResult.test_blocked_status,method,() -> None,40-53,false,14,1,Test blocked transformation result.
+      TestTransformResult.test_to_dict,method,() -> None,55-71,false,17,1,Test conversion to dictionary.
+      TestTransformResult.test_partial_status_with_warnings,method,() -> None,73-86,false,14,1,Test partial success with warnings.
+      TestExecutionPlan.test_basic_plan,method,() -> None,92-103,false,12,1,Test basic execution plan.
+      TestExecutionPlan.test_plan_with_confirmation,method,() -> None,105-114,false,10,1,Test plan requiring confirmation.
+      TestExecutionPlan.test_plan_serialization,method,() -> None,116-129,false,14,1,Test plan model_dump.
+      TestIntent.test_intent_creation,method,() -> None,135-146,false,12,1,Test intent creation.
+      TestIntent.test_intent_confidence_threshold,method,() -> None,148-156,false,9,1,Test intent confidence threshold.
+      TestEntity.test_entity_creation,method,() -> None,162-175,false,14,1,Test entity creation.
+      TestRuleBasedBackend.test_extract_intent_match,method,() -> None,181-193,false,13,1,Test intent extraction with matching pattern.
+      TestRuleBasedBackend.test_extract_intent_no_match,method,() -> None,195-202,false,8,1,Test intent extraction with no matching pattern.
+      TestRuleBasedBackend.test_empty_rules,method,() -> None,204-210,false,7,1,Test with empty rules.
+      TestNLP2CMD.sql_nlp,method,() -> None,217-220,false,4,1,Create NLP2CMD with SQL adapter.
+      TestNLP2CMD.shell_nlp,method,() -> None,223-226,false,4,1,Create NLP2CMD with Shell adapter.
+      TestNLP2CMD.test_dsl_name,method,(sql_nlp) -> None,228-230,false,3,1,Test DSL name property.
+      TestNLP2CMD.test_transform_basic,method,(sql_nlp) -> None,232-244,false,13,1,Test basic transformation.
+      TestNLP2CMD.test_context_management,method,(sql_nlp) -> None,246-256,false,11,1,Test context setting and clearing.
+      TestNLP2CMD.test_history_tracking,method,(sql_nlp) -> None,258-274,false,17,1,Test transformation history.
+      TestNLP2CMD.test_transform_with_context,method,(sql_nlp) -> None,276-289,false,14,1,Test transformation with context.
+      TestNLP2CMD.test_transform_blocked_by_safety,method,() -> None,291-310,false,20,1,Test transformation blocked by safety policy.
+      TestNLP2CMD.test_transform_with_validator,method,(sql_nlp) -> None,312-324,false,13,1,Test transformation with validator.
+      TestNLP2CMDWithDifferentBackends.test_with_rule_based_backend,method,() -> None,330-345,false,16,1,Test with rule-based backend.
+      TestNLP2CMDWithDifferentBackends.test_with_spacy_backend,method,() -> None,348-356,false,9,1,Test with spaCy backend.
+      TestNLP2CMDWithDifferentBackends.test_with_llm_backend,method,() -> None,359-369,false,11,1,Test with LLM backend.
+      TestNLP2CMDIntegration.test_sql_select_flow,method,() -> None,375-406,false,32,1,Test complete SELECT flow.
+      TestNLP2CMDIntegration.test_shell_find_flow,method,() -> None,408-427,false,20,1,Test complete find command flow.
+      TestNLP2CMDIntegration.test_docker_run_flow,method,() -> None,429-450,false,22,1,Test complete docker run flow.
+      TestNLP2CMDIntegration.test_kubernetes_get_flow,method,() -> None,452-470,false,19,1,Test complete kubectl get flow.
+      TestEdgeCases.test_empty_input,method,() -> None,476-483,false,8,1,Test with empty input.
+      TestEdgeCases.test_very_long_input,method,() -> None,485-494,false,10,1,Test with very long input.
+      TestEdgeCases.test_special_characters_in_input,method,() -> None,496-503,false,8,1,Test with special characters.
+      TestEdgeCases.test_unicode_input,method,() -> None,505-512,false,8,1,Test with Unicode characters.
+      TestEdgeCases.test_nlp_backend_error_handling,method,() -> None,514-526,false,13,1,Test error handling when NLP backend fails.
+  tests/unit/test_thermodynamic.py:
+    functions[30]{name,kind,sig,loc,async,lines,cc,does}:
+      TestLangevinConfig.test_default_config,method,() -> None,28-36,false,9,1,Test default configuration values.
+      TestLangevinConfig.test_custom_config,method,() -> None,38-50,false,13,1,Test custom configuration.
+      TestQuadraticEnergy.test_energy_at_target,method,() -> None,56-62,false,7,1,Test energy is zero at target.
+      TestQuadraticEnergy.test_energy_away_from_target,method,() -> None,64-72,false,9,1,Test energy increases away from target.
+      TestQuadraticEnergy.test_gradient,method,() -> None,74-83,false,10,1,Test gradient computation.
+      TestLangevinSampler.simple_sampler,method,() -> None,90-99,false,10,1,Create sampler with quadratic energy.
+      TestLangevinSampler.test_sampling_converges_to_target,method,(simple_sampler) -> None,101-106,false,6,1,Test that sampler converges near target.
+      TestLangevinSampler.test_result_contains_energy,method,(simple_sampler) -> None,108-113,false,6,1,Test result contains energy value.
+      TestLangevinSampler.test_result_contains_entropy_production,method,(simple_sampler) -> None,115-119,false,5,1,Test result contains entropy production.
+      TestLangevinSampler.test_trajectory_recording,method,() -> None,121-135,false,15,1,Test trajectory is recorded when requested.
+      TestLangevinSampler.test_multiple_samples,method,() -> None,137-156,false,20,3,Test generating multiple samples.
+      TestLangevinSampler.test_parallel_sampling,method,(simple_sampler) -> None,158-166,false,9,1,Test parallel sampling.
+      TestMajorityVoter.sample_results,method,() -> None,173-202,false,30,1,Create sample results for voting.
+      TestMajorityVoter.test_energy_voting,method,(sample_results) -> None,204-209,false,6,1,Test voting by lowest energy.
+      TestMajorityVoter.test_entropy_voting,method,(sample_results) -> None,211-216,false,6,1,Test voting by lowest entropy production.
+      TestMajorityVoter.test_combined_voting,method,(sample_results) -> None,218-224,false,7,1,Test combined voting strategy.
+      TestThermodynamicRouter.router,method,() -> None,231-232,false,2,1,router
+      TestThermodynamicRouter.test_classic_intents,method,(router) -> None,234-238,false,5,1,Test classic intents are routed correctly.
+      TestThermodynamicRouter.test_thermodynamic_intents_low_complexity,method,(router) -> None,240-243,false,4,1,Test thermodynamic intents with low complexity.
+      TestThermodynamicRouter.test_thermodynamic_intents_high_complexity,method,(router) -> None,245-248,false,4,1,Test thermodynamic intents with high complexity.
+      TestThermodynamicRouter.test_complexity_estimation,method,(router) -> None,250-258,false,9,1,Test complexity estimation.
+      TestEnergyEstimator.test_energy_estimation,method,() -> None,264-282,false,19,1,Test energy estimation for different approaches.
+      TestEntropyProductionRegularizer.test_regularization_computation,method,() -> None,288-305,false,18,1,Test regularization term computation.
+      TestEntropyProductionRegularizer.test_heat_dissipation,method,() -> None,307-324,false,18,1,Test heat dissipation estimation.
+      TestSchedulingEnergy.simple_scheduling,method,() -> None,331-342,false,12,1,Create simple scheduling problem.
+      TestSchedulingEnergy.test_no_violation_energy,method,(simple_scheduling) -> None,344-354,false,11,1,Test energy with no violations.
+      TestSchedulingEnergy.test_overlap_penalty,method,(simple_scheduling) -> None,356-369,false,14,1,Test overlap increases energy.
+      TestSchedulingEnergy.test_deadline_penalty,method,() -> None,371-383,false,13,1,Test deadline violation increases energy.
+      TestAllocationEnergy.test_feasible_allocation,method,() -> None,389-406,false,18,1,Test energy for feasible allocation.
+      TestAllocationEnergy.test_capacity_violation,method,() -> None,408-425,false,18,1,Test capacity violation increases energy.
+  tests/unit/test_adapters.py:
+    functions[21]{name,kind,sig,loc,async,lines,cc,does}:
+      TestSQLAdapter.test_simple_select,method,() -> None,20-38,false,19,1,Test simple SELECT generation.
+      TestSQLAdapter.test_select_with_ordering,method,() -> None,40-56,false,17,1,Test SELECT with ORDER BY.
+      TestSQLAdapter.test_aggregate_query,method,() -> None,58-75,false,18,1,Test aggregate query generation.
+      TestSQLAdapter.test_safety_blocks_delete,method,() -> None,77-85,false,9,1,Test that safety policy blocks DELETE.
+      TestSQLAdapter.test_safety_requires_where_on_update,method,() -> None,87-95,false,9,1,Test that safety policy requires WHERE on UPDATE.
+      TestSQLAdapter.test_validate_syntax_balanced,method,() -> None,97-106,false,10,1,Test syntax validation for balanced parentheses.
+      TestShellAdapter.test_file_search,method,() -> None,112-130,false,19,1,Test file search command generation.
+      TestShellAdapter.test_process_monitoring,method,() -> None,132-146,false,15,1,Test process monitoring command.
+      TestShellAdapter.test_safety_blocks_dangerous,method,() -> None,148-155,false,8,1,Test that dangerous commands are blocked.
+      TestShellAdapter.test_safety_blocks_sudo,method,() -> None,157-164,false,8,2,Test that sudo is blocked by default.
+      TestShellAdapter.test_validate_syntax,method,() -> None,166-174,false,9,1,Test shell syntax validation.
+      TestDockerAdapter.test_run_command,method,() -> None,180-197,false,18,1,Test docker run generation.
+      TestDockerAdapter.test_compose_up,method,() -> None,199-215,false,17,1,Test docker-compose up generation.
+      TestDockerAdapter.test_safety_blocks_privileged,method,() -> None,217-223,false,7,1,Test that privileged mode is blocked.
+      TestDockerAdapter.test_adds_image_tag,method,() -> None,225-231,false,7,2,Test that missing image tag is warned.
+      TestKubernetesAdapter.test_get_pods,method,() -> None,237-251,false,15,1,Test kubectl get pods generation.
+      TestKubernetesAdapter.test_scale_deployment,method,() -> None,253-268,false,16,1,Test kubectl scale generation.
+      TestKubernetesAdapter.test_exec_command,method,() -> None,270-285,false,16,1,Test kubectl exec generation.
+      TestKubernetesAdapter.test_safety_blocks_system_namespace,method,() -> None,287-294,false,8,2,Test that system namespaces are blocked.
+      TestAdapterIntegration.test_sql_full_flow,method,() -> None,300-323,false,24,1,Test complete SQL transformation flow.
+      TestAdapterIntegration.test_shell_full_flow,method,() -> None,325-344,false,20,1,Test complete Shell transformation flow.
+  tests/unit/test_core.py:
+    functions[16]{name,kind,sig,loc,async,lines,cc,does}:
+      TestExecutionPlan.test_create_plan,method,() -> None,22-32,false,11,1,Test creating an execution plan.
+      TestExecutionPlan.test_plan_defaults,method,() -> None,34-40,false,7,1,Test plan default values.
+      TestTransformResult.test_success_result,method,() -> None,46-58,false,13,1,Test successful result.
+      TestTransformResult.test_blocked_result,method,() -> None,60-73,false,14,1,Test blocked result.
+      TestTransformResult.test_to_dict,method,() -> None,75-89,false,15,1,Test conversion to dictionary.
+      TestRuleBasedBackend.test_extract_intent,method,() -> None,95-106,false,12,1,Test intent extraction with rules.
+      TestRuleBasedBackend.test_no_match,method,() -> None,108-115,false,8,1,Test when no rule matches.
+      TestNLP2CMD.test_init_with_adapter,method,() -> None,121-126,false,6,1,Test initialization with adapter.
+      TestNLP2CMD.test_transform_basic,method,() -> None,128-144,false,17,1,Test basic transformation with a plan.
+      TestNLP2CMD.test_context_management,method,() -> None,146-155,false,10,1,Test context setting and clearing.
+      TestNLP2CMD.test_history_tracking,method,() -> None,157-167,false,11,1,Test history management.
+      TestNLP2CMD.test_safety_policy_enforced,method,() -> None,169-182,false,14,1,Test that safety policy is enforced.
+      TestIntent.test_create_intent,method,() -> None,188-198,false,11,1,Test creating an intent.
+      TestIntent.test_intent_defaults,method,() -> None,200-206,false,7,1,Test intent default values.
+      TestEntity.test_create_entity,method,() -> None,212-222,false,11,1,Test creating an entity.
+      TestEntity.test_entity_positions,method,() -> None,224-237,false,14,1,Test entity with position info.
+  tests/unit/test_router.py:
+    functions[24]{name,kind,sig,loc,async,lines,cc,does}:
+      TestRoutingDecision.test_all_decisions_exist,method,() -> None,17-22,false,6,1,Test all routing decisions are defined.
+      TestRoutingResult.test_basic_result,method,() -> None,28-37,false,10,1,Test creating a basic routing result.
+      TestRoutingResult.test_result_with_all_fields,method,() -> None,39-50,false,12,1,Test result with all fields.
+      TestRouterConfig.test_default_config,method,() -> None,56-65,false,10,1,Test default configuration values.
+      TestRouterConfig.test_custom_config,method,() -> None,67-76,false,10,1,Test custom configuration.
+      TestDecisionRouter.router,method,() -> None,83-85,false,3,1,Create router instance.
+      TestDecisionRouter.test_simple_intent_direct,method,(router) -> None,87-96,false,10,1,Test simple intent routes to direct execution.
+      TestDecisionRouter.test_complex_intent_llm,method,(router) -> None,98-106,false,9,1,Test complex intent routes to LLM planner.
+      TestDecisionRouter.test_low_confidence_clarification,method,(router) -> None,108-116,false,9,1,Test low confidence triggers clarification.
+      TestDecisionRouter.test_very_low_confidence_reject,method,(router) -> None,118-126,false,9,1,Test very low confidence triggers rejection.
+      TestDecisionRouter.test_multi_step_keywords_llm,method,(router) -> None,128-137,false,10,1,Test multi-step keywords route to LLM.
+      TestDecisionRouter.test_complex_keywords_llm,method,(router) -> None,139-148,false,10,1,Test complex analysis keywords route to LLM.
+      TestDecisionRouter.test_high_entity_count_llm,method,(router) -> None,150-165,false,16,1,Test high entity count routes to LLM.
+      TestDecisionRouter.test_joins_entity_llm,method,(router) -> None,167-175,false,9,1,Test joins in entities routes to LLM.
+      TestDecisionRouter.test_foreach_keyword_llm,method,(router) -> None,177-185,false,9,1,Test foreach keyword routes to LLM.
+      TestDecisionRouter.test_register_intent_mapping,method,(router) -> None,187-199,false,13,1,Test registering custom intent mapping.
+      TestDecisionRouter.test_add_complex_intent,method,(router) -> None,201-211,false,11,1,Test adding a complex intent.
+      TestDecisionRouter.test_context_handling,method,(router) -> None,213-223,false,11,1,Test context is passed through.
+      TestRouterEdgeCases.router,method,() -> None,230-231,false,2,1,router
+      TestRouterEdgeCases.test_empty_text,method,(router) -> None,233-241,false,9,1,Test handling empty text.
+      TestRouterEdgeCases.test_empty_entities,method,(router) -> None,243-251,false,9,1,Test handling empty entities.
+      TestRouterEdgeCases.test_special_characters_in_text,method,(router) -> None,253-262,false,10,1,Test handling special characters.
+      TestRouterEdgeCases.test_unicode_in_text,method,(router) -> None,264-272,false,9,1,Test handling unicode.
+      TestRouterEdgeCases.test_custom_config,method,() -> None,274-292,false,19,1,Test router with custom config.
+  tests/unit/test_adapters_comprehensive.py:
+    functions[21]{name,kind,sig,loc,async,lines,cc,does}:
+      TestSQLAdapterComprehensive.adapter,method,() -> None,19-20,false,2,1,adapter
+      TestSQLAdapterComprehensive.test_simple_select,method,(adapter) -> None,22-30,false,9,1,Test simple SELECT generation.
+      TestSQLAdapterComprehensive.test_select_with_columns,method,(adapter) -> None,32-44,false,13,1,Test SELECT with specific columns.
+      TestSQLAdapterComprehensive.test_select_with_where,method,(adapter) -> None,46-59,false,14,1,Test SELECT with WHERE clause.
+      TestSQLAdapterComprehensive.test_select_with_limit,method,(adapter) -> None,61-72,false,12,1,Test SELECT with LIMIT.
+      TestSQLAdapterComprehensive.test_insert,method,(adapter) -> None,74-85,false,12,1,Test INSERT generation.
+      TestSQLAdapterComprehensive.test_update,method,(adapter) -> None,87-100,false,14,1,Test UPDATE generation.
+      TestSQLAdapterComprehensive.test_delete,method,(adapter) -> None,102-113,false,12,1,Test DELETE generation.
+      TestSQLAdapterComprehensive.test_aggregate_count,method,(adapter) -> None,115-127,false,13,1,Test aggregate COUNT query generation.
+      TestShellAdapterComprehensive.adapter,method,() -> None,134-135,false,2,1,adapter
+      TestShellAdapterComprehensive.test_basic_generation,method,(adapter) -> None,137-146,false,10,1,Test basic shell command generation.
+      TestDockerAdapterComprehensive.adapter,method,() -> None,153-154,false,2,1,adapter
+      TestDockerAdapterComprehensive.test_docker_ps,method,(adapter) -> None,156-165,false,10,1,Test docker ps generation.
+      TestDockerAdapterComprehensive.test_docker_logs,method,(adapter) -> None,167-177,false,11,1,Test docker logs generation.
+      TestKubernetesAdapterComprehensive.adapter,method,() -> None,184-185,false,2,1,adapter
+      TestKubernetesAdapterComprehensive.test_kubectl_get_pods,method,(adapter) -> None,187-197,false,11,1,Test kubectl get pods generation.
+      TestKubernetesAdapterComprehensive.test_kubectl_get_deployments,method,(adapter) -> None,199-210,false,12,1,Test kubectl get deployments generation.
+      TestKubernetesAdapterComprehensive.test_kubectl_apply,method,(adapter) -> None,212-221,false,10,1,Test kubectl apply generation.
+      TestKubernetesAdapterComprehensive.test_kubectl_scale,method,(adapter) -> None,223-233,false,11,1,Test kubectl scale generation.
+      TestDQLAdapterComprehensive.adapter,method,() -> None,240-241,false,2,1,adapter
+      TestDQLAdapterComprehensive.test_query_generation,method,(adapter) -> None,243-255,false,13,1,Test DQL query generation.
+  tests/unit/test_executor.py:
+    functions[39]{name,kind,sig,loc,async,lines,cc,does}:
+      TestStepStatus.test_all_statuses_exist,method,() -> None,22-28,false,7,1,Test all step statuses are defined.
+      TestPlanStep.test_basic_step,method,() -> None,34-41,false,8,1,Test creating a basic step.
+      TestPlanStep.test_step_with_params,method,() -> None,43-51,false,9,1,Test step with parameters.
+      TestPlanStep.test_step_with_foreach,method,() -> None,53-61,false,9,1,Test step with foreach.
+      TestPlanStep.test_step_with_all_options,method,() -> None,63-78,false,16,1,Test step with all options.
+      TestExecutionPlan.test_basic_plan,method,() -> None,84-89,false,6,1,Test creating a basic plan.
+      TestExecutionPlan.test_from_dict,method,() -> None,91-114,false,24,1,Test creating plan from dictionary.
+      TestExecutionPlan.test_to_dict,method,() -> None,116-129,false,14,1,Test converting plan to dictionary.
+      TestExecutionContext.test_basic_context,method,() -> None,135-142,false,8,1,Test creating basic context.
+      TestExecutionContext.test_set_get_variable,method,() -> None,144-151,false,8,1,Test setting and getting variables.
+      TestExecutionContext.test_resolve_simple_reference,method,() -> None,153-158,false,6,1,Test resolving simple variable reference.
+      TestExecutionContext.test_resolve_nested_reference,method,() -> None,160-166,false,7,1,Test resolving nested reference.
+      TestExecutionContext.test_resolve_list_index,method,() -> None,168-174,false,7,1,Test resolving list index reference.
+      TestExecutionContext.test_resolve_unknown_variable,method,() -> None,176-181,false,6,1,Test resolving unknown variable raises error.
+      TestExecutionContext.test_non_reference_passthrough,method,() -> None,183-187,false,5,1,Test non-reference strings pass through.
+      TestPlanValidator.validator,method,() -> None,194-196,false,3,1,Create validator with fresh registry.
+      TestPlanValidator.test_validate_valid_plan,method,(validator) -> None,198-210,false,13,1,Test validating a valid plan.
+      TestPlanValidator.test_validate_empty_plan,method,(validator) -> None,212-218,false,7,2,Test validating empty plan fails.
+      TestPlanValidator.test_validate_unknown_action,method,(validator) -> None,220-228,false,9,2,Test validating unknown action fails.
+      TestPlanValidator.test_validate_missing_params,method,(validator) -> None,230-241,false,12,2,Test validating missing required params fails.
+      TestPlanValidator.test_validate_foreach_reference,method,(validator) -> None,243-259,false,17,1,Test validating foreach reference.
+      TestPlanValidator.test_validate_undefined_reference,method,(validator) -> None,261-273,false,13,2,Test validating undefined reference fails.
+      TestPlanValidator.test_validate_param_reference,method,(validator) -> None,275-290,false,16,1,Test validating parameter references.
+      TestPlanExecutor.executor,method,() -> None,297-306,false,10,1,Create executor with mock handlers.
+      TestPlanExecutor.test_execute_simple_plan,method,(executor) -> None,308-322,false,15,1,Test executing a simple plan.
+      TestPlanExecutor.test_execute_multi_step_plan,method,(executor) -> None,324-341,false,18,1,Test executing multi-step plan.
+      TestPlanExecutor.test_execute_foreach,method,(executor) -> None,343-364,false,22,1,Test executing foreach loop.
+      TestPlanExecutor.test_execute_with_initial_context,method,(executor) -> None,366-394,false,29,1,Test executing with initial context.
+      TestPlanExecutor.test_execute_dry_run,method,(executor) -> None,396-407,false,12,1,Test dry run mode.
+      TestPlanExecutor.test_execute_step_callback,method,(executor) -> None,409-424,false,16,1,Test step completion callback.
+      TestPlanExecutor.test_execute_error_stop,method,(executor) -> None,426-448,false,23,1,Test error handling - stop mode.
+      TestPlanExecutor.test_execute_error_continue,method,(executor) -> None,450-473,false,24,1,Test error handling - continue mode.
+      TestPlanExecutor.test_execute_condition,method,(executor) -> None,475-491,false,17,1,Test conditional execution.
+      TestPlanExecutor.test_execute_invalid_plan,method,(executor) -> None,493-502,false,10,1,Test executing invalid plan fails.
+      TestPlanExecutor.test_trace_id_assigned,method,(executor) -> None,504-513,false,10,1,Test trace ID is assigned.
+      TestPlanExecutor.test_duration_tracked,method,(executor) -> None,515-524,false,10,1,Test duration is tracked.
+      TestPlanExecutorEdgeCases.executor,method,() -> None,531-532,false,2,1,executor
+      TestPlanExecutorEdgeCases.test_empty_foreach_iterable,method,(executor) -> None,534-563,false,30,1,Test foreach with empty iterable.
+      TestPlanExecutorEdgeCases.test_nested_param_resolution,method,(executor) -> None,565-593,false,29,1,Test nested parameter resolution.
+  tests/unit/test_validators_comprehensive.py:
+    functions[49]{name,kind,sig,loc,async,lines,cc,does}:
+      TestValidationResult.test_valid_result,method,() -> None,21-26,false,6,1,Test creating valid result.
+      TestValidationResult.test_invalid_result_with_errors,method,() -> None,28-37,false,10,1,Test creating invalid result with errors.
+      TestValidationResult.test_merge_results,method,() -> None,39-54,false,16,1,Test merging validation results.
+      TestValidationResult.test_merge_both_valid,method,() -> None,56-64,false,9,1,Test merging two valid results.
+      TestSyntaxValidator.validator,method,() -> None,71-72,false,2,1,validator
+      TestSyntaxValidator.test_balanced_parentheses,method,(validator) -> None,74-77,false,4,1,Test balanced parentheses.
+      TestSyntaxValidator.test_unbalanced_parentheses,method,(validator) -> None,79-83,false,5,2,Test unbalanced parentheses.
+      TestSyntaxValidator.test_balanced_brackets,method,(validator) -> None,85-88,false,4,1,Test balanced square brackets.
+      TestSyntaxValidator.test_unbalanced_brackets,method,(validator) -> None,90-93,false,4,1,Test unbalanced square brackets.
+      TestSyntaxValidator.test_balanced_braces,method,(validator) -> None,95-98,false,4,1,Test balanced curly braces.
+      TestSyntaxValidator.test_unclosed_single_quote,method,(validator) -> None,100-103,false,4,1,Test unclosed single quote.
+      TestSyntaxValidator.test_unclosed_double_quote,method,(validator) -> None,105-108,false,4,1,Test unclosed double quote.
+      TestSyntaxValidator.test_escaped_quotes,method,(validator) -> None,110-113,false,4,1,Test escaped quotes are handled.
+      TestSQLValidator.validator,method,() -> None,120-121,false,2,1,validator
+      TestSQLValidator.strict_validator,method,() -> None,124-125,false,2,1,strict validator
+      TestSQLValidator.test_valid_select,method,(validator) -> None,127-130,false,4,1,Test valid SELECT query.
+      TestSQLValidator.test_delete_without_where_warning,method,(validator) -> None,132-135,false,4,1,Test DELETE without WHERE generates warning.
+      TestSQLValidator.test_update_without_where_warning,method,(validator) -> None,137-140,false,4,1,Test UPDATE without WHERE generates warning.
+      TestSQLValidator.test_drop_database_warning,method,(validator) -> None,142-145,false,4,2,Test DROP DATABASE generates warning.
+      TestSQLValidator.test_drop_database_error_strict,method,(strict_validator) -> None,147-150,false,4,1,Test DROP DATABASE generates error in strict mode.
+      TestSQLValidator.test_sql_injection_pattern,method,(validator) -> None,152-155,false,4,1,Test SQL injection pattern detection.
+      TestSQLValidator.test_sql_comment_detection,method,(validator) -> None,157-160,false,4,1,Test SQL comment detection.
+      TestSQLValidator.test_suggestions_for_delete,method,(validator) -> None,162-166,false,5,2,Test suggestions are provided for DELETE without WHERE.
+      TestShellValidator.validator,method,() -> None,173-174,false,2,1,validator
+      TestShellValidator.sudo_validator,method,() -> None,177-178,false,2,1,sudo validator
+      TestShellValidator.test_valid_command,method,(validator) -> None,180-183,false,4,1,Test valid shell command.
+      TestShellValidator.test_dangerous_rm_rf,method,(validator) -> None,185-188,false,4,1,Test dangerous rm -rf / detection.
+      TestShellValidator.test_sudo_warning,method,(validator) -> None,190-193,false,4,2,Test sudo usage warning.
+      TestShellValidator.test_sudo_allowed,method,(sudo_validator) -> None,195-199,false,5,2,Test sudo allowed when configured.
+      TestShellValidator.test_rm_wildcard_warning,method,(validator) -> None,201-204,false,4,2,Test rm with wildcard warning.
+      TestShellValidator.test_pipe_to_shell_warning,method,(validator) -> None,206-210,false,5,2,Test pipe to shell warning.
+      TestShellValidator.test_fork_bomb_detection,method,(validator) -> None,212-215,false,4,1,Test fork bomb detection.
+      TestDockerValidator.validator,method,() -> None,222-223,false,2,1,validator
+      TestDockerValidator.test_valid_docker_run,method,(validator) -> None,225-228,false,4,1,Test valid docker run command.
+      TestDockerValidator.test_privileged_mode_warning,method,(validator) -> None,230-233,false,4,2,Test privileged mode warning.
+      TestDockerValidator.test_host_network_warning,method,(validator) -> None,235-238,false,4,2,Test host network warning.
+      TestDockerValidator.test_dangerous_volume_warning,method,(validator) -> None,240-243,false,4,2,Test dangerous volume mount warning.
+      TestDockerValidator.test_docker_socket_warning,method,(validator) -> None,245-248,false,4,2,Test Docker socket mount warning.
+      TestDockerValidator.test_missing_tag_warning,method,(validator) -> None,250-253,false,4,2,Test missing image tag warning.
+      TestDockerValidator.test_explicit_tag_no_warning,method,(validator) -> None,255-258,false,4,2,Test explicit tag has no warning.
+      TestKubernetesValidator.validator,method,() -> None,265-266,false,2,1,validator
+      TestKubernetesValidator.test_valid_kubectl_get,method,(validator) -> None,268-271,false,4,1,Test valid kubectl get command.
+      TestKubernetesValidator.test_kube_system_warning,method,(validator) -> None,273-276,false,4,2,Test kube-system namespace warning.
+      TestKubernetesValidator.test_force_delete_warning,method,(validator) -> None,278-281,false,4,2,Test force delete warning.
+      TestKubernetesValidator.test_all_namespaces_delete_error,method,(validator) -> None,283-286,false,4,1,Test delete across all namespaces error.
+      TestKubernetesValidator.test_missing_namespace_suggestion,method,(validator) -> None,288-291,false,4,3,Test missing namespace suggestion.
+      TestCompositeValidator.test_combine_validators,method,() -> None,297-307,false,11,1,Test combining multiple validators.
+      TestCompositeValidator.test_all_validators_pass,method,() -> None,309-318,false,10,1,Test all validators passing.
+      TestCompositeValidator.test_warnings_merged,method,() -> None,320-331,false,12,1,Test warnings are merged from all validators.
+  tests/unit/test_environment.py:
+    functions[24]{name,kind,sig,loc,async,lines,cc,does}:
+      TestToolInfo.test_available_tool,method,() -> None,22-34,false,13,1,Test available tool info.
+      TestToolInfo.test_unavailable_tool,method,() -> None,36-44,false,9,1,Test unavailable tool info.
+      TestToolInfo.test_tool_info_defaults,method,() -> None,46-52,false,7,1,Test ToolInfo default values.
+      TestServiceInfo.test_running_service,method,() -> None,58-69,false,12,1,Test running service info.
+      TestServiceInfo.test_stopped_service,method,() -> None,71-80,false,10,1,Test stopped service info.
+      TestEnvironmentAnalyzer.analyzer,method,() -> None,87-89,false,3,1,Create analyzer instance.
+      TestEnvironmentAnalyzer.test_analyze_returns_dict,method,(analyzer) -> None,91-99,false,9,1,Test analyze returns dictionary.
+      TestEnvironmentAnalyzer.test_get_os_info,method,(analyzer) -> None,101-107,false,7,1,Test OS info detection.
+      TestEnvironmentAnalyzer.test_get_shell_info,method,(analyzer) -> None,109-114,false,6,1,Test shell info detection.
+      TestEnvironmentAnalyzer.test_get_user_info,method,(analyzer) -> None,116-122,false,7,1,Test user info detection.
+      TestEnvironmentAnalyzer.test_detect_tools,method,(analyzer) -> None,124-130,false,7,1,Test tool detection.
+      TestEnvironmentAnalyzer.test_detect_tools_unavailable,method,(analyzer) -> None,132-137,false,6,1,Test detection of unavailable tool.
+      TestEnvironmentAnalyzer.test_check_services,method,(analyzer) -> None,139-145,false,7,1,Test service check returns dict.
+      TestEnvironmentAnalyzer.test_find_config_files,method,(analyzer) -> None,147-160,false,14,2,Test config file finding.
+      TestEnvironmentAnalyzer.test_validate_command_basic,method,(analyzer) -> None,162-167,false,6,1,Test basic command validation.
+      TestEnvironmentAnalyzer.test_validate_command_shell_builtin,method,(analyzer) -> None,169-173,false,5,1,Test shell builtin validation.
+      TestEnvironmentAnalyzer.test_validate_command_with_context,method,(analyzer) -> None,175-183,false,9,1,Test command validation with context.
+      TestEnvironmentAnalyzer.test_full_report,method,(analyzer) -> None,185-192,false,8,1,Test full report generation.
+      TestEnvironmentReport.test_report_creation,method,() -> None,198-211,false,14,1,Test creating environment report.
+      TestRecommendations.analyzer,method,() -> None,218-219,false,2,1,analyzer
+      TestRecommendations.test_recommendations_for_missing_docker,method,(analyzer) -> None,221-231,false,11,2,Test recommendations when Docker is missing.
+      TestRecommendations.test_recommendations_for_outdated_docker,method,(analyzer) -> None,233-242,false,10,2,Test recommendations for outdated Docker.
+      TestRecommendations.test_recommendations_for_stopped_docker,method,(analyzer) -> None,244-255,false,12,2,Test recommendations when Docker daemon is stopped.
+      TestRecommendations.test_no_recommendations_when_all_good,method,(analyzer) -> None,257-270,false,14,1,Test no recommendations when everything is configured.
+  tests/unit/test_feedback_comprehensive.py:
+    functions[38]{name,kind,sig,loc,async,lines,cc,does}:
+      TestFeedbackType.test_all_types_exist,method,() -> None,19-27,false,9,1,Test all feedback types exist.
+      TestFeedbackType.test_type_values,method,() -> None,29-32,false,4,1,Test feedback type values.
+      TestFeedbackResult.test_success_result,method,() -> None,38-49,false,12,1,Test successful feedback result.
+      TestFeedbackResult.test_result_with_errors,method,() -> None,51-62,false,12,1,Test feedback result with errors.
+      TestFeedbackResult.test_result_with_auto_corrections,method,() -> None,64-77,false,14,1,Test feedback result with auto-corrections.
+      TestFeedbackResult.test_result_to_dict,method,() -> None,79-94,false,16,1,Test conversion to dictionary.
+      TestFeedbackResult.test_result_requires_user_input,method,() -> None,96-108,false,13,1,Test result requiring user input.
+      TestCorrectionRule.test_basic_rule,method,() -> None,114-124,false,11,1,Test basic correction rule.
+      TestCorrectionRule.test_rule_with_dsl_filter,method,() -> None,126-137,false,12,1,Test rule with DSL filter.
+      TestFeedbackAnalyzer.analyzer,method,() -> None,144-146,false,3,1,Create analyzer instance.
+      TestFeedbackAnalyzer.test_analyze_success,method,(analyzer) -> None,148-159,false,12,1,Test analyzing successful transformation.
+      TestFeedbackAnalyzer.test_analyze_with_errors,method,(analyzer) -> None,161-171,false,11,1,Test analyzing transformation with errors.
+      TestFeedbackAnalyzer.test_analyze_with_warnings,method,(analyzer) -> None,173-183,false,11,1,Test analyzing transformation with warnings.
+      TestFeedbackAnalyzer.test_analyze_ambiguous_input,method,(analyzer) -> None,185-195,false,11,1,Test analyzing ambiguous input.
+      TestFeedbackAnalyzer.test_check_syntax_valid,method,(analyzer) -> None,197-205,false,9,1,Test syntax check for valid content.
+      TestFeedbackAnalyzer.test_check_syntax_unbalanced_parens,method,(analyzer) -> None,207-215,false,9,2,Test syntax check catches unbalanced parentheses.
+      TestFeedbackAnalyzer.test_check_syntax_unclosed_quote,method,(analyzer) -> None,217-225,false,9,2,Test syntax check catches unclosed quotes.
+      TestFeedbackAnalyzer.test_analyze_exception,method,(analyzer) -> None,227-234,false,8,1,Test analyzing an exception.
+      TestFeedbackAnalyzer.test_analyze_permission_error,method,(analyzer) -> None,236-242,false,7,2,Test analyzing permission error.
+      TestFeedbackAnalyzer.test_analyze_connection_error,method,(analyzer) -> None,244-251,false,8,3,Test analyzing connection error.
+      TestFeedbackAnalyzer.test_error_analysis_with_table_not_found,method,(analyzer) -> None,253-261,false,9,2,Test error analysis for table not found.
+      TestFeedbackAnalyzer.test_error_analysis_with_command_not_found,method,(analyzer) -> None,263-271,false,9,2,Test error analysis for command not found.
+      TestCorrectionEngine.engine,method,() -> None,278-280,false,3,1,Create engine instance.
+      TestCorrectionEngine.test_suggest_balance_fix_parentheses,method,(engine) -> None,282-290,false,9,1,Test suggesting fix for unbalanced parentheses.
+      TestCorrectionEngine.test_suggest_quote_fix,method,(engine) -> None,292-300,false,9,1,Test suggesting fix for unclosed quotes.
+      TestCorrectionEngine.test_suggest_double_quote_fix,method,(engine) -> None,302-309,false,8,1,Test suggesting fix for unclosed double quotes.
+      TestCorrectionEngine.test_suggest_missing_element,method,(engine) -> None,311-319,false,9,1,Test suggesting fix for missing element.
+      TestCorrectionEngine.test_apply_correction,method,(engine) -> None,321-328,false,8,1,Test applying a correction.
+      TestCorrectionEngine.test_register_correction,method,(engine) -> None,330-342,false,13,1,Test registering custom correction.
+      TestFeedbackIntegration.test_full_feedback_flow,method,() -> None,348-365,false,18,3,Test complete feedback flow.
+      TestFeedbackIntegration.test_feedback_with_correction_engine,method,() -> None,367-393,false,27,3,Test feedback with correction engine.
+      TestFeedbackIntegration.test_confidence_calculation,method,() -> None,395-417,false,23,1,Test confidence score calculation.
+      TestEdgeCases.analyzer,method,() -> None,424-425,false,2,1,analyzer
+      TestEdgeCases.test_empty_input,method,(analyzer) -> None,427-435,false,9,1,Test with empty input.
+      TestEdgeCases.test_very_long_error_message,method,(analyzer) -> None,437-448,false,12,1,Test with very long error message.
+      TestEdgeCases.test_special_characters_in_content,method,(analyzer) -> None,450-458,false,9,1,Test with special characters.
+      TestEdgeCases.test_unicode_content,method,(analyzer) -> None,460-468,false,9,1,Test with Unicode content.
+      TestEdgeCases.test_null_context,method,(analyzer) -> None,470-479,false,10,1,Test with null context.
+  tests/unit/test_planner_aggregator.py:
+    functions[35]{name,kind,sig,loc,async,lines,cc,does}:
+      TestPlannerConfig.test_default_config,method,() -> None,32-39,false,8,1,Test default configuration.
+      TestPlannerConfig.test_custom_config,method,() -> None,41-50,false,10,1,Test custom configuration.
+      TestPlanningResult.test_success_result,method,() -> None,56-73,false,18,1,Test successful planning result.
+      TestPlanningResult.test_failure_result,method,() -> None,75-85,false,11,1,Test failed planning result.
+      TestLLMPlanner.planner,method,() -> None,92-94,false,3,1,Create planner without LLM client (uses rule-based fallback).
+      TestLLMPlanner.test_rule_based_plan_sql,method,(planner) -> None,96-107,false,12,1,Test rule-based planning for SQL.
+      TestLLMPlanner.test_rule_based_plan_shell,method,(planner) -> None,109-118,false,10,1,Test rule-based planning for shell.
+      TestLLMPlanner.test_rule_based_plan_with_context,method,(planner) -> None,120-129,false,10,1,Test planning with context.
+      TestLLMPlanner.test_rule_based_plan_with_domain,method,(planner) -> None,131-140,false,10,1,Test planning with domain filter.
+      TestLLMPlanner.test_get_action_catalog,method,(planner) -> None,142-147,false,6,1,Test getting action catalog.
+      TestLLMPlanner.test_get_action_catalog_by_domain,method,(planner) -> None,149-154,false,6,1,Test getting action catalog by domain.
+      TestLLMPlanner.test_parse_json_response,method,(planner) -> None,156-162,false,7,1,Test parsing JSON response.
+      TestLLMPlanner.test_parse_json_with_markdown,method,(planner) -> None,164-172,false,9,1,Test parsing JSON wrapped in markdown.
+      TestLLMPlanner.test_parse_invalid_json,method,(planner) -> None,174-177,false,4,1,Test parsing invalid JSON returns None.
+      TestLLMPlanner.test_plan_validation_failure,method,(planner) -> None,179-194,false,16,1,Test plan that fails validation.
+      TestLLMPlannerExamples.test_examples_have_valid_structure,method,() -> None,200-213,false,14,3,Test that built-in examples have valid structure.
+      TestOutputFormat.test_all_formats_exist,method,() -> None,223-229,false,7,1,Test all output formats are defined.
+      TestResultAggregator.aggregator,method,() -> None,236-238,false,3,1,Create aggregator instance.
+      TestResultAggregator.sample_execution_result,method,() -> None,241-264,false,24,1,Create sample execution result.
+      TestResultAggregator.test_aggregate_basic,method,"(aggregator, sample_execution_result) -> None",266-273,false,8,1,Test basic aggregation.
+      TestResultAggregator.test_aggregate_with_details,method,"(aggregator, sample_execution_result) -> None",275-284,false,10,1,Test aggregation with step details.
+      TestResultAggregator.test_aggregate_json_format,method,"(aggregator, sample_execution_result) -> None",286-295,false,10,1,Test JSON format output.
+      TestResultAggregator.test_aggregate_text_format,method,"(aggregator, sample_execution_result) -> None",297-305,false,9,1,Test text format output.
+      TestResultAggregator.test_aggregate_table_format,method,(aggregator) -> None,307-339,false,33,2,Test table format output.
+      TestResultAggregator.test_aggregate_markdown_format,method,(aggregator) -> None,341-359,false,19,1,Test markdown format output.
+      TestResultAggregator.test_aggregate_summary_format,method,(aggregator) -> None,361-381,false,21,1,Test summary format output.
+      TestResultAggregator.test_aggregate_failed_execution,method,(aggregator) -> None,383-405,false,23,1,Test aggregating failed execution.
+      TestResultAggregator.test_generate_summary,method,"(aggregator, sample_execution_result) -> None",407-413,false,7,1,Test summary generation.
+      TestResultAggregator.test_to_llm_context,method,"(aggregator, sample_execution_result) -> None",415-422,false,8,1,Test generating LLM context.
+      TestResultAggregator.test_to_llm_context_truncation,method,(aggregator) -> None,424-441,false,18,3,Test LLM context truncation for large results.
+      TestResultAggregatorEdgeCases.aggregator,method,() -> None,448-449,false,2,1,aggregator
+      TestResultAggregatorEdgeCases.test_aggregate_no_final_result,method,(aggregator) -> None,451-472,false,22,2,Test aggregating with no final result.
+      TestResultAggregatorEdgeCases.test_aggregate_empty_list_result,method,(aggregator) -> None,474-486,false,13,2,Test aggregating empty list result.
+      TestResultAggregatorEdgeCases.test_aggregate_mixed_step_status,method,(aggregator) -> None,488-505,false,18,1,Test aggregating with mixed step statuses.
+      TestResultAggregatorEdgeCases.test_format_step_detail_with_large_result,method,(aggregator) -> None,507-522,false,16,3,Test step detail formatting with large result.
+  tests/unit/test_registry.py:
+    functions[36]{name,kind,sig,loc,async,lines,cc,does}:
+      TestParamType.test_all_types_exist,method,() -> None,20-31,false,12,1,Test all parameter types are defined.
+      TestParamSchema.test_basic_param,method,() -> None,37-46,false,10,1,Test creating a basic parameter schema.
+      TestParamSchema.test_optional_param,method,() -> None,48-61,false,14,1,Test optional parameter.
+      TestParamSchema.test_param_with_allowed_values,method,() -> None,63-70,false,8,1,Test parameter with allowed values.
+      TestActionSchema.test_basic_schema,method,() -> None,76-86,false,11,1,Test creating a basic action schema.
+      TestActionSchema.test_schema_with_params,method,() -> None,88-103,false,16,1,Test schema with parameters.
+      TestActionSchema.test_get_required_params,method,() -> None,105-118,false,14,1,Test getting required parameters.
+      TestActionSchema.test_get_optional_params,method,() -> None,120-133,false,14,1,Test getting optional parameters.
+      TestActionSchema.test_get_param,method,() -> None,135-150,false,16,1,Test getting a specific parameter.
+      TestActionResult.test_success_result,method,() -> None,156-162,false,7,1,Test creating success result.
+      TestActionResult.test_failure_result,method,() -> None,164-170,false,7,1,Test creating failure result.
+      TestActionHandler.schema,method,() -> None,177-189,false,13,1,Create test schema.
+      TestActionHandler.test_validate_valid_params,method,(schema) -> None,191-199,false,9,1,Test validating valid parameters.
+      TestActionHandler.test_validate_missing_required,method,(schema) -> None,201-208,false,8,2,Test validation fails for missing required.
+      TestActionHandler.test_validate_wrong_type,method,(schema) -> None,210-217,false,8,2,Test validation fails for wrong type.
+      TestActionHandler.test_validate_out_of_range,method,(schema) -> None,219-227,false,9,2,Test validation fails for out of range value.
+      TestActionHandler.test_validate_invalid_choice,method,(schema) -> None,229-237,false,9,2,Test validation fails for invalid choice.
+      TestActionHandler.test_validate_unknown_param,method,(schema) -> None,239-247,false,9,2,Test validation fails for unknown parameter.
+      TestActionRegistry.registry,method,() -> None,254-256,false,3,1,Create fresh registry.
+      TestActionRegistry.test_builtin_actions_registered,method,(registry) -> None,258-264,false,7,1,Test built-in actions are registered.
+      TestActionRegistry.test_list_actions,method,(registry) -> None,266-270,false,5,1,Test listing all actions.
+      TestActionRegistry.test_list_actions_by_domain,method,(registry) -> None,272-276,false,5,1,Test listing actions by domain.
+      TestActionRegistry.test_list_domains,method,(registry) -> None,278-284,false,7,1,Test listing domains.
+      TestActionRegistry.test_get_action_schema,method,(registry) -> None,286-291,false,6,1,Test getting action schema.
+      TestActionRegistry.test_get_nonexistent,method,(registry) -> None,293-295,false,3,1,Test getting nonexistent action.
+      TestActionRegistry.test_register_custom_action,method,(registry) -> None,297-310,false,14,1,Test registering custom action.
+      TestActionRegistry.test_validate_action,method,(registry) -> None,312-318,false,7,1,Test validating action parameters.
+      TestActionRegistry.test_validate_unknown_action,method,(registry) -> None,320-327,false,8,2,Test validating unknown action.
+      TestActionRegistry.test_get_by_tag,method,(registry) -> None,329-333,false,5,2,Test getting actions by tag.
+      TestActionRegistry.test_get_destructive_actions,method,(registry) -> None,335-340,false,6,1,Test getting destructive actions.
+      TestActionRegistry.test_to_llm_prompt,method,(registry) -> None,342-347,false,6,1,Test generating LLM prompt.
+      TestActionRegistry.test_to_llm_prompt_with_domain,method,(registry) -> None,349-353,false,5,1,Test generating LLM prompt for specific domain.
+      TestGetRegistry.test_singleton,method,() -> None,359-363,false,5,1,Test registry is singleton.
+      TestGetRegistry.test_has_builtin_actions,method,() -> None,365-368,false,4,1,Test global registry has built-in actions.
+      TestRegistryEdgeCases.test_register_with_handler,method,() -> None,374-390,false,17,1,Test registering action with handler.
+      TestRegistryEdgeCases.test_param_with_custom_validator,method,() -> None,392-419,false,28,2,Test parameter with custom validator.
+  tests/unit/test_schemas_feedback.py:
+    functions[23]{name,kind,sig,loc,async,lines,cc,does}:
+      TestSchemaRegistry.test_builtin_schemas_registered,method,() -> None,21-28,false,8,1,Test that builtin schemas are registered.
+      TestSchemaRegistry.test_get_schema,method,() -> None,30-38,false,9,1,Test getting a schema by name.
+      TestSchemaRegistry.test_detect_dockerfile,method,() -> None,40-52,false,13,1,Test detecting Dockerfile format.
+      TestSchemaRegistry.test_validate_dockerfile,method,() -> None,54-61,false,8,1,Test Dockerfile validation.
+      TestSchemaRegistry.test_validate_dockerfile_missing_from,method,() -> None,63-71,false,9,2,Test Dockerfile validation catches missing FROM.
+      TestSchemaRegistry.test_validate_docker_compose,method,() -> None,73-85,false,13,1,Test Docker Compose validation.
+      TestSchemaRegistry.test_validate_docker_compose_missing_services,method,() -> None,87-99,false,13,2,Test Docker Compose validation catches missing services.
+      TestSchemaRegistry.test_repair_dockerfile,method,() -> None,101-110,false,10,1,Test Dockerfile repair.
+      TestSchemaRegistry.test_validate_env_file,method,() -> None,112-122,false,11,1,Test .env file validation.
+      TestSchemaRegistry.test_validate_env_unclosed_quote,method,() -> None,124-131,false,8,1,Test .env validation catches unclosed quotes.
+      TestSchemaRegistry.test_register_custom_schema,method,() -> None,133-148,false,16,1,Test registering a custom schema.
+      TestFeedbackAnalyzer.test_analyze_success,method,() -> None,154-167,false,14,1,Test analyzing successful transformation.
+      TestFeedbackAnalyzer.test_analyze_with_errors,method,() -> None,169-181,false,13,1,Test analyzing transformation with errors.
+      TestFeedbackAnalyzer.test_analyze_with_warnings,method,() -> None,183-195,false,13,1,Test analyzing transformation with warnings.
+      TestFeedbackAnalyzer.test_suggestions_generated,method,() -> None,197-208,false,12,2,Test that suggestions are generated for errors.
+      TestFeedbackAnalyzer.test_check_syntax,method,() -> None,210-218,false,9,1,Test quick syntax check.
+      TestFeedbackAnalyzer.test_analyze_exception,method,() -> None,220-227,false,8,1,Test exception analysis.
+      TestFeedbackResult.test_is_success,method,() -> None,233-247,false,15,1,Test is_success property.
+      TestFeedbackResult.test_can_auto_fix,method,() -> None,249-264,false,16,1,Test can_auto_fix property.
+      TestFeedbackResult.test_to_dict,method,() -> None,266-279,false,14,1,Test conversion to dictionary.
+      TestCorrectionEngine.test_suggest_balance_fix,method,() -> None,285-295,false,11,1,Test suggestion for unbalanced parentheses.
+      TestCorrectionEngine.test_suggest_quote_fix,method,() -> None,297-307,false,11,1,Test suggestion for unclosed quotes.
+      TestCorrectionEngine.test_apply_correction,method,() -> None,309-323,false,15,1,Test applying a correction.
+  tests/unit/test_schemas_comprehensive.py:
+    functions[43]{name,kind,sig,loc,async,lines,cc,does}:
+      TestSchemaRegistry.registry,method,() -> None,17-19,false,3,1,Create registry instance.
+      TestSchemaRegistry.test_builtin_schemas_registered,method,(registry) -> None,21-27,false,7,1,Test that built-in schemas are registered.
+      TestSchemaRegistry.test_get_schema,method,(registry) -> None,29-35,false,7,1,Test getting schema by name.
+      TestSchemaRegistry.test_get_nonexistent_schema,method,(registry) -> None,37-40,false,4,1,Test getting non-existent schema.
+      TestSchemaRegistry.test_register_custom_schema,method,(registry) -> None,42-56,false,15,1,Test registering custom schema.
+      TestDockerfileValidation.registry,method,() -> None,63-64,false,2,1,registry
+      TestDockerfileValidation.test_valid_dockerfile,method,(registry) -> None,66-79,false,14,1,Test valid Dockerfile.
+      TestDockerfileValidation.test_dockerfile_missing_from,method,(registry) -> None,81-91,false,11,2,Test Dockerfile without FROM.
+      TestDockerfileValidation.test_dockerfile_missing_tag_warning,method,(registry) -> None,93-101,false,9,2,Test Dockerfile with untagged image.
+      TestDockerfileValidation.test_dockerfile_apt_get_warning,method,(registry) -> None,103-112,false,10,2,Test Dockerfile apt-get without -y.
+      TestDockerComposeValidation.registry,method,() -> None,119-120,false,2,1,registry
+      TestDockerComposeValidation.test_valid_compose,method,(registry) -> None,122-138,false,17,1,Test valid docker-compose.yml.
+      TestDockerComposeValidation.test_compose_missing_services,method,(registry) -> None,140-150,false,11,2,Test docker-compose without services.
+      TestDockerComposeValidation.test_compose_empty_service,method,(registry) -> None,152-161,false,10,1,Test docker-compose with empty service.
+      TestDockerComposeValidation.test_compose_service_without_image_or_build,method,(registry) -> None,163-175,false,13,3,Test service without image or build.
+      TestKubernetesValidation.registry,method,() -> None,182-183,false,2,1,registry
+      TestKubernetesValidation.test_valid_deployment,method,(registry) -> None,185-212,false,28,1,Test valid Kubernetes Deployment.
+      TestKubernetesValidation.test_deployment_missing_selector,method,(registry) -> None,214-235,false,22,2,Test Deployment without selector.
+      TestKubernetesValidation.test_deployment_missing_resources_warning,method,(registry) -> None,237-259,false,23,2,Test Deployment without resource limits.
+      TestGitHubWorkflowValidation.registry,method,() -> None,266-267,false,2,1,registry
+      TestGitHubWorkflowValidation.test_valid_workflow,method,(registry) -> None,269-284,false,16,1,Test valid GitHub workflow.
+      TestGitHubWorkflowValidation.test_workflow_missing_on,method,(registry) -> None,286-299,false,14,2,Test workflow without trigger.
+      TestGitHubWorkflowValidation.test_workflow_missing_runs_on,method,(registry) -> None,301-313,false,13,1,Test workflow job without runs-on.
+      TestEnvFileValidation.registry,method,() -> None,320-321,false,2,1,registry
+      TestEnvFileValidation.test_valid_env_file,method,(registry) -> None,323-332,false,10,1,Test valid .env file.
+      TestEnvFileValidation.test_env_lowercase_warning,method,(registry) -> None,334-342,false,9,2,Test .env with lowercase variables.
+      TestEnvFileValidation.test_env_unclosed_quote,method,(registry) -> None,344-353,false,10,2,Test .env with unclosed quote.
+      TestEnvFileValidation.test_env_invalid_format,method,(registry) -> None,355-363,false,9,1,Test .env with invalid format.
+      TestSchemaRepair.registry,method,() -> None,370-371,false,2,1,registry
+      TestSchemaRepair.test_dockerfile_repair_add_tag,method,(registry) -> None,373-382,false,10,1,Test Dockerfile repair adds image tag.
+      TestSchemaRepair.test_compose_repair_version,method,(registry) -> None,384-394,false,11,1,Test docker-compose repair updates version.
+      TestSchemaRepair.test_repair_without_auto_fix,method,(registry) -> None,396-405,false,10,1,Test repair without auto_fix returns suggestions.
+      TestFormatDetection.registry,method,() -> None,412-413,false,2,1,registry
+      TestFormatDetection.test_detect_dockerfile,method,(registry) -> None,415-435,false,21,1,Test detecting Dockerfile.
+      TestFormatDetection.test_detect_by_content_compose,method,(registry) -> None,437-450,false,14,1,Test detecting docker-compose by content.
+      TestFormatDetection.test_detect_by_content_kubernetes,method,(registry) -> None,452-466,false,15,1,Test detecting Kubernetes manifest by content.
+      TestFileFormatSchema.test_schema_creation,method,() -> None,472-489,false,18,1,Test creating a FileFormatSchema.
+      TestFileFormatSchema.test_schema_validator_called,method,() -> None,491-511,false,21,1,Test that validator is called correctly.
+      TestSchemaRegistryEdgeCases.registry,method,() -> None,518-519,false,2,1,registry
+      TestSchemaRegistryEdgeCases.test_validate_empty_content,method,(registry) -> None,521-525,false,5,1,Test validating empty content.
+      TestSchemaRegistryEdgeCases.test_validate_invalid_yaml,method,(registry) -> None,527-537,false,11,1,Test validating invalid YAML.
+      TestSchemaRegistryEdgeCases.test_repair_unknown_schema,method,(registry) -> None,539-544,false,6,1,Test repairing with unknown schema.
+      TestSchemaRegistryEdgeCases.test_case_insensitive_schema_lookup,method,(registry) -> None,546-553,false,8,3,Test case-insensitive schema lookup.
+  tests/e2e/test_registry_validation.py:
+    functions[27]{name,kind,sig,loc,async,lines,cc,does}:
+      TestActionRegistryE2E.test_registry_has_all_domains,method,(action_registry) -> None,24-32,false,9,1,Test that registry has all expected domains.
+      TestActionRegistryE2E.test_sql_domain_actions,method,(action_registry) -> None,34-42,false,9,1,Test SQL domain has expected actions.
+      TestActionRegistryE2E.test_shell_domain_actions,method,(action_registry) -> None,44-51,false,8,1,Test Shell domain has expected actions.
+      TestActionRegistryE2E.test_docker_domain_actions,method,(action_registry) -> None,53-60,false,8,1,Test Docker domain has expected actions.
+      TestActionRegistryE2E.test_kubernetes_domain_actions,method,(action_registry) -> None,62-68,false,7,1,Test Kubernetes domain has expected actions.
+      TestActionRegistryE2E.test_destructive_actions_marked,method,(action_registry) -> None,70-89,false,20,1,Test that destructive actions are properly marked.
+      TestActionRegistryE2E.test_action_schema_has_description,method,(action_registry) -> None,91-97,false,7,2,Test that all actions have descriptions.
+      TestActionRegistryE2E.test_register_custom_action,method,(action_registry) -> None,99-115,false,17,1,Test registering a custom action.
+      TestActionRegistryE2E.test_llm_prompt_generation,method,(action_registry) -> None,117-124,false,8,1,Test generating LLM prompt from registry.
+      TestActionRegistryE2E.test_llm_prompt_domain_filter,method,(action_registry) -> None,126-132,false,7,1,Test generating LLM prompt for specific domain.
+      TestPlanValidationE2E.validator,method,(action_registry) -> None,139-141,false,3,1,Create plan validator.
+      TestPlanValidationE2E.test_valid_single_step_plan,method,(validator) -> None,143-152,false,10,1,Test validating a valid single-step plan.
+      TestPlanValidationE2E.test_valid_multi_step_plan,method,(validator) -> None,154-167,false,14,1,Test validating a valid multi-step plan.
+      TestPlanValidationE2E.test_invalid_unknown_action,method,(validator) -> None,169-178,false,10,2,Test that unknown actions are rejected.
+      TestPlanValidationE2E.test_invalid_missing_required_param,method,(validator) -> None,180-189,false,10,2,Test that missing required params are caught.
+      TestPlanValidationE2E.test_invalid_undefined_foreach_reference,method,(validator) -> None,191-204,false,14,2,Test that undefined foreach references are caught.
+      TestPlanValidationE2E.test_invalid_empty_plan,method,(validator) -> None,206-213,false,8,2,Test that empty plans are rejected.
+      TestPlanValidationE2E.test_valid_variable_reference_chain,method,(validator) -> None,215-224,false,10,1,Test validating proper variable reference chain.
+      TestSecurityConstraints.test_only_registered_actions_execute,method,(plan_executor) -> None,230-239,false,10,2,Test that only registered actions can execute.
+      TestSecurityConstraints.test_destructive_actions_flagged,method,(action_registry) -> None,241-247,false,7,1,Test that destructive actions are properly flagged.
+      TestSecurityConstraints.test_sql_injection_not_possible,method,(plan_executor) -> None,249-266,false,18,1,Test that SQL injection is not possible through params.
+      TestSecurityConstraints.test_no_shell_execution_from_params,method,(plan_executor) -> None,268-283,false,16,1,Test that shell commands can't be executed through params.
+      TestSecurityConstraints.test_param_type_validation,method,(action_registry) -> None,285-294,false,10,2,Test that parameter types are validated.
+      TestExecutorIntegration.test_executor_validates_before_running,method,(plan_executor) -> None,300-311,false,12,1,Test that executor validates plans before running.
+      TestExecutorIntegration.test_executor_respects_on_error_stop,method,(plan_executor) -> None,313-337,false,25,1,Test that executor stops on error when configured.
+      TestExecutorIntegration.test_executor_continues_on_error_when_configured,method,(plan_executor) -> None,339-363,false,25,1,Test that executor continues on error when configured.
+      TestExecutorIntegration.test_dry_run_mode,method,(plan_executor) -> None,365-378,false,14,2,Test dry run mode validates without executing.
+  tests/e2e/conftest.py:
+    functions[25]{name,kind,sig,loc,async,lines,cc,does}:
+      get_env_or_default,function,"(key:str, default:str) -> str",28-30,false,3,1,Get environment variable or return default.
+      postgres_config,function,"() -> dict[str, str]",34-42,false,9,1,PostgreSQL configuration from environment.
+      action_registry,function,() -> ActionRegistry,50-52,false,3,1,Global action registry.
+      decision_router,function,() -> DecisionRouter,56-63,false,8,1,Decision router for query routing.
+      plan_executor,function,(action_registry) -> PlanExecutor,67-74,false,8,1,Plan executor with mock handlers.
+      llm_planner,function,(action_registry) -> LLMPlanner,78-86,false,9,1,LLM planner (rule-based fallback for tests).
+      result_aggregator,function,() -> ResultAggregator,90-92,false,3,1,Result aggregator for formatting output.
+      _register_mock_handlers,function,"(executor:PlanExecutor) -> None",99-124,false,26,1,Register mock handlers for e2e testing.
+      mock_sql_select,function,"(table:str, columns:list=None, filters:list=None) -> list",154-181,false,28,20,Mock SQL SELECT handler.
+      mock_sql_insert,function,"(table:str, values:dict) -> int",184-186,false,3,1,Mock SQL INSERT handler.
+      mock_sql_update,function,"(table:str, values:dict, filters:list) -> int",189-191,false,3,2,Mock SQL UPDATE handler.
+      mock_sql_delete,function,"(table:str, filters:list) -> int",194-196,false,3,2,Mock SQL DELETE handler.
+      mock_sql_aggregate,function,"(table:str, aggregations:list, grouping:list=None) -> list",199-226,false,28,7,Mock SQL aggregate handler.
+      mock_shell_find,function,"(glob:str='*', path:str='.') -> list",233-241,false,9,4,Mock shell find handler.
+      mock_shell_read_file,function,"(path:str, encoding:str='utf-8') -> str",244-250,false,7,3,Mock shell file read handler.
+      mock_shell_count_pattern,function,"(file:str, pattern:str) -> int",253-260,false,8,1,Mock shell grep/count handler.
+      mock_shell_process_list,function,"(filter:str=None, sort_by:str=None, limit:int=10) -> list",263-279,false,17,6,Mock shell process list handler.
+      mock_docker_ps,function,"(all:bool=False, filter:str=None) -> list",286-300,false,15,7,Mock docker ps handler.
+      mock_docker_run,function,"(image:str, name:str=None) -> str",303-305,false,3,2,Mock docker run handler.
+      mock_docker_stop,function,"(container:str, timeout:int=10) -> bool",308-310,false,3,1,Mock docker stop handler.
+      mock_docker_logs,function,"(container:str, tail:int=100) -> str",313-315,false,3,1,Mock docker logs handler.
+      mock_k8s_get,function,"(resource:str, name:str=None, namespace:str='default') -> list",322-345,false,24,4,Mock kubectl get handler.
+      mock_k8s_scale,function,"(deployment:str, replicas:int, namespace:str='default') -> bool",348-350,false,3,1,Mock kubectl scale handler.
+      mock_k8s_logs,function,"(pod:str, container:str=None, namespace:str='default', tail:int=100) -> str",353-355,false,3,1,Mock kubectl logs handler.
+      sample_plans,function,"() -> dict[str, ExecutionPlan]",363-402,false,40,1,Sample execution plans for testing.
+  tests/e2e/test_complete_flow.py:
+    functions[24]{name,kind,sig,loc,async,lines,cc,does}:
+      TestCompleteFlow.test_simple_query_direct_execution,method,"(decision_router, plan_executor, result_aggregator) -> None",25-60,false,36,1,Test simple query goes through direct execution path.
+      TestCompleteFlow.test_complex_query_llm_planner,method,"(decision_router, llm_planner, plan_executor, result_aggregator) -> None",62-114,false,53,1,Test complex query goes through LLM planner.
+      TestCompleteFlow.test_filtered_query_with_parameters,method,"(plan_executor, result_aggregator) -> None",116-137,false,22,2,Test query with filter parameters.
+      TestCompleteFlow.test_multi_domain_workflow,method,"(plan_executor, result_aggregator) -> None",139-175,false,37,2,Test workflow spanning multiple domains.
+      TestOutputFormats.test_text_format,method,"(plan_executor, result_aggregator) -> None",181-191,false,11,1,Test text output format.
+      TestOutputFormats.test_table_format,method,"(plan_executor, result_aggregator) -> None",193-204,false,12,2,Test table output format.
+      TestOutputFormats.test_json_format,method,"(plan_executor, result_aggregator) -> None",206-217,false,12,1,Test JSON output format.
+      TestOutputFormats.test_markdown_format,method,"(plan_executor, result_aggregator) -> None",219-229,false,11,1,Test markdown output format.
+      TestOutputFormats.test_summary_format,method,"(plan_executor, result_aggregator) -> None",231-241,false,11,1,Test summary output format.
+      TestErrorHandling.test_unknown_action_rejected,method,(plan_executor) -> None,247-256,false,10,1,Test that unknown actions are rejected.
+      TestErrorHandling.test_missing_required_param_rejected,method,(plan_executor) -> None,258-267,false,10,1,Test that missing required params are rejected.
+      TestErrorHandling.test_low_confidence_triggers_clarification,method,(decision_router) -> None,269-278,false,10,1,Test that low confidence triggers clarification.
+      TestErrorHandling.test_very_low_confidence_rejected,method,(decision_router) -> None,280-289,false,10,1,Test that very low confidence is rejected.
+      TestTracingAndObservability.test_trace_id_assigned,method,(plan_executor) -> None,295-304,false,10,1,Test that trace ID is assigned to execution.
+      TestTracingAndObservability.test_duration_tracked,method,(plan_executor) -> None,306-315,false,10,1,Test that duration is tracked.
+      TestTracingAndObservability.test_step_details_in_aggregated_result,method,"(plan_executor, result_aggregator) -> None",317-329,false,13,1,Test that step details are included in aggregated result.
+      TestTracingAndObservability.test_trace_id_in_summary,method,"(plan_executor, result_aggregator) -> None",331-340,false,10,1,Test that trace ID appears in summary.
+      TestDryRunMode.test_dry_run_validates_without_executing,method,(plan_executor) -> None,346-357,false,12,1,Test dry run mode validates but doesn't execute.
+      TestDryRunMode.test_dry_run_catches_invalid_plan,method,(plan_executor) -> None,359-367,false,9,1,Test dry run catches invalid plans.
+      TestSamplePlans.test_simple_select_plan,method,"(plan_executor, sample_plans) -> None",373-378,false,6,1,Test simple select plan.
+      TestSamplePlans.test_filtered_select_plan,method,"(plan_executor, sample_plans) -> None",380-385,false,6,1,Test filtered select plan.
+      TestSamplePlans.test_multi_step_analysis_plan,method,"(plan_executor, sample_plans) -> None",387-393,false,7,1,Test multi-step analysis plan.
+      TestSamplePlans.test_k8s_status_plan,method,"(plan_executor, sample_plans) -> None",395-400,false,6,1,Test Kubernetes status plan.
+      TestSamplePlans.test_docker_status_plan,method,"(plan_executor, sample_plans) -> None",402-407,false,6,1,Test Docker status plan.
+  tests/e2e/test_domain_scenarios.py:
+    functions[27]{name,kind,sig,loc,async,lines,cc,does}:
+      TestSQLScenarios.test_select_all_users,method,"(plan_executor, result_aggregator) -> None",21-33,false,13,1,Test selecting all users.
+      TestSQLScenarios.test_select_with_city_filter,method,(plan_executor) -> None,35-51,false,17,2,Test selecting users by city.
+      TestSQLScenarios.test_select_specific_columns,method,(plan_executor) -> None,53-72,false,20,1,Test selecting specific columns.
+      TestSQLScenarios.test_aggregate_users_by_status,method,(plan_executor) -> None,74-91,false,18,1,Test aggregating users by status.
+      TestSQLScenarios.test_products_by_category,method,(plan_executor) -> None,93-108,false,16,2,Test filtering products by category.
+      TestSQLScenarios.test_completed_orders,method,(plan_executor) -> None,110-125,false,16,2,Test filtering completed orders.
+      TestShellScenarios.test_find_log_files,method,(plan_executor) -> None,131-144,false,14,2,Test finding log files.
+      TestShellScenarios.test_find_python_files,method,(plan_executor) -> None,146-158,false,13,2,Test finding Python files.
+      TestShellScenarios.test_count_errors_in_single_file,method,(plan_executor) -> None,160-175,false,16,1,Test counting errors in a single file.
+      TestShellScenarios.test_count_errors_across_all_logs,method,(plan_executor) -> None,177-202,false,26,1,Test counting errors across all log files.
+      TestShellScenarios.test_list_processes,method,(plan_executor) -> None,204-216,false,13,1,Test listing processes.
+      TestShellScenarios.test_list_processes_sorted_by_cpu,method,(plan_executor) -> None,218-232,false,15,2,Test listing processes sorted by CPU.
+      TestDockerScenarios.test_list_running_containers,method,(plan_executor) -> None,238-251,false,14,2,Test listing running containers.
+      TestDockerScenarios.test_list_all_containers,method,(plan_executor) -> None,253-264,false,12,1,Test listing all containers.
+      TestDockerScenarios.test_filter_containers_by_name,method,(plan_executor) -> None,266-278,false,13,2,Test filtering containers by name.
+      TestDockerScenarios.test_get_container_logs,method,(plan_executor) -> None,280-292,false,13,1,Test getting container logs.
+      TestDockerScenarios.test_container_status_workflow,method,"(plan_executor, result_aggregator) -> None",294-312,false,19,2,Test complete container status workflow.
+      TestKubernetesScenarios.test_get_pods,method,(plan_executor) -> None,318-330,false,13,1,Test getting pods.
+      TestKubernetesScenarios.test_get_pods_by_name,method,(plan_executor) -> None,332-344,false,13,2,Test getting pods by name filter.
+      TestKubernetesScenarios.test_get_deployments,method,(plan_executor) -> None,346-358,false,13,1,Test getting deployments.
+      TestKubernetesScenarios.test_get_services,method,(plan_executor) -> None,360-372,false,13,1,Test getting services.
+      TestKubernetesScenarios.test_scale_deployment,method,(plan_executor) -> None,374-389,false,16,1,Test scaling a deployment.
+      TestKubernetesScenarios.test_get_pod_logs,method,(plan_executor) -> None,391-406,false,16,1,Test getting pod logs.
+      TestKubernetesScenarios.test_k8s_status_workflow,method,"(plan_executor, result_aggregator) -> None",408-431,false,24,1,Test complete K8s status workflow.
+      TestCrossDomainScenarios.test_infrastructure_health_check,method,"(plan_executor, result_aggregator) -> None",437-469,false,33,2,Test infrastructure health check across domains.
+      TestCrossDomainScenarios.test_user_and_order_analysis,method,(plan_executor) -> None,471-502,false,32,1,Test analyzing users and their orders.
+      TestCrossDomainScenarios.test_log_analysis_pipeline,method,(plan_executor) -> None,504-541,false,38,1,Test complete log analysis pipeline.
+  tests/integration/test_workflows.py:
+    functions[28]{name,kind,sig,loc,async,lines,cc,does}:
+      TestSQLIntegration.sql_setup,method,() -> None,29-57,false,29,1,Setup SQL adapter with full context.
+      TestSQLIntegration.test_full_select_flow,method,(sql_setup) -> None,59-87,false,29,1,Test complete SELECT flow with validation.
+      TestSQLIntegration.test_select_with_join_flow,method,(sql_setup) -> None,89-107,false,19,1,Test SELECT with JOIN flow.
+      TestSQLIntegration.test_aggregate_flow,method,(sql_setup) -> None,109-127,false,19,1,Test aggregation flow.
+      TestShellIntegration.shell_setup,method,() -> None,134-144,false,11,1,Setup Shell adapter.
+      TestShellIntegration.test_file_search_flow,method,(shell_setup) -> None,146-164,false,19,1,Test file search flow.
+      TestShellIntegration.test_docker_command_flow,method,(shell_setup) -> None,166-176,false,11,1,Test Docker command through Shell.
+      TestShellIntegration.test_safety_check_flow,method,(shell_setup) -> None,178-184,false,7,1,Test safety check for dangerous commands.
+      TestDockerIntegration.docker_setup,method,() -> None,191-193,false,3,1,Setup Docker adapter.
+      TestDockerIntegration.test_run_container_flow,method,(docker_setup) -> None,195-214,false,20,2,Test running a container.
+      TestDockerIntegration.test_compose_file_generation,method,(docker_setup) -> None,216-236,false,21,1,Test docker-compose file generation.
+      TestKubernetesIntegration.k8s_setup,method,() -> None,243-245,false,3,1,Setup Kubernetes adapter.
+      TestKubernetesIntegration.test_kubectl_get_flow,method,(k8s_setup) -> None,247-260,false,14,1,Test kubectl get command.
+      TestKubernetesIntegration.test_manifest_generation,method,(k8s_setup) -> None,262-276,false,15,1,Test Kubernetes manifest generation.
+      TestSchemaIntegration.registry,method,() -> None,283-285,false,3,1,Setup schema registry.
+      TestSchemaIntegration.test_dockerfile_validation_flow,method,(registry) -> None,287-296,false,10,1,Test Dockerfile validation flow.
+      TestSchemaIntegration.test_compose_validation_flow,method,(registry) -> None,298-309,false,12,1,Test docker-compose validation flow.
+      TestSchemaIntegration.test_file_repair_flow,method,(registry) -> None,311-323,false,13,1,Test file repair flow.
+      TestFeedbackIntegration.feedback_setup,method,() -> None,330-334,false,5,1,Setup feedback components.
+      TestFeedbackIntegration.test_feedback_with_errors,method,(feedback_setup) -> None,336-346,false,11,1,Test feedback analysis with errors.
+      TestFeedbackIntegration.test_feedback_with_warnings,method,(feedback_setup) -> None,348-358,false,11,2,Test feedback analysis with warnings.
+      TestFeedbackIntegration.test_feedback_success,method,(feedback_setup) -> None,360-369,false,10,1,Test feedback for successful command.
+      TestEnvironmentIntegration.env_analyzer,method,() -> None,376-378,false,3,1,Setup environment analyzer.
+      TestEnvironmentIntegration.test_full_environment_analysis,method,(env_analyzer) -> None,380-389,false,10,1,Test complete environment analysis.
+      TestEnvironmentIntegration.test_config_file_discovery,method,(env_analyzer) -> None,391-400,false,10,1,Test config file discovery.
+      TestEnvironmentIntegration.test_command_validation,method,(env_analyzer) -> None,402-406,false,5,1,Test command validation against environment.
+      TestEndToEndWorkflow.test_sql_nlp_to_execution,method,() -> None,412-453,false,42,1,Test complete NLP to SQL execution flow.
+      TestEndToEndWorkflow.test_docker_file_repair_flow,method,() -> None,455-474,false,20,1,Test Dockerfile repair end-to-end.
+  src/nlp2cmd/core.py:
+    functions[23]{name,kind,sig,loc,async,lines,cc,does}:
+      TransformResult.is_success,method,() -> bool,90-92,false,3,1,Check if transformation was successful.
+      TransformResult.is_blocked,method,() -> bool,95-97,false,3,1,Check if transformation was blocked by security policy.
+      TransformResult.to_dict,method,"() -> dict[str, Any]",99-112,false,14,1,Convert result to dictionary.
+      NLPBackend.__init__,method,"(config:Optional[dict[str,Any]]=None) -> None",118-119,false,2,2,creates
+      NLPBackend.extract_intent,method,"(text:str) -> tuple[str, float]",121-123,false,3,1,Extract intent from text.
+      NLPBackend.extract_entities,method,"(text:str) -> list[Entity]",125-127,false,3,1,Extract entities from text.
+      NLPBackend.generate_plan,method,"(text:str, context:Optional[dict]=None) -> ExecutionPlan",129-131,false,3,1,Generate execution plan from text.
+      SpaCyBackend.__init__,method,"(model:str='en_core_web_sm', config:Optional[dict]=None) -> None",137-140,false,4,1,creates
+      SpaCyBackend.nlp,method,() -> None,143-152,false,10,3,Lazy-load spaCy model.
+      SpaCyBackend.extract_entities,method,"(text:str) -> list[Entity]",154-168,false,15,2,Extract named entities using spaCy.
+      LLMBackend.__init__,method,"(model:str='claude-sonnet-4-20250514', api_key:Optional[str]=None, system_prompt:Optional[str]=None, config:Optional[dict]=None) -> None",174-185,false,12,2,creates
+      LLMBackend._default_system_prompt,method,() -> str,187-195,false,9,1,default system prompt
+      LLMBackend.client,method,() -> None,198-219,false,22,5,Lazy-load API client.
+      LLMBackend.generate_plan,method,"(text:str, context:Optional[dict]=None) -> ExecutionPlan",221-256,false,36,4,Generate execution plan using LLM.
+      RuleBasedBackend.__init__,method,"(rules:Optional[dict[str,list[str]]]=None, config:Optional[dict]=None) -> None",262-264,false,3,2,creates
+      RuleBasedBackend.extract_intent,method,"(text:str) -> tuple[str, float]",266-275,false,10,4,Extract intent using pattern matching.
+      NLP2CMD.__init__,method,"(adapter:BaseDSLAdapter, nlp_backend:Optional[NLPBackend]=None, validator:Optional[BaseValidator]=None, feedback_analyzer:Optional[FeedbackAnalyzer]=None, validation_mode:str='normal', auto_fix:bool=False) -> None",286-315,false,30,2,Initialize NLP2CMD instance.
+      NLP2CMD.dsl_name,method,() -> str,318-320,false,3,1,Get the name of the current DSL adapter.
+      NLP2CMD.transform,method,"(text:str, context:Optional[dict[str,Any]]=None, dry_run:bool=False) -> TransformResult",322-426,false,105,11,Transform natural language text into a DSL command.
+      NLP2CMD.set_context,method,"(key:str, value:Any) -> None",428-430,false,3,1,Set a context value for subsequent transformations.
+      NLP2CMD.clear_context,method,() -> None,432-434,false,3,1,Clear all context.
+      NLP2CMD.get_history,method,"() -> list[TransformResult]",436-438,false,3,1,Get transformation history.
+      NLP2CMD.clear_history,method,() -> None,440-442,false,3,1,Clear transformation history.
+  src/nlp2cmd/schemas/__init__.py:
+    functions[23]{name,kind,sig,loc,async,lines,cc,does}:
+      SchemaRegistry.__init__,method,() -> None,34-36,false,3,1,creates
+      SchemaRegistry._register_builtin_schemas,method,() -> None,38-148,false,111,1,Register built-in schemas.
+      SchemaRegistry.register,method,"(schema:FileFormatSchema) -> None",150-152,false,3,1,Register a new schema.
+      SchemaRegistry.get,method,"(name:str) -> Optional[FileFormatSchema]",154-156,false,3,1,Get schema by name.
+      SchemaRegistry.has_schema,method,"(name:str) -> bool",158-160,false,3,1,Check if schema exists.
+      SchemaRegistry.detect_format,method,"(file_path:Path) -> Optional[FileFormatSchema]",162-175,false,14,5,Detect file format from path.
+      SchemaRegistry._match_pattern,method,"(text:str, pattern:str) -> bool",177-181,false,5,2,Match filename against pattern.
+      SchemaRegistry._detect_by_content,method,"(file_path:Path) -> Optional[FileFormatSchema]",183-201,false,19,10,Detect format by content analysis.
+      SchemaRegistry.validate,method,"(content:str, schema_name:str) -> dict[str, Any]",203-209,false,7,2,Validate content against schema.
+      SchemaRegistry.repair,method,"(content:str, schema_name:str, auto_fix:bool=False) -> dict[str, Any]",211-241,false,31,6,Repair content according to schema rules.
+      SchemaRegistry._apply_pattern_rule,method,"(content:str, rule:dict[str,Any], auto_fix:bool) -> tuple[str, list[dict]]",243-280,false,38,8,Apply regex-based repair rule.
+      SchemaRegistry._apply_path_rule,method,"(content:str, rule:dict[str,Any], schema:FileFormatSchema, auto_fix:bool) -> tuple[str, list[dict]]",282-308,false,27,6,Apply path-based repair rule for YAML/JSON.
+      SchemaRegistry._check_path,method,"(data:Any, path_parts:list[str], rule:dict[str,Any], current_path:str='') -> list[dict]",310-365,false,56,12,Recursively check path in data structure.
+      SchemaRegistry._apply_path_fix,method,"(data:Any, path_parts:list[str], fix_value:Any) -> Any",367-396,false,30,10,Apply fix at specified path.
+      SchemaRegistry._validate_dockerfile,method,"(content:str) -> dict[str, Any]",399-424,false,26,12,Validate Dockerfile.
+      SchemaRegistry._validate_docker_compose,method,"(content:str) -> dict[str, Any]",426-454,false,29,9,Validate docker-compose.yml.
+      SchemaRegistry._validate_k8s_deployment,method,"(content:str) -> dict[str, Any]",456-487,false,32,9,Validate Kubernetes Deployment manifest.
+      SchemaRegistry._validate_github_workflow,method,"(content:str) -> dict[str, Any]",489-514,false,26,8,Validate GitHub Actions workflow.
+      SchemaRegistry._validate_env_file,method,"(content:str) -> dict[str, Any]",516-541,false,26,10,Validate .env file.
+      SchemaRegistry._parse_dockerfile,method,"(content:str) -> dict[str, Any]",544-557,false,14,6,Parse Dockerfile into structure.
+      SchemaRegistry._generate_dockerfile,method,"(data:dict[str,Any]) -> str",559-564,false,6,2,Generate Dockerfile from structure.
+      SchemaRegistry._parse_env_file,method,"(content:str) -> dict[str, str]",566-582,false,17,9,Parse .env file.
+      SchemaRegistry._generate_env_file,method,"(data:dict[str,str]) -> str",584-591,false,8,4,Generate .env file.
+  src/nlp2cmd/generation/regex.py:
+    functions[10]{name,kind,sig,loc,async,lines,cc,does}:
+      RegexEntityExtractor.__init__,method,"(custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None) -> None",190-211,false,22,4,Initialize entity extractor.
+      RegexEntityExtractor.extract,method,"(text:str, domain:str) -> ExtractionResult",213-258,false,46,7,Extract entities from text.
+      RegexEntityExtractor._process_match,method,"(entity_type:str, match:Any) -> Any",260-289,false,30,16,Process regex match and return value.
+      RegexEntityExtractor._parse_columns,method,"(value:str) -> list[str]",291-300,false,10,7,Parse column list from string.
+      RegexEntityExtractor._normalize_direction,method,"(value:str) -> str",302-308,false,7,3,Normalize sort direction.
+      RegexEntityExtractor._normalize_time_unit,method,"(unit:str) -> str",310-323,false,14,1,Normalize time unit.
+      RegexEntityExtractor._post_process,method,"(entities:dict[str,Any], domain:str) -> dict[str, Any]",325-396,false,72,17,Post-process entities for adapter compatibility.
+      RegexEntityExtractor.extract_all_numbers,method,"(text:str) -> list[int]",398-400,false,3,2,Extract all numbers from text.
+      RegexEntityExtractor.extract_quoted_strings,method,"(text:str) -> list[str]",402-407,false,6,2,Extract all quoted strings from text.
+      RegexEntityExtractor.add_pattern,method,"(domain:str, entity_type:str, patterns:list[str]) -> None",409-422,false,14,3,Add custom patterns.
+  src/nlp2cmd/generation/keywords.py:
+    functions[7]{name,kind,sig,loc,async,lines,cc,does}:
+      KeywordIntentDetector.__init__,method,"(patterns:Optional[dict[str,dict[str,list[str]]]]=None, confidence_threshold:float=0.5) -> None",180-193,false,14,2,Initialize keyword detector.
+      KeywordIntentDetector.detect,method,"(text:str) -> DetectionResult",203-290,false,88,19,Detect domain and intent from text.
+      KeywordIntentDetector._calculate_domain_boost,method,"(text:str, domain:str) -> float",292-296,false,5,3,Calculate confidence boost based on domain-specific keywords.
+      KeywordIntentDetector.detect_all,method,"(text:str) -> list[DetectionResult]",298-327,false,30,6,Detect all matching domains and intents.
+      KeywordIntentDetector.add_pattern,method,"(domain:str, intent:str, keywords:list[str]) -> None",329-342,false,14,3,Add custom patterns.
+      KeywordIntentDetector.get_supported_domains,method,"() -> list[str]",344-346,false,3,1,Get list of supported domains.
+      KeywordIntentDetector.get_supported_intents,method,"(domain:str) -> list[str]",348-350,false,3,1,Get list of supported intents for a domain.
+  src/nlp2cmd/generation/templates.py:
+    functions[14]{name,kind,sig,loc,async,lines,cc,does}:
+      TemplateGenerator.__init__,method,"(custom_templates:Optional[dict[str,dict[str,str]]]=None) -> None",116-137,false,22,4,Initialize template generator.
+      TemplateGenerator.generate,method,"(domain:str, intent:str, entities:dict[str,Any]) -> TemplateResult",139-195,false,57,4,Generate DSL command from template.
+      TemplateGenerator._find_alternative_template,method,"(domain:str, intent:str, entities:dict[str,Any]) -> Optional[str]",197-238,false,42,2,Find alternative template based on intent mapping.
+      TemplateGenerator._prepare_entities,method,"(domain:str, intent:str, entities:dict[str,Any]) -> dict[str, Any]",240-258,false,19,5,Prepare entities with defaults and formatting.
+      TemplateGenerator._prepare_sql_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",260-339,false,80,16,Prepare SQL entities.
+      TemplateGenerator._prepare_shell_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",341-398,false,58,10,Prepare shell entities.
+      TemplateGenerator._prepare_docker_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",400-452,false,53,8,Prepare Docker entities.
+      TemplateGenerator._prepare_kubernetes_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",454-502,false,49,7,Prepare Kubernetes entities.
+      TemplateGenerator._fill_template,method,"(template:str, entities:dict[str,Any]) -> str",504-513,false,10,4,Fill template with entities.
+      TemplateGenerator._clean_command,method,"(command:str) -> str",515-530,false,16,1,Clean up generated command.
+      TemplateGenerator._find_missing,method,"(template:str, entities:dict[str,Any]) -> list[str]",532-536,false,5,4,Find missing entities in template.
+      TemplateGenerator.add_template,method,"(domain:str, intent:str, template:str) -> None",538-549,false,12,2,Add custom template.
+      TemplateGenerator.get_template,method,"(domain:str, intent:str) -> Optional[str]",551-553,false,3,1,Get template for domain/intent.
+      TemplateGenerator.list_templates,method,"(domain:str) -> list[str]",555-557,false,3,1,List available templates for domain.
+  src/nlp2cmd/generation/pipeline.py:
+    functions[16]{name,kind,sig,loc,async,lines,cc,does}:
+      create_pipeline,function,"(confidence_threshold:float=0.5, custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None, custom_templates:Optional[dict[str,dict[str,str]]]=None) -> RuleBasedPipeline",293-324,false,32,4,Factory function to create a configured pipeline.
+      PipelineResult.to_plan,method,"() -> dict[str, Any]",45-51,false,7,1,Convert to execution plan format for adapters.
+      RuleBasedPipeline.__init__,method,"(detector:Optional[KeywordIntentDetector]=None, extractor:Optional[RegexEntityExtractor]=None, generator:Optional[TemplateGenerator]=None, confidence_threshold:float=0.5) -> None",71-90,false,20,4,Initialize pipeline.
+      RuleBasedPipeline.process,method,"(text:str) -> PipelineResult",92-161,false,70,7,Process natural language text through the pipeline.
+      RuleBasedPipeline.process_batch,method,"(texts:list[str]) -> list[PipelineResult]",163-173,false,11,2,Process multiple texts.
+      RuleBasedPipeline.detect_only,method,"(text:str) -> DetectionResult",175-185,false,11,1,Only detect domain and intent (skip extraction and generation).
+      RuleBasedPipeline.extract_only,method,"(text:str, domain:str) -> ExtractionResult",187-198,false,12,1,Only extract entities (skip detection and generation).
+      RuleBasedPipeline.generate_only,method,"(domain:str, intent:str, entities:dict[str,Any]) -> TemplateResult",200-217,false,18,1,Only generate command (skip detection and extraction).
+      RuleBasedPipeline.get_supported_domains,method,"() -> list[str]",219-221,false,3,1,Get list of supported domains.
+      RuleBasedPipeline.get_supported_intents,method,"(domain:str) -> list[str]",223-225,false,3,1,Get list of supported intents for a domain.
+      PipelineMetrics.__init__,method,() -> None,231-238,false,8,1,creates
+      PipelineMetrics.record,method,"(result:PipelineResult) -> None",240-256,false,17,3,Record a pipeline result.
+      PipelineMetrics.success_rate,method,() -> float,259-263,false,5,2,Calculate success rate.
+      PipelineMetrics.avg_latency_ms,method,() -> float,266-270,false,5,2,Calculate average latency.
+      PipelineMetrics.avg_confidence,method,() -> float,273-277,false,5,2,Calculate average confidence.
+      PipelineMetrics.report,method,"() -> dict[str, Any]",279-290,false,12,1,Generate metrics report.
+  src/nlp2cmd/validators/__init__.py:
+    functions[13]{name,kind,sig,loc,async,lines,cc,does}:
+      ValidationResult.merge,method,"(other:ValidationResult) -> \"ValidationResult\"",25-33,false,9,2,Merge another validation result into this one.
+      BaseValidator.validate,method,"(content:str) -> ValidationResult",40-50,false,11,1,Validate content.
+      BaseValidator.validate_with_context,method,"(content:str, context:Optional[dict[str,Any]]=None) -> ValidationResult",52-67,false,16,1,Validate content with additional context.
+      SyntaxValidator.validate,method,"(content:str) -> ValidationResult",73-104,false,32,6,Validate basic syntax.
+      SQLValidator.__init__,method,"(strict:bool=False) -> None",117-118,false,2,1,creates
+      SQLValidator.validate,method,"(content:str) -> ValidationResult",120-157,false,38,9,Validate SQL statement.
+      ShellValidator.__init__,method,"(allow_sudo:bool=False) -> None",173-174,false,2,1,creates
+      ShellValidator.validate,method,"(content:str) -> ValidationResult",176-212,false,37,9,Validate shell command.
+      DockerValidator.validate,method,"(content:str) -> ValidationResult",218-255,false,38,13,Validate Docker command or Dockerfile.
+      KubernetesValidator.__init__,method,"(allowed_namespaces:Optional[list[str]]=None) -> None",263-264,false,2,1,creates
+      KubernetesValidator.validate,method,"(content:str) -> ValidationResult",266-296,false,31,13,Validate kubectl command.
+      CompositeValidator.__init__,method,"(validators:list[BaseValidator]) -> None",302-303,false,2,1,creates
+      CompositeValidator.validate,method,"(content:str) -> ValidationResult",305-313,false,9,2,Run all validators and merge results.
+  src/nlp2cmd/planner/__init__.py:
+    functions[7]{name,kind,sig,loc,async,lines,cc,does}:
+      LLMPlanner.__init__,method,"(llm_client:Any=None, registry:Optional[ActionRegistry]=None, config:Optional[PlannerConfig]=None) -> None",179-196,false,18,3,Initialize LLM Planner.
+      LLMPlanner.plan,method,"(intent:str, entities:dict[str,Any], text:str, context:Optional[dict[str,Any]]=None, domain:Optional[str]=None) -> PlanningResult",198-269,false,72,6,Generate an execution plan.
+      LLMPlanner._build_prompt,method,"(intent:str, entities:dict[str,Any], text:str, context:dict[str,Any], domain:Optional[str]) -> str",271-311,false,41,4,Build the LLM prompt.
+      LLMPlanner._call_llm,method,"(prompt:str) -> str",313-336,false,24,3,Call the LLM API.
+      LLMPlanner._parse_response,method,"(response:str) -> Optional[dict[str, Any]]",338-365,false,28,6,Parse LLM response as JSON.
+      LLMPlanner._rule_based_plan,method,"(intent:str, entities:dict[str,Any], domain:Optional[str]) -> str",367-408,false,42,3,Generate plan using rule-based logic (fallback).
+      LLMPlanner.get_action_catalog,method,"(domain:Optional[str]=None) -> str",410-412,false,3,1,Get the action catalog for reference.
+  src/nlp2cmd/cli/main.py:
+    functions[13]{name,kind,sig,loc,async,lines,cc,does}:
+      get_adapter,function,"(dsl:str, context:dict[str,Any]) -> None",36-54,false,19,3,Get the appropriate adapter for the DSL type.
+      main,function,"(ctx, interactive:bool, dsl:str, query:Optional[str], auto_repair:bool) -> None",335-349,false,15,5,NLP2CMD - Natural Language to Domain-Specific Commands.
+      repair,function,"(ctx, file:str, backup:bool) -> None",356-405,false,50,11,Repair a configuration file.
+      validate,function,"(ctx, file:str) -> None",411-437,false,27,7,Validate a configuration file.
+      analyze_env,function,"(ctx, output:Optional[str]) -> None",443-512,false,70,12,Analyze system environment.
+      InteractiveSession.__init__,method,"(dsl:str='auto', auto_repair:bool=False) -> None",60-78,false,19,1,creates
+      InteractiveSession._analyze_environment,method,() -> None,80-94,false,15,3,Analyze current environment.
+      InteractiveSession.process,method,"(user_input:str) -> FeedbackResult",96-122,false,27,1,Process user input and return feedback.
+      InteractiveSession.display_feedback,method,"(feedback:FeedbackResult) -> None",124-174,false,51,12,Display feedback result with formatting.
+      InteractiveSession.run,method,() -> None,176-224,false,49,10,Run interactive REPL.
+      InteractiveSession._show_help,method,() -> None,226-242,false,17,1,Display help information.
+      InteractiveSession._handle_command,method,"(cmd:str) -> None",244-299,false,56,14,Handle special commands.
+      InteractiveSession._correction_loop,method,"(feedback:FeedbackResult) -> None",301-321,false,21,8,Interactive correction loop.
+  src/nlp2cmd/aggregator/__init__.py:
+    functions[11]{name,kind,sig,loc,async,lines,cc,does}:
+      ResultAggregator.__init__,method,"(default_format:OutputFormat=OutputFormat.TEXT) -> None",55-62,false,8,1,Initialize aggregator.
+      ResultAggregator.aggregate,method,"(execution_result:ExecutionResult, format:Optional[OutputFormat]=None, include_details:bool=True) -> AggregatedResult",64-105,false,42,4,Aggregate execution results.
+      ResultAggregator._format_step_detail,method,"(step:StepResult) -> dict[str, Any]",107-134,false,28,8,Format a single step's details.
+      ResultAggregator._generate_summary,method,"(result:ExecutionResult) -> str",136-166,false,31,14,Generate a human-readable summary.
+      ResultAggregator._preview_result,method,"(result:Any, max_items:int=5) -> str",168-199,false,32,10,Generate a preview of the result.
+      ResultAggregator._format_data,method,"(data:Any, format:OutputFormat) -> Any",201-219,false,19,6,Format data according to output format.
+      ResultAggregator._to_text,method,"(data:Any) -> str",221-242,false,22,7,Convert data to text format.
+      ResultAggregator._to_table,method,"(data:Any) -> str",244-280,false,37,11,Convert data to ASCII table format.
+      ResultAggregator._to_markdown,method,"(data:Any) -> str",282-309,false,28,8,Convert data to Markdown format.
+      ResultAggregator._to_summary,method,"(data:Any) -> str",311-340,false,30,11,Convert data to summary format.
+      ResultAggregator.to_llm_context,method,"(aggregated:AggregatedResult, max_tokens:int=1000) -> str",342-376,false,35,5,Prepare aggregated result for LLM context.
+  src/nlp2cmd/registry/__init__.py:
+    functions[22]{name,kind,sig,loc,async,lines,cc,does}:
+      get_registry,function,() -> ActionRegistry,626-631,false,6,2,Get the global action registry instance.
+      ActionSchema.get_required_params,method,"() -> list[str]",68-70,false,3,3,Get list of required parameter names.
+      ActionSchema.get_optional_params,method,"() -> list[str]",72-74,false,3,3,Get list of optional parameter names.
+      ActionSchema.get_param,method,"(name:str) -> Optional[ParamSchema]",76-81,false,6,3,Get parameter schema by name.
+      ActionResult.ok,method,"(data:Any) -> \"ActionResult\"",94-96,false,3,1,Create successful result.
+      ActionResult.fail,method,"(error:str) -> \"ActionResult\"",99-101,false,3,1,Create failed result.
+      ActionHandler.__init__,method,"(schema:ActionSchema) -> None",107-108,false,2,1,creates
+      ActionHandler.validate_params,method,"(params:dict[str,Any]) -> tuple[bool, list[str]]",110-166,false,57,15,Validate parameters against schema.
+      ActionHandler._validate_type,method,"(value:Any, expected:ParamType) -> bool",168-188,false,21,2,Validate value type.
+      ActionHandler.execute,method,"(params:dict[str,Any]) -> ActionResult",190-196,false,7,1,Execute the action.
+      ActionRegistry.__init__,method,() -> None,210-214,false,5,1,creates
+      ActionRegistry._register_builtin_actions,method,() -> None,216-503,false,288,1,Register built-in actions.
+      ActionRegistry.register,method,"(schema:ActionSchema, handler:Optional[ActionHandler]=None) -> None",505-528,false,24,4,Register an action schema.
+      ActionRegistry.get,method,"(name:str) -> Optional[ActionSchema]",530-532,false,3,1,Get action schema by name.
+      ActionRegistry.get_handler,method,"(name:str) -> Optional[ActionHandler]",534-536,false,3,1,Get action handler by name.
+      ActionRegistry.has,method,"(name:str) -> bool",538-540,false,3,1,Check if action exists.
+      ActionRegistry.list_actions,method,"(domain:Optional[str]=None) -> list[str]",542-546,false,5,2,List all registered action names.
+      ActionRegistry.list_domains,method,"() -> list[str]",548-550,false,3,1,List all domains.
+      ActionRegistry.get_by_tag,method,"(tag:str) -> list[ActionSchema]",552-554,false,3,3,Get all actions with a specific tag.
+      ActionRegistry.get_destructive_actions,method,"() -> list[str]",556-558,false,3,3,Get all destructive action names.
+      ActionRegistry.validate_action,method,"(name:str, params:dict[str,Any]) -> tuple[bool, list[str]]",560-582,false,23,2,Validate an action call.
+      ActionRegistry.to_llm_prompt,method,"(domain:Optional[str]=None) -> str",584-619,false,36,5,Generate action catalog for LLM prompt.
+  src/nlp2cmd/thermodynamic/energy_models.py:
+    functions[18]{name,kind,sig,loc,async,lines,cc,does}:
+      SchedulingEnergy.__init__,method,"(lambda_overlap:float=10.0, lambda_deadline:float=5.0, lambda_precedence:float=10.0, lambda_makespan:float=1.0) -> None",63-73,false,11,1,creates
+      SchedulingEnergy.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",75-107,false,33,2,Compute scheduling energy.
+      SchedulingEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",109-126,false,18,2,Compute gradient of scheduling energy.
+      SchedulingEnergy._overlap_penalty,method,"(z:Any, tasks:List[Task], assignments:Dict[str,str]) -> float",128-154,false,27,6,Penalty for overlapping tasks on same resource.
+      SchedulingEnergy._deadline_penalty,method,"(z:Any, tasks:List[Task]) -> float",156-166,false,11,3,Penalty for missing deadlines.
+      SchedulingEnergy._precedence_penalty,method,"(z:Any, tasks:List[Task], condition:Dict[str,Any]) -> float",168-198,false,31,6,Penalty for violating precedence constraints.
+      SchedulingEnergy._makespan,method,"(z:Any, tasks:List[Task]) -> float",200-203,false,4,3,Total completion time (makespan).
+      AllocationEnergy.__init__,method,"(lambda_capacity:float=10.0, lambda_demand:float=5.0, lambda_balance:float=1.0, lambda_cost:float=1.0) -> None",228-238,false,11,1,creates
+      AllocationEnergy.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",240-285,false,46,2,Compute allocation energy.
+      AllocationEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",287-300,false,14,2,Compute gradient numerically.
+      RoutingEnergy.__init__,method,"(lambda_row:float=10.0, lambda_col:float=10.0, lambda_entropy:float=0.1) -> None",318-326,false,9,1,creates
+      RoutingEnergy.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",328-374,false,47,6,Compute routing energy.
+      RoutingEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",376-389,false,14,2,Compute gradient numerically.
+      RoutingEnergy._softmax_matrix,method,"(Z:Any) -> np.ndarray",391-394,false,4,1,Apply softmax to make soft assignment matrix.
+      CSPEnergy.__init__,method,() -> None,408-409,false,2,1,creates
+      CSPEnergy.add_constraint,method,"(name:str, constraint_fn:callable, weight:float=1.0) -> None",411-425,false,15,1,Add a constraint.
+      CSPEnergy.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",427-433,false,7,2,Compute total constraint violation energy.
+      CSPEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",435-448,false,14,2,Compute gradient numerically.
+  src/nlp2cmd/thermodynamic/__init__.py:
+    functions[24]{name,kind,sig,loc,async,lines,cc,does}:
+      EnergyModel.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",66-68,false,3,1,Compute energy V(z; c).
+      EnergyModel.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",71-73,false,3,1,Compute energy gradient ∇V(z; c).
+      EnergyModel.__call__,method,"(z:Any, condition:Dict[str,Any]) -> float",75-76,false,2,1,call
+      QuadraticEnergy.__init__,method,"(target:Optional[Any]=None) -> None",84-85,false,2,1,creates
+      QuadraticEnergy.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",87-91,false,5,2,energy
+      QuadraticEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",93-97,false,5,2,gradient
+      ConstraintEnergy.__init__,method,() -> None,111-113,false,3,1,creates
+      ConstraintEnergy.add_penalty,method,"(name:str, penalty_fn:Callable[Any,float], gradient_fn:Callable[Any,Any], weight:float=1.0) -> None",115-124,false,10,1,Add a penalty function.
+      ConstraintEnergy.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",126-133,false,8,3,energy
+      ConstraintEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",135-142,false,8,3,gradient
+      LangevinSampler.__init__,method,"(energy_model:EnergyModel, config:Optional[LangevinConfig]=None) -> None",165-167,false,3,2,creates
+      LangevinSampler.sample,method,"(condition:Dict[str,Any], n_samples:int=1, initial_state:Optional[Any]=None) -> Union[SamplerResult, List[SamplerResult]]",169-189,false,21,3,Generate samples via Langevin dynamics.
+      LangevinSampler._sample_single,method,"(condition:Dict[str,Any], initial_state:Optional[Any]=None) -> SamplerResult",191-247,false,57,7,Generate a single sample.
+      LangevinSampler.sample_parallel,method,"(condition:Dict[str,Any], n_samples:int, max_workers:int=4) -> List[SamplerResult]",249-262,false,14,3,Sample in parallel using thread pool.
+      EntropyProductionRegularizer.__init__,method,"(lambda_entropy:float=0.1, kT:float=1.0) -> None",279-281,false,3,1,creates
+      EntropyProductionRegularizer.compute_regularization,method,"(result:SamplerResult) -> float",283-289,false,7,1,Compute entropy production regularization term.
+      EntropyProductionRegularizer.estimate_heat_dissipation,method,"(result:SamplerResult) -> float",291-297,false,7,1,Estimate heat dissipation Q during sampling.
+      MajorityVoter.__init__,method,"(strategy:str='energy') -> None",314-315,false,2,1,creates
+      MajorityVoter.vote,method,"(results:List[SamplerResult]) -> SamplerResult",317-341,false,25,7,Select best result based on voting strategy.
+      MajorityVoter._cluster_vote,method,"(results:List[SamplerResult], threshold:float=0.1) -> SamplerResult",343-366,false,24,6,Cluster similar samples and select from largest cluster.
+      ThermodynamicRouter.__init__,method,"(complexity_threshold:float=0.5) -> None",402-403,false,2,1,creates
+      ThermodynamicRouter.route,method,"(intent:str, complexity:float=0.5) -> str",405-430,false,26,5,Decide solver type based on intent and complexity.
+      ThermodynamicRouter.estimate_complexity,method,"(problem_description:str, entities:Dict[str,Any]) -> float",432-457,false,26,5,Estimate problem complexity based on description and entities.
+      EnergyEstimator.estimate,method,"(llm_input_tokens:int, llm_output_tokens_classic:int, llm_output_tokens_hybrid:int, langevin_steps:int) -> Dict[str, float]",479-521,false,43,1,Estimate energy for different approaches.
+  src/nlp2cmd/executor/__init__.py:
+    functions[18]{name,kind,sig,loc,async,lines,cc,does}:
+      PlanStep.__post_init__,method,() -> None,50-53,false,4,2,creates init
+      ExecutionPlan.from_dict,method,"(data:dict[str,Any]) -> \"ExecutionPlan\"",78-96,false,19,2,Create plan from dictionary.
+      ExecutionPlan.to_dict,method,"() -> dict[str, Any]",98-115,false,18,2,Convert plan to dictionary.
+      ExecutionContext.set,method,"(name:str, value:Any) -> None",128-130,false,3,1,Set a variable.
+      ExecutionContext.get,method,"(name:str, default:Any=None) -> Any",132-134,false,3,1,Get a variable.
+      ExecutionContext.resolve_reference,method,"(ref:str) -> Any",136-168,false,33,8,Resolve a variable reference.
+      PlanValidator.__init__,method,"(registry:Optional[ActionRegistry]=None) -> None",218-219,false,2,2,creates
+      PlanValidator.validate,method,"(plan:ExecutionPlan) -> tuple[bool, list[str]]",221-247,false,27,4,Validate an execution plan.
+      PlanValidator._validate_step,method,"(step:PlanStep, index:int, defined_variables:set[str]) -> list[str]",249-298,false,50,16,Validate a single step.
+      PlanExecutor.__init__,method,"(registry:Optional[ActionRegistry]=None, action_handlers:Optional[dict[str,Callable]]=None) -> None",315-332,false,18,3,Initialize executor.
+      PlanExecutor._register_default_handlers,method,() -> None,334-354,false,21,1,Register default action handlers for testing.
+      PlanExecutor.execute,method,"(plan:ExecutionPlan, initial_context:Optional[dict[str,Any]]=None, dry_run:bool=False, on_step_complete:Optional[Callable[Any,None]]=None) -> ExecutionResult",356-448,false,93,14,Execute a plan.
+      PlanExecutor._execute_step,method,"(step:PlanStep, index:int, ctx:ExecutionContext) -> StepResult",450-525,false,76,9,Execute a single step.
+      PlanExecutor._execute_foreach,method,"(step:PlanStep, index:int, ctx:ExecutionContext) -> StepResult",527-590,false,64,7,Execute step as foreach loop.
+      PlanExecutor._resolve_params,method,"(params:dict[str,Any], ctx:ExecutionContext) -> dict[str, Any]",592-613,false,22,9,Resolve variable references in params.
+      PlanExecutor._evaluate_condition,method,"(condition:str, ctx:ExecutionContext) -> bool",615-637,false,23,5,Evaluate a condition expression.
+      PlanExecutor._call_action,method,"(action:str, params:dict[str,Any], timeout:Optional[float]=None) -> Any",639-658,false,20,4,Call an action handler.
+      PlanExecutor.register_handler,method,"(action:str, handler:Callable[Ellipsis,Any]) -> None",660-666,false,7,1,Register a custom action handler.
+  src/nlp2cmd/adapters/dql.py:
+    functions[13]{name,kind,sig,loc,async,lines,cc,does}:
+      DQLAdapter.__init__,method,"(entity_context:Optional[dict[str,Any]]=None, safety_policy:Optional[DQLSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",65-80,false,16,3,Initialize DQL adapter.
+      DQLAdapter._parse_entity_context,method,"(ctx:dict[str,Any]) -> EntityContext",82-87,false,6,1,Parse entity context.
+      DQLAdapter._get_entity_fqcn,method,"(name:str) -> str",89-91,false,3,1,Get fully qualified class name for entity.
+      DQLAdapter.generate,method,"(plan:dict[str,Any]) -> str",93-101,false,9,2,Generate DQL from execution plan.
+      DQLAdapter._generate_query_builder,method,"(intent:str, entities:dict[str,Any]) -> str",103-114,false,12,1,Generate QueryBuilder syntax.
+      DQLAdapter._generate_qb_select,method,"(entities:dict[str,Any]) -> str",116-211,false,96,22,Generate SELECT QueryBuilder.
+      DQLAdapter._generate_qb_count,method,"(entities:dict[str,Any]) -> str",213-235,false,23,2,Generate COUNT QueryBuilder.
+      DQLAdapter._generate_qb_aggregate,method,"(entities:dict[str,Any]) -> str",237-299,false,63,11,Generate aggregate QueryBuilder.
+      DQLAdapter._generate_raw_dql,method,"(intent:str, entities:dict[str,Any]) -> str",301-354,false,54,11,Generate raw DQL string.
+      DQLAdapter._php_value,method,"(value:Any) -> str",356-371,false,16,9,Format value for PHP.
+      DQLAdapter._dql_value,method,"(value:Any) -> str",373-383,false,11,6,Format value for DQL.
+      DQLAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",385-412,false,28,7,Validate DQL/QueryBuilder syntax.
+      DQLAdapter.check_safety,method,"(command:str) -> dict[str, Any]",414-431,false,18,5,Check DQL against safety policy.
+  src/nlp2cmd/adapters/base.py:
+    functions[10]{name,kind,sig,loc,async,lines,cc,does}:
+      BaseDSLAdapter.__init__,method,"(config:Optional[AdapterConfig]=None, safety_policy:Optional[SafetyPolicy]=None) -> None",49-63,false,15,3,Initialize the adapter.
+      BaseDSLAdapter.generate,method,"(plan:dict[str,Any]) -> str",66-76,false,11,1,Generate a DSL command from an execution plan.
+      BaseDSLAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",79-89,false,11,1,Validate the syntax of a generated command.
+      BaseDSLAdapter.check_safety,method,"(command:str) -> dict[str, Any]",91-126,false,36,6,Check if a command passes safety policy.
+      BaseDSLAdapter.get_intents,method,"() -> dict[str, dict[str, Any]]",128-130,false,3,1,Get available intents for this DSL.
+      BaseDSLAdapter.suggest_intent,method,"(text:str) -> Optional[str]",132-150,false,19,4,Suggest an intent based on input text.
+      BaseDSLAdapter.format_output,method,"(command:str, pretty:bool=False) -> str",152-165,false,14,2,Format the output command.
+      BaseDSLAdapter._pretty_format,method,"(command:str) -> str",167-169,false,3,1,Apply pretty formatting to command.
+      BaseDSLAdapter.get_schema_context,method,"() -> dict[str, Any]",171-173,false,3,1,Get schema context for validation.
+      BaseDSLAdapter.__repr__,method,() -> str,175-176,false,2,1,repr
+  src/nlp2cmd/adapters/docker.py:
+    functions[18]{name,kind,sig,loc,async,lines,cc,does}:
+      DockerAdapter.__init__,method,"(compose_context:Optional[dict[str,Any]]=None, safety_policy:Optional[DockerSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",102-117,false,16,3,Initialize Docker adapter.
+      DockerAdapter._parse_compose_context,method,"(ctx:dict[str,Any]) -> ComposeContext",119-126,false,8,1,Parse compose context.
+      DockerAdapter.generate,method,"(plan:dict[str,Any]) -> str",128-152,false,25,2,Generate Docker command from execution plan.
+      DockerAdapter._generate_run,method,"(entities:dict[str,Any]) -> str",154-206,false,53,14,Generate docker run command.
+      DockerAdapter._generate_stop,method,"(entities:dict[str,Any]) -> str",208-217,false,10,2,Generate docker stop command.
+      DockerAdapter._generate_remove,method,"(entities:dict[str,Any]) -> str",219-232,false,14,3,Generate docker rm command.
+      DockerAdapter._generate_build,method,"(entities:dict[str,Any]) -> str",234-257,false,24,4,Generate docker build command.
+      DockerAdapter._generate_pull,method,"(entities:dict[str,Any]) -> str",259-267,false,9,3,Generate docker pull command.
+      DockerAdapter._generate_compose_up,method,"(entities:dict[str,Any]) -> str",269-292,false,24,5,Generate docker-compose up command.
+      DockerAdapter._generate_compose_down,method,"(entities:dict[str,Any]) -> str",294-313,false,20,4,Generate docker-compose down command.
+      DockerAdapter._generate_logs,method,"(entities:dict[str,Any]) -> str",315-333,false,19,3,Generate docker logs command.
+      DockerAdapter._generate_exec,method,"(entities:dict[str,Any]) -> str",335-357,false,23,4,Generate docker exec command.
+      DockerAdapter._generate_list,method,"(entities:dict[str,Any]) -> str",359-384,false,26,8,Generate docker list command.
+      DockerAdapter._generate_prune,method,"(entities:dict[str,Any]) -> str",386-408,false,23,4,Generate docker prune command.
+      DockerAdapter._generate_container_management,method,"(entities:dict[str,Any]) -> str",410-463,false,54,7,Generate complex container management script.
+      DockerAdapter.generate_compose_file,method,"(spec:dict[str,Any]) -> str",465-506,false,42,13,Generate docker-compose.yml content.
+      DockerAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",508-540,false,33,14,Validate Docker command syntax.
+      DockerAdapter.check_safety,method,"(command:str) -> dict[str, Any]",542-584,false,43,11,Check Docker command against safety policy.
+  src/nlp2cmd/adapters/kubernetes.py:
+    functions[22]{name,kind,sig,loc,async,lines,cc,does}:
+      KubernetesAdapter.__init__,method,"(cluster_context:Optional[dict[str,Any]]=None, safety_policy:Optional[KubernetesSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",128-143,false,16,3,Initialize Kubernetes adapter.
+      KubernetesAdapter._parse_cluster_context,method,"(ctx:dict[str,Any]) -> ClusterContext",145-151,false,7,1,Parse cluster context.
+      KubernetesAdapter._normalize_resource,method,"(resource:str) -> str",153-155,false,3,1,Normalize resource type name.
+      KubernetesAdapter.generate,method,"(plan:dict[str,Any]) -> str",157-179,false,23,2,Generate kubectl command from execution plan.
+      KubernetesAdapter._generate_get,method,"(entities:dict[str,Any]) -> str",181-210,false,30,7,Generate kubectl get command.
+      KubernetesAdapter._generate_describe,method,"(entities:dict[str,Any]) -> str",212-223,false,12,2,Generate kubectl describe command.
+      KubernetesAdapter._generate_apply,method,"(entities:dict[str,Any]) -> str",225-243,false,19,4,Generate kubectl apply command.
+      KubernetesAdapter._generate_delete,method,"(entities:dict[str,Any]) -> str",245-271,false,27,6,Generate kubectl delete command.
+      KubernetesAdapter._generate_scale,method,"(entities:dict[str,Any]) -> str",273-288,false,16,3,Generate kubectl scale command.
+      KubernetesAdapter._generate_logs,method,"(entities:dict[str,Any]) -> str",290-320,false,31,7,Generate kubectl logs command.
+      KubernetesAdapter._generate_exec,method,"(entities:dict[str,Any]) -> str",322-346,false,25,4,Generate kubectl exec command.
+      KubernetesAdapter._generate_port_forward,method,"(entities:dict[str,Any]) -> str",348-363,false,16,3,Generate kubectl port-forward command.
+      KubernetesAdapter._generate_rollout,method,"(entities:dict[str,Any]) -> str",365-379,false,15,3,Generate kubectl rollout command.
+      KubernetesAdapter._generate_create,method,"(entities:dict[str,Any]) -> str",381-404,false,24,7,Generate kubectl create command.
+      KubernetesAdapter.generate_manifest,method,"(spec:dict[str,Any]) -> str",406-428,false,23,2,Generate Kubernetes YAML manifest.
+      KubernetesAdapter._generate_deployment_manifest,method,"(spec:dict[str,Any]) -> dict",430-477,false,48,3,Generate Deployment manifest.
+      KubernetesAdapter._generate_service_manifest,method,"(spec:dict[str,Any]) -> dict",479-506,false,28,1,Generate Service manifest.
+      KubernetesAdapter._generate_configmap_manifest,method,"(spec:dict[str,Any]) -> dict",508-522,false,15,1,Generate ConfigMap manifest.
+      KubernetesAdapter._generate_secret_manifest,method,"(spec:dict[str,Any]) -> dict",524-550,false,27,3,Generate Secret manifest.
+      KubernetesAdapter._generate_ingress_manifest,method,"(spec:dict[str,Any]) -> dict",552-599,false,48,2,Generate Ingress manifest.
+      KubernetesAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",601-637,false,37,10,Validate kubectl command syntax.
+      KubernetesAdapter.check_safety,method,"(command:str) -> dict[str, Any]",639-678,false,40,12,Check kubectl command against safety policy.
+  src/nlp2cmd/adapters/sql.py:
+    functions[15]{name,kind,sig,loc,async,lines,cc,does}:
+      SQLAdapter.__init__,method,"(dialect:str='postgresql', schema_context:Optional[dict[str,Any]]=None, safety_policy:Optional[SQLSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",97-119,false,23,4,Initialize SQL adapter.
+      SQLAdapter._parse_schema_context,method,"(ctx:dict[str,Any]) -> SchemaContext",121-129,false,9,1,Parse schema context dictionary into SchemaContext object.
+      SQLAdapter.generate,method,"(plan:dict[str,Any]) -> str",131-147,false,17,1,Generate SQL command from execution plan.
+      SQLAdapter._generate_select,method,"(entities:dict[str,Any]) -> str",149-198,false,50,9,Generate SELECT statement.
+      SQLAdapter._generate_insert,method,"(entities:dict[str,Any]) -> str",200-214,false,15,3,Generate INSERT statement.
+      SQLAdapter._generate_update,method,"(entities:dict[str,Any]) -> str",216-237,false,22,5,Generate UPDATE statement.
+      SQLAdapter._generate_delete,method,"(entities:dict[str,Any]) -> str",239-255,false,17,3,Generate DELETE statement.
+      SQLAdapter._generate_aggregate,method,"(entities:dict[str,Any]) -> str",257-316,false,60,11,Generate aggregate query with GROUP BY.
+      SQLAdapter._format_value,method,"(value:Any) -> str",318-335,false,18,8,Format a value for SQL.
+      SQLAdapter._interval_expr,method,"(interval:str) -> str",337-346,false,10,4,Generate dialect-specific interval expression.
+      SQLAdapter._year_start_expr,method,() -> str,348-357,false,10,4,Generate dialect-specific year start expression.
+      SQLAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",359-396,false,38,11,Validate SQL syntax.
+      SQLAdapter.check_safety,method,"(command:str) -> dict[str, Any]",398-456,false,59,15,Check SQL command against safety policy.
+      SQLAdapter._pretty_format,method,"(command:str) -> str",458-470,false,13,2,Pretty format SQL command.
+      SQLAdapter.get_schema_context,method,"() -> dict[str, Any]",472-478,false,7,1,Get schema context.
+  src/nlp2cmd/adapters/shell.py:
+    functions[18]{name,kind,sig,loc,async,lines,cc,does}:
+      ShellAdapter.__init__,method,"(shell_type:str='bash', environment_context:Optional[dict[str,Any]]=None, safety_policy:Optional[ShellSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",132-154,false,23,4,Initialize Shell adapter.
+      ShellAdapter._parse_environment_context,method,"(ctx:dict[str,Any]) -> EnvironmentContext",156-164,false,9,1,Parse environment context.
+      ShellAdapter.generate,method,"(plan:dict[str,Any]) -> str",166-190,false,25,2,Generate shell command from execution plan.
+      ShellAdapter._generate_file_search,method,"(entities:dict[str,Any]) -> str",192-226,false,35,12,Generate find command.
+      ShellAdapter._generate_file_operation,method,"(entities:dict[str,Any]) -> str",228-242,false,15,1,Generate file operation command.
+      ShellAdapter._generate_process_management,method,"(entities:dict[str,Any]) -> str",244-258,false,15,5,Generate process management command.
+      ShellAdapter._generate_process_monitoring,method,"(entities:dict[str,Any]) -> str",260-281,false,22,7,Generate process monitoring command.
+      ShellAdapter._generate_network,method,"(entities:dict[str,Any]) -> str",283-300,false,18,6,Generate network command.
+      ShellAdapter._generate_disk,method,"(entities:dict[str,Any]) -> str",302-314,false,13,4,Generate disk command.
+      ShellAdapter._generate_archive,method,"(entities:dict[str,Any]) -> str",316-334,false,19,7,Generate archive command.
+      ShellAdapter._generate_text_processing,method,"(entities:dict[str,Any]) -> str",336-350,false,15,6,Generate text processing command.
+      ShellAdapter._generate_git,method,"(entities:dict[str,Any]) -> str",352-372,false,21,5,Generate git command.
+      ShellAdapter._generate_docker,method,"(entities:dict[str,Any]) -> str",374-404,false,31,4,Generate docker command.
+      ShellAdapter._generate_docker_script,method,"(actions:list[str], entities:dict[str,Any]) -> str",406-447,false,42,5,Generate multi-step docker script.
+      ShellAdapter._generate_generic,method,"(entities:dict[str,Any]) -> str",449-457,false,9,2,Generate generic command from entities.
+      ShellAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",459-494,false,36,8,Validate shell command syntax.
+      ShellAdapter.check_safety,method,"(command:str) -> dict[str, Any]",496-547,false,52,15,Check shell command against safety policy.
+      ShellAdapter.check_tool_availability,method,"(command:str) -> dict[str, Any]",549-562,false,14,2,Check if required tools are available.
+  src/nlp2cmd/environment/__init__.py:
+    functions[15]{name,kind,sig,loc,async,lines,cc,does}:
+      EnvironmentAnalyzer.__init__,method,() -> None,131-132,false,2,1,creates
+      EnvironmentAnalyzer.analyze,method,"() -> dict[str, Any]",134-147,false,14,1,Perform basic environment analysis.
+      EnvironmentAnalyzer._get_os_info,method,"() -> dict[str, str]",149-158,false,10,2,Get operating system information.
+      EnvironmentAnalyzer._get_shell_info,method,"() -> dict[str, str]",160-166,false,7,2,Get current shell information.
+      EnvironmentAnalyzer._get_user_info,method,"() -> dict[str, Any]",168-178,false,11,2,Get current user information.
+      EnvironmentAnalyzer._get_relevant_env_vars,method,"() -> dict[str, str]",180-195,false,16,3,Get relevant environment variables.
+      EnvironmentAnalyzer.detect_tools,method,"(tool_names:Optional[list[str]]=None) -> dict[str, ToolInfo]",197-253,false,57,9,Detect available tools.
+      EnvironmentAnalyzer.check_services,method,"() -> dict[str, ServiceInfo]",255-284,false,30,4,Check status of common services.
+      EnvironmentAnalyzer._check_port,method,"(host:str, port:int) -> bool",286-295,false,10,2,Check if a port is open.
+      EnvironmentAnalyzer._check_docker_daemon,method,() -> bool,297-307,false,11,2,Check if Docker daemon is running.
+      EnvironmentAnalyzer.find_config_files,method,"(directory:Path, patterns:Optional[list[str]]=None) -> list[dict[str, Any]]",309-364,false,56,7,Find configuration files in directory.
+      EnvironmentAnalyzer.validate_command,method,"(command:str, context:dict[str,Any]) -> dict[str, Any]",366-417,false,52,13,Validate a command against the environment.
+      EnvironmentAnalyzer.full_report,method,() -> EnvironmentReport,419-439,false,21,1,Generate a full environment report.
+      EnvironmentAnalyzer._get_resources,method,"() -> dict[str, Any]",441-475,false,35,5,Get system resource information.
+      EnvironmentAnalyzer._generate_recommendations,method,"(tools:dict[str,ToolInfo], services:dict[str,ServiceInfo]) -> list[str]",477-510,false,34,12,Generate recommendations based on environment analysis.
+  src/nlp2cmd/feedback/__init__.py:
+    functions[19]{name,kind,sig,loc,async,lines,cc,does}:
+      FeedbackResult.is_success,method,() -> bool,48-50,false,3,1,Check if feedback indicates success.
+      FeedbackResult.can_auto_fix,method,() -> bool,53-55,false,3,1,Check if automatic fixes are available.
+      FeedbackResult.to_dict,method,"() -> dict[str, Any]",57-71,false,15,1,Convert to dictionary.
+      FeedbackAnalyzer.__init__,method,"(correction_rules:Optional[list[CorrectionRule]]=None) -> None",93-101,false,9,2,Initialize the analyzer.
+      FeedbackAnalyzer._register_default_rules,method,() -> None,103-138,false,36,1,Register default correction rules.
+      FeedbackAnalyzer.analyze,method,"(original_input:str, generated_output:str, validation_errors:Optional[list[str]]=None, validation_warnings:Optional[list[str]]=None, dsl_type:str='unknown', context:Optional[dict[str,Any]]=None) -> FeedbackResult",140-224,false,85,13,Analyze transformation result and generate feedback.
+      FeedbackAnalyzer._analyze_error,method,"(error:str, output:str, dsl_type:str) -> dict[str, Any]",226-263,false,38,13,Analyze a specific error and generate suggestions.
+      FeedbackAnalyzer._is_ambiguous,method,"(input_text:str, context:Optional[dict[str,Any]]) -> bool",265-288,false,24,6,Check if input is ambiguous.
+      FeedbackAnalyzer._generate_clarification_questions,method,"(input_text:str, dsl_type:str) -> list[str]",290-312,false,23,8,Generate clarification questions for ambiguous input.
+      FeedbackAnalyzer._calculate_confidence,method,"(errors:list[str], warnings:list[str], auto_fix_count:int, output:str) -> float",314-340,false,27,4,Calculate confidence score.
+      FeedbackAnalyzer.check_syntax,method,"(content:str, dsl_type:str) -> dict[str, Any]",342-363,false,22,6,Quick syntax check for content.
+      FeedbackAnalyzer.analyze_exception,method,"(exception:Exception) -> dict[str, Any]",365-396,false,32,7,Analyze an exception and provide suggestions.
+      CorrectionEngine.__init__,method,() -> None,407-408,false,2,1,creates
+      CorrectionEngine.register_correction,method,"(dsl_type:str, rule:CorrectionRule) -> None",410-414,false,5,2,Register a correction rule for a DSL type.
+      CorrectionEngine.suggest,method,"(error:str, content:str, context:Optional[dict[str,Any]]=None) -> dict[str, Any]",416-452,false,37,4,Suggest a correction for an error.
+      CorrectionEngine._suggest_balance_fix,method,"(content:str, error:str) -> dict[str, Any]",454-474,false,21,3,Suggest fix for unbalanced brackets/parentheses.
+      CorrectionEngine._suggest_quote_fix,method,"(content:str, error:str) -> dict[str, Any]",476-491,false,16,3,Suggest fix for unclosed quotes.
+      CorrectionEngine._suggest_missing_element,method,"(content:str, error:str, context:Optional[dict[str,Any]]) -> dict[str, Any]",493-505,false,13,1,Suggest fix for missing elements.
+      CorrectionEngine.apply_correction,method,"(content:str, correction:dict[str,Any]) -> str",507-513,false,7,1,Apply a correction to content.
+  src/nlp2cmd/router/__init__.py:
+    functions[9]{name,kind,sig,loc,async,lines,cc,does}:
+      DecisionRouter.__init__,method,"(config:Optional[RouterConfig]=None) -> None",86-95,false,10,2,Initialize Decision Router.
+      DecisionRouter._register_default_mappings,method,() -> None,97-124,false,28,1,Register default intent to action mappings.
+      DecisionRouter.route,method,"(intent:str, entities:dict[str,Any], text:str, confidence:float=1.0, context:Optional[dict[str,Any]]=None) -> RoutingResult",126-230,false,105,12,Determine routing for a request.
+      DecisionRouter._has_multi_step_indicators,method,"(text:str) -> bool",232-234,false,3,2,Check if text contains multi-step operation indicators.
+      DecisionRouter._has_complex_indicators,method,"(text:str) -> bool",236-238,false,3,2,Check if text contains complex analysis indicators.
+      DecisionRouter._suggest_actions,method,"(intent:str, entities:dict[str,Any]) -> list[str]",240-262,false,23,6,Suggest possible actions based on intent and entities.
+      DecisionRouter.register_intent_mapping,method,"(intent:str, action:str) -> None",264-272,false,9,1,Register a new intent to action mapping.
+      DecisionRouter.add_simple_intent,method,"(intent:str) -> None",274-277,false,4,2,Add an intent to the simple intents list.
+      DecisionRouter.add_complex_intent,method,"(intent:str) -> None",279-282,false,4,2,Add an intent to the complex intents list.
+  examples/docker/file_repair.py:
+    functions[4]{name,kind,sig,loc,async,lines,cc,does}:
+      create_sample_files,function,"(tmpdir:Path) -> dict[str, Path]",19-97,false,79,1,Create sample files for testing.
+      validate_file,function,"(registry:SchemaRegistry, path:Path, schema_name:str) -> None",100-123,false,24,6,Validate a file and print results.
+      repair_file,function,"(registry:SchemaRegistry, path:Path, schema_name:str, auto_fix:bool=True) -> None",126-169,false,44,11,Repair a file and show changes.
+      main,function,() -> None,172-298,false,127,4,main
+  examples/docker/basic_docker.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      main,function,() -> None,13-115,false,103,6,main
+  examples/architecture/end_to_end_demo.py:
+    functions[7]{name,kind,sig,loc,async,lines,cc,does}:
+      print_section,function,"(title:str) -> None",39-43,false,5,1,Print section header.
+      print_step,function,"(step:str) -> None",46-49,false,4,1,Print step indicator.
+      mock_sql_select,function,"(table:str, columns:list=None, filters:list=None) -> list",56-87,false,32,9,Mock SQL SELECT handler.
+      mock_shell_find,function,"(glob:str='*', path:str='.') -> list",90-96,false,7,3,Mock shell find handler.
+      mock_shell_count_pattern,function,"(file:str, pattern:str) -> int",99-108,false,10,1,Mock shell grep/count handler.
+      mock_k8s_get,function,"(resource:str, namespace:str='default') -> list",111-124,false,14,1,Mock kubectl get handler.
+      main,function,() -> None,131-384,false,254,12,main
+  examples/sql/basic_sql.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      main,function,() -> None,12-106,false,95,10,main
+  examples/sql/advanced_sql.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      main,function,() -> None,16-327,false,312,2,main
+  examples/sql/sql_workflows.py:
+    functions[2]{name,kind,sig,loc,async,lines,cc,does}:
+      print_section,function,"(title:str) -> None",17-21,false,5,1,Print section header.
+      main,function,() -> None,24-306,false,283,10,main
+  examples/sql/llm_integration.py:
+    functions[6]{name,kind,sig,loc,async,lines,cc,does}:
+      demonstrate_mock_llm,function,() -> None,119-160,false,42,2,Demonstrate with mock LLM backend.
+      demonstrate_rule_based_fallback,function,() -> None,163-191,false,29,2,Demonstrate with rule-based fallback.
+      demonstrate_real_llm_setup,function,() -> None,194-267,false,74,5,Show how to set up real LLM backends.
+      demonstrate_hybrid_approach,function,() -> None,270-311,false,42,1,Demonstrate hybrid LLM + rule-based approach.
+      main,function,() -> None,314-345,false,32,1,Run all demonstrations.
+      MockLLMBackend.generate_plan,method,"(text:str, context:Optional[dict]=None) -> ExecutionPlan",89-116,false,28,6,Generate execution plan from text using mock LLM.
+  examples/shell/environment_analysis.py:
+    functions[2]{name,kind,sig,loc,async,lines,cc,does}:
+      format_size,function,"(gb:float) -> str",24-28,false,5,2,Format size in human-readable format.
+      main,function,() -> None,31-301,false,271,33,main
+  examples/shell/feedback_loop.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      simulate_interactive_session,function,() -> None,17-284,false,268,17,Simulate an interactive session with feedback loop.
+  examples/shell/basic_shell.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      main,function,() -> None,14-105,false,92,11,main
+  examples/kubernetes/basic_kubernetes.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      main,function,() -> None,13-139,false,127,7,main
+  examples/pipelines/infrastructure_health.py:
+    functions[6]{name,kind,sig,loc,async,lines,cc,does}:
+      mock_docker_ps,function,() -> None,31-38,false,8,1,"Mock: List Docker containers."
+      mock_k8s_get,function,"(resource:str) -> None",41-60,false,20,1,"Mock: Get Kubernetes resources."
+      mock_sql_select,function,"(table:str) -> None",63-71,false,9,2,"Mock: SQL query."
+      mock_process_list,function,() -> None,74-81,false,8,1,"Mock: System process list."
+      check_health,function,(data) -> None,84-108,false,25,11,"Custom handler: Analyze health status."
+      main,function,() -> None,111-273,false,163,19,main
+  examples/pipelines/log_analysis.py:
+    functions[4]{name,kind,sig,loc,async,lines,cc,does}:
+      mock_find_logs,function,() -> None,24-31,false,8,1,"Mock: Find log files."
+      mock_count_pattern,function,"(file:str, pattern:str) -> None",34-43,false,10,1,"Mock: Count pattern occurrences in file."
+      mock_read_file,function,"(path:str) -> None",46-48,false,3,1,"Mock: Read file contents."
+      main,function,() -> None,51-180,false,130,15,main
+  examples/validation/config_validation.py:
+    functions[3]{name,kind,sig,loc,async,lines,cc,does}:
+      print_section,function,"(title:str) -> None",18-22,false,5,1,Print section header.
+      print_result,function,"(result:dict, title:str='Result') -> None",25-38,false,14,6,Print validation result.
+      main,function,() -> None,41-318,false,278,5,main

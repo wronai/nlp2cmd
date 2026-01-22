@@ -63,14 +63,16 @@ class KeywordIntentDetector:
             'find': [
                 'znajdź plik', 'szukaj plik', 'find files', 'search files',
                 'locate', 'wyszukaj', 'gdzie jest', 'where is',
+                'find python', 'find log',
             ],
             'list': [
                 'lista plików', 'pokaż katalog', 'ls', 'dir', 'wylistuj',
                 'zawartość katalogu', 'directory contents', 'folder contents',
             ],
             'process': [
-                'procesy', 'ps', 'running', 'uruchomione', 'działające',
-                'top procesy', 'cpu', 'memory usage', 'użycie pamięci',
+                'procesy', 'ps', 'uruchomione procesy', 'running processes',
+                'działające procesy', 'top procesy', 'cpu', 'memory usage', 
+                'użycie pamięci', 'show processes', 'pokaż procesy',
             ],
             'file_operation': [
                 'kopiuj', 'przenieś', 'usuń plik', 'copy', 'move', 'rm',
@@ -129,9 +131,9 @@ class KeywordIntentDetector:
         },
         'kubernetes': {
             'get': [
-                'pody', 'pods', 'deployments', 'kubectl get', 'pokaż pody',
+                'kubectl get', 'kubectl', 'pody', 'pods', 'deployments', 'pokaż pody',
                 'services', 'serwisy', 'namespace', 'nodes', 'nody',
-                'configmap', 'secret', 'ingress',
+                'configmap', 'secret', 'ingress', 'k8s get',
             ],
             'scale': [
                 'skaluj', 'scale', 'replicas', 'replik', 'zwiększ',
@@ -190,6 +192,14 @@ class KeywordIntentDetector:
         self.patterns = patterns or self.PATTERNS
         self.confidence_threshold = confidence_threshold
     
+    # Priority intents - check these first as they are more specific/destructive
+    PRIORITY_INTENTS: dict[str, list[str]] = {
+        'sql': ['delete', 'update', 'insert', 'aggregate'],
+        'shell': ['file_operation', 'archive', 'process', 'disk'],
+        'docker': ['stop', 'prune', 'build', 'run'],
+        'kubernetes': ['delete', 'scale', 'describe'],
+    }
+    
     def detect(self, text: str) -> DetectionResult:
         """
         Detect domain and intent from text.
@@ -205,6 +215,38 @@ class KeywordIntentDetector:
         best_match: Optional[DetectionResult] = None
         best_score = 0.0
         
+        # First pass: check priority intents (destructive operations)
+        for domain, priority_intents in self.PRIORITY_INTENTS.items():
+            if domain not in self.patterns:
+                continue
+            for intent in priority_intents:
+                if intent not in self.patterns[domain]:
+                    continue
+                keywords = self.patterns[domain][intent]
+                for kw in keywords:
+                    if kw.lower() in text_lower:
+                        confidence = 0.85  # Higher base confidence for priority
+                        keyword_length_bonus = min(len(kw) / 20, 0.10)
+                        confidence = min(confidence + keyword_length_bonus, 0.95)
+                        
+                        position = text_lower.find(kw.lower())
+                        position_bonus = 0.05 if position < 15 else 0.0
+                        score = confidence + position_bonus
+                        
+                        if score > best_score:
+                            best_score = score
+                            best_match = DetectionResult(
+                                domain=domain,
+                                intent=intent,
+                                confidence=confidence,
+                                matched_keyword=kw,
+                            )
+        
+        # If we found a priority match, return it
+        if best_match and best_match.confidence >= self.confidence_threshold:
+            return best_match
+        
+        # Second pass: check all patterns
         for domain, intents in self.patterns.items():
             for intent, keywords in intents.items():
                 for kw in keywords:
