@@ -403,6 +403,10 @@ class TemplateGenerator:
         
         # Flags default
         result.setdefault('flags', '')
+        # Normalize flags extracted from regex (single flag or list)
+        flags = result.get('flags')
+        if isinstance(flags, list):
+            result['flags'] = ' '.join(flags)
         
         # Container/image
         result.setdefault('container', '')

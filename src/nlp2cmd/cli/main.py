@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import sys
+import asyncio
 from pathlib import Path
 from typing import Any, Optional
 
@@ -28,16 +29,37 @@ from nlp2cmd.adapters import (
 from nlp2cmd.environment import EnvironmentAnalyzer
 from nlp2cmd.feedback import FeedbackAnalyzer, FeedbackResult, FeedbackType
 from nlp2cmd.schemas import SchemaRegistry
+from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 
 
 console = Console()
+
+
+def _shell_env_context(context: dict[str, Any]) -> dict[str, Any]:
+    os_info = context.get("os") or {}
+    shell_info = context.get("shell") or {}
+    env_vars = context.get("env_vars") or {}
+
+    os_name = os_info.get("system")
+    if isinstance(os_name, str):
+        os_name = os_name.lower()
+    else:
+        os_name = "linux"
+
+    return {
+        "os": os_name,
+        "distro": os_info.get("release", ""),
+        "shell": shell_info.get("name", "bash"),
+        "available_tools": [],
+        "environment_variables": env_vars,
+    }
 
 
 def get_adapter(dsl: str, context: dict[str, Any]):
     """Get the appropriate adapter for the DSL type."""
     adapters = {
         "sql": lambda: SQLAdapter(dialect="postgresql"),
-        "shell": lambda: ShellAdapter(environment_context=context),
+        "shell": lambda: ShellAdapter(environment_context=_shell_env_context(context)),
         "docker": lambda: DockerAdapter(),
         "kubernetes": lambda: KubernetesAdapter(),
         "dql": lambda: DQLAdapter(),
@@ -45,7 +67,7 @@ def get_adapter(dsl: str, context: dict[str, Any]):
 
     if dsl == "auto":
         # Default to shell for auto mode
-        return ShellAdapter(environment_context=context)
+        return ShellAdapter(environment_context=_shell_env_context(context))
 
     factory = adapters.get(dsl)
     if factory:
@@ -330,23 +352,65 @@ class InteractiveSession:
     help="DSL type"
 )
 @click.option("-q", "--query", help="Single query to process")
+@click.argument("text", required=False)
 @click.option("--auto-repair", is_flag=True, help="Auto-apply repairs")
+@click.option("--explain", is_flag=True, help="Explain how the result was produced")
 @click.pass_context
-def main(ctx, interactive: bool, dsl: str, query: Optional[str], auto_repair: bool):
+def main(
+    ctx,
+    interactive: bool,
+    dsl: str,
+    query: Optional[str],
+    text: Optional[str],
+    auto_repair: bool,
+    explain: bool,
+):
     """NLP2CMD - Natural Language to Domain-Specific Commands."""
     ctx.ensure_object(dict)
     ctx.obj["dsl"] = dsl
     ctx.obj["auto_repair"] = auto_repair
 
     if ctx.invoked_subcommand is None:
-        if query:
-            # Single query mode
-            session = InteractiveSession(dsl=dsl, auto_repair=auto_repair)
-            feedback = session.process(query)
-            session.display_feedback(feedback)
-        elif interactive or True:  # Default to interactive
+        query_text = query or text
+        if query_text:
+            if dsl == "auto":
+                result = asyncio.run(HybridThermodynamicGenerator().generate(query_text, context={}))
+                if result["source"] == "thermodynamic":
+                    tr = result["result"]
+                    console.print(tr.decoded_output or "")
+                    if explain:
+                        if tr.solution_quality:
+                            console.print(f"\n✅ Feasible: {tr.solution_quality.is_feasible}")
+                            if tr.solution_quality.constraint_violations:
+                                console.print("\nViolations:")
+                                for v in tr.solution_quality.constraint_violations:
+                                    console.print(f"  - {v}")
+                            console.print(f"\nExplanation: {tr.solution_quality.explanation}")
+                            console.print(f"Optimality gap (heuristic): {tr.solution_quality.optimality_gap:.2f}")
+                        console.print(f"\nEnergy: {tr.energy:.4f}")
+                        console.print(f"Entropy production: {tr.entropy_production:.4f}")
+                        if tr.sampler_steps is not None:
+                            console.print(f"Sampler steps: {tr.sampler_steps}")
+                        console.print(f"Samples: {tr.n_samples}")
+                        console.print(f"Converged: {tr.converged}")
+                        console.print(f"Latency: {tr.latency_ms:.1f}ms")
+                else:
+                    hr = result["result"]
+                    console.print(hr.command)
+                    if explain:
+                        console.print(f"\nSource: {hr.source}")
+                        console.print(f"Domain: {hr.domain}")
+                        console.print(f"Confidence: {hr.confidence:.2f}")
+                        console.print(f"Latency: {hr.latency_ms:.1f}ms")
+            else:
+                session = InteractiveSession(dsl=dsl, auto_repair=auto_repair)
+                feedback = session.process(query_text)
+                session.display_feedback(feedback)
+        elif interactive:
             session = InteractiveSession(dsl=dsl, auto_repair=auto_repair)
             session.run()
+        else:
+            console.print(ctx.get_help())
 
 
 @main.command()

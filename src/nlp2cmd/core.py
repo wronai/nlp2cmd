@@ -265,39 +265,54 @@ class RuleBasedBackend(NLPBackend):
 
     def extract_entities(self, text: str) -> list[Entity]:
         """Extract entities using simple pattern matching."""
-        entities = []
-        text_lower = text.lower()
-        
-        # Simple entity extraction based on common patterns
-        # Docker images
-        import re
-        image_pattern = r'\b([a-z0-9]+(?:/[a-z0-9]+)*)\b'
-        matches = re.findall(image_pattern, text_lower)
-        for match in matches:
-            if len(match) > 2 and match not in ['run', 'stop', 'start', 'list', 'show', 'build', 'pull']:
-                entities.append(Entity(name="image", value=match, type="string"))
-        
-        # Container names
-        container_pattern = r'\b([a-z0-9-]+(?:container|web|api|db|app|service))\b'
-        matches = re.findall(container_pattern, text_lower)
-        for match in matches:
-            entities.append(Entity(name="container", value=match, type="string"))
-        
-        # Port numbers
-        port_pattern = r'\b(port\s*)?(\d{4,5})\b'
-        matches = re.findall(port_pattern, text_lower)
-        for _, port in matches:
-            entities.append(Entity(name="port", value=int(port), type="integer"))
-        
-        # Common words
-        if 'nginx' in text_lower:
-            entities.append(Entity(name="image", value="nginx", type="string"))
-        if 'ubuntu' in text_lower or 'debian' in text_lower:
-            entities.append(Entity(name="image", value="ubuntu", type="string"))
-        if 'all' in text_lower:
-            entities.append(Entity(name="all", value=True, type="boolean"))
-            
-        return entities
+        dsl = self.config.get("dsl") if isinstance(self.config, dict) else None
+
+        if dsl in {"sql", "shell", "docker", "kubernetes"}:
+            from nlp2cmd.generation.regex import RegexEntityExtractor
+
+            extractor = RegexEntityExtractor()
+            extracted = extractor.extract(text, dsl)
+
+            entities: list[Entity] = []
+            for name, value in extracted.entities.items():
+                if isinstance(value, bool):
+                    t = "boolean"
+                elif isinstance(value, int):
+                    t = "integer"
+                elif isinstance(value, float):
+                    t = "number"
+                elif isinstance(value, (list, dict)):
+                    t = "object"
+                else:
+                    t = "string"
+                entities.append(Entity(name=name, value=value, type=t))
+
+            # Small domain-independent helpers
+            text_lower = text.lower()
+            if "all" in text_lower or "wszystkie" in text_lower:
+                entities.append(Entity(name="all", value=True, type="boolean"))
+
+            return entities
+
+        if dsl == "dql":
+            import re
+
+            entities: list[Entity] = []
+
+            # Try to capture an entity class name (e.g. "User", "OrderItem")
+            m = re.search(
+                r"(?:entity|encj[aeę]|encji|model)\s+([A-Z][A-Za-z0-9_]*)",
+                text,
+            )
+            if not m:
+                m = re.search(r"\b([A-Z][A-Za-z0-9_]{2,})\b", text)
+
+            if m:
+                entities.append(Entity(name="entity", value=m.group(1), type="string"))
+
+            return entities
+
+        return []
 
     def extract_intent(self, text: str) -> tuple[str, float]:
         """Extract intent using pattern matching."""
@@ -363,7 +378,10 @@ class NLP2CMD:
             for intent_name, intent_config in adapter.INTENTS.items():
                 patterns = intent_config.get("patterns", [])
                 rules[intent_name] = patterns
-            self.nlp_backend = RuleBasedBackend(rules=rules)
+            self.nlp_backend = RuleBasedBackend(
+                rules=rules,
+                config={"dsl": adapter.DSL_NAME},
+            )
         else:
             self.nlp_backend = nlp_backend
             
@@ -380,6 +398,121 @@ class NLP2CMD:
     def dsl_name(self) -> str:
         """Get the name of the current DSL adapter."""
         return self.adapter.DSL_NAME
+
+    def _normalize_entities(
+        self,
+        intent: str,
+        entities: dict[str, Any],
+        context: dict[str, Any],
+    ) -> dict[str, Any]:
+        dsl = self.dsl_name
+        normalized = dict(entities)
+
+        if dsl == "sql":
+            if "table" not in normalized:
+                default_table = context.get("default_table") or context.get("previous_table")
+                if default_table:
+                    normalized["table"] = default_table
+
+            if "filters" not in normalized and "where_field" in normalized and "where_value" in normalized:
+                normalized["filters"] = [
+                    {
+                        "field": normalized.get("where_field"),
+                        "operator": "=",
+                        "value": normalized.get("where_value"),
+                    }
+                ]
+
+            if "ordering" not in normalized and "order_by" in normalized:
+                normalized["ordering"] = [
+                    {
+                        "field": normalized.get("order_by"),
+                        "direction": normalized.get("order_direction", "ASC"),
+                    }
+                ]
+
+        if dsl == "shell":
+            if intent == "file_search":
+                scope = normalized.get("scope") or normalized.get("path") or "."
+                normalized.setdefault("scope", scope)
+                normalized.setdefault("target", "files")
+
+                filters: list[dict[str, Any]] = []
+
+                ext = normalized.get("file_pattern")
+                if ext and isinstance(ext, str):
+                    filters.append({"attribute": "extension", "operator": "=", "value": ext})
+
+                pattern = normalized.get("pattern")
+                if pattern and isinstance(pattern, str) and pattern.startswith("*."):
+                    filters.append({"attribute": "extension", "operator": "=", "value": pattern[2:]})
+
+                filename = normalized.get("filename")
+                if filename and isinstance(filename, str):
+                    filters.append({"attribute": "name", "operator": "=", "value": filename})
+
+                size = normalized.get("size")
+                if isinstance(size, dict) and "value" in size:
+                    filters.append(
+                        {
+                            "attribute": "size",
+                            "operator": ">",
+                            "value": f"{size.get('value')}{size.get('unit', '')}",
+                        }
+                    )
+
+                age = normalized.get("age")
+                if isinstance(age, dict) and "value" in age:
+                    filters.append(
+                        {
+                            "attribute": "mtime",
+                            "operator": ">",
+                            "value": f"{age.get('value')}_days",
+                        }
+                    )
+
+                normalized["filters"] = filters
+
+        if dsl == "docker":
+            if "port" in normalized and "ports" not in normalized:
+                port = normalized.get("port")
+                if isinstance(port, dict):
+                    normalized["ports"] = [port]
+                elif port is not None:
+                    normalized["ports"] = [port]
+
+            if "tail_lines" in normalized and "tail" not in normalized:
+                try:
+                    normalized["tail"] = int(str(normalized.get("tail_lines")))
+                except (TypeError, ValueError):
+                    pass
+
+            env_var = normalized.get("env_var")
+            if env_var and "environment" not in normalized:
+                if isinstance(env_var, dict) and "name" in env_var and "value" in env_var:
+                    normalized["environment"] = {env_var["name"]: env_var["value"]}
+
+            if intent == "container_run":
+                normalized.setdefault("detach", True)
+
+        if dsl == "kubernetes":
+            if intent == "get":
+                rt = normalized.get("resource_type")
+                if isinstance(rt, str):
+                    normalized["resource_type"] = rt
+
+            if intent == "scale":
+                rc = normalized.get("replica_count")
+                if isinstance(rc, str) and rc.isdigit():
+                    normalized["replica_count"] = int(rc)
+
+        if dsl == "dql":
+            if "entity" not in normalized:
+                default_entity = context.get("default_entity")
+                if default_entity:
+                    normalized["entity"] = default_entity
+
+        return normalized
 
     def transform(
         self,
@@ -408,9 +541,11 @@ class NLP2CMD:
             else:
                 intent, confidence = self.nlp_backend.extract_intent(text)
                 entities = self.nlp_backend.extract_entities(text)
+                entity_dict = {e.name: e.value for e in entities}
+                entity_dict = self._normalize_entities(intent, entity_dict, full_context)
                 plan = ExecutionPlan(
                     intent=intent,
-                    entities={e.name: e.value for e in entities},
+                    entities=entity_dict,
                     confidence=confidence,
                 )
         except Exception as e:

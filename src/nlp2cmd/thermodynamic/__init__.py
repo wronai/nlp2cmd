@@ -35,6 +35,11 @@ class LangevinConfig:
     dim: int = 64             # Latent dimension
     record_trajectory: bool = False  # Whether to record full trajectory
     seed: Optional[int] = None
+    
+    # Early stopping parameters
+    early_stopping: bool = True    # Enable early stopping
+    convergence_threshold: float = 0.01  # Energy threshold for convergence
+    check_interval: int = 100      # Check convergence every N steps
 
 
 @dataclass
@@ -216,6 +221,9 @@ class LangevinSampler:
         entropy_prod = 0.0
         
         # Langevin integration
+        converged = False
+        actual_steps = cfg.n_steps
+
         for step in range(cfg.n_steps):
             # Compute energy gradient
             grad_V = self.energy.gradient(z, condition)
@@ -232,17 +240,28 @@ class LangevinSampler:
             
             if cfg.record_trajectory:
                 trajectory.append(z.copy())
+
+            # Convergence / early stopping
+            if cfg.early_stopping and (step + 1) % cfg.check_interval == 0:
+                current_energy = self.energy.energy(z, condition)
+                if current_energy <= cfg.convergence_threshold:
+                    converged = True
+                    actual_steps = step + 1
+                    break
         
         # Final energy
         final_energy = self.energy.energy(z, condition)
-        
+
+        if cfg.early_stopping and not converged:
+            converged = final_energy <= cfg.convergence_threshold
+
         return SamplerResult(
             sample=z,
             energy=final_energy,
             trajectory=np.array(trajectory) if trajectory else None,
             entropy_production=entropy_prod,
-            n_steps=cfg.n_steps,
-            converged=True,  # Simple version, no convergence check
+            n_steps=actual_steps,
+            converged=converged,
             metadata={'condition': condition}
         )
     

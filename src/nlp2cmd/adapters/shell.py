@@ -524,15 +524,30 @@ class ShellAdapter(BaseDSLAdapter):
                     }
 
         # Check blocked directories
+        try:
+            argv = shlex.split(command)
+        except ValueError:
+            argv = command.split()
+
         for blocked_dir in policy.blocked_directories:
-            # Check if command operates on blocked directory
-            if f" {blocked_dir}" in command or f"={blocked_dir}" in command:
-                if blocked_dir == "/" and command.count("/") > 1:
-                    continue  # Allow subdirectories
-                return {
-                    "allowed": False,
-                    "reason": f"Operations on {blocked_dir} are not allowed",
-                }
+            for arg in argv:
+                value = arg
+                if "=" in arg:
+                    value = arg.split("=", 1)[1]
+
+                if blocked_dir == "/":
+                    if value == "/":
+                        return {
+                            "allowed": False,
+                            "reason": f"Operations on {blocked_dir} are not allowed",
+                        }
+                    continue
+
+                if value == blocked_dir or value.startswith(blocked_dir + "/"):
+                    return {
+                        "allowed": False,
+                        "reason": f"Operations on {blocked_dir} are not allowed",
+                    }
 
         # Check commands requiring confirmation
         requires_confirmation = False

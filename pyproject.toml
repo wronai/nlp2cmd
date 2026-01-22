@@ -164,7 +164,7 @@ ignore_missing_imports = true
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short"
+addopts = "-v --tb=short -p no:aiohttp -p no:asyncio"
 asyncio_mode = "auto"
 
 [tool.coverage.run]

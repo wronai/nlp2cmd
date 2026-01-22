@@ -130,6 +130,10 @@ class RegexEntityExtractor:
     }
     
     DOCKER_PATTERNS: dict[str, list[str]] = {
+        'flags': [
+            r'\b(-a|--all)\b',
+            r'\b(--no-trunc)\b',
+        ],
         'container': [
             r'(?:kontener[a]?|container)\s+[`"\']?(\w[\w\-]*)[`"\']?',
             r'(?:w|in)\s+[`"\']?(\w[\w\-]*)[`"\']?\s+(?:kontener|container)',
@@ -295,7 +299,13 @@ class RegexEntityExtractor:
         
         # Split by comma and clean up
         columns = [col.strip() for col in value.split(',')]
-        columns = [col for col in columns if col and not col.lower() in ('z', 'from', 'tabeli', 'table')]
+        blocked = {
+            'z', 'from', 'tabeli', 'table',
+            # Generic words that often appear in NL queries but are not real columns
+            'dane', 'data', 'rekordy', 'wiersze', 'wszystko', 'wszystkie',
+            'all', 'everything',
+        }
+        columns = [col for col in columns if col and col.lower() not in blocked]
         
         return columns if columns else ['*']
     

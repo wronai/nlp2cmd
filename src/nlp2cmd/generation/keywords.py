@@ -196,8 +196,8 @@ class KeywordIntentDetector:
     PRIORITY_INTENTS: dict[str, list[str]] = {
         'sql': ['delete', 'update', 'insert', 'aggregate'],
         'shell': ['file_operation', 'archive', 'process', 'disk'],
-        'docker': ['stop', 'prune', 'build', 'run'],
-        'kubernetes': ['delete', 'scale', 'describe'],
+        'docker': ['stop', 'prune', 'build', 'run', 'list', 'logs', 'exec'],
+        'kubernetes': ['delete', 'scale', 'describe', 'logs'],
     }
     
     def detect(self, text: str) -> DetectionResult:
@@ -211,6 +211,23 @@ class KeywordIntentDetector:
             DetectionResult with domain, intent, confidence
         """
         text_lower = text.lower()
+
+        # Fast-path: if the user explicitly uses the docker CLI, prefer docker intents
+        # (prevents shell/process keywords like 'ps' from dominating).
+        if 'docker' in text_lower:
+            docker_intents = self.patterns.get('docker', {})
+            for intent, keywords in docker_intents.items():
+                for kw in keywords:
+                    if kw.lower() in text_lower:
+                        confidence = 0.9
+                        keyword_length_bonus = min(len(kw) / 25, 0.05)
+                        confidence = min(confidence + keyword_length_bonus, 0.95)
+                        return DetectionResult(
+                            domain='docker',
+                            intent=intent,
+                            confidence=confidence,
+                            matched_keyword=kw,
+                        )
         
         best_match: Optional[DetectionResult] = None
         best_score = 0.0
@@ -219,6 +236,14 @@ class KeywordIntentDetector:
         for domain, priority_intents in self.PRIORITY_INTENTS.items():
             if domain not in self.patterns:
                 continue
+
+            # Guard: docker intents should only win when docker-specific boosters are present.
+            # This prevents generic phrases like "pokaż logi" from overriding kubernetes.
+            if domain == 'docker':
+                docker_boosters = self.DOMAIN_BOOSTERS.get('docker', [])
+                if not any(b.lower() in text_lower for b in docker_boosters):
+                    continue
+
             for intent in priority_intents:
                 if intent not in self.patterns[domain]:
                     continue

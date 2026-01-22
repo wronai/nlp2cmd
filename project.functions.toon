@@ -1,7 +1,8 @@
 project: nlp2cmd
-generated: "2026-01-22T21:24:54.877057"
-modules[80]{path,lang,items}:
+generated: "2026-01-22T21:38:38.817687"
+modules[81]{path,lang,items}:
   termo.py,python,4
+  termo_demo.py,python,5
   tests/conftest.py,python,19
   tests/__init__.py,python,0
   tests/iterative/test_iter_2_regex.py,python,41
@@ -35,11 +36,11 @@ modules[80]{path,lang,items}:
   tests/integration/__init__.py,python,0
   tests/integration/test_workflows.py,python,28
   src/nlp2cmd/__init__.py,python,0
-  src/nlp2cmd/core.py,python,24
+  src/nlp2cmd/core.py,python,25
   src/nlp2cmd/schemas/__init__.py,python,23
   src/nlp2cmd/generation/regex.py,python,10
   src/nlp2cmd/generation/keywords.py,python,7
-  src/nlp2cmd/generation/thermodynamic.py,python,21
+  src/nlp2cmd/generation/thermodynamic.py,python,24
   src/nlp2cmd/generation/__init__.py,python,0
   src/nlp2cmd/generation/templates.py,python,14
   src/nlp2cmd/generation/pipeline.py,python,16
@@ -89,6 +90,13 @@ function_details:
       demo_thermodynamic,function,() -> None,44-69,true,26,3,Demonstracja generatora termodynamicznego.
       demo_complete_hybrid,function,() -> None,72-99,true,28,3,Demonstracja pełnego generatora hybrydowego.
       main,function,() -> None,102-112,true,11,1,Główna funkcja demonstracyjna.
+  termo_demo.py:
+    functions[5]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_hybrid,function,() -> None,27-55,true,29,2,Demonstracja generatora hybrydowego.
+      demo_thermodynamic_improved,function,() -> None,58-103,true,46,6,Demonstracja POPRAWIONEGO generatora termodynamicznego.
+      demo_hybrid_thermodynamic_improved,function,() -> None,106-152,true,47,6,Demonstracja POPRAWIONEGO hybrydowego generatora.
+      benchmark_latency,function,() -> None,155-198,true,44,3,Benchmark porównujący latencję przed/po poprawkach.
+      main,function,() -> None,201-222,true,22,1,Główna funkcja demonstracyjna.
   tests/conftest.py:
     functions[19]{name,kind,sig,loc,async,lines,cc,does}:
       sql_adapter,function,() -> None,25-36,false,12,1,Provide a configured SQL adapter.
@@ -1012,7 +1020,7 @@ function_details:
       TestEndToEndWorkflow.test_sql_nlp_to_execution,method,() -> None,412-453,false,42,1,Test complete NLP to SQL execution flow.
       TestEndToEndWorkflow.test_docker_file_repair_flow,method,() -> None,455-474,false,20,1,Test Dockerfile repair end-to-end.
   src/nlp2cmd/core.py:
-    functions[24]{name,kind,sig,loc,async,lines,cc,does}:
+    functions[25]{name,kind,sig,loc,async,lines,cc,does}:
       TransformResult.is_success,method,() -> bool,90-92,false,3,1,Check if transformation was successful.
       TransformResult.is_blocked,method,() -> bool,95-97,false,3,1,Check if transformation was blocked by security policy.
       TransformResult.to_dict,method,"() -> dict[str, Any]",99-112,false,14,1,Convert result to dictionary.
@@ -1028,15 +1036,16 @@ function_details:
       LLMBackend.client,method,() -> None,198-219,false,22,5,Lazy-load API client.
       LLMBackend.generate_plan,method,"(text:str, context:Optional[dict]=None) -> ExecutionPlan",221-256,false,36,4,Generate execution plan using LLM.
       RuleBasedBackend.__init__,method,"(rules:Optional[dict[str,list[str]]]=None, config:Optional[dict]=None) -> None",262-264,false,3,2,creates
-      RuleBasedBackend.extract_entities,method,"(text:str) -> list[Entity]",266-300,false,35,10,Extract entities using simple pattern matching.
-      RuleBasedBackend.extract_intent,method,"(text:str) -> tuple[str, float]",302-326,false,25,9,Extract intent using pattern matching.
-      NLP2CMD.__init__,method,"(adapter:BaseDSLAdapter, nlp_backend:Optional[NLPBackend]=None, validator:Optional[BaseValidator]=None, feedback_analyzer:Optional[FeedbackAnalyzer]=None, validation_mode:str='normal', auto_fix:bool=False) -> None",337-377,false,41,3,Initialize NLP2CMD instance.
-      NLP2CMD.dsl_name,method,() -> str,380-382,false,3,1,Get the name of the current DSL adapter.
-      NLP2CMD.transform,method,"(text:str, context:Optional[dict[str,Any]]=None, dry_run:bool=False) -> TransformResult",384-488,false,105,11,Transform natural language text into a DSL command.
-      NLP2CMD.set_context,method,"(key:str, value:Any) -> None",490-492,false,3,1,Set a context value for subsequent transformations.
-      NLP2CMD.clear_context,method,() -> None,494-496,false,3,1,Clear all context.
-      NLP2CMD.get_history,method,"() -> list[TransformResult]",498-500,false,3,1,Get transformation history.
-      NLP2CMD.clear_history,method,() -> None,502-504,false,3,1,Clear transformation history.
+      RuleBasedBackend.extract_entities,method,"(text:str) -> list[Entity]",266-315,false,50,13,Extract entities using simple pattern matching.
+      RuleBasedBackend.extract_intent,method,"(text:str) -> tuple[str, float]",317-341,false,25,9,Extract intent using pattern matching.
+      NLP2CMD.__init__,method,"(adapter:BaseDSLAdapter, nlp_backend:Optional[NLPBackend]=None, validator:Optional[BaseValidator]=None, feedback_analyzer:Optional[FeedbackAnalyzer]=None, validation_mode:str='normal', auto_fix:bool=False) -> None",352-395,false,44,3,Initialize NLP2CMD instance.
+      NLP2CMD.dsl_name,method,() -> str,398-400,false,3,1,Get the name of the current DSL adapter.
+      NLP2CMD._normalize_entities,method,"(intent:str, entities:dict[str,Any], context:dict[str,Any]) -> dict[str, Any]",402-515,false,114,48,normalize entities
+      NLP2CMD.transform,method,"(text:str, context:Optional[dict[str,Any]]=None, dry_run:bool=False) -> TransformResult",517-623,false,107,11,Transform natural language text into a DSL command.
+      NLP2CMD.set_context,method,"(key:str, value:Any) -> None",625-627,false,3,1,Set a context value for subsequent transformations.
+      NLP2CMD.clear_context,method,() -> None,629-631,false,3,1,Clear all context.
+      NLP2CMD.get_history,method,"() -> list[TransformResult]",633-635,false,3,1,Get transformation history.
+      NLP2CMD.clear_history,method,() -> None,637-639,false,3,1,Clear transformation history.
   src/nlp2cmd/schemas/__init__.py:
     functions[23]{name,kind,sig,loc,async,lines,cc,does}:
       SchemaRegistry.__init__,method,() -> None,34-36,false,3,1,creates
@@ -1064,48 +1073,51 @@ function_details:
       SchemaRegistry._generate_env_file,method,"(data:dict[str,str]) -> str",584-591,false,8,4,Generate .env file.
   src/nlp2cmd/generation/regex.py:
     functions[10]{name,kind,sig,loc,async,lines,cc,does}:
-      RegexEntityExtractor.__init__,method,"(custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None) -> None",190-211,false,22,4,Initialize entity extractor.
-      RegexEntityExtractor.extract,method,"(text:str, domain:str) -> ExtractionResult",213-258,false,46,7,Extract entities from text.
-      RegexEntityExtractor._process_match,method,"(entity_type:str, match:Any) -> Any",260-289,false,30,16,Process regex match and return value.
-      RegexEntityExtractor._parse_columns,method,"(value:str) -> list[str]",291-300,false,10,7,Parse column list from string.
-      RegexEntityExtractor._normalize_direction,method,"(value:str) -> str",302-308,false,7,3,Normalize sort direction.
-      RegexEntityExtractor._normalize_time_unit,method,"(unit:str) -> str",310-323,false,14,1,Normalize time unit.
-      RegexEntityExtractor._post_process,method,"(entities:dict[str,Any], domain:str) -> dict[str, Any]",325-396,false,72,17,Post-process entities for adapter compatibility.
-      RegexEntityExtractor.extract_all_numbers,method,"(text:str) -> list[int]",398-400,false,3,2,Extract all numbers from text.
-      RegexEntityExtractor.extract_quoted_strings,method,"(text:str) -> list[str]",402-407,false,6,2,Extract all quoted strings from text.
-      RegexEntityExtractor.add_pattern,method,"(domain:str, entity_type:str, patterns:list[str]) -> None",409-422,false,14,3,Add custom patterns.
+      RegexEntityExtractor.__init__,method,"(custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None) -> None",194-215,false,22,4,Initialize entity extractor.
+      RegexEntityExtractor.extract,method,"(text:str, domain:str) -> ExtractionResult",217-262,false,46,7,Extract entities from text.
+      RegexEntityExtractor._process_match,method,"(entity_type:str, match:Any) -> Any",264-293,false,30,16,Process regex match and return value.
+      RegexEntityExtractor._parse_columns,method,"(value:str) -> list[str]",295-310,false,16,7,Parse column list from string.
+      RegexEntityExtractor._normalize_direction,method,"(value:str) -> str",312-318,false,7,3,Normalize sort direction.
+      RegexEntityExtractor._normalize_time_unit,method,"(unit:str) -> str",320-333,false,14,1,Normalize time unit.
+      RegexEntityExtractor._post_process,method,"(entities:dict[str,Any], domain:str) -> dict[str, Any]",335-406,false,72,17,Post-process entities for adapter compatibility.
+      RegexEntityExtractor.extract_all_numbers,method,"(text:str) -> list[int]",408-410,false,3,2,Extract all numbers from text.
+      RegexEntityExtractor.extract_quoted_strings,method,"(text:str) -> list[str]",412-417,false,6,2,Extract all quoted strings from text.
+      RegexEntityExtractor.add_pattern,method,"(domain:str, entity_type:str, patterns:list[str]) -> None",419-432,false,14,3,Add custom patterns.
   src/nlp2cmd/generation/keywords.py:
     functions[7]{name,kind,sig,loc,async,lines,cc,does}:
       KeywordIntentDetector.__init__,method,"(patterns:Optional[dict[str,dict[str,list[str]]]]=None, confidence_threshold:float=0.5) -> None",180-193,false,14,2,Initialize keyword detector.
-      KeywordIntentDetector.detect,method,"(text:str) -> DetectionResult",203-290,false,88,19,Detect domain and intent from text.
-      KeywordIntentDetector._calculate_domain_boost,method,"(text:str, domain:str) -> float",292-296,false,5,3,Calculate confidence boost based on domain-specific keywords.
-      KeywordIntentDetector.detect_all,method,"(text:str) -> list[DetectionResult]",298-327,false,30,6,Detect all matching domains and intents.
-      KeywordIntentDetector.add_pattern,method,"(domain:str, intent:str, keywords:list[str]) -> None",329-342,false,14,3,Add custom patterns.
-      KeywordIntentDetector.get_supported_domains,method,"() -> list[str]",344-346,false,3,1,Get list of supported domains.
-      KeywordIntentDetector.get_supported_intents,method,"(domain:str) -> list[str]",348-350,false,3,1,Get list of supported intents for a domain.
+      KeywordIntentDetector.detect,method,"(text:str) -> DetectionResult",203-315,false,113,26,Detect domain and intent from text.
+      KeywordIntentDetector._calculate_domain_boost,method,"(text:str, domain:str) -> float",317-321,false,5,3,Calculate confidence boost based on domain-specific keywords.
+      KeywordIntentDetector.detect_all,method,"(text:str) -> list[DetectionResult]",323-352,false,30,6,Detect all matching domains and intents.
+      KeywordIntentDetector.add_pattern,method,"(domain:str, intent:str, keywords:list[str]) -> None",354-367,false,14,3,Add custom patterns.
+      KeywordIntentDetector.get_supported_domains,method,"() -> list[str]",369-371,false,3,1,Get list of supported domains.
+      KeywordIntentDetector.get_supported_intents,method,"(domain:str) -> list[str]",373-375,false,3,1,Get list of supported intents for a domain.
   src/nlp2cmd/generation/thermodynamic.py:
-    functions[21]{name,kind,sig,loc,async,lines,cc,does}:
-      create_thermodynamic_generator,function,"(llm_client:Optional[LLMClient]=None, n_samples:int=5, n_steps:int=500) -> ThermodynamicGenerator",552-569,false,18,1,Factory function for thermodynamic generator.
-      OptimizationProblem.to_condition,method,"() -> dict[str, Any]",42-49,false,8,1,Convert to condition dict for Langevin sampler.
-      SchedulingEnergy.__init__,method,"(n_tasks:int, n_slots:int) -> None",87-89,false,3,1,creates
-      SchedulingEnergy.energy,method,"(z:Any, condition:dict[str,Any]) -> float",91-115,false,25,9,Compute scheduling energy.
-      SchedulingEnergy.gradient,method,"(z:Any, condition:dict[str,Any]) -> np.ndarray",117-128,false,12,2,Compute gradient numerically.
-      SchedulingEnergy._decode_assignments,method,"(z:Any) -> list[int]",130-145,false,16,3,Decode continuous z to discrete slot assignments.
-      SchedulingEnergy._softmax,method,"(x:Any) -> np.ndarray",147-150,false,4,1,Stable softmax.
-      AllocationEnergy.__init__,method,"(n_resources:int, n_consumers:int) -> None",167-169,false,3,1,creates
-      AllocationEnergy.energy,method,"(z:Any, condition:dict[str,Any]) -> float",171-204,false,34,10,Compute allocation energy.
-      AllocationEnergy.gradient,method,"(z:Any, condition:dict[str,Any]) -> np.ndarray",206-217,false,12,2,Compute gradient numerically.
-      AllocationEnergy._decode_allocation,method,"(z:Any) -> np.ndarray",219-228,false,10,2,Decode continuous z to allocation matrix.
-      ThermodynamicGenerator.__init__,method,"(llm_client:Optional[LLMClient]=None, langevin_config:Optional[LangevinConfig]=None, n_samples:int=5, voting_strategy:str='energy') -> None",254-276,false,23,3,creates
-      ThermodynamicGenerator.generate,method,"(text:str, problem:Optional[OptimizationProblem]=None) -> ThermodynamicResult",278-356,true,79,5,Generate solution for optimization problem.
-      ThermodynamicGenerator._parse_problem,method,"(text:str) -> OptimizationProblem",358-367,true,10,4,Parse problem from natural language.
-      ThermodynamicGenerator._plan_to_problem,method,"(plan:StructuredPlan) -> OptimizationProblem",369-380,false,12,1,Convert structured plan to optimization problem.
-      ThermodynamicGenerator._rule_based_parse,method,"(text:str) -> OptimizationProblem",382-414,false,33,15,Simple rule-based problem parsing.
-      ThermodynamicGenerator._create_energy_model,method,"(problem:OptimizationProblem) -> EnergyModel",416-432,false,17,4,Create appropriate energy model for problem.
-      ThermodynamicGenerator._decode_solution,method,"(result:SamplerResult, problem:OptimizationProblem, energy_model:EnergyModel) -> dict[str, Any]",434-460,false,27,4,Decode sampler result to solution dict.
-      ThermodynamicGenerator._format_output,method,"(solution:dict[str,Any], problem:OptimizationProblem) -> str",462-483,false,22,6,Format solution as readable output.
-      HybridThermodynamicGenerator.__init__,method,"(llm_client:Optional[LLMClient]=None, langevin_config:Optional[LangevinConfig]=None) -> None",495-507,false,13,1,creates
-      HybridThermodynamicGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None) -> dict[str, Any]",509-549,true,41,5,Route and generate based on problem type.
+    functions[24]{name,kind,sig,loc,async,lines,cc,does}:
+      create_thermodynamic_generator,function,"(llm_client:Optional[LLMClient]=None, n_samples:int=5, n_steps:int=500, adaptive_steps:bool=True) -> ThermodynamicGenerator",747-774,false,28,1,Factory function for thermodynamic generator.
+      OptimizationProblem.to_condition,method,"() -> dict[str, Any]",56-63,false,8,1,Convert to condition dict for Langevin sampler.
+      SchedulingEnergy.__init__,method,"(n_tasks:int, n_slots:int) -> None",101-103,false,3,1,creates
+      SchedulingEnergy.energy,method,"(z:Any, condition:dict[str,Any]) -> float",105-129,false,25,9,Compute scheduling energy.
+      SchedulingEnergy.gradient,method,"(z:Any, condition:dict[str,Any]) -> np.ndarray",131-142,false,12,2,Compute gradient numerically.
+      SchedulingEnergy._decode_assignments,method,"(z:Any) -> list[int]",144-159,false,16,3,Decode continuous z to discrete slot assignments.
+      SchedulingEnergy._softmax,method,"(x:Any) -> np.ndarray",161-164,false,4,1,Stable softmax.
+      AllocationEnergy.__init__,method,"(n_resources:int, n_consumers:int) -> None",181-183,false,3,1,creates
+      AllocationEnergy.energy,method,"(z:Any, condition:dict[str,Any]) -> float",185-218,false,34,10,Compute allocation energy.
+      AllocationEnergy.gradient,method,"(z:Any, condition:dict[str,Any]) -> np.ndarray",220-231,false,12,2,Compute gradient numerically.
+      AllocationEnergy._decode_allocation,method,"(z:Any) -> np.ndarray",233-242,false,10,2,Decode continuous z to allocation matrix.
+      ThermodynamicGenerator.__init__,method,"(llm_client:Optional[LLMClient]=None, langevin_config:Optional[LangevinConfig]=None, n_samples:int=5, voting_strategy:str='energy', adaptive_steps:bool=True) -> None",268-293,false,26,3,creates
+      ThermodynamicGenerator._get_adaptive_config,method,"(problem:OptimizationProblem) -> LangevinConfig",295-328,false,34,5,"IMPROVEMENT: Adjust Langevin steps based on problem complexity."
+      ThermodynamicGenerator._get_sampling_config,method,"(problem:OptimizationProblem) -> tuple[LangevinConfig, int]",330-342,false,13,3,"Return (LangevinConfig, n_samples) adapted to problem size."
+      ThermodynamicGenerator.generate,method,"(text:str, problem:Optional[OptimizationProblem]=None) -> ThermodynamicResult",344-425,true,82,5,Generate solution for optimization problem.
+      ThermodynamicGenerator._parse_problem,method,"(text:str) -> OptimizationProblem",427-436,true,10,4,Parse problem from natural language.
+      ThermodynamicGenerator._plan_to_problem,method,"(plan:StructuredPlan) -> OptimizationProblem",438-453,false,16,1,Convert structured plan to optimization problem.
+      ThermodynamicGenerator._rule_based_parse,method,"(text:str) -> OptimizationProblem",455-571,false,117,36,"IMPROVED: Rule-based problem parsing with better Polish support."
+      ThermodynamicGenerator._create_energy_model,method,"(problem:OptimizationProblem) -> EnergyModel",573-591,false,19,8,Create appropriate energy model for problem.
+      ThermodynamicGenerator._decode_solution,method,"(result:SamplerResult, problem:OptimizationProblem, energy_model:EnergyModel) -> dict[str, Any]",593-620,false,28,4,Decode sampler result to solution dict.
+      ThermodynamicGenerator._format_output,method,"(solution:dict[str,Any], problem:OptimizationProblem) -> str",622-645,false,24,8,Format solution as readable output.
+      HybridThermodynamicGenerator.__init__,method,"(llm_client:Optional[LLMClient]=None, langevin_config:Optional[LangevinConfig]=None) -> None",674-687,false,14,1,creates
+      HybridThermodynamicGenerator._is_optimization_query,method,"(text:str) -> bool",689-696,false,8,2,"IMPROVED: Check if query is an optimization problem."
+      HybridThermodynamicGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None) -> dict[str, Any]",698-744,true,47,7,Route and generate based on problem type.
   src/nlp2cmd/generation/templates.py:
     functions[14]{name,kind,sig,loc,async,lines,cc,does}:
       TemplateGenerator.__init__,method,"(custom_templates:Optional[dict[str,dict[str,str]]]=None) -> None",116-137,false,22,4,Initialize template generator.
@@ -1114,14 +1126,14 @@ function_details:
       TemplateGenerator._prepare_entities,method,"(domain:str, intent:str, entities:dict[str,Any]) -> dict[str, Any]",240-258,false,19,5,Prepare entities with defaults and formatting.
       TemplateGenerator._prepare_sql_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",260-339,false,80,16,Prepare SQL entities.
       TemplateGenerator._prepare_shell_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",341-398,false,58,10,Prepare shell entities.
-      TemplateGenerator._prepare_docker_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",400-452,false,53,8,Prepare Docker entities.
-      TemplateGenerator._prepare_kubernetes_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",454-502,false,49,7,Prepare Kubernetes entities.
-      TemplateGenerator._fill_template,method,"(template:str, entities:dict[str,Any]) -> str",504-513,false,10,4,Fill template with entities.
-      TemplateGenerator._clean_command,method,"(command:str) -> str",515-530,false,16,1,Clean up generated command.
-      TemplateGenerator._find_missing,method,"(template:str, entities:dict[str,Any]) -> list[str]",532-536,false,5,4,Find missing entities in template.
-      TemplateGenerator.add_template,method,"(domain:str, intent:str, template:str) -> None",538-549,false,12,2,Add custom template.
-      TemplateGenerator.get_template,method,"(domain:str, intent:str) -> Optional[str]",551-553,false,3,1,Get template for domain/intent.
-      TemplateGenerator.list_templates,method,"(domain:str) -> list[str]",555-557,false,3,1,List available templates for domain.
+      TemplateGenerator._prepare_docker_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",400-456,false,57,9,Prepare Docker entities.
+      TemplateGenerator._prepare_kubernetes_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",458-506,false,49,7,Prepare Kubernetes entities.
+      TemplateGenerator._fill_template,method,"(template:str, entities:dict[str,Any]) -> str",508-517,false,10,4,Fill template with entities.
+      TemplateGenerator._clean_command,method,"(command:str) -> str",519-534,false,16,1,Clean up generated command.
+      TemplateGenerator._find_missing,method,"(template:str, entities:dict[str,Any]) -> list[str]",536-540,false,5,4,Find missing entities in template.
+      TemplateGenerator.add_template,method,"(domain:str, intent:str, template:str) -> None",542-553,false,12,2,Add custom template.
+      TemplateGenerator.get_template,method,"(domain:str, intent:str) -> Optional[str]",555-557,false,3,1,Get template for domain/intent.
+      TemplateGenerator.list_templates,method,"(domain:str) -> list[str]",559-561,false,3,1,List available templates for domain.
   src/nlp2cmd/generation/pipeline.py:
     functions[16]{name,kind,sig,loc,async,lines,cc,does}:
       create_pipeline,function,"(confidence_threshold:float=0.5, custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None, custom_templates:Optional[dict[str,dict[str,str]]]=None) -> RuleBasedPipeline",293-324,false,32,4,Factory function to create a configured pipeline.
@@ -1307,30 +1319,30 @@ function_details:
       CSPEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",435-448,false,14,2,Compute gradient numerically.
   src/nlp2cmd/thermodynamic/__init__.py:
     functions[24]{name,kind,sig,loc,async,lines,cc,does}:
-      EnergyModel.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",66-68,false,3,1,Compute energy V(z; c).
-      EnergyModel.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",71-73,false,3,1,Compute energy gradient ∇V(z; c).
-      EnergyModel.__call__,method,"(z:Any, condition:Dict[str,Any]) -> float",75-76,false,2,1,call
-      QuadraticEnergy.__init__,method,"(target:Optional[Any]=None) -> None",84-85,false,2,1,creates
-      QuadraticEnergy.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",87-91,false,5,2,energy
-      QuadraticEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",93-97,false,5,2,gradient
-      ConstraintEnergy.__init__,method,() -> None,111-113,false,3,1,creates
-      ConstraintEnergy.add_penalty,method,"(name:str, penalty_fn:Callable[Any,float], gradient_fn:Callable[Any,Any], weight:float=1.0) -> None",115-124,false,10,1,Add a penalty function.
-      ConstraintEnergy.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",126-133,false,8,3,energy
-      ConstraintEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",135-142,false,8,3,gradient
-      LangevinSampler.__init__,method,"(energy_model:EnergyModel, config:Optional[LangevinConfig]=None) -> None",165-167,false,3,2,creates
-      LangevinSampler.sample,method,"(condition:Dict[str,Any], n_samples:int=1, initial_state:Optional[Any]=None) -> Union[SamplerResult, List[SamplerResult]]",169-189,false,21,3,Generate samples via Langevin dynamics.
-      LangevinSampler._sample_single,method,"(condition:Dict[str,Any], initial_state:Optional[Any]=None) -> SamplerResult",191-247,false,57,7,Generate a single sample.
-      LangevinSampler.sample_parallel,method,"(condition:Dict[str,Any], n_samples:int, max_workers:int=4) -> List[SamplerResult]",249-262,false,14,3,Sample in parallel using thread pool.
-      EntropyProductionRegularizer.__init__,method,"(lambda_entropy:float=0.1, kT:float=1.0) -> None",279-281,false,3,1,creates
-      EntropyProductionRegularizer.compute_regularization,method,"(result:SamplerResult) -> float",283-289,false,7,1,Compute entropy production regularization term.
-      EntropyProductionRegularizer.estimate_heat_dissipation,method,"(result:SamplerResult) -> float",291-297,false,7,1,Estimate heat dissipation Q during sampling.
-      MajorityVoter.__init__,method,"(strategy:str='energy') -> None",314-315,false,2,1,creates
-      MajorityVoter.vote,method,"(results:List[SamplerResult]) -> SamplerResult",317-341,false,25,7,Select best result based on voting strategy.
-      MajorityVoter._cluster_vote,method,"(results:List[SamplerResult], threshold:float=0.1) -> SamplerResult",343-366,false,24,6,Cluster similar samples and select from largest cluster.
-      ThermodynamicRouter.__init__,method,"(complexity_threshold:float=0.5) -> None",402-403,false,2,1,creates
-      ThermodynamicRouter.route,method,"(intent:str, complexity:float=0.5) -> str",405-430,false,26,5,Decide solver type based on intent and complexity.
-      ThermodynamicRouter.estimate_complexity,method,"(problem_description:str, entities:Dict[str,Any]) -> float",432-457,false,26,5,Estimate problem complexity based on description and entities.
-      EnergyEstimator.estimate,method,"(llm_input_tokens:int, llm_output_tokens_classic:int, llm_output_tokens_hybrid:int, langevin_steps:int) -> Dict[str, float]",479-521,false,43,1,Estimate energy for different approaches.
+      EnergyModel.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",71-73,false,3,1,Compute energy V(z; c).
+      EnergyModel.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",76-78,false,3,1,Compute energy gradient ∇V(z; c).
+      EnergyModel.__call__,method,"(z:Any, condition:Dict[str,Any]) -> float",80-81,false,2,1,call
+      QuadraticEnergy.__init__,method,"(target:Optional[Any]=None) -> None",89-90,false,2,1,creates
+      QuadraticEnergy.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",92-96,false,5,2,energy
+      QuadraticEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",98-102,false,5,2,gradient
+      ConstraintEnergy.__init__,method,() -> None,116-118,false,3,1,creates
+      ConstraintEnergy.add_penalty,method,"(name:str, penalty_fn:Callable[Any,float], gradient_fn:Callable[Any,Any], weight:float=1.0) -> None",120-129,false,10,1,Add a penalty function.
+      ConstraintEnergy.energy,method,"(z:Any, condition:Dict[str,Any]) -> float",131-138,false,8,3,energy
+      ConstraintEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",140-147,false,8,3,gradient
+      LangevinSampler.__init__,method,"(energy_model:EnergyModel, config:Optional[LangevinConfig]=None) -> None",170-172,false,3,2,creates
+      LangevinSampler.sample,method,"(condition:Dict[str,Any], n_samples:int=1, initial_state:Optional[Any]=None) -> Union[SamplerResult, List[SamplerResult]]",174-194,false,21,3,Generate samples via Langevin dynamics.
+      LangevinSampler._sample_single,method,"(condition:Dict[str,Any], initial_state:Optional[Any]=None) -> SamplerResult",196-252,false,57,7,Generate a single sample.
+      LangevinSampler.sample_parallel,method,"(condition:Dict[str,Any], n_samples:int, max_workers:int=4) -> List[SamplerResult]",254-267,false,14,3,Sample in parallel using thread pool.
+      EntropyProductionRegularizer.__init__,method,"(lambda_entropy:float=0.1, kT:float=1.0) -> None",284-286,false,3,1,creates
+      EntropyProductionRegularizer.compute_regularization,method,"(result:SamplerResult) -> float",288-294,false,7,1,Compute entropy production regularization term.
+      EntropyProductionRegularizer.estimate_heat_dissipation,method,"(result:SamplerResult) -> float",296-302,false,7,1,Estimate heat dissipation Q during sampling.
+      MajorityVoter.__init__,method,"(strategy:str='energy') -> None",319-320,false,2,1,creates
+      MajorityVoter.vote,method,"(results:List[SamplerResult]) -> SamplerResult",322-346,false,25,7,Select best result based on voting strategy.
+      MajorityVoter._cluster_vote,method,"(results:List[SamplerResult], threshold:float=0.1) -> SamplerResult",348-371,false,24,6,Cluster similar samples and select from largest cluster.
+      ThermodynamicRouter.__init__,method,"(complexity_threshold:float=0.5) -> None",407-408,false,2,1,creates
+      ThermodynamicRouter.route,method,"(intent:str, complexity:float=0.5) -> str",410-435,false,26,5,Decide solver type based on intent and complexity.
+      ThermodynamicRouter.estimate_complexity,method,"(problem_description:str, entities:Dict[str,Any]) -> float",437-462,false,26,5,Estimate problem complexity based on description and entities.
+      EnergyEstimator.estimate,method,"(llm_input_tokens:int, llm_output_tokens_classic:int, llm_output_tokens_hybrid:int, langevin_steps:int) -> Dict[str, float]",484-526,false,43,1,Estimate energy for different approaches.
   src/nlp2cmd/executor/__init__.py:
     functions[18]{name,kind,sig,loc,async,lines,cc,does}:
       PlanStep.__post_init__,method,() -> None,50-53,false,4,2,creates init

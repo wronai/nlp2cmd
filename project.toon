@@ -1,7 +1,8 @@
-# nlp2cmd | 80f 28702L | python:80
+# nlp2cmd | 81f 29311L | python:81
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[80]:
+M[81]:
   termo.py,87
+  termo_demo.py,160
   tests/conftest.py,244
   tests/__init__.py,1
   tests/iterative/test_iter_2_regex.py,285
@@ -35,13 +36,13 @@ M[80]:
   tests/integration/__init__.py,4
   tests/integration/test_workflows.py,365
   src/nlp2cmd/__init__.py,113
-  src/nlp2cmd/core.py,396
+  src/nlp2cmd/core.py,508
   src/nlp2cmd/schemas/__init__.py,487
-  src/nlp2cmd/generation/regex.py,353
-  src/nlp2cmd/generation/keywords.py,298
-  src/nlp2cmd/generation/thermodynamic.py,429
+  src/nlp2cmd/generation/regex.py,362
+  src/nlp2cmd/generation/keywords.py,316
+  src/nlp2cmd/generation/thermodynamic.py,592
   src/nlp2cmd/generation/__init__.py,124
-  src/nlp2cmd/generation/templates.py,426
+  src/nlp2cmd/generation/templates.py,429
   src/nlp2cmd/generation/pipeline.py,250
   src/nlp2cmd/generation/llm_multi.py,207
   src/nlp2cmd/generation/validating.py,213
@@ -55,7 +56,7 @@ M[80]:
   src/nlp2cmd/aggregator/__init__.py,274
   src/nlp2cmd/registry/__init__.py,529
   src/nlp2cmd/thermodynamic/energy_models.py,319
-  src/nlp2cmd/thermodynamic/__init__.py,376
+  src/nlp2cmd/thermodynamic/__init__.py,379
   src/nlp2cmd/executor/__init__.py,526
   src/nlp2cmd/adapters/dql.py,334
   src/nlp2cmd/adapters/base.py,132
@@ -88,6 +89,14 @@ D:
     demo_hybrid()->None
     demo_thermodynamic()->None
     demo_complete_hybrid()->None
+    main()->None
+  termo_demo.py:
+    i: asyncio,nlp2cmd.generation.{HybridThermodynamicGenerator,create_hybrid_generator},nlp2cmd.generation.thermodynamic.{ImprovedHybridGenerator,ThermodynamicGenerator,create_thermodynamic_generator}
+    e: demo_hybrid,demo_thermodynamic_improved,demo_hybrid_thermodynamic_improved,benchmark_latency,main
+    demo_hybrid()->None
+    demo_thermodynamic_improved()->None
+    demo_hybrid_thermodynamic_improved()->None
+    benchmark_latency()->None
     main()->None
   tests/conftest.py:
     i: pytest,tempfile,os,nlp2cmd.NLP2CMD,nlp2cmd.adapters.{DockerAdapter,KubernetesAdapter,SQLAdapter,SQLSafetyPolicy,ShellAdapter},pathlib.Path
@@ -341,14 +350,14 @@ D:
     DetectionResult:   # Result of intent detection.
     KeywordIntentDetector: __init__(2),detect(1),_calculate_domain_boost(2),detect_all(1),add_pattern(3)  # Rule-based intent detection using key...
   src/nlp2cmd/generation/thermodynamic.py:
-    i: numpy,dataclasses.{dataclass,field},nlp2cmd.thermodynamic.{EnergyModel,LangevinConfig,LangevinSampler,SamplerResult},typing.{Any,Callable,Optional}
+    i: numpy,re,dataclasses.{dataclass,field},nlp2cmd.thermodynamic.{LangevinConfig,LangevinSampler,SamplerResult},typing.{Any,Callable,Optional}
     e: OptimizationProblem,ThermodynamicResult,SchedulingEnergy,AllocationEnergy,ThermodynamicGenerator,HybridThermodynamicGenerator,create_thermodynamic_generator
     OptimizationProblem: to_condition(0)  # Structured optimization problem defin...
     ThermodynamicResult:   # Result of thermodynamic optimization.
     SchedulingEnergy: __init__(2),energy(2),gradient(2),_decode_assignments(1),_softmax(1)  # Energy model for scheduling problems.
     AllocationEnergy: __init__(2),energy(2),gradient(2),_decode_allocation(1)  # Energy model for resource allocation...
-    ThermodynamicGenerator: __init__(4),generate(2),_parse_problem(1),_plan_to_problem(1),_rule_based_parse(1)  # Generate solutions for optimization p...
-    create_thermodynamic_generator(llm_client:Optional[LLMClient]=None;n_samples:int=5;n_steps:int=500)->ThermodynamicGenerator
+    ThermodynamicGenerator: __init__(5),_get_adaptive_config(1),_get_sampling_config(1),generate(2),_parse_problem(1)  # Generate solutions for optimization p...
+    create_thermodynamic_generator(llm_client:Optional[LLMClient]=None;n_samples:int=5;n_steps:int=500;adaptive_steps:bool=True)->ThermodynamicGenerator
   src/nlp2cmd/generation/templates.py:
     i: dataclasses.dataclass,typing.{Any,Optional}
     e: TemplateResult,TemplateGenerator
