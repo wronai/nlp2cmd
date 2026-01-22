@@ -1,0 +1,63 @@
+
+📊 RAPORT WALIDACJI KOMEND SHELL
+======================================================================
+Podsumowanie:
+- Łącznie testów: 79
+- Dokładne trafienia: 0 (0.0%)
+- Podobne (>80%): 0 (0.0%)
+- Sukcesy ogólnie: 0 (0.0%)
+- Średnia latencja: 29.9ms
+
+Statystyki per kategorii:
+- backup: 0/9 (0.0%) | Dokładne: 0/9 (0.0%) | Śr. latencja: 260.3ms
+- bezpieczeństwo: 0/10 (0.0%) | Dokładne: 0/10 (0.0%) | Śr. latencja: 0.1ms
+- dev: 0/10 (0.0%) | Dokładne: 0/10 (0.0%) | Śr. latencja: 0.1ms
+- konserwacja: 0/10 (0.0%) | Dokładne: 0/10 (0.0%) | Śr. latencja: 0.1ms
+- pliki: 0/10 (0.0%) | Dokładne: 0/10 (0.0%) | Śr. latencja: 1.0ms
+- procesy: 0/10 (0.0%) | Dokładne: 0/10 (0.0%) | Śr. latencja: 0.3ms
+- sieć: 0/12 (0.0%) | Dokładne: 0/12 (0.0%) | Śr. latencja: 0.2ms
+- system: 0/8 (0.0%) | Dokładne: 0/8 (0.0%) | Śr. latencja: 0.2ms
+
+Najgorsze wyniki (najmniej podobne):
+1. usuń wszystkie pliki .tmp
+   Expected: find . -name '*.tmp' -delete
+   Actual: {'source': 'dsl', 'result': HybridResult(command='DELETE FROM unknown_table;', domain='sql', source='rules', confidence=0.95, latency_ms=5.335330963134766, success=True, rule_result=PipelineResult(input_text='usuń wszystkie pliki .tmp', domain='sql', intent='delete', detection_confidence=0.95, entities={}, command='DELETE FROM unknown_table;', template_used='DELETE FROM {table}{where};', success=True, source='rules', latency_ms=5.321502685546875, errors=[], warnings=['No entities extracted from text', "Missing entities: ['where']"]), llm_result=None, llm_calls=0, estimated_cost=0.0, errors=['LLM fallback not available']), 'complexity': 0.3}
+   Similarity: 0.0%
+2. pokaż zawartość pliku /var/log/syslog
+   Expected: cat /var/log/syslog
+   Actual: {'source': 'dsl', 'result': HybridResult(command='SELECT * FROM unknown_table;', domain='sql', source='rules', confidence=0.85, latency_ms=0.30422210693359375, success=True, rule_result=PipelineResult(input_text='pokaż zawartość pliku /var/log/syslog', domain='sql', intent='select', detection_confidence=0.85, entities={}, command='SELECT * FROM unknown_table;', template_used='SELECT {columns} FROM {table}{where}{order}{limit};', success=True, source='rules', latency_ms=0.2968311309814453, errors=[], warnings=['No entities extracted from text', "Missing entities: ['where', 'order', 'limit']"]), llm_result=None, llm_calls=0, estimated_cost=0.0, errors=['LLM fallback not available']), 'complexity': 0.3}
+   Similarity: 0.0%
+3. utwórz katalog nowy_projekt
+   Expected: mkdir nowy_projekt
+   Actual: {'source': 'dsl', 'result': HybridResult(command='# Could not detect domain for: utwórz katalog nowy_projekt', domain='unknown', source='rules', confidence=0.0, latency_ms=0.0743865966796875, success=False, rule_result=PipelineResult(input_text='utwórz katalog nowy_projekt', domain='unknown', intent='unknown', detection_confidence=0.0, entities={}, command='# Could not detect domain for: utwórz katalog nowy_projekt', template_used='', success=False, source='rules', latency_ms=0.06914138793945312, errors=['Could not detect domain from input text'], warnings=[]), llm_result=None, llm_calls=0, estimated_cost=0.0, errors=['LLM fallback not available']), 'complexity': 0.3}
+   Similarity: 0.0%
+4. pokaż ostatnie 10 linii pliku access.log
+   Expected: tail -10 access.log
+   Actual: {'source': 'dsl', 'result': HybridResult(command='SELECT * FROM unknown_table LIMIT 10;', domain='sql', source='rules', confidence=0.85, latency_ms=0.1995563507080078, success=True, rule_result=PipelineResult(input_text='pokaż ostatnie 10 linii pliku access.log', domain='sql', intent='select', detection_confidence=0.85, entities={'limit': '10'}, command='SELECT * FROM unknown_table LIMIT 10;', template_used='SELECT {columns} FROM {table}{where}{order}{limit};', success=True, source='rules', latency_ms=0.19359588623046875, errors=[], warnings=["Missing entities: ['where', 'order']"]), llm_result=None, llm_calls=0, estimated_cost=0.0, errors=['LLM fallback not available']), 'complexity': 0.3}
+   Similarity: 0.0%
+5. pokaż użycie CPU i pamięci
+   Expected: top -n 1
+   Actual: {'source': 'dsl', 'result': HybridResult(command='ps aux | grep', domain='shell', source='rules', confidence=0.95, latency_ms=0.12087821960449219, success=True, rule_result=PipelineResult(input_text='pokaż użycie CPU i pamięci', domain='shell', intent='process', detection_confidence=0.95, entities={}, command='ps aux | grep', template_used='ps aux | grep {process_name}', success=True, source='rules', latency_ms=0.11539459228515625, errors=[], warnings=['No entities extracted from text', "Missing entities: ['process_name']"]), llm_result=None, llm_calls=0, estimated_cost=0.0, errors=[]), 'complexity': 0.3}
+   Similarity: 0.0%
+
+Najlepsze wyniki (najbardziej podobne):
+1. znajdź procesy python
+   Expected: ps aux | grep python
+   Actual: {'source': 'dsl', 'result': HybridResult(command='ps aux | grep', domain='shell', source='rules', confidence=0.95, latency_ms=0.11897087097167969, success=True, rule_result=PipelineResult(input_text='znajdź procesy python', domain='shell', intent='process', detection_confidence=0.95, entities={}, command='ps aux | grep', template_used='ps aux | grep {process_name}', success=True, source='rules', latency_ms=0.11324882507324219, errors=[], warnings=['No entities extracted from text', "Missing entities: ['process_name']"]), llm_result=None, llm_calls=0, estimated_cost=0.0, errors=[]), 'complexity': 0.3}
+   Similarity: 60.0%
+2. znajdź procesy użytkownika tom
+   Expected: ps aux | grep tom
+   Actual: {'source': 'dsl', 'result': HybridResult(command='ps aux | grep', domain='shell', source='rules', confidence=0.95, latency_ms=0.08869171142578125, success=True, rule_result=PipelineResult(input_text='znajdź procesy użytkownika tom', domain='shell', intent='process', detection_confidence=0.95, entities={}, command='ps aux | grep', template_used='ps aux | grep {process_name}', success=True, source='rules', latency_ms=0.08416175842285156, errors=[], warnings=['No entities extracted from text', "Missing entities: ['process_name']"]), llm_result=None, llm_calls=0, estimated_cost=0.0, errors=[]), 'complexity': 0.3}
+   Similarity: 60.0%
+3. znajdź pliki większe niż 100MB
+   Expected: find . -size +100M
+   Actual: {'source': 'dsl', 'result': HybridResult(command="find . -name '*.większe' -size +100M", domain='shell', source='rules', confidence=0.9, latency_ms=0.21958351135253906, success=True, rule_result=PipelineResult(input_text='znajdź pliki większe niż 100MB', domain='shell', intent='find', detection_confidence=0.9, entities={'file_pattern': 'większe', 'size': {'value': 100, 'unit': 'MB'}, 'pattern': '*.większe'}, command="find . -name '*.większe' -size +100M", template_used='find {path} {type_flag} {name_flag} {size_flag} {time_flag}', success=True, source='rules', latency_ms=0.20933151245117188, errors=[], warnings=["Missing entities: ['type_flag', 'time_flag']"]), llm_result=None, llm_calls=0, estimated_cost=0.0, errors=['LLM fallback not available']), 'complexity': 0.3}
+   Similarity: 50.0%
+4. sprawdź działające procesy
+   Expected: ps aux
+   Actual: {'source': 'dsl', 'result': HybridResult(command='ps aux | grep', domain='shell', source='rules', confidence=0.95, latency_ms=0.11873245239257812, success=True, rule_result=PipelineResult(input_text='sprawdź działające procesy', domain='shell', intent='process', detection_confidence=0.95, entities={}, command='ps aux | grep', template_used='ps aux | grep {process_name}', success=True, source='rules', latency_ms=0.11348724365234375, errors=[], warnings=['No entities extracted from text', "Missing entities: ['process_name']"]), llm_result=None, llm_calls=0, estimated_cost=0.0, errors=[]), 'complexity': 0.3}
+   Similarity: 50.0%
+5. znajdź podejrzane procesy
+   Expected: ps aux | grep -v '\['
+   Actual: {'source': 'dsl', 'result': HybridResult(command='ps aux | grep', domain='shell', source='rules', confidence=0.95, latency_ms=0.09584426879882812, success=True, rule_result=PipelineResult(input_text='znajdź podejrzane procesy', domain='shell', intent='process', detection_confidence=0.95, entities={}, command='ps aux | grep', template_used='ps aux | grep {process_name}', success=True, source='rules', latency_ms=0.09107589721679688, errors=[], warnings=['No entities extracted from text', "Missing entities: ['process_name']"]), llm_result=None, llm_calls=0, estimated_cost=0.0, errors=[]), 'complexity': 0.3}
+   Similarity: 50.0%

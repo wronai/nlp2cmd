@@ -505,9 +505,18 @@ cd examples/use_cases
 python run_all.py --summary
 ```
 
+### Walidacja komend shell:
+```bash
+cd examples/use_cases
+python run_all.py --validate
+# lub bezpośrednio
+python shell_validation.py
+```
+
 ### Pojedynczo:
 ```bash
 cd examples/use_cases
+python shell_validation.py          # Walidacja komend shell
 python dsl_commands_demo.py          # Shell DSL Commands
 python devops_automation.py          # IT & DevOps
 python data_science_ml.py              # Data Science

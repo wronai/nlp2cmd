@@ -22,6 +22,7 @@ __author__ = "NLP2CMD Team"
 
 # Importy dla łatwego dostępu
 from . import (
+    shell_validation,
     dsl_commands_demo,
     devops_automation,
     data_science_ml,
@@ -36,6 +37,7 @@ from . import (
 )
 
 __all__ = [
+    "shell_validation",
     "dsl_commands_demo",
     "devops_automation",
     "data_science_ml", 

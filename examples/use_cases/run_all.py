@@ -123,9 +123,13 @@ if __name__ == "__main__":
     print("\nDostępne opcje:")
     print("  python run_all.py          - Uruchom wszystkie demonstracje")
     print("  python run_all.py --summary - Pokaż tylko tabelę zastosowań")
+    print("  python run_all.py --validate - Uruchom walidację komend shell")
     
-    if "--summary" in sys.argv:
+    if "--validate" in sys.argv:
+        # Uruchom tylko walidację
+        print("🔍 Uruchamianie walidacji komend shell...")
+        asyncio.run(validation_main())
+    elif "--summary" in sys.argv:
         print_summary_table()
     else:
         asyncio.run(run_all_demos())
-        print_summary_table()

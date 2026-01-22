@@ -78,44 +78,112 @@ class ShellAdapter(BaseDSLAdapter):
 
     INTENTS = {
         "file_search": {
-            "patterns": ["znajdź plik", "znajdź", "znajdz", "szukaj", "find", "search", "locate", "show files", "list files"],
+            "patterns": [
+                "znajdź plik", "znajdź", "znajdz", "szukaj", "find", "search", "locate", 
+                "show files", "list files", "pokaż pliki", "wyszukaj pliki", "listuj pliki",
+                "znajdź pliki z rozszerzeniem", "znajdź pliki większe niż", "znajdź pliki zmodyfikowane",
+                "pokaż zawartość pliku", "wyświetl plik", "cat plik", "odczytaj plik",
+                "pokaż ostatnie linii pliku", "tail plik", "koniec pliku"
+            ],
             "required_entities": ["target"],
             "optional_entities": ["filters", "scope"],
         },
         "file_operation": {
-            "patterns": ["kopiuj", "przenieś", "usuń", "utwórz", "copy", "move", "delete", "create", "remove", "compress"],
+            "patterns": [
+                "kopiuj", "przenieś", "usuń", "utwórz", "copy", "move", "delete", "create", "remove", "compress",
+                "skopiuj plik", "przenieś plik", "usuń plik", "usuń wszystkie pliki", "utwórz katalog",
+                "zmień nazwę pliku", "mv plik", "rename plik", "zmień nazwę", "zmień nazwę pliku na",
+                "sprawdź rozmiar pliku", "rozmiar pliku", "du plik", "wielkość pliku"
+            ],
             "required_entities": ["operation", "target"],
             "optional_entities": ["destination"],
         },
         "process_management": {
-            "patterns": ["proces", "uruchom", "zatrzymaj", "kill", "start", "stop", "process", "show processes", "top processes"],
+            "patterns": [
+                "proces", "uruchom", "zatrzymaj", "kill", "start", "stop", "process", "show processes", "top processes",
+                "zabij proces", "uruchom proces", "zatrzymaj proces", "restartuj proces", "uruchom ponownie",
+                "uruchom w tle", "uruchom skrypt", "zatrzymaj usługę", "uruchom usługę", "status usługi",
+                "sprawdź status", "monitor systemowy", "htop", "top"
+            ],
             "required_entities": ["action"],
             "optional_entities": ["process_name", "pid"],
         },
         "process_monitoring": {
-            "patterns": ["pokaż procesy", "top", "htop", "ps", "monitoruj", "show top", "memory usage", "cpu usage"],
+            "patterns": [
+                "pokaż procesy", "top", "htop", "ps", "monitoruj", "show top", "memory usage", "cpu usage",
+                "sprawdź procesy", "działające procesy", "procesy zużywające pamięć", "procesy zużywające cpu",
+                "znajdź procesy", "procesy użytkownika", "zombie procesy", "drzewo procesów"
+            ],
             "required_entities": [],
             "optional_entities": ["metric", "limit", "filters"],
         },
         "network": {
-            "patterns": ["ping", "curl", "wget", "port", "sieć", "network", "network status"],
+            "patterns": [
+                "ping", "curl", "wget", "port", "sieć", "network", "network status",
+                "sprawdź połączenie", "testuj łączność", "pinguj", "sprawdź ping",
+                "pokaż adres ip", "adres ip", "ip address", "konfiguracja sieciowa",
+                "znajdź porty", "otwarte porty", "porty nasłuchujące", "aktywne połączenia",
+                "znajdź urządzenia", "skanuj sieć", "nmap", "prędkość internetu"
+            ],
             "required_entities": ["action"],
             "optional_entities": ["host", "port"],
         },
         "disk": {
-            "patterns": ["dysk", "miejsce", "disk", "space", "df", "du", "disk usage", "show disk"],
+            "patterns": [
+                "dysk", "miejsce", "disk", "space", "df", "du", "disk usage", "show disk",
+                "pokaż dysk", "użycie dysku", "miejsce na dysku", "sprawdź miejsce na dysku",
+                "sprawdź dysk twardy", "dysk twardy", "zdrowie dysku", "defragmentacja"
+            ],
             "required_entities": ["action"],
             "optional_entities": ["path"],
         },
         "archive": {
-            "patterns": ["spakuj", "rozpakuj", "zip", "tar", "compress", "extract", "archive"],
+            "patterns": [
+                "spakuj", "rozpakuj", "zip", "tar", "compress", "extract", "archive",
+                "utwórz backup", "skompresuj", "archiwum", "backup", "kopia zapasowa",
+                "skopiuj backup", "odtwórz z backupu", "integralność backupu", "status backupu",
+                "usuń stare backupi", "rozmiar backupu", "harmonogram backup"
+            ],
             "required_entities": ["action", "target"],
             "optional_entities": ["destination", "format"],
         },
         "text_processing": {
-            "patterns": ["grep", "sed", "awk", "filtruj", "wyszukaj tekst", "search text", "find text"],
+            "patterns": [
+                "grep", "sed", "awk", "filtruj", "wyszukaj tekst", "search text", "find text",
+                "znajdź błędy", "wyszukaj błędy", "grep error", "filtruj logi", "przeglądaj logi"
+            ],
             "required_entities": ["action", "pattern"],
             "optional_entities": ["file", "options"],
+        },
+        "system_maintenance": {
+            "patterns": [
+                "aktualizacja", "upgrade", "czyszczenie", "maintenance", "update", "clean",
+                "czyść cache", "aktualizuj system", "uruchom aktualizację", "czyszczenie systemowe",
+                "sprawdź logi", "logi systemowe", "oczyszczanie plików tymczasowych", "usuń stare pliki",
+                "sprawdź cron", "status cron", "uruchom defragmentację"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["target"],
+        },
+        "development": {
+            "patterns": [
+                "test", "build", "compile", "run", "debug", "lint", "version", "install",
+                "uruchom testy", "testy jednostkowe", "zbuduj projekt", "maven", "npm install",
+                "serwer deweloperski", "uruchom serwer", "debugger", "linter", "analiza kodu",
+                "logi aplikacji", "czyszczenie cache", "generuj dokumentację", "wersja node"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["target", "tool"],
+        },
+        "security": {
+            "patterns": [
+                "bezpieczeństwo", "security", "who", "last", "ssh", "permissions", "firewall",
+                "kto jest zalogowany", "historia logowań", "sesje ssh", "uprawnienia pliku",
+                "pliki suid", "firewall rules", "logi bezpieczeństwa", "podejrzane procesy",
+                "zainstalowane pakiety", "użytkownicy systemu"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["target"],
         },
         "git": {
             "patterns": ["git", "commit", "push", "pull", "branch", "merge", "show commits", "git status"],
@@ -177,6 +245,9 @@ class ShellAdapter(BaseDSLAdapter):
             "disk": self._generate_disk,
             "archive": self._generate_archive,
             "text_processing": self._generate_text_processing,
+            "system_maintenance": self._generate_system_maintenance,
+            "development": self._generate_development,
+            "security": self._generate_security,
             "git": self._generate_git,
             "docker": self._generate_docker,
             "container_management": self._generate_docker,  # alias
@@ -370,6 +441,115 @@ class ShellAdapter(BaseDSLAdapter):
         }
 
         return commands.get(action, f"git {action}")
+
+    def _generate_system_maintenance(self, entities: dict[str, Any]) -> str:
+        """Generate system maintenance command."""
+        action = entities.get("action", "")
+        target = entities.get("target", "")
+        
+        if "aktualizuj" in action or "update" in action:
+            return "apt update && apt upgrade -y"
+        elif "czyść" in action or "clean" in action:
+            if "cache" in target:
+                return "apt clean && apt autoclean"
+            elif "tmp" in target:
+                return "rm -rf /tmp/*"
+            else:
+                return "apt autoremove"
+        elif "logi" in target:
+            return "tail -n 50 /var/log/syslog"
+        elif "cron" in target:
+            return "systemctl status cron"
+        elif "defragmentacja" in action:
+            return "defrag /dev/sda1"
+        
+        return f"# System maintenance: {action}"
+
+    def _generate_development(self, entities: dict[str, Any]) -> str:
+        """Generate development command."""
+        action = entities.get("action", "")
+        target = entities.get("target", "")
+        tool = entities.get("tool", "")
+        
+        if "test" in action:
+            if "pytest" in tool or "python" in tool:
+                return "pytest tests/"
+            elif "maven" in tool:
+                return "mvn test"
+            else:
+                return "python -m pytest"
+        elif "build" in action:
+            if "maven" in tool:
+                return "mvn clean install"
+            elif "npm" in tool:
+                return "npm run build"
+            else:
+                return "make build"
+        elif "install" in action:
+            if "npm" in tool:
+                return "npm install"
+            elif "pip" in tool:
+                return "pip install -r requirements.txt"
+            else:
+                return "apt install"
+        elif "run" in action or "serwer" in target:
+            if "django" in tool:
+                return "python manage.py runserver"
+            elif "flask" in tool:
+                return "flask run"
+            else:
+                return "python main.py"
+        elif "debug" in action:
+            return "python -m pdb script.py"
+        elif "lint" in action:
+            if "python" in tool:
+                return "pylint src/"
+            elif "javascript" in tool:
+                return "eslint ."
+            else:
+                return "lint"
+        elif "version" in action:
+            if "node" in tool:
+                return "node --version"
+            elif "python" in tool:
+                return "python --version"
+            else:
+                return "version"
+        elif "logi" in target:
+            return "tail -f app.log"
+        elif "cache" in target:
+            return "rm -rf __pycache__"
+        elif "dokumentacja" in target:
+            return "sphinx-build -b html docs/"
+        
+        return f"# Development: {action}"
+
+    def _generate_security(self, entities: dict[str, Any]) -> str:
+        """Generate security command."""
+        action = entities.get("action", "")
+        target = entities.get("target", "")
+        
+        if "zalogowany" in target or "who" in action:
+            return "who"
+        elif "historia" in target or "logowań" in target:
+            return "last -n 10"
+        elif "uprawnienia" in target:
+            file_path = entities.get("file_path", "config.conf")
+            return f"ls -la {file_path}"
+        elif "suid" in target:
+            return "find / -perm -4000 -type f"
+        elif "firewall" in target:
+            return "iptables -L"
+        elif "bezpieczeństwa" in target:
+            return "tail -n 100 /var/log/auth.log"
+        elif "podejrzane" in target:
+            return "ps aux | grep -v '\\['"
+        elif "pakiety" in target:
+            return "dpkg -l | grep -i security"
+        elif "użytkownicy" in target:
+            return "cat /etc/passwd"
+        
+        return f"# Security: {action}"
 
     def _generate_docker(self, entities: dict[str, Any]) -> str:
         """Generate docker command."""
