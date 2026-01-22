@@ -477,6 +477,30 @@ class ShellAdapter(BaseDSLAdapter):
         action = entities.get("action", "")
         host = entities.get("host", "")
         port = entities.get("port", "")
+        
+        # Handle specific Polish patterns
+        if "połączenie" in str(action) or "ping" in action:
+            if host:
+                return f"ping -c 4 {host}"
+            else:
+                return "ping -c 4 google.com"
+        elif "port" in str(action) or "porty" in action:
+            if "otwarte" in str(action) or "nasłuchujące" in str(action):
+                return "netstat -tuln | grep LISTEN"
+            elif port:
+                return f"lsof -i :{port}"
+            else:
+                return "netstat -tuln"
+        elif "adres" in str(action) or "ip" in action:
+            return "ip addr show"
+        elif "konfiguracja" in str(action) or "config" in action:
+            return "ifconfig -a"
+        elif "urządzenia" in str(action) or "nmap" in action:
+            return "nmap -sn 192.168.1.0/24"
+        elif "prędkość" in str(action) or "speed" in action:
+            return "curl -o /dev/null -s -w '%{time_total}' http://speedtest.net"
+        elif "aktywne" in str(action) or "connections" in action:
+            return "ss -tulpn"
 
         if action == "ping":
             return f"ping -c 4 {shlex.quote(host)}"
@@ -495,6 +519,14 @@ class ShellAdapter(BaseDSLAdapter):
         """Generate disk command."""
         action = entities.get("action", "usage")
         path = entities.get("path", ".")
+        
+        # Handle specific Polish patterns
+        if "dysk" in str(action) or "miejsce" in str(action) or "usage" in str(action):
+            return "df -h"
+        elif "zdrowie" in str(action) or "health" in str(action):
+            return "fsck -n /dev/sda1"
+        elif "defragmentacja" in str(action) or "defrag" in action:
+            return "defrag /dev/sda1"
 
         if action == "usage":
             return f"df -h {path}"
@@ -511,6 +543,32 @@ class ShellAdapter(BaseDSLAdapter):
         target = entities.get("target", "")
         destination = entities.get("destination", "")
         fmt = entities.get("format", "tar.gz")
+        
+        # Handle specific Polish patterns
+        if "backup" in str(action) or "kopia" in str(action):
+            if "utwórz" in str(action) or "create" in str(action):
+                if "katalogu" in str(target) or "directory" in str(target):
+                    return f"tar -czf backup.tar.gz {target}"
+                else:
+                    return f"tar -czf backup.tar.gz {target}"
+            elif "skopiuj" in str(action) or "copy" in str(action):
+                return f"rsync -av {target} {destination}"
+            elif "odtwórz" in str(action) or "restore" in str(action):
+                return f"tar -xzf backup.tar.gz {target}"
+            elif "integralność" in str(action) or "integrity" in str(action):
+                return f"md5sum {target}"
+            elif "status" in str(action):
+                return f"ls -la {destination}"
+            elif "stare" in str(action) and "backupi" in str(target):
+                return f"find {destination} -mtime +7 -delete"
+            elif "rozmiar" in str(target) or "size" in str(target):
+                return f"du -sh {target}"
+            elif "harmonogram" in str(action) or "schedule" in str(action):
+                return "crontab -l"
+        elif "skompresuj" in str(action) or "compress" in action:
+            return f"tar -czf archive.tar.gz {target}"
+        elif "spakuj" in str(action) or "pack" in action:
+            return f"tar -czf {fmt} {target}"
 
         if action in ["compress", "pack", "spakuj"]:
             if fmt == "zip":
