@@ -131,10 +131,14 @@ class RuleBasedPipeline:
             warnings.append("No entities extracted from text")
         
         # Step 3: Generate command from template
+        # Add original text to entities for context-aware template selection
+        entities_with_text = extraction.entities.copy()
+        entities_with_text['text'] = text
+        
         template_result = self.generator.generate(
             domain=detection.domain,
             intent=detection.intent,
-            entities=extraction.entities,
+            entities=entities_with_text,
         )
         
         if not template_result.success:

@@ -62,10 +62,79 @@ class TemplateGenerator:
         'copy': "cp {flags} {source} {destination}",
         'move': "mv {source} {destination}",
         'remove': "rm {flags} {target}",
+        'remove_all': "find . -name '*.{extension}' -delete",
+        'create_dir': "mkdir {directory}",
+        'create_file': "touch {file}",
+        'rename': "mv {old_name} {new_name}",
+        'show_size': "du -h {file_path}",
         'archive_tar': "tar -czvf {archive} {source}",
         'extract_tar': "tar -xzvf {archive} {destination}",
         'archive_zip': "zip -r {archive} {source}",
         'extract_zip': "unzip {archive} -d {destination}",
+        # Polish-specific templates
+        'file_search': "find {path} -name '*.{extension}' -type f",
+        'file_content': "cat {file_path}",
+        'file_tail': "tail -{lines} {file_path}",
+        'file_size': "du -h {file_path}",
+        'file_rename': "mv {old_name} {new_name}",
+        'file_delete_all': "find . -name '*.{extension}' -delete",
+        'dir_create': "mkdir {directory}",
+        'process_monitor': "top -n 1",
+        'process_memory': "ps aux --sort=-%mem | head -10",
+        'process_cpu': "ps aux --sort=-%cpu | head -10",
+        'process_tree': "pstree",
+        'process_user': "ps aux | grep {user}",
+        'process_zombie': "ps aux | awk '{print $8}' | grep -v '^\\[' | sort | uniq -c",
+        'system_monitor': "htop",
+        'network_ping': "ping -c 4 {host}",
+        'network_port': "netstat -tuln | grep LISTEN",
+        'network_lsof': "lsof -i :{port}",
+        'network_ip': "ip addr show",
+        'network_config': "ifconfig -a",
+        'network_scan': "nmap -sn 192.168.1.0/24",
+        'network_speed': "curl -o /dev/null -s -w '%{time_total}' http://speedtest.net",
+        'network_connections': "ss -tulpn",
+        'disk_health': "fsck -n /dev/sda1",
+        'disk_defrag': "defrag /dev/sda1",
+        'backup_create': "tar -czf backup.tar.gz {source}",
+        'backup_copy': "rsync -av {source} {destination}",
+        'backup_restore': "tar -xzf backup.tar.gz {file}",
+        'backup_integrity': "md5sum {file}",
+        'backup_status': "ls -la {path}",
+        'backup_cleanup': "find {path} -mtime +7 -delete",
+        'backup_size': "du -sh {file}",
+        'backup_schedule': "crontab -l",
+        'system_update': "apt update && apt upgrade -y",
+        'system_clean': "rm -rf /tmp/*",
+        'system_logs': "tail -n 50 /var/log/syslog",
+        'system_cron': "systemctl status cron",
+        'dev_test': "pytest tests/",
+        'dev_build_maven': "mvn clean install",
+        'dev_install_npm': "npm install",
+        'dev_server': "python manage.py runserver",
+        'dev_version_node': "node --version",
+        'dev_lint': "pylint src/",
+        'dev_logs': "tail -f app.log",
+        'dev_debug': "python -m pdb script.py",
+        'dev_clean': "rm -rf __pycache__",
+        'dev_docs': "sphinx-build -b html docs/",
+        'security_who': "who",
+        'security_last': "last -n 10",
+        'security_permissions': "ls -la {file_path}",
+        'security_suid': "find / -perm -4000 -type f",
+        'security_firewall': "iptables -L",
+        'security_logs': "tail -n 100 /var/log/auth.log",
+        'security_suspicious': "ps aux | grep -v '\\['",
+        'security_packages': "dpkg -l | grep -i security",
+        'security_users': "cat /etc/passwd",
+        'process_kill': "kill -9 {pid}",
+        'process_background': "nohup {command} &",
+        'process_script': "./{script}",
+        'service_start': "systemctl start {service}",
+        'service_stop': "systemctl stop {service}",
+        'service_restart': "systemctl restart {service}",
+        'service_status': "systemctl status {service}",
+        'text_search_errors': "grep -i error {file}",
     }
     
     DOCKER_TEMPLATES: dict[str, str] = {
@@ -159,7 +228,9 @@ class TemplateGenerator:
         
         if not template:
             # Try to find alternative template
-            template = self._find_alternative_template(domain, intent, entities)
+            alternative_template = self._find_alternative_template(domain, intent, entities)
+            if alternative_template:
+                template = domain_templates.get(alternative_template)
         
         if not template:
             return TemplateResult(
@@ -200,7 +271,7 @@ class TemplateGenerator:
         intent: str,
         entities: dict[str, Any],
     ) -> Optional[str]:
-        """Find alternative template based on intent mapping."""
+        """Find alternative template based on intent mapping and context."""
         intent_aliases: dict[str, dict[str, str]] = {
             'sql': {
                 'data_retrieval': 'select',
@@ -211,7 +282,6 @@ class TemplateGenerator:
             'shell': {
                 'file_search': 'find',
                 'search': 'find',
-                'file_operation': 'list',
                 'process': 'process_list',
                 'process_monitoring': 'process_top',
                 'disk': 'disk_usage',
@@ -229,13 +299,31 @@ class TemplateGenerator:
             },
         }
         
+        # Special handling for shell file_operation - context-aware template selection
+        if domain == 'shell' and intent == 'file_operation':
+            # Check entities to determine the specific operation
+            text_lower = str(entities.get('text', '')).lower()
+            
+            if 'wszystkie' in text_lower or 'all' in text_lower:
+                return 'remove_all'  # For "usuń wszystkie pliki"
+            elif 'katalog' in text_lower or 'directory' in text_lower or 'utwórz' in text_lower:
+                return 'create_dir'  # For creating directories
+            elif 'zmień nazwę' in text_lower or 'rename' in text_lower:
+                return 'rename'  # For renaming files
+            elif 'rozmiar' in text_lower or 'size' in text_lower:
+                return 'show_size'  # For checking file size
+            elif 'skopiuj' in text_lower or 'copy' in text_lower:
+                return 'copy'  # For copying files
+            elif 'przenieś' in text_lower or 'move' in text_lower:
+                return 'move'  # For moving files
+            elif 'usuń' in text_lower or 'delete' in text_lower or 'remove' in text_lower:
+                return 'remove'  # For deleting files
+            else:
+                return 'list'  # Default fallback
+        
+        # Standard intent mapping
         domain_aliases = intent_aliases.get(domain, {})
-        aliased_intent = domain_aliases.get(intent)
-        
-        if aliased_intent:
-            return self.templates.get(domain, {}).get(aliased_intent)
-        
-        return None
+        return domain_aliases.get(intent)
     
     def _prepare_entities(
         self,
@@ -394,6 +482,140 @@ class TemplateGenerator:
         result.setdefault('flags', '')
         result.setdefault('target', '')
         result.setdefault('file', '')
+        
+        # Polish-specific defaults
+        if intent == 'file_search':
+            result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'py')))
+            result.setdefault('path', '.')
+        elif intent == 'file_content':
+            result.setdefault('file_path', entities.get('target', ''))
+        elif intent == 'file_tail':
+            result.setdefault('lines', '10')
+            result.setdefault('file_path', entities.get('target', ''))
+        elif intent == 'file_size':
+            result.setdefault('file_path', entities.get('target', ''))
+        elif intent == 'file_rename':
+            result.setdefault('old_name', entities.get('old_name', ''))
+            result.setdefault('new_name', entities.get('new_name', ''))
+        elif intent == 'file_delete_all':
+            result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
+        elif intent == 'dir_create':
+            result.setdefault('directory', entities.get('target', ''))
+        elif intent == 'remove_all':
+            result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
+        elif intent == 'process_monitor':
+            pass  # Uses top -n 1
+        elif intent == 'process_memory':
+            pass  # Uses ps aux --sort=-%mem | head -10
+        elif intent == 'process_cpu':
+            pass  # Uses ps aux --sort=-%cpu | head -10
+        elif intent == 'process_tree':
+            pass  # Uses pstree
+        elif intent == 'process_user':
+            result.setdefault('user', 'tom')
+        elif intent == 'process_zombie':
+            pass  # Uses ps aux | awk command
+        elif intent == 'system_monitor':
+            pass  # Uses htop
+        elif intent == 'network_ping':
+            result.setdefault('host', 'google.com')
+        elif intent == 'network_port':
+            pass  # Uses netstat -tuln | grep LISTEN
+        elif intent == 'network_lsof':
+            result.setdefault('port', '8080')
+        elif intent == 'network_ip':
+            pass  # Uses ip addr show
+        elif intent == 'network_config':
+            pass  # Uses ifconfig -a
+        elif intent == 'network_scan':
+            pass  # Uses nmap -sn 192.168.1.0/24
+        elif intent == 'network_speed':
+            pass  # Uses curl command
+        elif intent == 'network_connections':
+            pass  # Uses ss -tulpn
+        elif intent == 'disk_health':
+            pass  # Uses fsck -n /dev/sda1
+        elif intent == 'disk_defrag':
+            pass  # Uses defrag /dev/sda1
+        elif intent == 'backup_create':
+            result.setdefault('source', entities.get('target', '.'))
+        elif intent == 'backup_copy':
+            result.setdefault('source', entities.get('source', '.'))
+            result.setdefault('destination', entities.get('destination', '.'))
+        elif intent == 'backup_restore':
+            result.setdefault('file', entities.get('target', ''))
+        elif intent == 'backup_integrity':
+            result.setdefault('file', entities.get('target', 'backup.tar.gz'))
+        elif intent == 'backup_status':
+            result.setdefault('path', entities.get('path', '/backup'))
+        elif intent == 'backup_cleanup':
+            result.setdefault('path', entities.get('path', '/backup'))
+        elif intent == 'backup_size':
+            result.setdefault('file', entities.get('target', 'backup.tar.gz'))
+        elif intent == 'backup_schedule':
+            pass  # Uses crontab -l
+        elif intent == 'system_update':
+            pass  # Uses apt update && apt upgrade -y
+        elif intent == 'system_clean':
+            pass  # Uses rm -rf /tmp/*
+        elif intent == 'system_logs':
+            pass  # Uses tail -n 50 /var/log/syslog
+        elif intent == 'system_cron':
+            pass  # Uses systemctl status cron
+        elif intent == 'dev_test':
+            pass  # Uses pytest tests/
+        elif intent == 'dev_build_maven':
+            pass  # Uses mvn clean install
+        elif intent == 'dev_install_npm':
+            pass  # Uses npm install
+        elif intent == 'dev_server':
+            pass  # Uses python manage.py runserver
+        elif intent == 'dev_version_node':
+            pass  # Uses node --version
+        elif intent == 'dev_lint':
+            result.setdefault('path', 'src')
+        elif intent == 'dev_logs':
+            result.setdefault('file', 'app.log')
+        elif intent == 'dev_debug':
+            result.setdefault('script', 'script.py')
+        elif intent == 'dev_clean':
+            pass  # Uses rm -rf __pycache__
+        elif intent == 'dev_docs':
+            result.setdefault('path', 'docs')
+        elif intent == 'security_who':
+            pass  # Uses who
+        elif intent == 'security_last':
+            pass  # Uses last -n 10
+        elif intent == 'security_permissions':
+            result.setdefault('file_path', entities.get('file_path', 'config.conf'))
+        elif intent == 'security_suid':
+            pass  # Uses find / -perm -4000 -type f
+        elif intent == 'security_firewall':
+            pass  # Uses iptables -L
+        elif intent == 'security_logs':
+            pass  # Uses tail -n 100 /var/log/auth.log
+        elif intent == 'security_suspicious':
+            pass  # Uses ps aux | grep -v '\['
+        elif intent == 'security_packages':
+            pass  # Uses dpkg -l | grep -i security
+        elif intent == 'security_users':
+            pass  # Uses cat /etc/passwd
+        elif intent == 'process_kill':
+            result.setdefault('pid', 'PID')
+        elif intent == 'process_background':
+            result.setdefault('command', 'python script.py')
+        elif intent == 'process_script':
+            result.setdefault('script', entities.get('target', 'script.sh'))
+        elif intent == 'service_start':
+            result.setdefault('service', entities.get('service', 'nginx'))
+        elif intent == 'service_stop':
+            result.setdefault('service', entities.get('service', 'nginx'))
+        elif intent == 'service_restart':
+            result.setdefault('service', entities.get('service', 'apache2'))
+        elif intent == 'service_status':
+            result.setdefault('service', entities.get('service', 'docker'))
+        elif intent == 'text_search_errors':
+            result.setdefault('file', '/var/log/syslog')
         
         return result
     

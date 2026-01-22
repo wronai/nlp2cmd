@@ -63,36 +63,79 @@ class KeywordIntentDetector:
             'find': [
                 'znajdź plik', 'szukaj plik', 'find files', 'search files',
                 'locate', 'wyszukaj', 'gdzie jest', 'where is',
-                'find python', 'find log',
+                'find python', 'find log', 'znajdź pliki z rozszerzeniem',
+                'znajdź pliki większe niż', 'znajdź pliki zmodyfikowane',
+                'pokaż zawartość pliku', 'wyświetl plik', 'cat plik', 'odczytaj plik',
+                'pokaż ostatnie linii pliku', 'tail plik', 'koniec pliku'
             ],
             'list': [
                 'lista plików', 'pokaż katalog', 'ls', 'dir', 'wylistuj',
                 'zawartość katalogu', 'directory contents', 'folder contents',
+                'pokaż pliki', 'listuj pliki', 'wypisz pliki'
             ],
             'process': [
                 'procesy', 'ps', 'uruchomione procesy', 'running processes',
                 'działające procesy', 'top procesy', 'cpu', 'memory usage', 
                 'użycie pamięci', 'show processes', 'pokaż procesy',
+                'sprawdź procesy', 'procesy zużywające pamięć', 'procesy zużywające cpu',
+                'znajdź procesy', 'procesy użytkownika', 'zombie procesy', 'drzewo procesów',
+                'pokaż użycie cpu i pamięci', 'monitor systemowy', 'htop'
             ],
             'file_operation': [
                 'kopiuj', 'przenieś', 'usuń plik', 'copy', 'move', 'rm',
                 'skopiuj', 'mv', 'rename', 'zmień nazwę',
+                'skopiuj plik', 'przenieś plik', 'usuń plik', 'usuń wszystkie pliki',
+                'utwórz katalog', 'zmień nazwę pliku', 'zmień nazwę pliku na',
+                'sprawdź rozmiar pliku', 'rozmiar pliku', 'du plik', 'wielkość pliku'
             ],
             'disk': [
                 'miejsce na dysku', 'disk space', 'df', 'du', 'rozmiar',
                 'ile miejsca', 'how much space', 'wolne miejsce', 'free space',
+                'pokaż dysk', 'użycie dysku', 'miejsce na dysku', 'sprawdź miejsce na dysku',
+                'sprawdź dysk twardy', 'dysk twardy', 'zdrowie dysku', 'defragmentacja'
             ],
             'network': [
                 'ping', 'curl', 'wget', 'sieć', 'network', 'port',
                 'połączenie', 'connection', 'netstat',
+                'sprawdź połączenie', 'testuj łączność', 'pinguj', 'sprawdź ping',
+                'pokaż adres ip', 'adres ip', 'ip address', 'konfiguracja sieciowa',
+                'znajdź porty', 'otwarte porty', 'porty nasłuchujące', 'aktywne połączenia',
+                'znajdź urządzenia', 'skanuj sieć', 'nmap', 'prędkość internetu'
             ],
             'archive': [
                 'spakuj', 'rozpakuj', 'zip', 'tar', 'compress', 'extract',
                 'archiwum', 'archive', 'unzip', 'untar',
+                'utwórz backup', 'skompresuj', 'backup', 'kopia zapasowa',
+                'skopiuj backup', 'odtwórz z backupu', 'integralność backupu', 'status backupu',
+                'usuń stare backupi', 'rozmiar backupu', 'harmonogram backup'
             ],
             'grep': [
                 'grep', 'wyszukaj tekst', 'find text', 'szukaj w pliku',
                 'pattern', 'wzorzec', 'filtruj', 'filter',
+                'znajdź błędy', 'wyszukaj błędy', 'grep error', 'filtruj logi', 'przeglądaj logi'
+            ],
+            'system_maintenance': [
+                'aktualizacja', 'upgrade', 'czyszczenie', 'maintenance', 'update', 'clean',
+                'czyść cache', 'aktualizuj system', 'uruchom aktualizację', 'czyszczenie systemowe',
+                'sprawdź logi', 'logi systemowe', 'oczyszczanie plików tymczasowych', 'usuń stare pliki',
+                'sprawdź cron', 'status cron', 'uruchom defragmentację'
+            ],
+            'development': [
+                'test', 'build', 'compile', 'run', 'debug', 'lint', 'version', 'install',
+                'uruchom testy', 'testy jednostkowe', 'zbuduj projekt', 'maven', 'npm install',
+                'serwer deweloperski', 'uruchom serwer', 'debugger', 'linter', 'analiza kodu',
+                'logi aplikacji', 'czyszczenie cache', 'generuj dokumentację', 'wersja node'
+            ],
+            'security': [
+                'bezpieczeństwo', 'security', 'who', 'last', 'ssh', 'permissions', 'firewall',
+                'kto jest zalogowany', 'historia logowań', 'sesje ssh', 'uprawnienia pliku',
+                'pliki suid', 'firewall rules', 'logi bezpieczeństwa', 'podejrzane procesy',
+                'zainstalowane pakiety', 'użytkownicy systemu'
+            ],
+            'process_management': [
+                'zabij proces', 'uruchom proces', 'zatrzymaj proces', 'restartuj proces', 'uruchom ponownie',
+                'uruchom w tle', 'uruchom skrypt', 'zatrzymaj usługę', 'uruchom usługę', 'status usługi',
+                'sprawdź status', 'monitor systemowy', 'htop', 'top'
             ],
         },
         'docker': {
@@ -171,7 +214,9 @@ class KeywordIntentDetector:
     # Domain-specific boost keywords (increase confidence)
     DOMAIN_BOOSTERS: dict[str, list[str]] = {
         'sql': ['tabela', 'table', 'kolumna', 'column', 'baza', 'database', 'sql', 'where', 'join'],
-        'shell': ['plik', 'file', 'katalog', 'directory', 'folder', 'ścieżka', 'path', 'bash', 'terminal'],
+        'shell': ['plik', 'file', 'katalog', 'directory', 'folder', 'ścieżka', 'path', 'bash', 'terminal',
+                  'znajdź', 'skopiuj', 'usuń', 'utwórz', 'zmień', 'sprawdź', 'pokaż', 'uruchom', 'zatrzymaj',
+                  'proces', 'dysk', 'sieć', 'port', 'backup', 'logi', 'test', 'build', 'debug'],
         'docker': ['docker', 'kontener', 'container', 'obraz', 'image', 'compose', 'dockerfile'],
         'kubernetes': ['kubernetes', 'k8s', 'kubectl', 'pod', 'deployment', 'namespace', 'helm'],
         'dql': ['entity', 'graph', 'node', 'edge', 'relation'],
@@ -195,7 +240,7 @@ class KeywordIntentDetector:
     # Priority intents - check these first as they are more specific/destructive
     PRIORITY_INTENTS: dict[str, list[str]] = {
         'sql': ['delete', 'update', 'insert', 'aggregate'],
-        'shell': ['file_operation', 'archive', 'process', 'disk'],
+        'shell': ['file_operation', 'archive', 'process', 'disk', 'system_maintenance', 'development', 'security', 'process_management'],
         'docker': ['stop', 'prune', 'build', 'run', 'list', 'logs', 'exec'],
         'kubernetes': ['delete', 'scale', 'describe', 'logs'],
     }
@@ -265,6 +310,15 @@ class KeywordIntentDetector:
             for intent in priority_intents:
                 if intent not in self.patterns[domain]:
                     continue
+                
+                # Special handling: prefer shell for file operations when shell context is present
+                if domain == 'sql' and intent == 'delete':
+                    shell_boosters = self.DOMAIN_BOOSTERS.get('shell', [])
+                    shell_context = any(b.lower() in text_lower for b in shell_boosters)
+                    if shell_context:
+                        # Skip SQL delete intent when shell context is detected
+                        continue
+                
                 keywords = self.patterns[domain][intent]
                 for kw in keywords:
                     if kw.lower() in text_lower:
@@ -294,6 +348,14 @@ class KeywordIntentDetector:
             for intent, keywords in intents.items():
                 for kw in keywords:
                     if kw.lower() in text_lower:
+                        # Special handling: prefer shell for file operations when shell context is present
+                        if domain == 'sql' and intent == 'delete':
+                            shell_boosters = self.DOMAIN_BOOSTERS.get('shell', [])
+                            shell_context = any(b.lower() in text_lower for b in shell_boosters)
+                            if shell_context:
+                                # Skip SQL delete intent when shell context is detected
+                                continue
+                        
                         # Base confidence
                         confidence = 0.7
                         
