@@ -74,15 +74,19 @@ from nlp2cmd.generation.hybrid import (
 )
 
 # Iteration 10: Thermodynamic Optimization
-from nlp2cmd.generation.thermodynamic import (
-    ThermodynamicGenerator,
-    ThermodynamicResult,
-    OptimizationProblem,
-    SchedulingEnergy,
-    AllocationEnergy,
-    HybridThermodynamicGenerator,
-    create_thermodynamic_generator,
-)
+_THERMODYNAMIC_AVAILABLE = True
+try:
+    from nlp2cmd.generation.thermodynamic import (
+        ThermodynamicGenerator,
+        ThermodynamicResult,
+        OptimizationProblem,
+        SchedulingEnergy,
+        AllocationEnergy,
+        HybridThermodynamicGenerator,
+        create_thermodynamic_generator,
+    )
+except ImportError:
+    _THERMODYNAMIC_AVAILABLE = False
 
 __all__ = [
     # Iteration 1-3: Rule-based
@@ -133,12 +137,18 @@ __all__ = [
     "HybridStats",
     "AdaptiveHybridGenerator",
     "create_hybrid_generator",
-    # Iteration 10: Thermodynamic
-    "ThermodynamicGenerator",
-    "ThermodynamicResult",
-    "OptimizationProblem",
-    "SchedulingEnergy",
-    "AllocationEnergy",
-    "HybridThermodynamicGenerator",
-    "create_thermodynamic_generator",
 ]
+
+if _THERMODYNAMIC_AVAILABLE:
+    __all__.extend(
+        [
+            # Iteration 10: Thermodynamic
+            "ThermodynamicGenerator",
+            "ThermodynamicResult",
+            "OptimizationProblem",
+            "SchedulingEnergy",
+            "AllocationEnergy",
+            "HybridThermodynamicGenerator",
+            "create_thermodynamic_generator",
+        ]
+    )

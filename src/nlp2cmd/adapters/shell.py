@@ -78,7 +78,7 @@ class ShellAdapter(BaseDSLAdapter):
 
     INTENTS = {
         "file_search": {
-            "patterns": ["znajdź plik", "szukaj", "find", "search", "locate", "show files", "list files"],
+            "patterns": ["znajdź plik", "znajdź", "znajdz", "szukaj", "find", "search", "locate", "show files", "list files"],
             "required_entities": ["target"],
             "optional_entities": ["filters", "scope"],
         },

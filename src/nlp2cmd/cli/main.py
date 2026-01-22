@@ -35,6 +35,33 @@ from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 console = Console()
 
 
+class NLP2CMDGroup(click.Group):
+    def parse_args(self, ctx: click.Context, args: list[str]):
+        if args:
+            first = args[0]
+            if not first.startswith("-") and self.get_command(ctx, first) is None:
+                text_parts: list[str] = []
+                option_parts: list[str] = []
+                seen_option = False
+                for a in args:
+                    if not seen_option and a.startswith("-"):
+                        seen_option = True
+                    if seen_option:
+                        option_parts.append(a)
+                    else:
+                        text_parts.append(a)
+
+                query_text = " ".join(text_parts).strip()
+
+                rewritten: list[str] = []
+                rewritten.extend(option_parts)
+                if query_text:
+                    rewritten.extend(["--query", query_text])
+                args = rewritten
+
+        return super().parse_args(ctx, args)
+
+
 def _shell_env_context(context: dict[str, Any]) -> dict[str, Any]:
     os_info = context.get("os") or {}
     shell_info = context.get("shell") or {}
@@ -343,7 +370,7 @@ class InteractiveSession:
                     console.print(f"Applied: {fixed[:60]}...")
 
 
-@click.group(invoke_without_command=True)
+@click.group(cls=NLP2CMDGroup, invoke_without_command=True)
 @click.option("-i", "--interactive", is_flag=True, help="Start interactive mode")
 @click.option(
     "-d", "--dsl",
@@ -352,7 +379,6 @@ class InteractiveSession:
     help="DSL type"
 )
 @click.option("-q", "--query", help="Single query to process")
-@click.argument("text", required=False)
 @click.option("--auto-repair", is_flag=True, help="Auto-apply repairs")
 @click.option("--explain", is_flag=True, help="Explain how the result was produced")
 @click.pass_context
@@ -361,7 +387,6 @@ def main(
     interactive: bool,
     dsl: str,
     query: Optional[str],
-    text: Optional[str],
     auto_repair: bool,
     explain: bool,
 ):
@@ -371,10 +396,9 @@ def main(
     ctx.obj["auto_repair"] = auto_repair
 
     if ctx.invoked_subcommand is None:
-        query_text = query or text
-        if query_text:
+        if query:
             if dsl == "auto":
-                result = asyncio.run(HybridThermodynamicGenerator().generate(query_text, context={}))
+                result = asyncio.run(HybridThermodynamicGenerator().generate(query, context={}))
                 if result["source"] == "thermodynamic":
                     tr = result["result"]
                     console.print(tr.decoded_output or "")
@@ -404,7 +428,7 @@ def main(
                         console.print(f"Latency: {hr.latency_ms:.1f}ms")
             else:
                 session = InteractiveSession(dsl=dsl, auto_repair=auto_repair)
-                feedback = session.process(query_text)
+                feedback = session.process(query)
                 session.display_feedback(feedback)
         elif interactive:
             session = InteractiveSession(dsl=dsl, auto_repair=auto_repair)

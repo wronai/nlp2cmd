@@ -105,6 +105,8 @@ class KubernetesAdapter(BaseDSLAdapter):
     RESOURCE_SHORTCUTS = {
         "po": "pods",
         "pod": "pods",
+        "pody": "pods",  # Polish
+        "podów": "pods",  # Polish genitive
         "svc": "services",
         "service": "services",
         "deploy": "deployments",
@@ -116,11 +118,15 @@ class KubernetesAdapter(BaseDSLAdapter):
         "secret": "secrets",
         "ing": "ingress",
         "ns": "namespaces",
+        "namespace": "namespaces",
+        "przestrzeń": "namespaces",  # Polish
+        "przestrzeni": "namespaces",  # Polish genitive
         "pv": "persistentvolumes",
         "pvc": "persistentvolumeclaims",
         "sa": "serviceaccounts",
         "no": "nodes",
         "node": "nodes",
+        "węzły": "nodes",  # Polish
         "job": "jobs",
         "cj": "cronjobs",
     }

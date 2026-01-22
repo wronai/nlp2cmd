@@ -229,6 +229,24 @@ class KeywordIntentDetector:
                             matched_keyword=kw,
                         )
         
+        # Fast-path: if the user explicitly uses kubernetes terms, prefer k8s intents
+        # (prevents shell keywords like 'pokaż' from dominating).
+        k8s_boosters = self.DOMAIN_BOOSTERS.get('kubernetes', [])
+        if any(booster.lower() in text_lower for booster in k8s_boosters):
+            k8s_intents = self.patterns.get('kubernetes', {})
+            for intent, keywords in k8s_intents.items():
+                for kw in keywords:
+                    if kw.lower() in text_lower:
+                        confidence = 0.9
+                        keyword_length_bonus = min(len(kw) / 25, 0.05)
+                        confidence = min(confidence + keyword_length_bonus, 0.95)
+                        return DetectionResult(
+                            domain='kubernetes',
+                            intent=intent,
+                            confidence=confidence,
+                            matched_keyword=kw,
+                        )
+        
         best_match: Optional[DetectionResult] = None
         best_score = 0.0
         
