@@ -1,0 +1,15 @@
+# Requirements for thermodynamic optimization features
+numpy>=1.24.0
+scipy>=1.10.0
+matplotlib>=3.7.0
+
+# Core dependencies (minimal)
+pyyaml>=6.0
+pydantic>=2.0
+rich>=13.0
+click>=8.0
+httpx>=0.25.0
+jinja2>=3.0
+jsonschema>=4.0
+python-dotenv>=1.0
+watchdog>=3.0

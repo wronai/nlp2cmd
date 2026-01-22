@@ -73,6 +73,17 @@ from nlp2cmd.generation.hybrid import (
     create_hybrid_generator,
 )
 
+# Iteration 10: Thermodynamic Optimization
+from nlp2cmd.generation.thermodynamic import (
+    ThermodynamicGenerator,
+    ThermodynamicResult,
+    OptimizationProblem,
+    SchedulingEnergy,
+    AllocationEnergy,
+    HybridThermodynamicGenerator,
+    create_thermodynamic_generator,
+)
+
 __all__ = [
     # Iteration 1-3: Rule-based
     "KeywordIntentDetector",
@@ -122,4 +133,12 @@ __all__ = [
     "HybridStats",
     "AdaptiveHybridGenerator",
     "create_hybrid_generator",
+    # Iteration 10: Thermodynamic
+    "ThermodynamicGenerator",
+    "ThermodynamicResult",
+    "OptimizationProblem",
+    "SchedulingEnergy",
+    "AllocationEnergy",
+    "HybridThermodynamicGenerator",
+    "create_thermodynamic_generator",
 ]

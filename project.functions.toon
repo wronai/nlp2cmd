@@ -1,13 +1,18 @@
 project: nlp2cmd
-generated: "2026-01-22T21:06:31.917560"
-modules[69]{path,lang,items}:
+generated: "2026-01-22T21:24:54.877057"
+modules[80]{path,lang,items}:
+  termo.py,python,4
   tests/conftest.py,python,19
   tests/__init__.py,python,0
   tests/iterative/test_iter_2_regex.py,python,41
+  tests/iterative/test_iter_6_7_structured.py,python,38
+  tests/iterative/test_iter_9_hybrid.py,python,32
   tests/iterative/test_iter_3_templates.py,python,43
   tests/iterative/__init__.py,python,0
+  tests/iterative/test_iter_10_thermodynamic.py,python,32
   tests/iterative/test_iter_0_baseline.py,python,25
   tests/iterative/test_iter_1_keywords.py,python,40
+  tests/iterative/test_iter_4_5_llm.py,python,32
   tests/unit/test_core_comprehensive.py,python,34
   tests/unit/test_thermodynamic.py,python,30
   tests/unit/test_adapters.py,python,21
@@ -30,13 +35,19 @@ modules[69]{path,lang,items}:
   tests/integration/__init__.py,python,0
   tests/integration/test_workflows.py,python,28
   src/nlp2cmd/__init__.py,python,0
-  src/nlp2cmd/core.py,python,23
+  src/nlp2cmd/core.py,python,24
   src/nlp2cmd/schemas/__init__.py,python,23
   src/nlp2cmd/generation/regex.py,python,10
   src/nlp2cmd/generation/keywords.py,python,7
+  src/nlp2cmd/generation/thermodynamic.py,python,21
   src/nlp2cmd/generation/__init__.py,python,0
   src/nlp2cmd/generation/templates.py,python,14
   src/nlp2cmd/generation/pipeline.py,python,16
+  src/nlp2cmd/generation/llm_multi.py,python,11
+  src/nlp2cmd/generation/validating.py,python,9
+  src/nlp2cmd/generation/hybrid.py,python,15
+  src/nlp2cmd/generation/llm_simple.py,python,17
+  src/nlp2cmd/generation/structured.py,python,7
   src/nlp2cmd/validators/__init__.py,python,13
   src/nlp2cmd/planner/__init__.py,python,7
   src/nlp2cmd/cli/__init__.py,python,0
@@ -72,6 +83,12 @@ modules[69]{path,lang,items}:
   examples/validation/config_validation.py,python,3
 
 function_details:
+  termo.py:
+    functions[4]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_hybrid,function,() -> None,15-41,true,27,2,Demonstracja generatora hybrydowego.
+      demo_thermodynamic,function,() -> None,44-69,true,26,3,Demonstracja generatora termodynamicznego.
+      demo_complete_hybrid,function,() -> None,72-99,true,28,3,Demonstracja pełnego generatora hybrydowego.
+      main,function,() -> None,102-112,true,11,1,Główna funkcja demonstracyjna.
   tests/conftest.py:
     functions[19]{name,kind,sig,loc,async,lines,cc,does}:
       sql_adapter,function,() -> None,25-36,false,12,1,Provide a configured SQL adapter.
@@ -136,6 +153,80 @@ function_details:
       TestRegexAccuracy.extractor,method,() -> RegexEntityExtractor,334-335,false,2,1,extractor
       TestRegexAccuracy.test_eval_case,method,"(extractor, test_case) -> None",338-352,false,15,6,Test individual evaluation case.
       TestRegexAccuracy.test_overall_extraction_rate,method,(extractor) -> None,354-375,false,22,6,Calculate overall entity extraction rate.
+  tests/iterative/test_iter_6_7_structured.py:
+    functions[38]{name,kind,sig,loc,async,lines,cc,does}:
+      TestStructuredPlan.test_create_plan,method,() -> None,34-45,false,12,1,Test creating a structured plan.
+      TestStructuredPlan.test_to_adapter_plan,method,() -> None,47-60,false,14,1,Test conversion to adapter format.
+      TestStructuredLLMPlanner.planner,method,() -> StructuredLLMPlanner,67-76,false,10,1,planner
+      TestStructuredLLMPlanner.test_plan_returns_structured,method,(planner) -> None,79-84,true,6,1,Test that plan returns structured result.
+      TestStructuredLLMPlanner.test_plan_with_context,method,(planner) -> None,87-94,true,8,1,Test planning with context.
+      TestStructuredLLMPlanner.test_parse_response_valid_json,method,(planner) -> None,96-108,false,13,1,Test parsing valid JSON response.
+      TestStructuredLLMPlanner.test_parse_response_with_markdown,method,(planner) -> None,110-124,false,15,1,Test parsing JSON with markdown wrapper.
+      TestStructuredLLMPlanner.test_parse_response_missing_domain_raises,method,(planner) -> None,126-134,false,9,1,Test that missing domain raises error.
+      TestMultiStepPlan.test_create_multi_step_plan,method,() -> None,140-153,false,14,1,Test creating multi-step plan.
+      TestMultiStepPlan.test_execution_order,method,() -> None,155-172,false,18,1,Test execution order with dependencies.
+      TestPlanSchema.test_schema_has_required_fields,method,() -> None,178-182,false,5,1,Test schema has required fields.
+      TestPlanSchema.test_schema_domain_enum,method,() -> None,184-188,false,5,1,Test domain enum values.
+      TestSimpleSQLValidator.validator,method,() -> SimpleSQLValidator,195-196,false,2,1,validator
+      TestSimpleSQLValidator.test_valid_select,method,(validator) -> None,198-202,false,5,1,Test valid SELECT is accepted.
+      TestSimpleSQLValidator.test_unbalanced_parentheses,method,(validator) -> None,204-208,false,5,2,Test unbalanced parentheses detected.
+      TestSimpleSQLValidator.test_unclosed_string,method,(validator) -> None,210-214,false,5,2,Test unclosed string detected.
+      TestSimpleSQLValidator.test_delete_without_where_warning,method,(validator) -> None,216-220,false,5,2,Test DELETE without WHERE generates warning.
+      TestSimpleSQLValidator.test_update_without_where_warning,method,(validator) -> None,222-226,false,5,2,Test UPDATE without WHERE generates warning.
+      TestSimpleShellValidator.validator,method,() -> SimpleShellValidator,233-234,false,2,1,validator
+      TestSimpleShellValidator.test_valid_find,method,(validator) -> None,236-239,false,4,1,Test valid find command.
+      TestSimpleShellValidator.test_dangerous_rm_rf,method,(validator) -> None,241-245,false,5,2,Test rm -rf / is blocked.
+      TestSimpleShellValidator.test_sudo_warning,method,(validator) -> None,247-251,false,5,2,Test sudo generates warning.
+      TestSimpleShellValidator.test_unclosed_quote,method,(validator) -> None,253-256,false,4,1,Test unclosed quote detected.
+      TestSimpleDockerValidator.validator,method,() -> SimpleDockerValidator,263-264,false,2,1,validator
+      TestSimpleDockerValidator.test_valid_docker_ps,method,(validator) -> None,266-269,false,4,1,Test valid docker ps.
+      TestSimpleDockerValidator.test_non_docker_command,method,(validator) -> None,271-274,false,4,1,Test non-docker command rejected.
+      TestSimpleDockerValidator.test_privileged_warning,method,(validator) -> None,276-280,false,5,2,Test privileged mode warning.
+      TestSimpleKubernetesValidator.validator,method,() -> SimpleKubernetesValidator,287-288,false,2,1,validator
+      TestSimpleKubernetesValidator.test_valid_get_pods,method,(validator) -> None,290-293,false,4,1,Test valid kubectl get pods.
+      TestSimpleKubernetesValidator.test_non_kubectl_command,method,(validator) -> None,295-298,false,4,1,Test non-kubectl command rejected.
+      TestSimpleKubernetesValidator.test_delete_in_kube_system,method,(validator) -> None,300-304,false,5,2,Test delete in kube-system blocked.
+      TestCreateDefaultValidators.test_creates_all_validators,method,() -> None,310-317,false,8,1,Test all domain validators are created.
+      TestCreateDefaultValidators.test_validators_work,method,() -> None,319-324,false,6,1,Test created validators are functional.
+      TestValidatingGenerator.generator,method,() -> ValidatingGenerator,331-335,false,5,1,generator
+      TestValidatingGenerator.test_generate_valid_sql,method,(generator) -> None,338-343,true,6,1,Test generating valid SQL.
+      TestValidatingGenerator.test_tracks_attempts,method,(generator) -> None,346-351,true,6,1,Test that attempts are tracked.
+      TestValidationResult.test_valid_result,method,() -> None,357-361,false,5,1,Test valid result.
+      TestValidationResult.test_invalid_with_errors,method,() -> None,363-373,false,11,1,Test invalid result with errors.
+  tests/iterative/test_iter_9_hybrid.py:
+    functions[32]{name,kind,sig,loc,async,lines,cc,does}:
+      TestHybridResult.test_rules_result,method,() -> None,25-38,false,14,1,Test result from rules.
+      TestHybridResult.test_llm_result,method,() -> None,40-55,false,16,1,Test result from LLM.
+      TestHybridStats.test_empty_stats,method,() -> None,61-67,false,7,1,Test empty statistics.
+      TestHybridStats.test_rule_hit_rate,method,() -> None,69-77,false,9,1,Test rule hit rate calculation.
+      TestHybridStats.test_cost_savings,method,() -> None,79-86,false,8,1,Test cost savings calculation.
+      TestHybridStats.test_to_dict,method,() -> None,88-102,false,15,1,Test conversion to dict.
+      TestHybridGenerator.rules_only,method,() -> HybridGenerator,109-115,false,7,1,Generator with rules only (no LLM).
+      TestHybridGenerator.with_llm,method,() -> HybridGenerator,118-124,false,7,1,Generator with LLM fallback.
+      TestHybridGenerator.test_high_confidence_uses_rules,method,(with_llm) -> None,127-133,true,7,1,Test that high confidence queries use rules.
+      TestHybridGenerator.test_low_confidence_falls_back,method,(with_llm) -> None,136-145,true,10,1,Test that low confidence falls back to LLM.
+      TestHybridGenerator.test_force_llm_bypasses_rules,method,(with_llm) -> None,148-155,true,8,1,Test that force_llm bypasses rules.
+      TestHybridGenerator.test_no_llm_returns_rules_anyway,method,(rules_only) -> None,158-164,true,7,2,"Test that without LLM, rules result is returned."
+      TestHybridGenerator.test_stats_tracking,method,(with_llm) -> None,167-175,true,9,1,Test statistics are tracked.
+      TestHybridGenerator.test_reset_stats,method,(with_llm) -> None,178-184,true,7,1,Test statistics reset.
+      TestHybridGenerator.test_set_threshold,method,(with_llm) -> None,186-189,false,4,1,Test setting confidence threshold.
+      TestHybridGeneratorRuleConditions.generator,method,() -> HybridGenerator,196-201,false,6,1,generator
+      TestHybridGeneratorRuleConditions.test_sql_with_table_uses_rules,method,(generator) -> None,204-209,true,6,1,Test SQL with table entity uses rules.
+      TestHybridGeneratorRuleConditions.test_docker_with_container_uses_rules,method,(generator) -> None,212-217,true,6,1,Test Docker with container uses rules.
+      TestHybridGeneratorRuleConditions.test_k8s_with_resource_uses_rules,method,(generator) -> None,220-225,true,6,1,Test K8s with resource type uses rules.
+      TestHybridGeneratorBatch.generator,method,() -> HybridGenerator,232-236,false,5,1,generator
+      TestHybridGeneratorBatch.test_batch_processing,method,(generator) -> None,239-250,true,12,2,Test batch generation.
+      TestAdaptiveHybridGenerator.generator,method,() -> AdaptiveHybridGenerator,257-265,false,9,1,generator
+      TestAdaptiveHybridGenerator.test_initial_threshold,method,(generator) -> None,267-269,false,3,1,Test initial threshold is set.
+      TestAdaptiveHybridGenerator.test_adapt_threshold_down,method,(generator) -> None,271-278,false,8,2,Test threshold decreases with good accuracy.
+      TestAdaptiveHybridGenerator.test_adapt_threshold_up,method,(generator) -> None,280-287,false,8,2,Test threshold increases with poor accuracy.
+      TestAdaptiveHybridGenerator.test_threshold_bounds,method,(generator) -> None,289-301,false,13,3,Test threshold stays within bounds.
+      TestCreateHybridGenerator.test_create_without_llm,method,() -> None,307-312,false,6,1,Test creating generator without LLM.
+      TestCreateHybridGenerator.test_create_with_llm,method,() -> None,314-320,false,7,1,Test creating generator with LLM.
+      TestCreateHybridGenerator.test_create_custom_threshold,method,() -> None,322-326,false,5,1,Test creating with custom threshold.
+      TestHybridPerformance.generator,method,() -> HybridGenerator,333-334,false,2,1,generator
+      TestHybridPerformance.test_rules_faster_than_threshold,method,(generator) -> None,337-343,true,7,2,Test rules path is fast (<10ms).
+      TestHybridPerformance.test_batch_throughput,method,(generator) -> None,346-363,true,18,3,Test batch processing throughput.
   tests/iterative/test_iter_3_templates.py:
     functions[43]{name,kind,sig,loc,async,lines,cc,does}:
       TestTemplateGenerator.generator,method,() -> TemplateGenerator,23-24,false,2,1,generator
@@ -181,6 +272,40 @@ function_details:
       TestPipelineAccuracy.pipeline,method,() -> RuleBasedPipeline,579-580,false,2,1,pipeline
       TestPipelineAccuracy.test_eval_case,method,"(pipeline, text, expected_domain, expected_contains) -> None",583-592,false,10,2,Test individual evaluation case.
       TestPipelineAccuracy.test_overall_accuracy,method,(pipeline) -> None,594-619,false,26,5,Calculate overall end-to-end accuracy.
+  tests/iterative/test_iter_10_thermodynamic.py:
+    functions[32]{name,kind,sig,loc,async,lines,cc,does}:
+      TestOptimizationProblem.test_create_scheduling_problem,method,() -> None,32-44,false,13,1,Test creating scheduling problem.
+      TestOptimizationProblem.test_to_condition,method,() -> None,46-59,false,14,1,Test conversion to condition dict.
+      TestSchedulingEnergy.energy,method,() -> SchedulingEnergy,66-67,false,2,1,energy
+      TestSchedulingEnergy.test_no_overlap_low_energy,method,(energy) -> None,69-80,false,12,1,Test that non-overlapping schedule has low energy.
+      TestSchedulingEnergy.test_overlap_high_energy,method,(energy) -> None,82-93,false,12,1,Test that overlapping schedule has high energy.
+      TestSchedulingEnergy.test_deadline_violation_penalty,method,(energy) -> None,95-105,false,11,1,Test deadline violation increases energy.
+      TestSchedulingEnergy.test_gradient_shape,method,(energy) -> None,107-112,false,6,1,Test gradient has correct shape.
+      TestSchedulingEnergy.test_decode_assignments,method,(energy) -> None,114-126,false,13,1,Test decoding z to assignments.
+      TestAllocationEnergy.energy,method,() -> AllocationEnergy,133-134,false,2,1,energy
+      TestAllocationEnergy.test_feasible_low_energy,method,(energy) -> None,136-147,false,12,1,Test feasible allocation has low energy.
+      TestAllocationEnergy.test_capacity_violation_high_energy,method,(energy) -> None,149-160,false,12,1,Test capacity violation increases energy.
+      TestAllocationEnergy.test_decode_allocation,method,(energy) -> None,162-170,false,9,1,Test decoding z to allocation matrix.
+      TestThermodynamicGenerator.generator,method,() -> ThermodynamicGenerator,177-178,false,2,1,generator
+      TestThermodynamicGenerator.test_generate_scheduling,method,(generator) -> None,181-189,true,9,1,Test generating scheduling solution.
+      TestThermodynamicGenerator.test_generate_with_problem,method,(generator) -> None,192-202,true,11,1,Test generating with pre-parsed problem.
+      TestThermodynamicGenerator.test_result_has_energy_estimate,method,(generator) -> None,205-210,true,6,1,Test result includes energy estimate.
+      TestThermodynamicGenerator.test_rule_based_parse,method,(generator) -> None,212-219,false,8,1,Test rule-based problem parsing.
+      TestThermodynamicGenerator.test_format_output_scheduling,method,(generator) -> None,221-229,false,9,1,Test output formatting for scheduling.
+      TestThermodynamicResult.test_create_result,method,() -> None,235-251,false,17,1,Test creating result.
+      TestThermodynamicResult.test_result_with_errors,method,() -> None,253-269,false,17,1,Test result with errors.
+      TestLangevinSamplerIntegration.test_sampling_scheduling,method,() -> None,275-284,false,10,1,Test sampling with scheduling energy.
+      TestLangevinSamplerIntegration.test_multiple_samples_voting,method,() -> None,286-298,false,13,2,Test sampling multiple and voting.
+      TestThermodynamicRouter.router,method,() -> ThermodynamicRouter,305-306,false,2,1,router
+      TestThermodynamicRouter.test_route_scheduling_to_langevin,method,(router) -> None,308-311,false,4,1,Test scheduling routes to Langevin.
+      TestThermodynamicRouter.test_route_query_to_classic,method,(router) -> None,313-316,false,4,1,Test query routes to classic.
+      TestThermodynamicRouter.test_complexity_estimation,method,(router) -> None,318-325,false,8,1,Test complexity estimation.
+      TestEnergyEstimator.test_estimate_savings,method,() -> None,331-343,false,13,1,Test energy savings estimation.
+      TestCreateThermodynamicGenerator.test_create_default,method,() -> None,349-354,false,6,1,Test creating with defaults.
+      TestCreateThermodynamicGenerator.test_create_custom,method,() -> None,356-364,false,9,1,Test creating with custom params.
+      TestThermodynamicPerformance.generator,method,() -> ThermodynamicGenerator,371-372,false,2,1,generator
+      TestThermodynamicPerformance.test_latency_reasonable,method,(generator) -> None,375-379,true,5,1,Test latency is reasonable (<1s for small problems).
+      TestThermodynamicPerformance.test_convergence,method,(generator) -> None,382-387,true,6,2,Test that sampler converges.
   tests/iterative/test_iter_0_baseline.py:
     functions[25]{name,kind,sig,loc,async,lines,cc,does}:
       TestBaselineAdapters.test_sql_select_basic,method,() -> None,26-41,false,16,1,Test basic SELECT generation.
@@ -250,6 +375,40 @@ function_details:
       TestKeywordAccuracy.detector,method,() -> KeywordIntentDetector,369-370,false,2,1,detector
       TestKeywordAccuracy.test_eval_case,method,"(detector, text, expected_domain, expected_intent) -> None",373-380,false,8,1,Test individual evaluation case.
       TestKeywordAccuracy.test_overall_accuracy,method,(detector) -> None,382-405,false,24,4,Calculate overall accuracy on dataset.
+  tests/iterative/test_iter_4_5_llm.py:
+    functions[32]{name,kind,sig,loc,async,lines,cc,does}:
+      TestMockLLMClient.mock,method,() -> MockLLMClient,31-32,false,2,1,mock
+      TestMockLLMClient.test_mock_returns_sql_for_users,method,(mock) -> None,35-39,true,5,1,Test mock returns SQL for user queries.
+      TestMockLLMClient.test_mock_returns_find_for_files,method,(mock) -> None,42-45,true,4,1,Test mock returns find for file queries.
+      TestMockLLMClient.test_mock_tracks_calls,method,(mock) -> None,48-52,true,5,1,Test mock tracks call count.
+      TestMockLLMClient.test_mock_custom_responses,method,() -> None,55-61,true,7,1,Test mock with custom responses.
+      TestSimpleLLMSQLGenerator.generator,method,() -> SimpleLLMSQLGenerator,68-69,false,2,1,generator
+      TestSimpleLLMSQLGenerator.test_generate_select,method,(generator) -> None,72-78,true,7,1,Test basic SELECT generation.
+      TestSimpleLLMSQLGenerator.test_generate_with_context,method,(generator) -> None,81-88,true,8,1,Test generation with schema context.
+      TestSimpleLLMSQLGenerator.test_extract_sql_from_markdown,method,(generator) -> None,91-99,true,9,1,Test SQL extraction from markdown code blocks.
+      TestSimpleLLMSQLGenerator.test_system_prompt_includes_tables,method,() -> None,101-108,false,8,1,Test that system prompt includes default tables.
+      TestSimpleLLMSQLGenerator.test_custom_schema_in_prompt,method,() -> None,110-118,false,9,1,Test custom schema in system prompt.
+      TestSimpleLLMShellGenerator.generator,method,() -> SimpleLLMShellGenerator,125-126,false,2,1,generator
+      TestSimpleLLMShellGenerator.test_generate_find,method,(generator) -> None,129-134,true,6,1,Test find command generation.
+      TestSimpleLLMDockerGenerator.generator,method,() -> SimpleLLMDockerGenerator,141-142,false,2,1,generator
+      TestSimpleLLMDockerGenerator.test_generate_ps,method,(generator) -> None,145-150,true,6,1,Test docker ps generation.
+      TestSimpleLLMKubernetesGenerator.generator,method,() -> SimpleLLMKubernetesGenerator,157-158,false,2,1,generator
+      TestSimpleLLMKubernetesGenerator.test_generate_get_pods,method,(generator) -> None,161-166,true,6,1,Test kubectl get pods generation.
+      TestLLMDomainRouter.router,method,() -> LLMDomainRouter,173-180,false,8,1,router
+      TestLLMDomainRouter.test_route_to_sql,method,(router) -> None,183-187,true,5,1,Test routing to SQL domain.
+      TestLLMDomainRouter.test_route_returns_confidence,method,(router) -> None,190-194,true,5,1,Test that routing returns confidence.
+      TestMultiDomainGenerator.generator,method,() -> MultiDomainGenerator,201-202,false,2,1,generator
+      TestMultiDomainGenerator.test_generate_routes_correctly,method,(generator) -> None,205-213,true,9,1,Test that generation routes to correct domain.
+      TestMultiDomainGenerator.test_generate_unknown_domain,method,(generator) -> None,216-224,true,9,1,Test handling of unknown domain.
+      TestMultiDomainGenerator.test_generate_batch,method,(generator) -> None,227-232,true,6,1,Test batch generation.
+      TestMultiDomainGenerator.test_get_supported_domains,method,(generator) -> None,234-241,false,8,1,Test getting supported domains.
+      TestCachedMultiDomainGenerator.generator,method,() -> CachedMultiDomainGenerator,248-249,false,2,1,generator
+      TestCachedMultiDomainGenerator.test_caches_results,method,(generator) -> None,252-261,true,10,1,Test that results are cached.
+      TestCachedMultiDomainGenerator.test_cache_clear,method,(generator) -> None,264-270,true,7,1,Test cache clearing.
+      TestLLMGenerationResult.test_success_result,method,() -> None,276-286,false,11,1,Test successful result.
+      TestLLMGenerationResult.test_error_result,method,() -> None,288-299,false,12,1,Test error result.
+      TestLLMConfig.test_default_config,method,() -> None,305-311,false,7,1,Test default configuration.
+      TestLLMConfig.test_custom_config,method,() -> None,313-323,false,11,1,Test custom configuration.
   tests/unit/test_core_comprehensive.py:
     functions[34]{name,kind,sig,loc,async,lines,cc,does}:
       TestTransformResult.test_success_status,method,() -> None,26-38,false,13,1,Test successful transformation result.
@@ -853,7 +1012,7 @@ function_details:
       TestEndToEndWorkflow.test_sql_nlp_to_execution,method,() -> None,412-453,false,42,1,Test complete NLP to SQL execution flow.
       TestEndToEndWorkflow.test_docker_file_repair_flow,method,() -> None,455-474,false,20,1,Test Dockerfile repair end-to-end.
   src/nlp2cmd/core.py:
-    functions[23]{name,kind,sig,loc,async,lines,cc,does}:
+    functions[24]{name,kind,sig,loc,async,lines,cc,does}:
       TransformResult.is_success,method,() -> bool,90-92,false,3,1,Check if transformation was successful.
       TransformResult.is_blocked,method,() -> bool,95-97,false,3,1,Check if transformation was blocked by security policy.
       TransformResult.to_dict,method,"() -> dict[str, Any]",99-112,false,14,1,Convert result to dictionary.
@@ -869,14 +1028,15 @@ function_details:
       LLMBackend.client,method,() -> None,198-219,false,22,5,Lazy-load API client.
       LLMBackend.generate_plan,method,"(text:str, context:Optional[dict]=None) -> ExecutionPlan",221-256,false,36,4,Generate execution plan using LLM.
       RuleBasedBackend.__init__,method,"(rules:Optional[dict[str,list[str]]]=None, config:Optional[dict]=None) -> None",262-264,false,3,2,creates
-      RuleBasedBackend.extract_intent,method,"(text:str) -> tuple[str, float]",266-275,false,10,4,Extract intent using pattern matching.
-      NLP2CMD.__init__,method,"(adapter:BaseDSLAdapter, nlp_backend:Optional[NLPBackend]=None, validator:Optional[BaseValidator]=None, feedback_analyzer:Optional[FeedbackAnalyzer]=None, validation_mode:str='normal', auto_fix:bool=False) -> None",286-315,false,30,2,Initialize NLP2CMD instance.
-      NLP2CMD.dsl_name,method,() -> str,318-320,false,3,1,Get the name of the current DSL adapter.
-      NLP2CMD.transform,method,"(text:str, context:Optional[dict[str,Any]]=None, dry_run:bool=False) -> TransformResult",322-426,false,105,11,Transform natural language text into a DSL command.
-      NLP2CMD.set_context,method,"(key:str, value:Any) -> None",428-430,false,3,1,Set a context value for subsequent transformations.
-      NLP2CMD.clear_context,method,() -> None,432-434,false,3,1,Clear all context.
-      NLP2CMD.get_history,method,"() -> list[TransformResult]",436-438,false,3,1,Get transformation history.
-      NLP2CMD.clear_history,method,() -> None,440-442,false,3,1,Clear transformation history.
+      RuleBasedBackend.extract_entities,method,"(text:str) -> list[Entity]",266-300,false,35,10,Extract entities using simple pattern matching.
+      RuleBasedBackend.extract_intent,method,"(text:str) -> tuple[str, float]",302-326,false,25,9,Extract intent using pattern matching.
+      NLP2CMD.__init__,method,"(adapter:BaseDSLAdapter, nlp_backend:Optional[NLPBackend]=None, validator:Optional[BaseValidator]=None, feedback_analyzer:Optional[FeedbackAnalyzer]=None, validation_mode:str='normal', auto_fix:bool=False) -> None",337-377,false,41,3,Initialize NLP2CMD instance.
+      NLP2CMD.dsl_name,method,() -> str,380-382,false,3,1,Get the name of the current DSL adapter.
+      NLP2CMD.transform,method,"(text:str, context:Optional[dict[str,Any]]=None, dry_run:bool=False) -> TransformResult",384-488,false,105,11,Transform natural language text into a DSL command.
+      NLP2CMD.set_context,method,"(key:str, value:Any) -> None",490-492,false,3,1,Set a context value for subsequent transformations.
+      NLP2CMD.clear_context,method,() -> None,494-496,false,3,1,Clear all context.
+      NLP2CMD.get_history,method,"() -> list[TransformResult]",498-500,false,3,1,Get transformation history.
+      NLP2CMD.clear_history,method,() -> None,502-504,false,3,1,Clear transformation history.
   src/nlp2cmd/schemas/__init__.py:
     functions[23]{name,kind,sig,loc,async,lines,cc,does}:
       SchemaRegistry.__init__,method,() -> None,34-36,false,3,1,creates
@@ -923,6 +1083,29 @@ function_details:
       KeywordIntentDetector.add_pattern,method,"(domain:str, intent:str, keywords:list[str]) -> None",329-342,false,14,3,Add custom patterns.
       KeywordIntentDetector.get_supported_domains,method,"() -> list[str]",344-346,false,3,1,Get list of supported domains.
       KeywordIntentDetector.get_supported_intents,method,"(domain:str) -> list[str]",348-350,false,3,1,Get list of supported intents for a domain.
+  src/nlp2cmd/generation/thermodynamic.py:
+    functions[21]{name,kind,sig,loc,async,lines,cc,does}:
+      create_thermodynamic_generator,function,"(llm_client:Optional[LLMClient]=None, n_samples:int=5, n_steps:int=500) -> ThermodynamicGenerator",552-569,false,18,1,Factory function for thermodynamic generator.
+      OptimizationProblem.to_condition,method,"() -> dict[str, Any]",42-49,false,8,1,Convert to condition dict for Langevin sampler.
+      SchedulingEnergy.__init__,method,"(n_tasks:int, n_slots:int) -> None",87-89,false,3,1,creates
+      SchedulingEnergy.energy,method,"(z:Any, condition:dict[str,Any]) -> float",91-115,false,25,9,Compute scheduling energy.
+      SchedulingEnergy.gradient,method,"(z:Any, condition:dict[str,Any]) -> np.ndarray",117-128,false,12,2,Compute gradient numerically.
+      SchedulingEnergy._decode_assignments,method,"(z:Any) -> list[int]",130-145,false,16,3,Decode continuous z to discrete slot assignments.
+      SchedulingEnergy._softmax,method,"(x:Any) -> np.ndarray",147-150,false,4,1,Stable softmax.
+      AllocationEnergy.__init__,method,"(n_resources:int, n_consumers:int) -> None",167-169,false,3,1,creates
+      AllocationEnergy.energy,method,"(z:Any, condition:dict[str,Any]) -> float",171-204,false,34,10,Compute allocation energy.
+      AllocationEnergy.gradient,method,"(z:Any, condition:dict[str,Any]) -> np.ndarray",206-217,false,12,2,Compute gradient numerically.
+      AllocationEnergy._decode_allocation,method,"(z:Any) -> np.ndarray",219-228,false,10,2,Decode continuous z to allocation matrix.
+      ThermodynamicGenerator.__init__,method,"(llm_client:Optional[LLMClient]=None, langevin_config:Optional[LangevinConfig]=None, n_samples:int=5, voting_strategy:str='energy') -> None",254-276,false,23,3,creates
+      ThermodynamicGenerator.generate,method,"(text:str, problem:Optional[OptimizationProblem]=None) -> ThermodynamicResult",278-356,true,79,5,Generate solution for optimization problem.
+      ThermodynamicGenerator._parse_problem,method,"(text:str) -> OptimizationProblem",358-367,true,10,4,Parse problem from natural language.
+      ThermodynamicGenerator._plan_to_problem,method,"(plan:StructuredPlan) -> OptimizationProblem",369-380,false,12,1,Convert structured plan to optimization problem.
+      ThermodynamicGenerator._rule_based_parse,method,"(text:str) -> OptimizationProblem",382-414,false,33,15,Simple rule-based problem parsing.
+      ThermodynamicGenerator._create_energy_model,method,"(problem:OptimizationProblem) -> EnergyModel",416-432,false,17,4,Create appropriate energy model for problem.
+      ThermodynamicGenerator._decode_solution,method,"(result:SamplerResult, problem:OptimizationProblem, energy_model:EnergyModel) -> dict[str, Any]",434-460,false,27,4,Decode sampler result to solution dict.
+      ThermodynamicGenerator._format_output,method,"(solution:dict[str,Any], problem:OptimizationProblem) -> str",462-483,false,22,6,Format solution as readable output.
+      HybridThermodynamicGenerator.__init__,method,"(llm_client:Optional[LLMClient]=None, langevin_config:Optional[LangevinConfig]=None) -> None",495-507,false,13,1,creates
+      HybridThermodynamicGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None) -> dict[str, Any]",509-549,true,41,5,Route and generate based on problem type.
   src/nlp2cmd/generation/templates.py:
     functions[14]{name,kind,sig,loc,async,lines,cc,does}:
       TemplateGenerator.__init__,method,"(custom_templates:Optional[dict[str,dict[str,str]]]=None) -> None",116-137,false,22,4,Initialize template generator.
@@ -957,6 +1140,75 @@ function_details:
       PipelineMetrics.avg_latency_ms,method,() -> float,266-270,false,5,2,Calculate average latency.
       PipelineMetrics.avg_confidence,method,() -> float,273-277,false,5,2,Calculate average confidence.
       PipelineMetrics.report,method,"() -> dict[str, Any]",279-290,false,12,1,Generate metrics report.
+  src/nlp2cmd/generation/llm_multi.py:
+    functions[11]{name,kind,sig,loc,async,lines,cc,does}:
+      LLMDomainRouter.__init__,method,"(llm_client:LLMClient, config:Optional[LLMConfig]=None) -> None",56-62,false,7,2,creates
+      LLMDomainRouter.route,method,"(text:str) -> RoutingResult",64-102,true,39,6,Classify query to a domain.
+      MultiDomainGenerator.__init__,method,"(llm_client:LLMClient, config:Optional[LLMConfig]=None, custom_generators:Optional[dict[str,BaseLLMGenerator]]=None) -> None",128-144,false,17,3,creates
+      MultiDomainGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None, force_domain:Optional[str]=None) -> MultiDomainResult",146-198,true,53,4,Generate DSL command for any domain.
+      MultiDomainGenerator.generate_batch,method,"(texts:list[str], context:Optional[dict[str,Any]]=None) -> list[MultiDomainResult]",200-208,true,9,2,Generate for multiple inputs.
+      MultiDomainGenerator.add_generator,method,"(domain:str, generator:BaseLLMGenerator) -> None",210-213,false,4,1,Add custom domain generator.
+      MultiDomainGenerator.get_supported_domains,method,"() -> list[str]",215-217,false,3,1,Get list of supported domains.
+      CachedMultiDomainGenerator.__init__,method,"(llm_client:LLMClient, config:Optional[LLMConfig]=None, cache_size:int=100) -> None",223-231,false,9,1,creates
+      CachedMultiDomainGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None, force_domain:Optional[str]=None) -> MultiDomainResult",233-255,true,23,3,Generate with caching.
+      CachedMultiDomainGenerator.clear_cache,method,() -> None,257-259,false,3,1,Clear the response cache.
+      CachedMultiDomainGenerator.cache_stats,method,"() -> dict[str, int]",262-267,false,6,1,Get cache statistics.
+  src/nlp2cmd/generation/validating.py:
+    functions[9]{name,kind,sig,loc,async,lines,cc,does}:
+      create_default_validators,function,"() -> dict[str, DSLValidator]",290-297,false,8,1,Create default validators for all domains.
+      DSLValidator.validate,method,"(command:str) -> \"ValidationResult\"",19-21,false,3,1,Validate a DSL command.
+      ValidatingGenerator.__init__,method,"(generator:MultiDomainGenerator, validators:Optional[dict[str,DSLValidator]]=None, max_retries:int=3) -> None",64-72,false,9,2,creates
+      ValidatingGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None) -> ValidatingGeneratorResult",74-147,true,74,9,Generate DSL with validation and retry.
+      ValidatingGenerator.add_validator,method,"(domain:str, validator:DSLValidator) -> None",149-151,false,3,1,Add validator for a domain.
+      SimpleSQLValidator.validate,method,"(command:str) -> ValidationResult",165-192,false,28,7,Validate SQL command.
+      SimpleShellValidator.validate,method,"(command:str) -> ValidationResult",206-231,false,26,6,Validate shell command.
+      SimpleDockerValidator.validate,method,"(command:str) -> ValidationResult",237-258,false,22,5,Validate Docker command.
+      SimpleKubernetesValidator.validate,method,"(command:str) -> ValidationResult",266-287,false,22,6,Validate kubectl command.
+  src/nlp2cmd/generation/hybrid.py:
+    functions[15]{name,kind,sig,loc,async,lines,cc,does}:
+      create_hybrid_generator,function,"(llm_client:Optional[LLMClient]=None, confidence_threshold:float=0.7) -> HybridGenerator",351-377,false,27,2,Factory function to create a hybrid generator.
+      HybridStats.rule_hit_rate,method,() -> float,52-56,false,5,2,Calculate rule hit rate.
+      HybridStats.avg_latency_ms,method,() -> float,59-63,false,5,2,Calculate average latency.
+      HybridStats.cost_savings_percent,method,() -> float,66-71,false,6,2,Estimate cost savings vs pure LLM.
+      HybridStats.to_dict,method,"() -> dict[str, Any]",73-83,false,11,1,Convert to dictionary.
+      HybridGenerator.__init__,method,"(rule_pipeline:RuleBasedPipeline, llm_generator:Optional[MultiDomainGenerator]=None, llm_client:Optional[LLMClient]=None, confidence_threshold:float=0.7, always_validate_with_llm:bool=False) -> None",125-154,false,30,3,Initialize hybrid generator.
+      HybridGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None, force_llm:bool=False) -> HybridResult",156-218,true,63,5,Generate DSL using hybrid approach.
+      HybridGenerator._should_use_rule_result,method,"(result:PipelineResult) -> bool",220-238,false,19,5,Determine if rule result is good enough.
+      HybridGenerator._generate_with_llm,method,"(text:str, context:Optional[dict[str,Any]], start_time:float, rule_result:Optional[PipelineResult]=None) -> HybridResult",240-269,true,30,2,Generate using LLM.
+      HybridGenerator.generate_batch,method,"(texts:list[str], context:Optional[dict[str,Any]]=None) -> list[HybridResult]",271-279,true,9,2,Generate for multiple inputs.
+      HybridGenerator.get_stats,method,() -> HybridStats,281-283,false,3,1,Get generation statistics.
+      HybridGenerator.reset_stats,method,() -> None,285-287,false,3,1,Reset statistics.
+      HybridGenerator.set_confidence_threshold,method,"(threshold:float) -> None",289-291,false,3,1,Update confidence threshold.
+      AdaptiveHybridGenerator.__init__,method,"(rule_pipeline:RuleBasedPipeline, llm_generator:Optional[MultiDomainGenerator]=None, llm_client:Optional[LLMClient]=None, initial_threshold:float=0.7, min_threshold:float=0.5, max_threshold:float=0.95, adaptation_rate:float=0.1) -> None",302-323,false,22,1,creates
+      AdaptiveHybridGenerator._adapt_threshold,method,"(rule_was_correct:bool) -> None",325-348,false,24,5,Adapt threshold based on validation.
+  src/nlp2cmd/generation/llm_simple.py:
+    functions[17]{name,kind,sig,loc,async,lines,cc,does}:
+      LLMClient.complete,method,"(user:str, system:Optional[str]=None, max_tokens:int=500, temperature:float=0.1) -> str",18-27,true,10,1,Generate completion from LLM.
+      BaseLLMGenerator.__init__,method,"(llm_client:LLMClient, config:Optional[LLMConfig]=None) -> None",59-65,false,7,2,creates
+      BaseLLMGenerator.get_system_prompt,method,() -> str,68-70,false,3,1,Get the system prompt for this domain.
+      BaseLLMGenerator.extract_command,method,"(response:str) -> str",73-75,false,3,1,Extract command from LLM response.
+      BaseLLMGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None, previous_errors:Optional[list[str]]=None) -> LLMGenerationResult",77-132,true,56,2,Generate DSL command from natural language.
+      BaseLLMGenerator._build_user_prompt,method,"(text:str, context:Optional[dict[str,Any]], previous_errors:Optional[list[str]]) -> str",134-152,false,19,5,Build the user prompt.
+      SimpleLLMSQLGenerator.__init__,method,"(llm_client:LLMClient, config:Optional[LLMConfig]=None, schema_context:Optional[dict[str,list[str]]]=None) -> None",184-191,false,8,2,creates
+      SimpleLLMSQLGenerator.get_system_prompt,method,() -> str,193-207,false,15,3,Get SQL-specific system prompt.
+      SimpleLLMSQLGenerator.extract_command,method,"(response:str) -> str",209-225,false,17,5,Extract SQL from LLM response.
+      SimpleLLMShellGenerator.get_system_prompt,method,() -> str,244-245,false,2,1,retrieves system prompt
+      SimpleLLMShellGenerator.extract_command,method,"(response:str) -> str",247-262,false,16,6,Extract shell command from response.
+      SimpleLLMDockerGenerator.get_system_prompt,method,() -> str,281-282,false,2,1,retrieves system prompt
+      SimpleLLMDockerGenerator.extract_command,method,"(response:str) -> str",284-293,false,10,3,Extract docker command from response.
+      SimpleLLMKubernetesGenerator.get_system_prompt,method,() -> str,312-313,false,2,1,retrieves system prompt
+      SimpleLLMKubernetesGenerator.extract_command,method,"(response:str) -> str",315-324,false,10,3,Extract kubectl command from response.
+      MockLLMClient.__init__,method,"(responses:Optional[dict[str,str]]=None) -> None",331-334,false,4,2,creates
+      MockLLMClient.complete,method,"(user:str, system:Optional[str]=None, max_tokens:int=500, temperature:float=0.1) -> str",336-367,true,32,13,Return mock response.
+  src/nlp2cmd/generation/structured.py:
+    functions[7]{name,kind,sig,loc,async,lines,cc,does}:
+      StructuredPlan.to_adapter_plan,method,"() -> dict[str, Any]",76-82,false,7,1,Convert to adapter-compatible plan format.
+      StructuredLLMPlanner.__init__,method,"(llm_client:LLMClient, config:Optional[LLMConfig]=None, schema:Optional[dict[str,Any]]=None) -> None",138-146,false,9,3,creates
+      StructuredLLMPlanner.plan,method,"(text:str, context:Optional[dict[str,Any]]=None) -> StructuredPlanResult",148-207,true,60,5,Generate structured plan from natural language.
+      StructuredLLMPlanner._parse_response,method,"(response:str) -> StructuredPlan",209-234,false,26,6,Parse LLM response into StructuredPlan.
+      StructuredLLMPlanner.plan_with_retry,method,"(text:str, context:Optional[dict[str,Any]]=None, max_retries:int=3) -> StructuredPlanResult",236-259,true,24,3,Plan with automatic retry on parse failure.
+      MultiStepPlan.get_execution_order,method,"() -> list[int]",269-285,false,17,2,Get topologically sorted execution order.
+      MultiStepPlanner.decompose,method,"(text:str, context:Optional[dict[str,Any]]=None) -> tuple[MultiStepPlan, bool, Optional[str]]",319-371,true,53,9,Decompose complex query into steps.
   src/nlp2cmd/validators/__init__.py:
     functions[13]{name,kind,sig,loc,async,lines,cc,does}:
       ValidationResult.merge,method,"(other:ValidationResult) -> \"ValidationResult\"",25-33,false,9,2,Merge another validation result into this one.
@@ -1283,7 +1535,7 @@ function_details:
   examples/sql/sql_workflows.py:
     functions[2]{name,kind,sig,loc,async,lines,cc,does}:
       print_section,function,"(title:str) -> None",17-21,false,5,1,Print section header.
-      main,function,() -> None,24-306,false,283,10,main
+      main,function,() -> None,24-309,false,286,10,main
   examples/sql/llm_integration.py:
     functions[6]{name,kind,sig,loc,async,lines,cc,does}:
       demonstrate_mock_llm,function,() -> None,119-160,false,42,2,Demonstrate with mock LLM backend.
@@ -1295,7 +1547,7 @@ function_details:
   examples/shell/environment_analysis.py:
     functions[2]{name,kind,sig,loc,async,lines,cc,does}:
       format_size,function,"(gb:float) -> str",24-28,false,5,2,Format size in human-readable format.
-      main,function,() -> None,31-301,false,271,33,main
+      main,function,() -> None,31-297,false,267,38,main
   examples/shell/feedback_loop.py:
     functions[1]{name,kind,sig,loc,async,lines,cc,does}:
       simulate_interactive_session,function,() -> None,17-284,false,268,17,Simulate an interactive session with feedback loop.

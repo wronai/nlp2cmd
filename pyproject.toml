@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "nlp2cmd"
 version = "0.1.0"
-description = "Natural Language to Domain-Specific Commands - Transform natural language into SQL, Shell, Docker, Kubernetes and more"
+description = "Natural Language to Domain-Specific Commands with Thermodynamic Optimization - Transform natural language into SQL, Shell, Docker, Kubernetes and solve optimization problems using Langevin dynamics"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -22,7 +22,12 @@ keywords = [
     "kubernetes",
     "dsl",
     "llm",
-    "ai"
+    "ai",
+    "thermodynamic",
+    "optimization",
+    "langevin",
+    "energy-models",
+    "constraint-satisfaction",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -51,6 +56,7 @@ dependencies = [
     "jsonschema>=4.0",
     "python-dotenv>=1.0",
     "watchdog>=3.0",
+    "numpy>=1.24.0",
 ]
 
 [project.optional-dependencies]
@@ -65,6 +71,10 @@ sql = [
     "sqlparse>=0.4",
     "sqlalchemy>=2.0",
 ]
+thermodynamic = [
+    "scipy>=1.10.0",
+    "matplotlib>=3.7.0",
+]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
@@ -78,7 +88,7 @@ dev = [
     "mkdocstrings[python]>=0.24",
 ]
 all = [
-    "nlp2cmd[nlp,llm,sql,dev]",
+    "nlp2cmd[nlp,llm,sql,thermodynamic,dev]",
 ]
 
 [project.scripts]
