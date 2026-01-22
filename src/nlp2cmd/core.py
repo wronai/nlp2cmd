@@ -263,14 +263,65 @@ class RuleBasedBackend(NLPBackend):
         super().__init__(config)
         self.rules = rules or {}
 
+    def extract_entities(self, text: str) -> list[Entity]:
+        """Extract entities using simple pattern matching."""
+        entities = []
+        text_lower = text.lower()
+        
+        # Simple entity extraction based on common patterns
+        # Docker images
+        import re
+        image_pattern = r'\b([a-z0-9]+(?:/[a-z0-9]+)*)\b'
+        matches = re.findall(image_pattern, text_lower)
+        for match in matches:
+            if len(match) > 2 and match not in ['run', 'stop', 'start', 'list', 'show', 'build', 'pull']:
+                entities.append(Entity(name="image", value=match, type="string"))
+        
+        # Container names
+        container_pattern = r'\b([a-z0-9-]+(?:container|web|api|db|app|service))\b'
+        matches = re.findall(container_pattern, text_lower)
+        for match in matches:
+            entities.append(Entity(name="container", value=match, type="string"))
+        
+        # Port numbers
+        port_pattern = r'\b(port\s*)?(\d{4,5})\b'
+        matches = re.findall(port_pattern, text_lower)
+        for _, port in matches:
+            entities.append(Entity(name="port", value=int(port), type="integer"))
+        
+        # Common words
+        if 'nginx' in text_lower:
+            entities.append(Entity(name="image", value="nginx", type="string"))
+        if 'ubuntu' in text_lower or 'debian' in text_lower:
+            entities.append(Entity(name="image", value="ubuntu", type="string"))
+        if 'all' in text_lower:
+            entities.append(Entity(name="all", value=True, type="boolean"))
+            
+        return entities
+
     def extract_intent(self, text: str) -> tuple[str, float]:
         """Extract intent using pattern matching."""
         text_lower = text.lower()
+        words = text_lower.split()
 
         for intent, patterns in self.rules.items():
             for pattern in patterns:
-                if pattern.lower() in text_lower:
+                pattern_lower = pattern.lower()
+                
+                # Exact substring match
+                if pattern_lower in text_lower:
                     return intent, 0.8
+                
+                # Word-level matching - check if all pattern words are in text
+                pattern_words = pattern_lower.split()
+                if len(pattern_words) > 1:
+                    # Check if all pattern words appear in the text
+                    if all(word in text_lower for word in pattern_words):
+                        return intent, 0.7
+                
+                # Single word matching
+                if len(pattern_words) == 1 and pattern_words[0] in words:
+                    return intent, 0.6
 
         return "unknown", 0.0
 
@@ -304,7 +355,18 @@ class NLP2CMD:
             auto_fix: Whether to automatically fix detected issues
         """
         self.adapter = adapter
-        self.nlp_backend = nlp_backend or RuleBasedBackend()
+        
+        # Initialize RuleBasedBackend with adapter's INTENTS if no backend provided
+        if nlp_backend is None:
+            # Convert adapter INTENTS to rule format
+            rules = {}
+            for intent_name, intent_config in adapter.INTENTS.items():
+                patterns = intent_config.get("patterns", [])
+                rules[intent_name] = patterns
+            self.nlp_backend = RuleBasedBackend(rules=rules)
+        else:
+            self.nlp_backend = nlp_backend
+            
         self.validator = validator
         self.feedback_analyzer = feedback_analyzer
         self.validation_mode = validation_mode

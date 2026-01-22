@@ -148,34 +148,34 @@ demo: ## Run the end-to-end demo
 test-examples: ## Run all examples to test functionality
 	@echo "$(BLUE)Testing all examples...$(NC)"
 	@echo "$(YELLOW)Architecture examples:$(NC)"
-	$(PYTHON) examples/architecture/end_to_end_demo.py
+	PYTHONPATH=src $(PYTHON) examples/architecture/end_to_end_demo.py
 	@echo ""
 	@echo "$(YELLOW)Docker examples:$(NC)"
-	$(PYTHON) examples/docker/basic_docker.py
-	$(PYTHON) examples/docker/file_repair.py
+	PYTHONPATH=src $(PYTHON) examples/docker/basic_docker.py
+	PYTHONPATH=src $(PYTHON) examples/docker/file_repair.py
 	@echo ""
 	@echo "$(YELLOW)Kubernetes examples:$(NC)"
-	$(PYTHON) examples/kubernetes/basic_kubernetes.py
+	PYTHONPATH=src $(PYTHON) examples/kubernetes/basic_kubernetes.py
 	@echo ""
 	@echo "$(YELLOW)Pipeline examples:$(NC)"
-	$(PYTHON) examples/pipelines/infrastructure_health.py
-	$(PYTHON) examples/pipelines/log_analysis.py
+	PYTHONPATH=src $(PYTHON) examples/pipelines/infrastructure_health.py
+	PYTHONPATH=src $(PYTHON) examples/pipelines/log_analysis.py
 	@echo ""
 	@echo "$(YELLOW)Shell examples:$(NC)"
-	$(PYTHON) examples/shell/basic_shell.py
-	$(PYTHON) examples/shell/environment_analysis.py
-	$(PYTHON) examples/shell/feedback_loop.py
+	PYTHONPATH=src $(PYTHON) examples/shell/basic_shell.py
+	PYTHONPATH=src $(PYTHON) examples/shell/environment_analysis.py
+	PYTHONPATH=src $(PYTHON) examples/shell/feedback_loop.py
 	@echo ""
 	@echo "$(YELLOW)SQL examples:$(NC)"
 	@for file in examples/sql/*.py; do \
 		if [ -f "$$file" ]; then \
 			echo "Running $$file..."; \
-			$(PYTHON) "$$file"; \
+			PYTHONPATH=src $(PYTHON) "$$file"; \
 		fi; \
 	done
 	@echo ""
 	@echo "$(YELLOW)Validation examples:$(NC)"
-	$(PYTHON) examples/validation/safety_validation.py
+	PYTHONPATH=src $(PYTHON) examples/validation/config_validation.py
 	@echo ""
 	@echo "$(GREEN)All examples completed!$(NC)"
 

@@ -53,31 +53,31 @@ class SQLAdapter(BaseDSLAdapter):
 
     INTENTS = {
         "select": {
-            "patterns": ["pokaż", "wyświetl", "znajdź", "pobierz", "select", "get", "show", "find"],
+            "patterns": ["pokaż", "wyświetl", "znajdź", "pobierz", "select", "get", "show", "find", "list all", "show all"],
             "required_entities": ["table"],
             "optional_entities": ["columns", "filters", "ordering", "limit"],
         },
         "insert": {
-            "patterns": ["dodaj", "wstaw", "utwórz", "insert", "add", "create"],
+            "patterns": ["dodaj", "wstaw", "utwórz", "insert", "add", "create", "new"],
             "required_entities": ["table", "values"],
         },
         "update": {
-            "patterns": ["zaktualizuj", "zmień", "ustaw", "update", "modify", "set"],
+            "patterns": ["zaktualizuj", "zmień", "ustaw", "update", "modify", "set", "change"],
             "required_entities": ["table", "values"],
             "optional_entities": ["filters"],
         },
         "delete": {
-            "patterns": ["usuń", "skasuj", "delete", "remove"],
+            "patterns": ["usuń", "skasuj", "delete", "remove", "remove all"],
             "required_entities": ["table"],
             "optional_entities": ["filters"],
         },
         "aggregate": {
-            "patterns": ["policz", "zsumuj", "średnia", "count", "sum", "avg", "aggregate"],
+            "patterns": ["policz", "zsumuj", "średnia", "count", "sum", "avg", "aggregate", "total", "average"],
             "required_entities": ["table", "aggregation"],
             "optional_entities": ["grouping", "filters"],
         },
         "join": {
-            "patterns": ["połącz", "złącz", "join", "combine"],
+            "patterns": ["połącz", "złącz", "join", "combine", "with"],
             "required_entities": ["tables", "join_condition"],
         },
     }

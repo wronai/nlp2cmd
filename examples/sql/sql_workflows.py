@@ -113,7 +113,8 @@ def main():
         allow_delete=False,
         allow_drop=False,
         allow_truncate=False,
-        require_where_clause=True,
+        require_where_on_update=True,
+        require_where_on_delete=True,
         max_rows_affected=1000,
     )
     
@@ -125,7 +126,8 @@ def main():
     print("Safety Policy:")
     print(f"  Allow DELETE: {strict_policy.allow_delete}")
     print(f"  Allow DROP: {strict_policy.allow_drop}")
-    print(f"  Require WHERE: {strict_policy.require_where_clause}")
+    print(f"  Require WHERE on UPDATE: {strict_policy.require_where_on_update}")
+    print(f"  Require WHERE on DELETE: {strict_policy.require_where_on_delete}")
     print(f"  Max rows: {strict_policy.max_rows_affected}")
     
     # Test DELETE without WHERE
@@ -137,15 +139,13 @@ def main():
     }
     
     print("\nAttempting DELETE without WHERE:")
-    try:
-        result = safe_adapter.generate(delete_plan)
-        is_safe, reason = safe_adapter.check_safety(result)
-        print(f"  Query: {result}")
-        print(f"  Safe: {is_safe}")
-        if reason:
-            print(f"  Reason: {reason}")
-    except Exception as e:
-        print(f"  Blocked: {e}")
+    result = safe_adapter.generate(delete_plan)
+    safety = safe_adapter.check_safety(result)
+    print(f"  Query: {result}")
+    print(f"  Allowed: {safety.get('allowed')}")
+    reason = safety.get("reason")
+    if reason:
+        print(f"  Reason: {reason}")
     
     # Test DELETE with WHERE
     delete_plan_safe = {
@@ -160,9 +160,12 @@ def main():
     
     print("\nAttempting DELETE with WHERE:")
     result = safe_adapter.generate(delete_plan_safe)
-    is_safe, reason = safe_adapter.check_safety(result)
+    safety = safe_adapter.check_safety(result)
     print(f"  Query: {result}")
-    print(f"  Safe: {is_safe}")
+    print(f"  Allowed: {safety.get('allowed')}")
+    reason = safety.get("reason")
+    if reason:
+        print(f"  Reason: {reason}")
     
     # =========================================================================
     # Query Validation

@@ -78,52 +78,52 @@ class ShellAdapter(BaseDSLAdapter):
 
     INTENTS = {
         "file_search": {
-            "patterns": ["znajdź plik", "szukaj", "find", "search", "locate"],
+            "patterns": ["znajdź plik", "szukaj", "find", "search", "locate", "show files", "list files"],
             "required_entities": ["target"],
             "optional_entities": ["filters", "scope"],
         },
         "file_operation": {
-            "patterns": ["kopiuj", "przenieś", "usuń", "utwórz", "copy", "move", "delete", "create"],
+            "patterns": ["kopiuj", "przenieś", "usuń", "utwórz", "copy", "move", "delete", "create", "remove", "compress"],
             "required_entities": ["operation", "target"],
             "optional_entities": ["destination"],
         },
         "process_management": {
-            "patterns": ["proces", "uruchom", "zatrzymaj", "kill", "start", "stop", "process"],
+            "patterns": ["proces", "uruchom", "zatrzymaj", "kill", "start", "stop", "process", "show processes", "top processes"],
             "required_entities": ["action"],
             "optional_entities": ["process_name", "pid"],
         },
         "process_monitoring": {
-            "patterns": ["pokaż procesy", "top", "htop", "ps", "monitoruj"],
+            "patterns": ["pokaż procesy", "top", "htop", "ps", "monitoruj", "show top", "memory usage", "cpu usage"],
             "required_entities": [],
             "optional_entities": ["metric", "limit", "filters"],
         },
         "network": {
-            "patterns": ["ping", "curl", "wget", "port", "sieć", "network"],
+            "patterns": ["ping", "curl", "wget", "port", "sieć", "network", "network status"],
             "required_entities": ["action"],
             "optional_entities": ["host", "port"],
         },
         "disk": {
-            "patterns": ["dysk", "miejsce", "disk", "space", "df", "du"],
+            "patterns": ["dysk", "miejsce", "disk", "space", "df", "du", "disk usage", "show disk"],
             "required_entities": ["action"],
             "optional_entities": ["path"],
         },
         "archive": {
-            "patterns": ["spakuj", "rozpakuj", "zip", "tar", "compress", "extract"],
+            "patterns": ["spakuj", "rozpakuj", "zip", "tar", "compress", "extract", "archive"],
             "required_entities": ["action", "target"],
             "optional_entities": ["destination", "format"],
         },
         "text_processing": {
-            "patterns": ["grep", "sed", "awk", "filtruj", "wyszukaj tekst"],
+            "patterns": ["grep", "sed", "awk", "filtruj", "wyszukaj tekst", "search text", "find text"],
             "required_entities": ["action", "pattern"],
             "optional_entities": ["file", "options"],
         },
         "git": {
-            "patterns": ["git", "commit", "push", "pull", "branch", "merge"],
+            "patterns": ["git", "commit", "push", "pull", "branch", "merge", "show commits", "git status"],
             "required_entities": ["action"],
             "optional_entities": ["branch", "message", "remote"],
         },
         "docker": {
-            "patterns": ["docker", "kontener", "obraz", "container", "image"],
+            "patterns": ["docker", "kontener", "obraz", "container", "image", "docker ps"],
             "required_entities": ["action"],
             "optional_entities": ["container_name", "image_name", "options"],
         },

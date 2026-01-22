@@ -51,32 +51,32 @@ class KubernetesAdapter(BaseDSLAdapter):
 
     INTENTS = {
         "get": {
-            "patterns": ["pokaż", "get", "list", "wyświetl", "pobierz"],
+            "patterns": ["pokaż", "get", "list", "wyświetl", "pobierz", "show", "show all"],
             "required_entities": ["resource_type"],
             "optional_entities": ["name", "namespace", "selector", "output"],
         },
         "describe": {
-            "patterns": ["opisz", "describe", "szczegóły", "details"],
+            "patterns": ["opisz", "describe", "szczegóły", "details", "show details"],
             "required_entities": ["resource_type", "name"],
             "optional_entities": ["namespace"],
         },
         "apply": {
-            "patterns": ["zastosuj", "apply", "wdróż", "deploy"],
+            "patterns": ["zastosuj", "apply", "wdróż", "deploy", "create"],
             "required_entities": ["file"],
             "optional_entities": ["namespace"],
         },
         "delete": {
-            "patterns": ["usuń", "delete", "remove"],
+            "patterns": ["usuń", "delete", "remove", "remove all"],
             "required_entities": ["resource_type"],
             "optional_entities": ["name", "namespace", "selector"],
         },
         "scale": {
-            "patterns": ["skaluj", "scale", "repliki", "replicas"],
+            "patterns": ["skaluj", "scale", "repliki", "replicas", "scale deployment"],
             "required_entities": ["resource_name", "replica_count"],
             "optional_entities": ["namespace"],
         },
         "logs": {
-            "patterns": ["logi", "logs", "pokaż logi"],
+            "patterns": ["logi", "logs", "pokaż logi", "show logs"],
             "required_entities": ["pod_name"],
             "optional_entities": ["container", "namespace", "follow", "tail"],
         },
@@ -86,17 +86,17 @@ class KubernetesAdapter(BaseDSLAdapter):
             "optional_entities": ["container", "namespace"],
         },
         "port_forward": {
-            "patterns": ["port-forward", "przekieruj port", "forward"],
+            "patterns": ["port-forward", "przekieruj port", "forward", "port forward"],
             "required_entities": ["resource", "ports"],
             "optional_entities": ["namespace"],
         },
         "rollout": {
-            "patterns": ["rollout", "restart", "status wdrożenia"],
+            "patterns": ["rollout", "restart", "status wdrożenia", "restart deployment"],
             "required_entities": ["action", "resource"],
             "optional_entities": ["namespace"],
         },
         "create": {
-            "patterns": ["utwórz", "create", "stwórz"],
+            "patterns": ["utwórz", "create", "stwórz", "new"],
             "required_entities": ["resource_type"],
             "optional_entities": ["name", "namespace", "options"],
         },

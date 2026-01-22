@@ -51,20 +51,20 @@ class DockerAdapter(BaseDSLAdapter):
 
     INTENTS = {
         "container_run": {
-            "patterns": ["uruchom kontener", "run container", "docker run", "start container"],
+            "patterns": ["uruchom kontener", "run container", "docker run", "start container", "run", "start"],
             "required_entities": ["image"],
             "optional_entities": ["name", "ports", "volumes", "environment", "network"],
         },
         "container_stop": {
-            "patterns": ["zatrzymaj", "stop", "docker stop"],
+            "patterns": ["zatrzymaj", "stop", "docker stop", "stop container"],
             "required_entities": ["container"],
         },
         "container_remove": {
-            "patterns": ["usuń kontener", "remove container", "docker rm"],
+            "patterns": ["usuń kontener", "remove container", "docker rm", "remove"],
             "required_entities": ["container"],
         },
         "image_build": {
-            "patterns": ["zbuduj obraz", "build image", "docker build"],
+            "patterns": ["zbuduj obraz", "build image", "docker build", "build"],
             "required_entities": ["tag"],
             "optional_entities": ["dockerfile", "context"],
         },
@@ -73,24 +73,24 @@ class DockerAdapter(BaseDSLAdapter):
             "required_entities": ["image"],
         },
         "compose_up": {
-            "patterns": ["docker-compose up", "compose up", "uruchom stack"],
+            "patterns": ["docker-compose up", "compose up", "uruchom stack", "up"],
             "optional_entities": ["services", "detach", "build"],
         },
         "compose_down": {
-            "patterns": ["docker-compose down", "compose down", "zatrzymaj stack"],
+            "patterns": ["docker-compose down", "compose down", "zatrzymaj stack", "down"],
             "optional_entities": ["volumes", "images"],
         },
         "logs": {
-            "patterns": ["logi", "logs", "docker logs"],
+            "patterns": ["logi", "logs", "docker logs", "show logs", "log"],
             "required_entities": ["container"],
             "optional_entities": ["tail", "follow"],
         },
         "exec": {
-            "patterns": ["exec", "execute", "wejdź do kontenera"],
+            "patterns": ["exec", "execute", "wejdź do kontenera", "execute command"],
             "required_entities": ["container", "command"],
         },
         "list": {
-            "patterns": ["pokaż", "list", "ls", "ps"],
+            "patterns": ["pokaż", "list", "ls", "ps", "show", "show all", "list all"],
             "optional_entities": ["type", "all", "filter"],
         },
         "prune": {
