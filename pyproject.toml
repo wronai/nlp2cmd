@@ -1,0 +1,172 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nlp2cmd"
+version = "0.1.0"
+description = "Natural Language to Domain-Specific Commands - Transform natural language into SQL, Shell, Docker, Kubernetes and more"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "NLP2CMD Team", email = "team@nlp2cmd.dev" }
+]
+keywords = [
+    "nlp",
+    "natural-language-processing",
+    "command-generation",
+    "sql",
+    "shell",
+    "docker",
+    "kubernetes",
+    "dsl",
+    "llm",
+    "ai"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Text Processing :: Linguistic",
+    "Typing :: Typed"
+]
+
+dependencies = [
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "rich>=13.0",
+    "click>=8.0",
+    "httpx>=0.25.0",
+    "jinja2>=3.0",
+    "jsonschema>=4.0",
+    "python-dotenv>=1.0",
+    "watchdog>=3.0",
+]
+
+[project.optional-dependencies]
+nlp = [
+    "spacy>=3.7",
+]
+llm = [
+    "anthropic>=0.18",
+    "openai>=1.0",
+]
+sql = [
+    "sqlparse>=0.4",
+    "sqlalchemy>=2.0",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "pytest-asyncio>=0.21",
+    "black>=23.0",
+    "ruff>=0.1",
+    "mypy>=1.0",
+    "pre-commit>=3.0",
+    "mkdocs>=1.5",
+    "mkdocs-material>=9.0",
+    "mkdocstrings[python]>=0.24",
+]
+all = [
+    "nlp2cmd[nlp,llm,sql,dev]",
+]
+
+[project.scripts]
+nlp2cmd = "nlp2cmd.cli.main:main"
+
+[project.urls]
+Homepage = "https://github.com/example/nlp2cmd"
+Documentation = "https://nlp2cmd.readthedocs.io"
+Repository = "https://github.com/example/nlp2cmd"
+Issues = "https://github.com/example/nlp2cmd/issues"
+Changelog = "https://github.com/example/nlp2cmd/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nlp2cmd"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/docs",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+    | \.hatch
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "C",    # flake8-comprehensions
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["S101"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["src/nlp2cmd"]
+branch = true
+omit = ["*/tests/*", "*/__init__.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]

@@ -1,0 +1,223 @@
+# =============================================================================
+# NLP2CMD - Docker Compose Configuration
+# =============================================================================
+# Services:
+#   - nlp2cmd: Main application
+#   - nlp2cmd-test: Test runner
+#   - nlp2cmd-dev: Development environment with hot reload
+#   - postgres: Database for integration tests
+#   - redis: Cache for LLM responses (optional)
+# =============================================================================
+
+version: "3.8"
+
+services:
+  # ---------------------------------------------------------------------------
+  # Main Application
+  # ---------------------------------------------------------------------------
+  nlp2cmd:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: nlp2cmd:latest
+    container_name: nlp2cmd
+    environment:
+      - PYTHONPATH=/app/src
+      - NLP2CMD_ENV=production
+      - NLP2CMD_LOG_LEVEL=INFO
+      # LLM Configuration (optional)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    volumes:
+      # Mount for persistent data
+      - nlp2cmd-data:/app/data
+      # Mount config if needed
+      - ./configs:/app/configs:ro
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from nlp2cmd import get_registry; print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - nlp2cmd-network
+
+  # ---------------------------------------------------------------------------
+  # Test Runner
+  # ---------------------------------------------------------------------------
+  nlp2cmd-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    image: nlp2cmd:test
+    container_name: nlp2cmd-test
+    environment:
+      - PYTHONPATH=/app/src
+      - NLP2CMD_ENV=test
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=nlp2cmd
+      - POSTGRES_PASSWORD=nlp2cmd_test
+      - POSTGRES_DB=nlp2cmd_test
+    volumes:
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+      - ./examples:/app/examples:ro
+      - test-results:/app/test-results
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      pytest tests/ -v 
+      --tb=short 
+      --junitxml=/app/test-results/junit.xml 
+      --cov=nlp2cmd 
+      --cov-report=html:/app/test-results/coverage
+    networks:
+      - nlp2cmd-network
+    profiles:
+      - test
+
+  # ---------------------------------------------------------------------------
+  # Development Environment
+  # ---------------------------------------------------------------------------
+  nlp2cmd-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: nlp2cmd:dev
+    container_name: nlp2cmd-dev
+    environment:
+      - PYTHONPATH=/app/src
+      - NLP2CMD_ENV=development
+      - NLP2CMD_LOG_LEVEL=DEBUG
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    volumes:
+      # Hot reload - mount source code
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./examples:/app/examples
+    ports:
+      - "8001:8000"
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+    networks:
+      - nlp2cmd-network
+    profiles:
+      - dev
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL for Integration Tests
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: nlp2cmd-postgres
+    environment:
+      - POSTGRES_USER=nlp2cmd
+      - POSTGRES_PASSWORD=nlp2cmd_test
+      - POSTGRES_DB=nlp2cmd_test
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nlp2cmd -d nlp2cmd_test"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - nlp2cmd-network
+    profiles:
+      - test
+      - dev
+
+  # ---------------------------------------------------------------------------
+  # Redis for Caching (Optional)
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: nlp2cmd-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - nlp2cmd-network
+    profiles:
+      - dev
+      - cache
+
+  # ---------------------------------------------------------------------------
+  # E2E Test Runner
+  # ---------------------------------------------------------------------------
+  nlp2cmd-e2e:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    image: nlp2cmd:e2e
+    container_name: nlp2cmd-e2e
+    environment:
+      - PYTHONPATH=/app/src
+      - NLP2CMD_ENV=e2e
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=nlp2cmd
+      - POSTGRES_PASSWORD=nlp2cmd_test
+      - POSTGRES_DB=nlp2cmd_test
+    volumes:
+      - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
+      - ./examples:/app/examples:ro
+      - e2e-results:/app/e2e-results
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nlp2cmd:
+        condition: service_healthy
+    command: >
+      pytest tests/e2e/ -v 
+      --tb=short 
+      --junitxml=/app/e2e-results/junit.xml
+    networks:
+      - nlp2cmd-network
+    profiles:
+      - e2e
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  nlp2cmd-network:
+    driver: bridge
+    name: nlp2cmd-network
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  nlp2cmd-data:
+    name: nlp2cmd-data
+  postgres-data:
+    name: nlp2cmd-postgres-data
+  redis-data:
+    name: nlp2cmd-redis-data
+  test-results:
+    name: nlp2cmd-test-results
+  e2e-results:
+    name: nlp2cmd-e2e-results

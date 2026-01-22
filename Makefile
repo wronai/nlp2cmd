@@ -1,0 +1,198 @@
+# =============================================================================
+# NLP2CMD Makefile
+# =============================================================================
+# Usage:
+#   make help          - Show this help
+#   make install       - Install dependencies
+#   make test          - Run all tests
+#   make test-e2e      - Run E2E tests
+#   make docker-build  - Build Docker images
+#   make docker-up     - Start services
+#   make docker-test   - Run tests in Docker
+# =============================================================================
+
+.PHONY: help install test test-unit test-e2e lint format clean \
+        docker-build docker-up docker-down docker-test docker-e2e \
+        dev demo
+
+# Default target
+.DEFAULT_GOAL := help
+
+# Project settings
+PROJECT_NAME := nlp2cmd
+PYTHON := python3
+PIP := pip3
+PYTEST := pytest
+DOCKER_COMPOSE := docker compose
+
+# Colors for output
+GREEN := \033[0;32m
+YELLOW := \033[0;33m
+BLUE := \033[0;34m
+NC := \033[0m # No Color
+
+# =============================================================================
+# Help
+# =============================================================================
+
+help: ## Show this help message
+	@echo "$(BLUE)NLP2CMD - Natural Language to Domain-Specific Commands$(NC)"
+	@echo ""
+	@echo "$(YELLOW)Usage:$(NC)"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-20s$(NC) %s\n", $$1, $$2}'
+	@echo ""
+	@echo "$(YELLOW)Examples:$(NC)"
+	@echo "  make install       # Install in development mode"
+	@echo "  make test          # Run all tests"
+	@echo "  make docker-up     # Start Docker services"
+	@echo "  make demo          # Run the demo"
+
+# =============================================================================
+# Development
+# =============================================================================
+
+install: ## Install package in development mode
+	$(PIP) install -e ".[dev]" --break-system-packages
+
+install-ci: ## Install for CI (no editable)
+	$(PIP) install ".[dev]" --break-system-packages
+
+deps: ## Install dependencies only
+	$(PIP) install -r requirements.txt --break-system-packages
+
+# =============================================================================
+# Testing
+# =============================================================================
+
+test: ## Run all tests
+	$(PYTEST) tests/ -v --tb=short
+
+test-unit: ## Run unit tests only
+	$(PYTEST) tests/unit/ -v --tb=short
+
+test-e2e: ## Run E2E tests only
+	$(PYTEST) tests/e2e/ -v --tb=short
+
+test-integration: ## Run integration tests only
+	$(PYTEST) tests/integration/ -v --tb=short
+
+test-cov: ## Run tests with coverage report
+	$(PYTEST) tests/ -v --cov=$(PROJECT_NAME) --cov-report=html --cov-report=term
+
+test-watch: ## Run tests in watch mode (requires pytest-watch)
+	ptw tests/ -- -v --tb=short
+
+# =============================================================================
+# Code Quality
+# =============================================================================
+
+lint: ## Run linters (ruff, mypy)
+	ruff check src/$(PROJECT_NAME)/ tests/
+	mypy src/$(PROJECT_NAME)/ --ignore-missing-imports
+
+format: ## Format code with ruff and black
+	ruff format src/$(PROJECT_NAME)/ tests/
+	black src/$(PROJECT_NAME)/ tests/
+
+format-check: ## Check code formatting
+	ruff format --check src/$(PROJECT_NAME)/ tests/
+	black --check src/$(PROJECT_NAME)/ tests/
+
+# =============================================================================
+# Docker
+# =============================================================================
+
+docker-build: ## Build Docker images
+	$(DOCKER_COMPOSE) build
+
+docker-build-no-cache: ## Build Docker images without cache
+	$(DOCKER_COMPOSE) build --no-cache
+
+docker-up: ## Start all services
+	$(DOCKER_COMPOSE) up -d
+
+docker-up-dev: ## Start development services
+	$(DOCKER_COMPOSE) --profile dev up -d
+
+docker-down: ## Stop all services
+	$(DOCKER_COMPOSE) down
+
+docker-down-v: ## Stop all services and remove volumes
+	$(DOCKER_COMPOSE) down -v
+
+docker-test: ## Run tests in Docker
+	$(DOCKER_COMPOSE) --profile test run --rm nlp2cmd-test
+
+docker-e2e: ## Run E2E tests in Docker
+	$(DOCKER_COMPOSE) --profile e2e run --rm nlp2cmd-e2e
+
+docker-logs: ## Show logs
+	$(DOCKER_COMPOSE) logs -f
+
+docker-shell: ## Open shell in container
+	$(DOCKER_COMPOSE) exec nlp2cmd /bin/bash
+
+docker-ps: ## Show running containers
+	$(DOCKER_COMPOSE) ps
+
+# =============================================================================
+# Development Utilities
+# =============================================================================
+
+demo: ## Run the end-to-end demo
+	$(PYTHON) examples/architecture/end_to_end_demo.py
+
+repl: ## Start interactive REPL
+	$(PYTHON) -m $(PROJECT_NAME).cli
+
+run-example: ## Run a specific example (usage: make run-example FILE=sql/basic_sql.py)
+	$(PYTHON) examples/$(FILE)
+
+# =============================================================================
+# Cleanup
+# =============================================================================
+
+clean: ## Clean build artifacts
+	rm -rf build/
+	rm -rf dist/
+	rm -rf *.egg-info/
+	rm -rf .pytest_cache/
+	rm -rf .mypy_cache/
+	rm -rf .ruff_cache/
+	rm -rf htmlcov/
+	rm -rf .coverage
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete 2>/dev/null || true
+
+clean-docker: ## Clean Docker resources
+	$(DOCKER_COMPOSE) down -v --rmi local
+	docker system prune -f
+
+clean-all: clean clean-docker ## Clean everything
+
+# =============================================================================
+# Release
+# =============================================================================
+
+build: clean ## Build package
+	$(PYTHON) -m build
+
+publish-test: build ## Publish to TestPyPI
+	$(PYTHON) -m twine upload --repository testpypi dist/*
+
+publish: build ## Publish to PyPI
+	$(PYTHON) -m twine upload dist/*
+
+# =============================================================================
+# Info
+# =============================================================================
+
+version: ## Show version
+	@$(PYTHON) -c "import $(PROJECT_NAME); print($(PROJECT_NAME).__version__)"
+
+info: ## Show project info
+	@echo "$(BLUE)Project:$(NC) $(PROJECT_NAME)"
+	@echo "$(BLUE)Python:$(NC) $(shell $(PYTHON) --version)"
+	@echo "$(BLUE)Pip:$(NC) $(shell $(PIP) --version)"
+	@echo "$(BLUE)Version:$(NC) $(shell $(PYTHON) -c 'import $(PROJECT_NAME); print($(PROJECT_NAME).__version__)')"
