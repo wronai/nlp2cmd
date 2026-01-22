@@ -265,6 +265,27 @@ class ShellAdapter(BaseDSLAdapter):
         target = entities.get("target", "files")
         filters = entities.get("filters", [])
         scope = entities.get("scope", ".")
+        
+        # Handle specific Polish patterns from natural language
+        if "rozszerzeniem" in str(target) or "extension" in str(target):
+            extension = entities.get("extension", "py")
+            return f"find {scope} -name '*.{extension}' -type f"
+        elif "większe niż" in str(target) or "size" in str(target):
+            size = entities.get("size", "100M")
+            return f"find {scope} -size +{size}"
+        elif "zmodyfikowane" in str(target) or "mtime" in str(target):
+            days = entities.get("days", "7")
+            return f"find {scope} -mtime -{days}"
+        elif "zawartość" in str(target) or "cat" in str(target):
+            file_path = entities.get("file_path", target)
+            return f"cat {file_path}"
+        elif "ostatnie" in str(target) or "tail" in str(target):
+            file_path = entities.get("file_path", target)
+            lines = entities.get("lines", "10")
+            return f"tail -{lines} {file_path}"
+        elif "rozmiar" in str(target) or "du" in str(target):
+            file_path = entities.get("file_path", target)
+            return f"du -h {file_path}"
 
         # Determine if searching for files or directories
         type_flag = "-type f" if target == "files" else "-type d" if target == "directories" else ""
@@ -301,6 +322,39 @@ class ShellAdapter(BaseDSLAdapter):
         operation = entities.get("operation", "")
         target = entities.get("target", "")
         destination = entities.get("destination", "")
+        
+        # Handle specific Polish patterns
+        if "kopiuj" in operation or "copy" in operation:
+            if destination:
+                return f"cp {target} {destination}"
+            else:
+                return f"cp {target} ."
+        elif "przenieś" in operation or "move" in operation:
+            if destination:
+                return f"mv {target} {destination}"
+            else:
+                return f"mv {target} ."
+        elif "usuń" in operation or "delete" in operation or "remove" in operation:
+            if "wszystkie" in str(target) or "all" in str(target):
+                extension = entities.get("extension", "tmp")
+                return f"find . -name '*.{extension}' -delete"
+            else:
+                return f"rm {target}"
+        elif "utwórz" in operation or "create" in operation:
+            if "katalog" in str(target) or "directory" in str(target):
+                return f"mkdir {target}"
+            else:
+                return f"touch {target}"
+        elif "zmień nazwę" in operation or "rename" in operation or "mv" in operation:
+            if "na" in str(target):
+                parts = str(target).split(" na ")
+                if len(parts) == 2:
+                    old_name = parts[0].replace("zmień nazwę pliku", "").strip()
+                    new_name = parts[1].strip()
+                    return f"mv {old_name} {new_name}"
+            return f"mv {target} {destination}"
+        elif "rozmiar" in str(target) or "du" in str(target):
+            return f"du -h {target}"
 
         operations = {
             "copy": f"cp -r {shlex.quote(target)} {shlex.quote(destination)}",
@@ -317,6 +371,51 @@ class ShellAdapter(BaseDSLAdapter):
         action = entities.get("action", "")
         process_name = entities.get("process_name", "")
         pid = entities.get("pid", "")
+        
+        # Handle specific Polish patterns
+        if "zabij" in action or "kill" in action:
+            if pid:
+                return f"kill -9 {pid}"
+            elif process_name:
+                return f"pkill -f {process_name}"
+            else:
+                return "kill -9 PID"
+        elif "uruchom" in action or "start" in action:
+            if "w tle" in str(action) or "background" in str(action):
+                if process_name:
+                    return f"nohup {process_name} &"
+                else:
+                    return "nohup python script.py &"
+            elif "skrypt" in str(process_name) or "script" in str(process_name):
+                return f"./{process_name}"
+            elif "usługę" in str(action) or "service" in str(action):
+                service_name = entities.get("service_name", process_name)
+                return f"systemctl start {service_name}"
+            else:
+                return f"{process_name}"
+        elif "zatrzymaj" in action or "stop" in action:
+            if "usługę" in str(action) or "service" in str(action):
+                service_name = entities.get("service_name", process_name)
+                return f"systemctl stop {service_name}"
+            elif process_name:
+                return f"pkill -f {process_name}"
+            else:
+                return "stop"
+        elif "restartuj" in action or "restart" in action or "ponownie" in action:
+            if "serwer" in str(process_name) or "server" in str(process_name):
+                service_name = entities.get("service_name", "apache2")
+                return f"systemctl restart {service_name}"
+            elif "usługę" in str(action) or "service" in str(action):
+                service_name = entities.get("service_name", process_name)
+                return f"systemctl restart {service_name}"
+            else:
+                return f"restart {process_name}"
+        elif "status" in action:
+            if "usługi" in str(action) or "service" in str(action):
+                service_name = entities.get("service_name", process_name)
+                return f"systemctl status {service_name}"
+            else:
+                return f"status {process_name}"
 
         if action in ["kill", "stop"]:
             if pid:
@@ -333,6 +432,28 @@ class ShellAdapter(BaseDSLAdapter):
         metric = entities.get("metric", "cpu")
         limit = entities.get("limit", 10)
         projection = entities.get("projection", [])
+        
+        # Handle specific Polish patterns
+        if "cpu" in str(metric) or "pamięci" in str(metric) or "memory" in str(metric):
+            return "top -n 1"
+        elif "procesy" in str(metric) or "działające" in str(metric):
+            return "ps aux"
+        elif "zużywające" in str(metric):
+            if "pamięć" in str(metric) or "memory" in str(metric):
+                return "ps aux --sort=-%mem | head -10"
+            elif "cpu" in str(metric):
+                return "ps aux --sort=-%cpu | head -10"
+            else:
+                return "ps aux | head -10"
+        elif "użytkownika" in str(metric):
+            user = entities.get("user", "tom")
+            return f"ps aux | grep {user}"
+        elif "zombie" in str(metric):
+            return "ps aux | awk '{print $8}' | grep -v '^\\[' | sort | uniq -c"
+        elif "drzewo" in str(metric) or "tree" in str(metric):
+            return "pstree"
+        elif "monitor" in str(metric) or "htop" in str(metric):
+            return "htop"
 
         if metric == "memory_usage" or metric == "memory":
             sort_flag = "-%mem"
