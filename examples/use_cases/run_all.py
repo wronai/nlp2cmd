@@ -15,6 +15,7 @@ sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
 # Importy wszystkich modułów demonstracyjnych
 from devops_automation import main as devops_main
 from dsl_commands_demo import main as dsl_main
+from shell_validation import main as validation_main
 from data_science_ml import main as ds_main
 from bioinformatics import main as bio_main
 from logistics_supply_chain import main as logistics_main
