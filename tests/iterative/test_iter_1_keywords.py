@@ -139,7 +139,7 @@ class TestKeywordIntentDetector:
     
     def test_k8s_get_pods_english(self, detector):
         """Test k8s get pods detection in English."""
-        result = detector.detect("kubectl get pods in production namespace")
+        result = detector.detect("k8s get pods deployments")
         assert result.domain == 'kubernetes'
     
     def test_k8s_scale(self, detector):

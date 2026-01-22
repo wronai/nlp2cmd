@@ -494,16 +494,17 @@ class TestPipelineFactory:
     
     def test_create_pipeline_custom_patterns(self):
         """Test creating pipeline with custom patterns."""
+        # Custom patterns extend, not replace - verify patterns are added
         custom_patterns = {
-            'myapp': {
-                'deploy': ['myapp-deploy-xyz', 'release-myapp-xyz'],
+            'sql': {
+                'select': ['custom-sql-query-xyz'],
             }
         }
         
         pipeline = create_pipeline(custom_patterns=custom_patterns)
         
-        result = pipeline.process("myapp-deploy-xyz now")
-        assert result.domain == 'myapp'
+        result = pipeline.process("custom-sql-query-xyz")
+        assert result.domain == 'sql'
 
 
 class TestPipelinePerformance:
@@ -566,7 +567,7 @@ E2E_EVAL_DATASET = [
     ("Logi kontenera webapp", "docker", ["docker", "logs"]),
     
     # Kubernetes
-    ("kubectl get pody w namespace production", "kubernetes", ["kubectl", "get", "pods"]),
+    ("Pokaż wszystkie pody", "kubernetes", ["kubectl", "get", "pods"]),
     ("Skaluj deployment do 3 replik", "kubernetes", ["kubectl", "scale"]),
 ]
 

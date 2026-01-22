@@ -127,11 +127,14 @@ def main():
     if configs:
         print("\n📄 Found configuration files:")
         for config in configs:
-            size_str = f"{config.size} bytes" if config.size < 1024 else f"{config.size/1024:.1f} KB"
-            print(f"   • {config.name}")
-            print(f"     Format: {config.format}")
+            size = config.get("size", 0)
+            size_str = f"{size} bytes" if size < 1024 else f"{size/1024:.1f} KB"
+            name = config.get("name", "unknown")
+            fmt = config.get("format") or (Path(name).suffix.lstrip(".") or "unknown")
+            print(f"   • {name}")
+            print(f"     Format: {fmt}")
             print(f"     Size: {size_str}")
-            print(f"     Path: {config.path}")
+            print(f"     Path: {config.get('path', '')}")
     else:
         print("\n   No configuration files found in current directory")
 
@@ -140,27 +143,29 @@ def main():
     print("5. SYSTEM RESOURCES")
     print("─" * 70)
 
-    resources = analyzer.get_resources()
+    resources = analyzer._get_resources()
+    disk = resources.get("disk", {})
+    memory = resources.get("memory")
 
     print(f"\n💾 Disk Usage:")
-    print(f"   Total:  {format_size(resources.disk_total_gb)}")
-    print(f"   Used:   {format_size(resources.disk_used_gb)} ({resources.disk_percent_used:.1f}%)")
-    print(f"   Free:   {format_size(resources.disk_free_gb)}")
+    print(f"   Total:  {format_size(disk.get('total_gb', 0.0))}")
+    print(f"   Used:   {format_size(disk.get('used_gb', 0.0))} ({disk.get('percent_used', 0.0):.1f}%)")
+    print(f"   Free:   {format_size(disk.get('free_gb', 0.0))}")
 
     # Progress bar for disk
     bar_width = 30
-    filled = int(resources.disk_percent_used / 100 * bar_width)
+    filled = int(disk.get("percent_used", 0.0) / 100 * bar_width)
     bar = "█" * filled + "░" * (bar_width - filled)
     print(f"   [{bar}]")
 
-    if resources.memory_total_gb:
+    if memory and memory.get("total_gb"):
         print(f"\n🧠 Memory:")
-        print(f"   Total:     {format_size(resources.memory_total_gb)}")
-        print(f"   Available: {format_size(resources.memory_available_gb)}")
-        print(f"   Used:      {resources.memory_percent_used:.1f}%")
+        print(f"   Total:     {format_size(memory.get('total_gb', 0.0))}")
+        print(f"   Available: {format_size(memory.get('available_gb', 0.0))}")
+        print(f"   Used:      {memory.get('percent_used', 0.0):.1f}%")
 
         # Progress bar for memory
-        filled = int(resources.memory_percent_used / 100 * bar_width)
+        filled = int(memory.get("percent_used", 0.0) / 100 * bar_width)
         bar = "█" * filled + "░" * (bar_width - filled)
         print(f"   [{bar}]")
 
@@ -228,25 +233,14 @@ def main():
             }
             for name, info in report.services.items()
         },
-        "resources": {
-            "disk": {
-                "total_gb": report.resources.disk_total_gb,
-                "used_gb": report.resources.disk_used_gb,
-                "free_gb": report.resources.disk_free_gb,
-                "percent_used": report.resources.disk_percent_used,
-            },
-            "memory": {
-                "total_gb": report.resources.memory_total_gb,
-                "available_gb": report.resources.memory_available_gb,
-                "percent_used": report.resources.memory_percent_used,
-            } if report.resources.memory_total_gb else None,
-        },
+        "resources": report.resources,
         "config_files": [
             {
-                "name": cf.name,
-                "format": cf.format,
-                "path": cf.path,
-                "size": cf.size,
+                "name": cf.get("name", "unknown"),
+                "format": cf.get("format")
+                or (Path(cf.get("name", "")).suffix.lstrip(".") or "unknown"),
+                "path": cf.get("path", ""),
+                "size": cf.get("size", 0),
             }
             for cf in report.config_files
         ],
@@ -267,6 +261,8 @@ def main():
 
     available_count = len([t for t in tools.values() if t.available])
     running_count = len([s for s in services.values() if s.running])
+    disk_percent_used = disk.get("percent_used", 0.0)
+    memory_percent_used = (memory or {}).get("percent_used", 0.0)
 
     print(f"""
 📊 Analysis Results:
@@ -274,8 +270,8 @@ def main():
    System: {env['os']['system']} {env['os']['release']}
    Tools:  {available_count}/{len(tools)} available
    Services: {running_count}/{len(services)} running
-   Disk: {resources.disk_percent_used:.0f}% used
-   Memory: {resources.memory_percent_used:.0f}% used (if available)
+   Disk: {disk_percent_used:.0f}% used
+   Memory: {memory_percent_used:.0f}% used (if available)
    Config files: {len(configs)} found
    Recommendations: {len(report.recommendations)}
 
