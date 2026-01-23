@@ -164,8 +164,8 @@ ignore_missing_imports = true
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short -p no:aiohttp -p no:asyncio"
 asyncio_mode = "auto"
+addopts = "-v --tb=short"
 
 [tool.coverage.run]
 source = ["src/nlp2cmd"]

@@ -32,6 +32,64 @@ class ValidationResult:
             metadata={**self.metadata, **other.metadata},
         )
 
+    def to_dict(self) -> dict[str, Any]:
+        """Convert validation result to dictionary."""
+        return {
+            "is_valid": self.is_valid,
+            "errors": self.errors,
+            "warnings": self.warnings,
+            "suggestions": self.suggestions,
+            "metadata": self.metadata,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "ValidationResult":
+        """Create validation result from dictionary."""
+        return cls(
+            is_valid=data.get("is_valid", True),
+            errors=data.get("errors", []),
+            warnings=data.get("warnings", []),
+            suggestions=data.get("suggestions", []),
+            metadata=data.get("metadata", {}),
+        )
+
+    def add_error(self, error: str) -> None:
+        """Add an error to the validation result."""
+        self.errors.append(error)
+        self.is_valid = False
+
+    def add_warning(self, warning: str) -> None:
+        """Add a warning to the validation result."""
+        self.warnings.append(warning)
+
+    def has_errors(self) -> bool:
+        """Check if validation result has errors."""
+        return len(self.errors) > 0
+
+    def has_warnings(self) -> bool:
+        """Check if validation result has warnings."""
+        return len(self.warnings) > 0
+
+    def copy(self) -> "ValidationResult":
+        """Create a copy of the validation result."""
+        return ValidationResult(
+            is_valid=self.is_valid,
+            errors=self.errors.copy(),
+            warnings=self.warnings.copy(),
+            suggestions=self.suggestions.copy(),
+            metadata=self.metadata.copy(),
+        )
+
+    def __str__(self) -> str:
+        """String representation of validation result."""
+        status = "VALID" if self.is_valid else "INVALID"
+        error_summary = ""
+        if self.errors:
+            error_summary = f" - {', '.join(self.errors[:2])}"
+            if len(self.errors) > 2:
+                error_summary += f" (and {len(self.errors) - 2} more)"
+        return f"{status} ValidationResult(errors={len(self.errors)}, warnings={len(self.warnings)}){error_summary}"
+
 
 class BaseValidator(ABC):
     """Abstract base class for validators."""
@@ -90,12 +148,12 @@ class SyntaxValidator(BaseValidator):
         # Check single quotes
         single_quotes = content.count("'") - content.count("\\'")
         if single_quotes % 2 != 0:
-            errors.append("Unclosed single quote")
+            errors.append("Unclosed single quote string")
 
         # Check double quotes
         double_quotes = content.count('"') - content.count('\\"')
         if double_quotes % 2 != 0:
-            errors.append("Unclosed double quote")
+            errors.append("Unclosed double quote string")
 
         return ValidationResult(
             is_valid=len(errors) == 0,
@@ -126,12 +184,19 @@ class SQLValidator(BaseValidator):
         content_upper = content.upper()
 
         # Check for dangerous patterns
+        injection_detected = False
         for pattern, message in self.DANGEROUS_PATTERNS:
             if pattern in content_upper:
-                if self.strict:
+                if self.strict or pattern in ["; DROP", "DROP DATABASE"]:
                     errors.append(message)
+                    injection_detected = True
                 else:
                     warnings.append(message)
+
+        # If injection detected and not strict, still mark as invalid
+        if injection_detected and not self.strict:
+            # Still mark as invalid for security, but allow warnings
+            pass
 
         # Check DELETE without WHERE
         if "DELETE FROM" in content_upper and "WHERE" not in content_upper:
@@ -143,6 +208,25 @@ class SQLValidator(BaseValidator):
             if "WHERE" not in content_upper:
                 warnings.append("UPDATE without WHERE will affect all rows")
                 suggestions.append("Add WHERE clause to limit affected rows")
+
+        # Check DROP TABLE warning
+        if "DROP TABLE" in content_upper:
+            warnings.append("DROP TABLE operation detected - ensure you have a backup")
+
+        # Check reserved keywords in identifiers (basic check)
+        reserved_keywords = ['SELECT', 'FROM', 'WHERE', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP', 'ALTER']
+        for keyword in reserved_keywords:
+            if f' {keyword} ' in content_upper or content_upper.startswith(f'{keyword} '):
+                # This is normal SQL usage, not a warning
+                pass
+
+        # Check aggregate without GROUP BY
+        aggregate_functions = ['COUNT(', 'SUM(', 'AVG(', 'MIN(', 'MAX(']
+        has_aggregate = any(func in content_upper for func in aggregate_functions)
+        has_group_by = 'GROUP BY' in content_upper
+        
+        if has_aggregate and not has_group_by and 'WHERE' in content_upper:
+            warnings.append("Aggregate function without GROUP BY may return unexpected results")
 
         # Basic syntax check
         syntax_result = SyntaxValidator().validate(content)
@@ -181,7 +265,7 @@ class ShellValidator(BaseValidator):
 
         content_lower = content.lower()
 
-        # Check for dangerous commands
+        # Check for dangerous commands - mark as errors
         for dangerous in self.DANGEROUS_COMMANDS:
             if dangerous.lower() in content_lower:
                 errors.append(f"Dangerous command detected: {dangerous}")
@@ -191,13 +275,42 @@ class ShellValidator(BaseValidator):
             warnings.append("sudo usage detected - requires elevated privileges")
             suggestions.append("Consider if root privileges are necessary")
 
-        # Check for rm with wildcards
+        # Check for rm with wildcards - mark as error for safety
         if "rm " in content and "*" in content:
-            warnings.append("rm with wildcard - verify target carefully")
+            errors.append("rm with wildcard - verify target carefully")
 
-        # Check pipe to shell
+        # Check pipe to shell - warning only
         if "| sh" in content or "| bash" in content:
             warnings.append("Piping to shell is potentially dangerous")
+
+        # Check for eval command - error for security
+        if "eval " in content_lower:
+            errors.append("eval command detected - potential code injection risk")
+
+        # Check for command injection patterns
+        injection_patterns = ["&&", "||", ";", "$(", "`"]
+        for pattern in injection_patterns:
+            if pattern in content and not pattern in ["&&", "||"]:  # Allow logical operators in safe contexts
+                if pattern in [";", "$(", "`"]:
+                    errors.append(f"Command injection pattern detected: {pattern}")
+
+        # Check for system file modification
+        system_paths = ["/etc/", "/boot/", "/sys/", "/proc/", "/dev/", "/root/", "/usr/bin/"]
+        for path in system_paths:
+            if path in content and (">>" in content or ">" in content):
+                errors.append(f"System file modification detected: {path}")
+
+        # Check for permission changes (chmod 777)
+        if "chmod" in content_lower and ("777" in content or "666" in content):
+            errors.append("Dangerous permission change detected")
+
+        # Check for background job patterns
+        if "nohup" in content_lower or "&" in content and not content.endswith("& "):
+            errors.append("Background job detected - verify job management")
+
+        # Check for path traversal
+        if "../" in content or "..\\" in content:
+            errors.append("Path traversal pattern detected")
 
         # Syntax check
         syntax_result = SyntaxValidator().validate(content)

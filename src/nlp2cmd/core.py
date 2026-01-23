@@ -30,6 +30,7 @@ class TransformStatus(str, Enum):
     FAILED = "failed"
     BLOCKED = "blocked"
     NEEDS_CLARIFICATION = "needs_clarification"
+    ERROR = "error"
 
 
 class Intent(BaseModel):
@@ -90,7 +91,7 @@ class TransformResult:
     @property
     def is_success(self) -> bool:
         """Check if transformation was successful."""
-        return self.status == TransformStatus.SUCCESS
+        return self.status in [TransformStatus.SUCCESS, TransformStatus.PARTIAL]
 
     @property
     def is_blocked(self) -> bool:
@@ -100,7 +101,7 @@ class TransformResult:
     def to_dict(self) -> dict[str, Any]:
         """Convert result to dictionary."""
         return {
-            "status": self.status.value,
+            "status": self.status.value.upper(),
             "command": self.command,
             "plan": self.plan.model_dump(),
             "confidence": self.confidence,
@@ -111,6 +112,30 @@ class TransformResult:
             "alternatives": self.alternatives,
             "metadata": self.metadata,
         }
+
+    def copy(self) -> "TransformResult":
+        """Create a copy of the transform result."""
+        return TransformResult(
+            status=self.status,
+            command=self.command,
+            plan=self.plan.model_copy(deep=True),
+            confidence=self.confidence,
+            dsl_type=self.dsl_type,
+            errors=self.errors.copy(),
+            warnings=self.warnings.copy(),
+            suggestions=self.suggestions.copy(),
+            alternatives=self.alternatives.copy(),
+            metadata=self.metadata.copy(),
+        )
+
+    def is_valid(self) -> bool:
+        """Check if result is valid (no errors and successful status)."""
+        return (
+            self.status == TransformStatus.SUCCESS and 
+            len(self.errors) == 0 and
+            len(self.command.strip()) > 0 and
+            0.0 <= self.confidence <= 1.0
+        )
 
 
 class NLPBackend:

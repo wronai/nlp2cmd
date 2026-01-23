@@ -202,29 +202,40 @@ class VRPSolver:
 
     def solve(self, n_iterations: int = 100) -> list[list[DeliveryPoint]]:
         """Znajdź optymalne trasy."""
-        # Inicjalizacja: każdy klient w osobnej trasie
-        routes = [[c] for c in self.customers]
-
+        best_routes = self._solve_with_iterations(n_iterations)
+        return self._consolidate_routes(best_routes)
+    
+    def _solve_with_iterations(self, n_iterations: int) -> list[list[DeliveryPoint]]:
+        """Znajdź optymalne trasy z iteracjami."""
+        routes = self._initialize_routes()
         best_routes = routes.copy()
-        best_distance = sum(self._route_distance(r) for r in routes)
+        best_distance = self._calculate_total_distance(routes)
 
         for _ in range(n_iterations):
-            # Losowa modyfikacja (2-opt, relokacja, itp.)
             new_routes = self._perturb(routes)
 
-            # Sprawdź feasibility
             if self._is_feasible(new_routes):
-                new_distance = sum(self._route_distance(r) for r in new_routes)
+                new_distance = self._calculate_total_distance(new_routes)
 
-                # Akceptacja (Metropolis)
-                if new_distance < best_distance or np.random.random() < 0.1:
+                if self._should_accept_solution(new_distance, best_distance):
                     routes = new_routes
                     if new_distance < best_distance:
                         best_routes = new_routes
                         best_distance = new_distance
 
-        # Konsolidacja tras
-        return self._consolidate_routes(best_routes)
+        return best_routes
+    
+    def _initialize_routes(self) -> list[list[DeliveryPoint]]:
+        """Inicjalizuj trasy - każdy klient w osobnej trasie."""
+        return [[c] for c in self.customers]
+    
+    def _calculate_total_distance(self, routes: list[list[DeliveryPoint]]) -> float:
+        """Oblicz całkowity dystans dla wszystkich tras."""
+        return sum(self._route_distance(r) for r in routes)
+    
+    def _should_accept_solution(self, new_distance: float, best_distance: float) -> bool:
+        """Sprawdź czy zaakceptować nowe rozwiązanie (Metropolis)."""
+        return new_distance < best_distance or np.random.random() < 0.1
 
     def _perturb(self, routes: list[list[DeliveryPoint]]) -> list[list[DeliveryPoint]]:
         """Losowa modyfikacja tras."""
@@ -365,37 +376,61 @@ class ORScheduler:
         Returns:
             Dict: room_id -> [(surgery, start_time, end_time), ...]
         """
-        # Sortuj operacje wg priorytetu
-        sorted_surgeries = sorted(self.surgeries, key=lambda s: s.priority)
-
-        # Inicjalizuj harmonogram
-        schedule = {room.id: [] for room in self.rooms}
-        room_end_times = {room.id: room.available_hours[0] * 60 for room in self.rooms}
+        sorted_surgeries = self._sort_surgeries_by_priority()
+        schedule = self._initialize_schedule()
+        room_end_times = self._get_room_end_times()
 
         for surgery in sorted_surgeries:
-            # Znajdź najwcześniejszą dostępną salę
-            best_room = None
-            best_start = float('inf')
-
-            for room in self.rooms:
-                if not self._can_perform(room, surgery):
-                    continue
-
-                start = room_end_times[room.id] + self.SETUP_TIME
-                room_end = room.available_hours[1] * 60
-
-                # Sprawdź czy się zmieści
-                if start + surgery.duration_min <= room_end:
-                    if start < best_start:
-                        best_start = start
-                        best_room = room
-
+            best_room, best_start = self._find_best_room_for_surgery(
+                surgery, room_end_times
+            )
+            
             if best_room:
-                end_time = best_start + surgery.duration_min
-                schedule[best_room.id].append((surgery, best_start, end_time))
-                room_end_times[best_room.id] = end_time
+                end_time = self._schedule_surgery_in_room(
+                    schedule, best_room, surgery, best_start, room_end_times
+                )
 
         return schedule
+    
+    def _sort_surgeries_by_priority(self) -> list[Surgery]:
+        """Sortuj operacje wg priorytetu."""
+        return sorted(self.surgeries, key=lambda s: s.priority)
+    
+    def _initialize_schedule(self) -> dict[str, list[tuple[Surgery, int, int]]]:
+        """Inicjalizuj harmonogram."""
+        return {room.id: [] for room in self.rooms}
+    
+    def _get_room_end_times(self) -> dict[str, int]:
+        """Pobierz czasy zakończenia dla sal."""
+        return {room.id: room.available_hours[0] * 60 for room in self.rooms}
+    
+    def _find_best_room_for_surgery(self, surgery: Surgery, room_end_times: dict[str, int]) -> tuple[Optional[OperatingRoom], int]:
+        """Znajdź najlepszą salę dla operacji."""
+        best_room = None
+        best_start = float('inf')
+
+        for room in self.rooms:
+            if not self._can_perform(room, surgery):
+                continue
+
+            start = room_end_times[room.id] + self.SETUP_TIME
+            room_end = room.available_hours[1] * 60
+
+            if start + surgery.duration_min <= room_end:
+                if start < best_start:
+                    best_start = start
+                    best_room = room
+
+        return best_room, best_start
+    
+    def _schedule_surgery_in_room(self, schedule: dict[str, list[tuple[Surgery, int, int]]], 
+                                room: OperatingRoom, surgery: Surgery, 
+                                start_time: int, room_end_times: dict[str, int]) -> int:
+        """Zaplanuj operację w sali."""
+        end_time = start_time + surgery.duration_min
+        schedule[room.id].append((surgery, start_time, end_time))
+        room_end_times[room.id] = end_time
+        return end_time
 
     def print_schedule(self, schedule: dict):
         """Wyświetl harmonogram."""

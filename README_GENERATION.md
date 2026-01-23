@@ -13,21 +13,21 @@ Complete iterative implementation of natural language to DSL generation with the
 ## Architecture Overview
 
 ```
-Natural Language
-       │
-       ▼
-┌─────────────────────────┐
+     Natural Language
+            │
+            ▼
+┌────────────────────────┐
 │ HybridThermodynamicGen │
-└───────────┬───────────────┘
+└───────────┬────────────┘
             │
     ┌───────┼───────┐
     │       │       │
     ▼       ▼       ▼
-Rules    LLM    Langevin
-(0ms)   (~500ms) (~200ms)
+ Rules    LLM    Langevin
+ (0ms)   (~500ms) (~200ms)
     │       │       │
     ▼       ▼       ▼
-DSL DSL DSL Optimization
+   DSL     DSL  Optimization
 ```
 
 ## Iterations Summary

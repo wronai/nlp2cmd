@@ -1,0 +1,80 @@
+"""
+Test shell command template generation.
+
+This module tests shell command template generation including
+file operations, process management, and system commands.
+"""
+
+import pytest
+
+from nlp2cmd.generation.templates import TemplateGenerator, TemplateResult
+
+
+class TestShellTemplates:
+    """Test shell command template generation."""
+    
+    @pytest.fixture
+    def generator(self) -> TemplateGenerator:
+        return TemplateGenerator()
+    
+    def test_shell_find_files(self, generator):
+        """Test file search command generation."""
+        result = generator.generate(
+            domain='shell',
+            intent='find',
+            entities={'path': '/home/user', 'pattern': '*.py'}
+        )
+        
+        assert result.success
+        assert 'find' in result.command
+        assert '/home/user' in result.command
+        assert '*.py' in result.command
+    
+    def test_shell_list_directory(self, generator):
+        """Test directory listing command."""
+        result = generator.generate(
+            domain='shell',
+            intent='list',
+            entities={'path': '/var/log'}
+        )
+        
+        assert result.success
+        assert 'ls' in result.command
+        assert '/var/log' in result.command
+    
+    def test_shell_grep(self, generator):
+        """Test grep command generation."""
+        result = generator.generate(
+            domain='shell',
+            intent='search',
+            entities={'pattern': 'error', 'path': '/var/log'}
+        )
+        
+        assert result.success
+        assert 'grep' in result.command
+        assert 'error' in result.command
+        assert '/var/log' in result.command
+    
+    def test_shell_process_list(self, generator):
+        """Test process listing command."""
+        result = generator.generate(
+            domain='shell',
+            intent='list_processes',
+            entities={}
+        )
+        
+        assert result.success
+        assert 'ps' in result.command
+    
+    def test_shell_file_size_filter(self, generator):
+        """Test file size filtering."""
+        result = generator.generate(
+            domain='shell',
+            intent='find',
+            entities={'path': '.', 'size': '100MB', 'size_operator': '>'}
+        )
+        
+        assert result.success
+        assert 'find' in result.command
+        assert '100' in result.command
+        assert 'MB' in result.command

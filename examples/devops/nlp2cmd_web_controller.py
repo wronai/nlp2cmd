@@ -1,0 +1,542 @@
+"""
+NLP2CMD Web Controller - Natural Language DevOps Layer.
+
+This module provides a control plane that interprets natural language commands
+to configure and manage web application infrastructure.
+
+Example usage:
+    controller = NLP2CMDWebController()
+    
+    # Deploy a chat service
+    await controller.execute("Uruchom serwis czatu na porcie 8080 z Redis jako backend")
+    
+    # Configure email integration
+    await controller.execute("Skonfiguruj klienta email dla konta jan@example.com")
+"""
+
+from __future__ import annotations
+
+import asyncio
+import json
+import os
+from dataclasses import dataclass, field
+from typing import Any, Callable, Optional
+from enum import Enum
+
+
+class ServiceType(Enum):
+    """Types of services that can be managed."""
+    FRONTEND = "frontend"
+    BACKEND_API = "backend_api"
+    DATABASE = "database"
+    CACHE = "cache"
+    MESSAGE_QUEUE = "message_queue"
+    EMAIL_SERVICE = "email_service"
+    CHAT_SERVICE = "chat_service"
+    CONTACT_FORM = "contact_form"
+
+
+@dataclass
+class ServiceConfig:
+    """Configuration for a managed service."""
+    name: str
+    service_type: ServiceType
+    port: int
+    image: Optional[str] = None
+    env_vars: dict[str, str] = field(default_factory=dict)
+    volumes: list[str] = field(default_factory=list)
+    depends_on: list[str] = field(default_factory=list)
+    healthcheck: Optional[str] = None
+    replicas: int = 1
+
+
+@dataclass
+class DeploymentPlan:
+    """Plan for deploying services."""
+    services: list[ServiceConfig]
+    network: str = "nlp2cmd-network"
+    compose_version: str = "3.8"
+    
+    def to_compose(self) -> dict[str, Any]:
+        """Convert to docker-compose format."""
+        services = {}
+        for svc in self.services:
+            service_def = {
+                "image": svc.image or f"nlp2cmd/{svc.name}:latest",
+                "ports": [f"{svc.port}:{svc.port}"],
+                "environment": svc.env_vars,
+                "networks": [self.network],
+            }
+            if svc.volumes:
+                service_def["volumes"] = svc.volumes
+            if svc.depends_on:
+                service_def["depends_on"] = svc.depends_on
+            if svc.healthcheck:
+                service_def["healthcheck"] = {
+                    "test": svc.healthcheck,
+                    "interval": "30s",
+                    "timeout": "10s",
+                    "retries": 3,
+                }
+            if svc.replicas > 1:
+                service_def["deploy"] = {"replicas": svc.replicas}
+            
+            services[svc.name] = service_def
+        
+        return {
+            "version": self.compose_version,
+            "services": services,
+            "networks": {
+                self.network: {"driver": "bridge"}
+            }
+        }
+
+
+class NLCommandParser:
+    """
+    Parse natural language commands into structured actions.
+    
+    Supports Polish and English commands for:
+    - Service deployment (uruchom, deploy, start)
+    - Configuration (skonfiguruj, configure, setup)
+    - Scaling (skaluj, scale)
+    - Monitoring (pokaż, show, status)
+    """
+    
+    # Intent patterns (Polish + English)
+    DEPLOY_PATTERNS = [
+        "uruchom", "deploy", "start", "wystartuj", "włącz", "run",
+        "utwórz", "create", "zbuduj", "build"
+    ]
+    
+    CONFIG_PATTERNS = [
+        "skonfiguruj", "configure", "setup", "ustaw", "set",
+        "połącz", "connect", "podłącz"
+    ]
+    
+    SCALE_PATTERNS = [
+        "skaluj", "scale", "zwiększ", "increase", "zmniejsz", "decrease"
+    ]
+    
+    STATUS_PATTERNS = [
+        "pokaż", "show", "status", "sprawdź", "check", "list", "wyświetl"
+    ]
+    
+    STOP_PATTERNS = [
+        "zatrzymaj", "stop", "wyłącz", "disable", "usuń", "remove", "delete"
+    ]
+    
+    # Service type detection
+    SERVICE_KEYWORDS = {
+        ServiceType.CHAT_SERVICE: ["czat", "chat", "komunikator", "messenger", "websocket"],
+        ServiceType.EMAIL_SERVICE: ["email", "mail", "poczta", "imap", "smtp"],
+        ServiceType.CONTACT_FORM: ["kontakt", "contact", "formularz", "form"],
+        ServiceType.DATABASE: ["baza", "database", "db", "postgres", "mysql", "mongo"],
+        ServiceType.CACHE: ["cache", "redis", "memcached", "pamięć"],
+        ServiceType.FRONTEND: ["frontend", "react", "vue", "angular", "strona", "page"],
+        ServiceType.BACKEND_API: ["api", "backend", "serwer", "server", "rest"],
+    }
+    
+    def parse(self, text: str) -> dict[str, Any]:
+        """Parse natural language command."""
+        text_lower = text.lower()
+        
+        # Detect intent
+        intent = self._detect_intent(text_lower)
+        
+        # Detect service type
+        service_type = self._detect_service_type(text_lower)
+        
+        # Extract entities
+        entities = self._extract_entities(text_lower)
+        
+        return {
+            "intent": intent,
+            "service_type": service_type,
+            "entities": entities,
+            "original_text": text,
+        }
+    
+    def _detect_intent(self, text: str) -> str:
+        """Detect command intent."""
+        for pattern in self.DEPLOY_PATTERNS:
+            if pattern in text:
+                return "deploy"
+        
+        for pattern in self.CONFIG_PATTERNS:
+            if pattern in text:
+                return "configure"
+        
+        for pattern in self.SCALE_PATTERNS:
+            if pattern in text:
+                return "scale"
+        
+        for pattern in self.STATUS_PATTERNS:
+            if pattern in text:
+                return "status"
+        
+        for pattern in self.STOP_PATTERNS:
+            if pattern in text:
+                return "stop"
+        
+        return "unknown"
+    
+    def _detect_service_type(self, text: str) -> Optional[ServiceType]:
+        """Detect service type from text."""
+        for svc_type, keywords in self.SERVICE_KEYWORDS.items():
+            for keyword in keywords:
+                if keyword in text:
+                    return svc_type
+        return None
+    
+    def _extract_entities(self, text: str) -> dict[str, Any]:
+        """Extract entities from text."""
+        import re
+        
+        entities = {}
+        
+        # Extract port numbers
+        port_match = re.search(r'port[ue]?\s*[:=]?\s*(\d+)|na\s+porcie\s+(\d+)|:(\d+)', text)
+        if port_match:
+            entities["port"] = int(next(g for g in port_match.groups() if g))
+        
+        # Extract email addresses
+        email_match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', text)
+        if email_match:
+            entities["email"] = email_match.group()
+        
+        # Extract hostnames/URLs
+        host_match = re.search(r'host[a]?\s*[:=]?\s*([\w\.-]+)|serwer[a]?\s+([\w\.-]+)', text)
+        if host_match:
+            entities["host"] = next(g for g in host_match.groups() if g)
+        
+        # Extract replica count
+        replica_match = re.search(r'(\d+)\s*(replik|instancj|kopii|replicas?|instances?)', text)
+        if replica_match:
+            entities["replicas"] = int(replica_match.group(1))
+        
+        # Extract database name
+        db_match = re.search(r'baz[aęy]\s+([\w_]+)|database\s+([\w_]+)', text)
+        if db_match:
+            entities["database"] = next(g for g in db_match.groups() if g)
+        
+        # Extract credentials hints
+        if "hasło" in text or "password" in text:
+            entities["needs_password"] = True
+        if "użytkownik" in text or "user" in text:
+            entities["needs_username"] = True
+        
+        return entities
+
+
+class NLP2CMDWebController:
+    """
+    Main controller for NLP2CMD-powered web infrastructure.
+    
+    This class orchestrates the deployment and management of web services
+    based on natural language commands.
+    """
+    
+    def __init__(self):
+        self.parser = NLCommandParser()
+        self.services: dict[str, ServiceConfig] = {}
+        self.deployment_history: list[dict[str, Any]] = []
+        
+        # Service templates
+        self.templates = {
+            ServiceType.CHAT_SERVICE: self._create_chat_template,
+            ServiceType.EMAIL_SERVICE: self._create_email_template,
+            ServiceType.CONTACT_FORM: self._create_contact_template,
+            ServiceType.DATABASE: self._create_database_template,
+            ServiceType.CACHE: self._create_cache_template,
+        }
+    
+    async def execute(self, command: str) -> dict[str, Any]:
+        """
+        Execute a natural language command.
+        
+        Args:
+            command: Natural language command in Polish or English
+            
+        Returns:
+            Result dictionary with status and generated configurations
+        """
+        # Parse command
+        parsed = self.parser.parse(command)
+        
+        # Route to handler
+        handlers = {
+            "deploy": self._handle_deploy,
+            "configure": self._handle_configure,
+            "scale": self._handle_scale,
+            "status": self._handle_status,
+            "stop": self._handle_stop,
+        }
+        
+        handler = handlers.get(parsed["intent"], self._handle_unknown)
+        result = await handler(parsed)
+        
+        # Record in history
+        self.deployment_history.append({
+            "command": command,
+            "parsed": parsed,
+            "result": result,
+        })
+        
+        return result
+    
+    async def _handle_deploy(self, parsed: dict) -> dict[str, Any]:
+        """Handle deploy intent."""
+        service_type = parsed.get("service_type")
+        entities = parsed.get("entities", {})
+        
+        if service_type and service_type in self.templates:
+            # Create service from template
+            config = self.templates[service_type](entities)
+            self.services[config.name] = config
+            
+            # Generate deployment artifacts
+            plan = DeploymentPlan(services=[config])
+            compose = plan.to_compose()
+            
+            return {
+                "status": "success",
+                "action": "deploy",
+                "service": config.name,
+                "config": {
+                    "port": config.port,
+                    "image": config.image,
+                    "env_vars": config.env_vars,
+                },
+                "docker_compose": compose,
+                "message": f"Przygotowano deployment dla {config.name} na porcie {config.port}",
+            }
+        
+        return {
+            "status": "error",
+            "message": "Nie rozpoznano typu usługi. Dostępne: chat, email, contact, database, cache",
+        }
+    
+    async def _handle_configure(self, parsed: dict) -> dict[str, Any]:
+        """Handle configure intent."""
+        service_type = parsed.get("service_type")
+        entities = parsed.get("entities", {})
+        
+        if service_type == ServiceType.EMAIL_SERVICE:
+            return await self._configure_email(entities)
+        
+        if service_type == ServiceType.CHAT_SERVICE:
+            return await self._configure_chat(entities)
+        
+        return {
+            "status": "needs_input",
+            "message": "Potrzebuję więcej informacji do konfiguracji.",
+            "required": ["service_type", "credentials"],
+        }
+    
+    async def _handle_scale(self, parsed: dict) -> dict[str, Any]:
+        """Handle scale intent."""
+        entities = parsed.get("entities", {})
+        replicas = entities.get("replicas", 2)
+        
+        return {
+            "status": "success",
+            "action": "scale",
+            "replicas": replicas,
+            "kubectl_command": f"kubectl scale deployment --replicas={replicas}",
+            "docker_command": f"docker-compose up --scale service={replicas}",
+        }
+    
+    async def _handle_status(self, parsed: dict) -> dict[str, Any]:
+        """Handle status intent."""
+        return {
+            "status": "success",
+            "action": "status",
+            "services": {name: {"port": cfg.port, "type": cfg.service_type.value} 
+                        for name, cfg in self.services.items()},
+            "commands": {
+                "docker": "docker-compose ps",
+                "kubernetes": "kubectl get pods",
+            }
+        }
+    
+    async def _handle_stop(self, parsed: dict) -> dict[str, Any]:
+        """Handle stop intent."""
+        return {
+            "status": "success",
+            "action": "stop",
+            "commands": {
+                "docker": "docker-compose down",
+                "kubernetes": "kubectl delete deployment",
+            }
+        }
+    
+    async def _handle_unknown(self, parsed: dict) -> dict[str, Any]:
+        """Handle unknown intent."""
+        return {
+            "status": "clarification_needed",
+            "message": "Nie zrozumiałem polecenia. Przykłady:",
+            "examples": [
+                "Uruchom serwis czatu na porcie 8080",
+                "Skonfiguruj email dla jan@example.com",
+                "Pokaż status usług",
+            ]
+        }
+    
+    # Service templates
+    def _create_chat_template(self, entities: dict) -> ServiceConfig:
+        """Create chat service configuration."""
+        port = entities.get("port", 8080)
+        return ServiceConfig(
+            name="chat-service",
+            service_type=ServiceType.CHAT_SERVICE,
+            port=port,
+            image="nlp2cmd/chat-service:latest",
+            env_vars={
+                "PORT": str(port),
+                "REDIS_URL": "redis://redis:6379",
+                "WS_ENABLED": "true",
+            },
+            depends_on=["redis"],
+        )
+    
+    def _create_email_template(self, entities: dict) -> ServiceConfig:
+        """Create email service configuration."""
+        port = entities.get("port", 8082)
+        return ServiceConfig(
+            name="email-service",
+            service_type=ServiceType.EMAIL_SERVICE,
+            port=port,
+            image="nlp2cmd/email-service:latest",
+            env_vars={
+                "PORT": str(port),
+                "IMAP_HOST": entities.get("host", "imap.example.com"),
+                "EMAIL_ADDRESS": entities.get("email", ""),
+            },
+        )
+    
+    def _create_contact_template(self, entities: dict) -> ServiceConfig:
+        """Create contact form service configuration."""
+        port = entities.get("port", 8081)
+        return ServiceConfig(
+            name="contact-service",
+            service_type=ServiceType.CONTACT_FORM,
+            port=port,
+            image="nlp2cmd/contact-service:latest",
+            env_vars={
+                "PORT": str(port),
+                "SMTP_HOST": entities.get("host", "smtp.example.com"),
+                "RECIPIENT_EMAIL": entities.get("email", "contact@example.com"),
+            },
+        )
+    
+    def _create_database_template(self, entities: dict) -> ServiceConfig:
+        """Create database service configuration."""
+        return ServiceConfig(
+            name="postgres",
+            service_type=ServiceType.DATABASE,
+            port=5432,
+            image="postgres:15-alpine",
+            env_vars={
+                "POSTGRES_DB": entities.get("database", "nlp2cmd_db"),
+                "POSTGRES_USER": "nlp2cmd",
+                "POSTGRES_PASSWORD": "${DB_PASSWORD}",
+            },
+            volumes=["postgres_data:/var/lib/postgresql/data"],
+            healthcheck="pg_isready -U nlp2cmd",
+        )
+    
+    def _create_cache_template(self, entities: dict) -> ServiceConfig:
+        """Create cache service configuration."""
+        return ServiceConfig(
+            name="redis",
+            service_type=ServiceType.CACHE,
+            port=6379,
+            image="redis:7-alpine",
+            volumes=["redis_data:/data"],
+            healthcheck="redis-cli ping",
+        )
+    
+    async def _configure_email(self, entities: dict) -> dict[str, Any]:
+        """Configure email service with credentials."""
+        email = entities.get("email", "")
+        
+        return {
+            "status": "configuration_ready",
+            "service": "email",
+            "config": {
+                "email": email,
+                "imap_host": self._guess_imap_host(email),
+                "smtp_host": self._guess_smtp_host(email),
+            },
+            "env_file_content": f"""
+# Email Configuration
+EMAIL_ADDRESS={email}
+EMAIL_PASSWORD=${{EMAIL_PASSWORD}}
+IMAP_HOST={self._guess_imap_host(email)}
+IMAP_PORT=993
+SMTP_HOST={self._guess_smtp_host(email)}
+SMTP_PORT=587
+""".strip(),
+            "next_step": "Ustaw zmienną EMAIL_PASSWORD w pliku .env",
+        }
+    
+    async def _configure_chat(self, entities: dict) -> dict[str, Any]:
+        """Configure chat service."""
+        port = entities.get("port", 8080)
+        
+        return {
+            "status": "configuration_ready",
+            "service": "chat",
+            "config": {
+                "port": port,
+                "websocket_path": "/ws",
+                "redis_required": True,
+            },
+            "message": f"Serwis czatu gotowy na porcie {port}",
+        }
+    
+    def _guess_imap_host(self, email: str) -> str:
+        """Guess IMAP host from email domain."""
+        if not email or "@" not in email:
+            return "imap.example.com"
+        
+        domain = email.split("@")[1].lower()
+        
+        known_hosts = {
+            "gmail.com": "imap.gmail.com",
+            "outlook.com": "outlook.office365.com",
+            "hotmail.com": "outlook.office365.com",
+            "yahoo.com": "imap.mail.yahoo.com",
+            "wp.pl": "imap.wp.pl",
+            "onet.pl": "imap.poczta.onet.pl",
+            "interia.pl": "imap.interia.pl",
+        }
+        
+        return known_hosts.get(domain, f"imap.{domain}")
+    
+    def _guess_smtp_host(self, email: str) -> str:
+        """Guess SMTP host from email domain."""
+        if not email or "@" not in email:
+            return "smtp.example.com"
+        
+        domain = email.split("@")[1].lower()
+        
+        known_hosts = {
+            "gmail.com": "smtp.gmail.com",
+            "outlook.com": "smtp.office365.com",
+            "hotmail.com": "smtp.office365.com",
+            "yahoo.com": "smtp.mail.yahoo.com",
+            "wp.pl": "smtp.wp.pl",
+            "onet.pl": "smtp.poczta.onet.pl",
+            "interia.pl": "smtp.interia.pl",
+        }
+        
+        return known_hosts.get(domain, f"smtp.{domain}")
+
+
+# Convenience function
+async def run_command(command: str) -> dict[str, Any]:
+    """Quick way to run a single NLP2CMD command."""
+    controller = NLP2CMDWebController()
+    return await controller.execute(command)

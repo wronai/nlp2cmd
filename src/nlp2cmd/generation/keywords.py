@@ -39,7 +39,7 @@ class KeywordIntentDetector:
                 'pokaż', 'wyświetl', 'znajdź', 'pobierz', 'select', 'get', 
                 'show', 'list', 'fetch', 'query', 'retrieve',
                 'z tabeli', 'from table', 'wszystkich', 'all records',
-                'dane z', 'data from', 'rekordy', 'records', 'wiersze', 'rows',
+                'dane z', 'data from', 'wszystkie rekordy', 'all records', 'wiersze', 'rows',
             ],
             'insert': [
                 'dodaj', 'wstaw', 'insert', 'create record', 'add record',
@@ -51,7 +51,7 @@ class KeywordIntentDetector:
             ],
             'delete': [
                 'usuń', 'skasuj', 'delete', 'remove', 'wymaż',
-                'kasuj', 'drop record',
+                'kasuj', 'drop record', 'usuń rekord', 'skasuj rekord', 'z tabeli',
             ],
             'aggregate': [
                 'policz', 'zsumuj', 'średnia', 'count', 'sum', 'avg',
@@ -147,6 +147,10 @@ class KeywordIntentDetector:
                 'uruchom kontener', 'docker run', 'start container',
                 'odpal kontener', 'wystartuj',
             ],
+            'start': [
+                'uruchom kontener', 'docker start', 'start container',
+                'odpal kontener', 'wystartuj', 'zatrzymany kontener',
+            ],
             'stop': [
                 'zatrzymaj kontener', 'docker stop', 'stop container',
                 'zatrzymaj', 'kill container',
@@ -213,7 +217,7 @@ class KeywordIntentDetector:
     
     # Domain-specific boost keywords (increase confidence)
     DOMAIN_BOOSTERS: dict[str, list[str]] = {
-        'sql': ['tabela', 'table', 'kolumna', 'column', 'baza', 'database', 'sql', 'where', 'join'],
+        'sql': ['tabela', 'table', 'kolumna', 'column', 'baza', 'database', 'sql', 'where', 'join', 'tabeli', 'z tabeli'],
         'shell': ['plik', 'file', 'katalog', 'directory', 'folder', 'ścieżka', 'path', 'bash', 'terminal',
                   'znajdź', 'skopiuj', 'usuń', 'utwórz', 'zmień', 'sprawdź', 'pokaż', 'uruchom', 'zatrzymaj',
                   'proces', 'dysk', 'sieć', 'port', 'backup', 'logi', 'test', 'build', 'debug'],
@@ -241,7 +245,7 @@ class KeywordIntentDetector:
     PRIORITY_INTENTS: dict[str, list[str]] = {
         'sql': ['delete', 'update', 'insert', 'aggregate'],
         'shell': ['file_operation', 'archive', 'process', 'disk', 'system_maintenance', 'development', 'security', 'process_management'],
-        'docker': ['stop', 'prune', 'build', 'run', 'list', 'logs', 'exec'],
+        'docker': ['stop', 'prune', 'build', 'run', 'list', 'logs', 'exec', 'start'],
         'kubernetes': ['delete', 'scale', 'describe', 'logs'],
     }
     
@@ -315,8 +319,12 @@ class KeywordIntentDetector:
                 if domain == 'sql' and intent == 'delete':
                     shell_boosters = self.DOMAIN_BOOSTERS.get('shell', [])
                     shell_context = any(b.lower() in text_lower for b in shell_boosters)
-                    if shell_context:
-                        # Skip SQL delete intent when shell context is detected
+                    sql_boosters = self.DOMAIN_BOOSTERS.get('sql', [])
+                    sql_context = any(b.lower() in text_lower for b in sql_boosters)
+                    
+                    # Only skip SQL delete if shell context is strong AND no SQL context
+                    if shell_context and not sql_context:
+                        # Skip SQL delete intent when shell context is detected but no SQL context
                         continue
                 
                 keywords = self.patterns[domain][intent]
@@ -329,6 +337,10 @@ class KeywordIntentDetector:
                         position = text_lower.find(kw.lower())
                         position_bonus = 0.05 if position < 15 else 0.0
                         score = confidence + position_bonus
+                        
+                        # Special rule: SQL delete should always beat SQL select
+                        if domain == 'sql' and intent == 'delete' and best_match and best_match.domain == 'sql' and best_match.intent == 'select':
+                            score += 0.2  # Boost delete over select
                         
                         if score > best_score:
                             best_score = score
