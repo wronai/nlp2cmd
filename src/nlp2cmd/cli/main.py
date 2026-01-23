@@ -463,6 +463,7 @@ def _handle_run_query(
     - Execute with real-time output
     - Detect errors and suggest recovery
     - Interactive retry loop with LLM assistance
+    - Context-aware disambiguation from history
     """
     from nlp2cmd.generation.pipeline import RuleBasedPipeline
     
@@ -471,6 +472,21 @@ def _handle_run_query(
         title="[cyan]🚀 Run Mode[/cyan]",
         border_style="cyan",
     ))
+    
+    # Step 0: Check for similar queries in history (disambiguation)
+    if not auto_confirm:
+        try:
+            from nlp2cmd.context.disambiguator import CommandDisambiguator
+            
+            disambiguator = CommandDisambiguator(console=console)
+            result = disambiguator.disambiguate(query, auto_select=False)
+            
+            if result.from_history and result.selected_command:
+                console.print(f"\n[dim]Using previous command from history[/dim]")
+                query = result.selected_query
+                # Could directly use result.selected_command here
+        except Exception:
+            pass
     
     # Step 1: Generate command
     console.print("\n[dim]Generating command...[/dim]")
