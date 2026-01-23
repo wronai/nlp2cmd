@@ -465,7 +465,7 @@ class PipelineRunner:
                                     console.print("[yellow]No form data in .env or data/ - using interactive mode[/yellow]")
                                     form_data = form_handler.interactive_fill(fields)
                                 if form_data is not None:
-                                    form_data.submit_selector = form_handler.detect_submit_button(page)
+                                    form_data.submit_selector = form_handler.detect_submit_button(page, data_loader)
                                 
                                 # Fill the form if we have data
                                 if form_data and form_data.fields:

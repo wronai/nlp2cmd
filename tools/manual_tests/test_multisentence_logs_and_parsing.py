@@ -395,6 +395,24 @@ def main() -> int:
             "errors": pr.errors,
         }
 
+        steps_payload: list[dict[str, Any]] = []
+        if not looks_like_log_input(case.text):
+            steps = pipeline.process_steps(case.text)
+            for st in steps:
+                steps_payload.append(
+                    {
+                        "text": st.input_text,
+                        "success": st.success,
+                        "domain": st.domain,
+                        "intent": st.intent,
+                        "confidence": st.detection_confidence,
+                        "command": st.command,
+                        "warnings": st.warnings,
+                        "errors": st.errors,
+                    }
+                )
+        entry["pipeline_steps"] = steps_payload
+
         entry["expected"] = {
             "domain": case.expected_domain,
             "intent": case.expected_intent,
@@ -466,6 +484,8 @@ def main() -> int:
     correct_intent = 0
     correct_domain_per_sentence = 0
     correct_intent_per_sentence = 0
+    correct_domain_any_step = 0
+    correct_intent_any_step = 0
     parse_sentence_ok = 0
     parse_checked = 0
 
@@ -484,6 +504,10 @@ def main() -> int:
             if isinstance(agg, dict) and agg.get("dominant_domain") == exp_domain:
                 correct_domain_per_sentence += 1
 
+            steps = r.get("pipeline_steps")
+            if isinstance(steps, list) and any(isinstance(s, dict) and s.get("domain") == exp_domain for s in steps):
+                correct_domain_any_step += 1
+
         if isinstance(exp_intent, str) and exp_intent:
             if pr.get("intent") == exp_intent:
                 correct_intent += 1
@@ -491,6 +515,10 @@ def main() -> int:
             agg = r.get("per_sentence_aggregate")
             if isinstance(agg, dict) and agg.get("dominant_intent") == exp_intent:
                 correct_intent_per_sentence += 1
+
+            steps = r.get("pipeline_steps")
+            if isinstance(steps, list) and any(isinstance(s, dict) and s.get("intent") == exp_intent for s in steps):
+                correct_intent_any_step += 1
 
         parse = r.get("parse")
         if isinstance(parse, dict) and parse.get("available"):
@@ -523,6 +551,22 @@ def main() -> int:
                     c = 0.0
                 cmd_str = cmd if isinstance(cmd, str) else ""
                 print(f"  sent {i}: {d}/{it} conf={c:.2f} cmd={cmd_str}")
+
+        stp = r.get("pipeline_steps")
+        if isinstance(stp, list) and stp:
+            print("  steps:")
+            for i, row in enumerate(stp, 1):
+                if not isinstance(row, dict):
+                    continue
+                d = row.get("domain")
+                it = row.get("intent")
+                cmd = row.get("command")
+                try:
+                    c = float(row.get("confidence") or 0.0)
+                except (TypeError, ValueError):
+                    c = 0.0
+                cmd_str = cmd if isinstance(cmd, str) else ""
+                print(f"    {i}. {d}/{it} conf={c:.2f} cmd={cmd_str}")
         if r.get("log_fallback", {}).get("attempted"):
             fb2 = r["log_fallback"].get("followup_feedback")
             fb1 = r["log_fallback"].get("first_feedback")
@@ -545,9 +589,11 @@ def main() -> int:
     if total_expected_domain:
         print(f"domain accuracy: {correct_domain}/{total_expected_domain}")
         print(f"domain accuracy (per-sentence dominant): {correct_domain_per_sentence}/{total_expected_domain}")
+        print(f"domain present in any step: {correct_domain_any_step}/{total_expected_domain}")
     if total_expected_intent:
         print(f"intent accuracy: {correct_intent}/{total_expected_intent}")
         print(f"intent accuracy (per-sentence dominant): {correct_intent_per_sentence}/{total_expected_intent}")
+        print(f"intent present in any step: {correct_intent_any_step}/{total_expected_intent}")
     if parse_checked:
         print(f"sentence splitting ok: {parse_sentence_ok}/{parse_checked}")
 

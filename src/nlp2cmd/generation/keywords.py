@@ -798,6 +798,7 @@ class KeywordIntentDetector:
     def __init__(
         self,
         patterns: Optional[dict[str, dict[str, list[str]]]] = None,
+        custom_patterns: Optional[dict[str, dict[str, list[str]]]] = None,
         confidence_threshold: float = 0.5,
     ):
         """
@@ -805,19 +806,28 @@ class KeywordIntentDetector:
         
         Args:
             patterns: Custom patterns to use (or default PATTERNS)
+            custom_patterns: Custom patterns to use as fallback when patterns is not provided
             confidence_threshold: Minimum confidence to return a match
         """
-        self.patterns = patterns or {}
+        self._custom_patterns_provided = patterns is not None or custom_patterns is not None
+        self.patterns = patterns or custom_patterns or {}
         self.confidence_threshold = confidence_threshold
-        self.domain_boosters: dict[str, list[str]] = dict(self.DOMAIN_BOOSTERS)
-        self.priority_intents: dict[str, list[str]] = dict(self.PRIORITY_INTENTS)
+        # Initialize with empty defaults - will be loaded from JSON
+        self.domain_boosters: dict[str, list[str]] = {}
+        self.priority_intents: dict[str, list[str]] = {}
         self.fast_path_browser_keywords: list[str] = []
         self.fast_path_search_keywords: list[str] = []
         self.fast_path_common_images: set[str] = set()
 
+        # Load configuration from JSON files (with fallback to embedded constants)
         self._load_detector_config_from_json()
         self._load_patterns_from_json()
 
+        # Fallback to embedded constants if JSON loading failed
+        if not self.domain_boosters:
+            self.domain_boosters = dict(self.DOMAIN_BOOSTERS)
+        if not self.priority_intents:
+            self.priority_intents = dict(self.PRIORITY_INTENTS)
         if not self.patterns:
             self.patterns = dict(self.PATTERNS)
 
@@ -876,7 +886,8 @@ class KeywordIntentDetector:
         path = os.environ.get("NLP2CMD_PATTERNS_FILE") or "./data/patterns.json"
         p = Path(path)
         if not p.exists():
-            # Fallback to embedded PATTERNS if no external file
+            if self._custom_patterns_provided:
+                return
             for domain, intents in self.PATTERNS.items():
                 for intent, keywords in intents.items():
                     self.add_pattern(domain, intent, keywords)
@@ -884,13 +895,15 @@ class KeywordIntentDetector:
         try:
             payload = json.loads(p.read_text(encoding="utf-8"))
         except Exception:
-            # On error, fallback to embedded PATTERNS
+            if self._custom_patterns_provided:
+                return
             for domain, intents in self.PATTERNS.items():
                 for intent, keywords in intents.items():
                     self.add_pattern(domain, intent, keywords)
             return
         if not isinstance(payload, dict):
-            # Invalid format, fallback to embedded PATTERNS
+            if self._custom_patterns_provided:
+                return
             for domain, intents in self.PATTERNS.items():
                 for intent, keywords in intents.items():
                     self.add_pattern(domain, intent, keywords)
@@ -918,6 +931,8 @@ class KeywordIntentDetector:
         
         # If no valid patterns were loaded, fallback to embedded PATTERNS
         if not loaded_any:
+            if self._custom_patterns_provided:
+                return
             for domain, intents in self.PATTERNS.items():
                 for intent, keywords in intents.items():
                     self.add_pattern(domain, intent, keywords)

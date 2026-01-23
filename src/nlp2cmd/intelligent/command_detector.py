@@ -2,6 +2,9 @@
 """Intelligent command detection from natural language descriptions."""
 
 import re
+import json
+import os
+from pathlib import Path
 from typing import List, Tuple, Dict, Optional
 from dataclasses import dataclass
 from collections import defaultdict
@@ -208,6 +211,73 @@ class CommandDetector:
             'context_keyword': 0.3,
             'pattern_match': 0.8,
             'exact_command': 1.0
+        }
+
+        loaded = self._load_config_from_json()
+        if loaded is not None:
+            action_mappings = loaded.get("action_mappings")
+            if isinstance(action_mappings, dict) and action_mappings:
+                self.action_mappings = action_mappings
+
+            context_weights = loaded.get("context_weights")
+            if isinstance(context_weights, dict) and context_weights:
+                self.context_weights = context_weights
+
+    def _load_config_from_json(self) -> Optional[Dict[str, Dict]]:
+        path = os.environ.get("NLP2CMD_COMMAND_DETECTOR_FILE") or "./data/command_detector.json"
+        p = Path(path)
+        if not p.exists():
+            return None
+        try:
+            payload = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            return None
+        if not isinstance(payload, dict):
+            return None
+
+        raw_action_mappings = payload.get("action_mappings")
+        raw_context_weights = payload.get("context_weights")
+
+        loaded_action_mappings: Dict[str, Dict[str, List[str]]] = {}
+        if isinstance(raw_action_mappings, dict):
+            for cmd, info in raw_action_mappings.items():
+                if not isinstance(cmd, str) or not cmd.strip():
+                    continue
+                if not isinstance(info, dict):
+                    continue
+
+                keywords = info.get("keywords")
+                patterns = info.get("patterns")
+                context_keywords = info.get("context_keywords")
+                if not isinstance(keywords, list) or not isinstance(patterns, list) or not isinstance(context_keywords, list):
+                    continue
+
+                clean_keywords = [x for x in keywords if isinstance(x, str) and x.strip()]
+                clean_patterns = [x for x in patterns if isinstance(x, str) and x.strip()]
+                clean_context = [x for x in context_keywords if isinstance(x, str) and x.strip()]
+                if not clean_keywords and not clean_patterns and not clean_context:
+                    continue
+
+                loaded_action_mappings[cmd.strip()] = {
+                    "keywords": clean_keywords,
+                    "patterns": clean_patterns,
+                    "context_keywords": clean_context,
+                }
+
+        loaded_context_weights: Dict[str, float] = {}
+        if isinstance(raw_context_weights, dict):
+            for k, v in raw_context_weights.items():
+                if not isinstance(k, str) or not k.strip():
+                    continue
+                if isinstance(v, (int, float)):
+                    loaded_context_weights[k.strip()] = float(v)
+
+        if not loaded_action_mappings and not loaded_context_weights:
+            return None
+
+        return {
+            "action_mappings": loaded_action_mappings,
+            "context_weights": loaded_context_weights,
         }
     
     def detect_command(self, query: str, top_k: int = 3) -> List[CommandMatch]:

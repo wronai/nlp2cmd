@@ -558,9 +558,10 @@ def _handle_run_query(
     
     if dsl == "auto":
         pipeline = RuleBasedPipeline()
+        used_generated_command = False
         result = pipeline.process(query)
 
-        if (not result.success) and auto_repair:
+        if (not _looks_like_log_input(query)) and (not result.success) and auto_repair:
             try:
                 from nlp2cmd.generation.llm_simple import LiteLLMClient
 
@@ -573,6 +574,76 @@ def _handle_run_query(
                 )
             except Exception:
                 pass
+
+        if not _looks_like_log_input(query):
+            steps = pipeline.process_steps(query)
+            if len(steps) > 1:
+                console.print("\n[cyan]Multi-step plan detected:[/cyan]")
+                executable_indices: list[int] = []
+                for i, step in enumerate(steps, 1):
+                    cmd = (step.command or "").strip()
+                    ok = bool(cmd) and not cmd.startswith("#")
+                    if ok:
+                        executable_indices.append(i)
+                    console.print(f"  {i}. [{step.domain}/{step.intent}] {cmd}")
+
+                if not executable_indices:
+                    console.print("[red]✗ No executable steps could be derived[/red]")
+                    return
+
+                selected: list[int] = []
+                if auto_confirm:
+                    selected = list(executable_indices)
+                else:
+                    resp = console.input(
+                        "[yellow]Execute steps? [s(elect)/a(ll)/n]: [/yellow]"
+                    ).strip().lower()
+                    if resp in {"n", "no", "nie"}:
+                        console.print("[yellow]Cancelled by user[/yellow]")
+                        return
+                    if resp in {"a", "all"}:
+                        selected = list(executable_indices)
+                    else:
+                        raw = console.input(
+                            "[yellow]Enter step numbers (e.g. 1,3) or press Enter for 1st step: [/yellow]"
+                        ).strip()
+                        if not raw:
+                            selected = [executable_indices[0]]
+                        else:
+                            parts = [p.strip() for p in raw.split(",") if p.strip()]
+                            for p in parts:
+                                if p.isdigit():
+                                    n = int(p)
+                                    if n in executable_indices and n not in selected:
+                                        selected.append(n)
+
+                if not selected:
+                    console.print("[yellow]No steps selected[/yellow]")
+                    return
+
+                runner = ExecutionRunner(
+                    console=console,
+                    auto_confirm=auto_confirm,
+                    max_retries=3,
+                )
+
+                for n in selected:
+                    step = steps[n - 1]
+                    cmd = (step.command or "").strip()
+                    if not cmd or cmd.startswith("#"):
+                        continue
+                    console.print(Panel(
+                        f"[bold]{cmd}[/bold]",
+                        title=f"[cyan]Step {n}/{len(steps)}: {step.domain}/{step.intent}[/cyan]",
+                        border_style="cyan",
+                    ))
+                    exec_result = runner.run_with_recovery(cmd, query)
+                    if not exec_result.success and not auto_confirm:
+                        cont = console.input("[yellow]Continue to next step? [y/N]: [/yellow]").strip().lower()
+                        if cont not in {"y", "yes", "tak"}:
+                            return
+
+                return
 
         if _looks_like_log_input(query):
             console.print("[yellow]Detected log-like input. Falling back to interactive nlp2cmd analysis.[/yellow]")
@@ -587,187 +658,173 @@ def _handle_run_query(
                 command = cmd
                 detected_domain = "shell"
                 detected_intent = "log_fallback"
+                used_generated_command = True
             else:
                 console.print("[red]✗ Could not derive an executable command from logs[/red]")
                 return
         elif not result.success:
-            if _looks_like_log_input(query):
-                console.print("[yellow]Detected log-like input. Falling back to interactive nlp2cmd analysis.[/yellow]")
-                session = InteractiveSession(dsl="shell", auto_repair=False)
-                feedback = session.process(query)
-                session.display_feedback(feedback)
-                feedback = _interactive_followup(session, feedback)
-                session.display_feedback(feedback)
+            console.print(f"[red]✗ Could not generate command with rule-based pipeline: {result.command}[/red]")
+            
+            # Try different fallback strategies
+            fallback_success = False
+            
+            # Strategy 1: Try LiteLLM with Ollama
+            console.print("[yellow]Attempting LLM fallback via LiteLLM...[/yellow]")
+            try:
+                from nlp2cmd.generation.llm_simple import LiteLLMClient
+                import asyncio
 
-                cmd = (feedback.generated_output or "").strip()
-                if cmd and not cmd.startswith("#"):
-                    command = cmd
+                llm = LiteLLMClient()
+
+                system_prompt = """You are a command-line expert. Convert the user's natural language request into a valid shell command.
+
+Rules:
+- Respond ONLY with the command, no explanation
+- Use standard shell commands
+- For "uruchom docker" or similar requests, use appropriate docker commands
+- Keep commands simple and executable"""
+
+                async def get_llm_response():
+                    return await llm.complete(
+                        user=query,
+                        system=system_prompt,
+                        max_tokens=200,
+                        temperature=0.1
+                    )
+
+                response = asyncio.run(get_llm_response())
+                command = response.strip()
+
+                if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
                     detected_domain = "shell"
-                    detected_intent = "log_fallback"
+                    detected_intent = "llm_fallback"
+                    console.print(f"[green]✓ LLM fallback succeeded[/green]")
+                    fallback_success = True
+                    used_generated_command = True
+            except ImportError as e:
+                if "litellm" in str(e):
+                    console.print("[yellow]LiteLLM not installed. Attempting auto-install...[/yellow]")
+                    if auto_install:
+                        try:
+                            import subprocess
+                            console.print("[dim]Installing litellm...[/dim]")
+                            subprocess.run(["pip", "install", "litellm"], check=True, capture_output=True)
+                            console.print("[green]✓ litellm installed successfully. Retrying LLM fallback...[/green]")
+                            # Retry after installation
+                            from nlp2cmd.generation.llm_simple import LiteLLMClient
+                            import asyncio
+                            
+                            llm = LiteLLMClient()
+                            system_prompt = """You are a command-line expert. Convert the user's natural language request into a valid shell command.
+                            
+Rules:
+- Respond ONLY with the command, no explanation
+- Use standard shell commands
+- For "uruchom docker" or similar requests, use appropriate docker commands
+- Keep commands simple and executable"""
+                            
+                            async def get_llm_response():
+                                return await llm.complete(
+                                    user=query,
+                                    system=system_prompt,
+                                    max_tokens=200,
+                                    temperature=0.1
+                                )
+                            
+                            response = asyncio.run(get_llm_response())
+                            command = response.strip()
+                            
+                            if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
+                                detected_domain = "shell"
+                                detected_intent = "llm_fallback"
+                                console.print(f"[green]✓ LLM fallback succeeded after auto-install[/green]")
+                                fallback_success = True
+                                used_generated_command = True
+                        except Exception as install_error:
+                            console.print(f"[red]✗ Auto-install failed: {str(install_error)}[/red]")
+                    else:
+                        console.print("[yellow]Use --auto-install to automatically install missing dependencies[/yellow]")
                 else:
-                    console.print("[red]✗ Could not derive an executable command from logs[/red]")
-                    return
-            else:
-                console.print(f"[red]✗ Could not generate command with rule-based pipeline: {result.command}[/red]")
-                
-                # Try different fallback strategies
-                fallback_success = False
-                
-                # Strategy 1: Try LiteLLM with Ollama
-                console.print("[yellow]Attempting LLM fallback via LiteLLM...[/yellow]")
-                try:
-                    from nlp2cmd.generation.llm_simple import LiteLLMClient
-                    import asyncio
-                    
-                    # Use LiteLLM with Ollama by default
-                    llm = LiteLLMClient()
-                    
-                    # Create a simple prompt for command generation
-                    system_prompt = """You are a command-line expert. Convert the user's natural language request into a valid shell command.
-                    
+                    console.print(f"[red]✗ Import error: {str(e)}[/red]")
+            except Exception as e:
+                error_msg = str(e)
+                if "connection" in error_msg.lower() or "refused" in error_msg.lower():
+                    console.print("[yellow]Could not connect to Ollama. Attempting to start Ollama...[/yellow]")
+                    if auto_install:
+                        try:
+                            import subprocess
+                            console.print("[dim]Starting Ollama with Docker...[/dim]")
+                            subprocess.run(["docker", "run", "-d", "-p", "11434:11434", "ollama/ollama"], check=True, capture_output=True)
+                            console.print("[green]✓ Ollama started. Retrying LLM fallback...[/green]")
+                            # Give it a moment to start
+                            import time
+                            time.sleep(3)
+                            
+                            # Retry the LLM call
+                            from nlp2cmd.generation.llm_simple import LiteLLMClient
+                            import asyncio
+                            
+                            llm = LiteLLMClient()
+                            system_prompt = """You are a command-line expert. Convert the user's natural language request into a valid shell command.
+                            
 Rules:
 - Respond ONLY with the command, no explanation
 - Use standard shell commands
 - For "uruchom docker" or similar requests, use appropriate docker commands
 - Keep commands simple and executable"""
-                    
-                    # Run the async function properly
-                    async def get_llm_response():
-                        return await llm.complete(
-                            user=query,
-                            system=system_prompt,
-                            max_tokens=200,
-                            temperature=0.1
-                        )
-                    
-                    response = asyncio.run(get_llm_response())
-                    command = response.strip()
-                    
-                    if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
-                        detected_domain = "shell"
-                        detected_intent = "llm_fallback"
-                        console.print(f"[green]✓ LLM fallback succeeded[/green]")
+                            
+                            async def get_llm_response():
+                                return await llm.complete(
+                                    user=query,
+                                    system=system_prompt,
+                                    max_tokens=200,
+                                    temperature=0.1
+                                )
+                            
+                            response = asyncio.run(get_llm_response())
+                            command = response.strip()
+                            
+                            if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
+                                detected_domain = "shell"
+                                detected_intent = "llm_fallback"
+                                console.print(f"[green]✓ LLM fallback succeeded after starting Ollama[/green]")
+                                fallback_success = True
+                                used_generated_command = True
+                        except Exception as docker_error:
+                            console.print(f"[red]✗ Failed to start Ollama: {str(docker_error)}[/red]")
+                    else:
+                        console.print("[yellow]Use --auto-install to automatically start Ollama[/yellow]")
+                else:
+                    console.print(f"[red]✗ LLM fallback failed with error: {str(e)}[/red]")
+            
+            # Strategy 2: Simple pattern matching as last resort
+            if not fallback_success:
+                console.print("[yellow]Attempting pattern-based fallback...[/yellow]")
+                query_lower = query.lower()
+                
+                # Simple pattern matching for common commands
+                if "docker" in query_lower:
+                    if any(word in query_lower for word in ["uruchom", "start", "run", "uruchomić"]):
+                        command = "docker run -it ubuntu bash"
+                        detected_domain = "docker"
+                        detected_intent = "pattern_fallback"
+                        console.print("[green]✓ Pattern fallback succeeded[/green]")
                         fallback_success = True
-                except ImportError as e:
-                    if "litellm" in str(e):
-                        console.print("[yellow]LiteLLM not installed. Attempting auto-install...[/yellow]")
-                        if auto_install:
-                            try:
-                                import subprocess
-                                console.print("[dim]Installing litellm...[/dim]")
-                                subprocess.run(["pip", "install", "litellm"], check=True, capture_output=True)
-                                console.print("[green]✓ litellm installed successfully. Retrying LLM fallback...[/green]")
-                                # Retry after installation
-                                from nlp2cmd.generation.llm_simple import LiteLLMClient
-                                import asyncio
-                                
-                                llm = LiteLLMClient()
-                                system_prompt = """You are a command-line expert. Convert the user's natural language request into a valid shell command.
-                                
-Rules:
-- Respond ONLY with the command, no explanation
-- Use standard shell commands
-- For "uruchom docker" or similar requests, use appropriate docker commands
-- Keep commands simple and executable"""
-                                
-                                async def get_llm_response():
-                                    return await llm.complete(
-                                        user=query,
-                                        system=system_prompt,
-                                        max_tokens=200,
-                                        temperature=0.1
-                                    )
-                                
-                                response = asyncio.run(get_llm_response())
-                                command = response.strip()
-                                
-                                if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
-                                    detected_domain = "shell"
-                                    detected_intent = "llm_fallback"
-                                    console.print(f"[green]✓ LLM fallback succeeded after auto-install[/green]")
-                                    fallback_success = True
-                            except Exception as install_error:
-                                console.print(f"[red]✗ Auto-install failed: {str(install_error)}[/red]")
-                        else:
-                            console.print("[yellow]Use --auto-install to automatically install missing dependencies[/yellow]")
-                    else:
-                        console.print(f"[red]✗ Import error: {str(e)}[/red]")
-                except Exception as e:
-                    error_msg = str(e)
-                    if "connection" in error_msg.lower() or "refused" in error_msg.lower():
-                        console.print("[yellow]Could not connect to Ollama. Attempting to start Ollama...[/yellow]")
-                        if auto_install:
-                            try:
-                                import subprocess
-                                console.print("[dim]Starting Ollama with Docker...[/dim]")
-                                subprocess.run(["docker", "run", "-d", "-p", "11434:11434", "ollama/ollama"], check=True, capture_output=True)
-                                console.print("[green]✓ Ollama started. Retrying LLM fallback...[/green]")
-                                # Give it a moment to start
-                                import time
-                                time.sleep(3)
-                                
-                                # Retry the LLM call
-                                from nlp2cmd.generation.llm_simple import LiteLLMClient
-                                import asyncio
-                                
-                                llm = LiteLLMClient()
-                                system_prompt = """You are a command-line expert. Convert the user's natural language request into a valid shell command.
-                                
-Rules:
-- Respond ONLY with the command, no explanation
-- Use standard shell commands
-- For "uruchom docker" or similar requests, use appropriate docker commands
-- Keep commands simple and executable"""
-                                
-                                async def get_llm_response():
-                                    return await llm.complete(
-                                        user=query,
-                                        system=system_prompt,
-                                        max_tokens=200,
-                                        temperature=0.1
-                                    )
-                                
-                                response = asyncio.run(get_llm_response())
-                                command = response.strip()
-                                
-                                if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
-                                    detected_domain = "shell"
-                                    detected_intent = "llm_fallback"
-                                    console.print(f"[green]✓ LLM fallback succeeded after starting Ollama[/green]")
-                                    fallback_success = True
-                            except Exception as docker_error:
-                                console.print(f"[red]✗ Failed to start Ollama: {str(docker_error)}[/red]")
-                        else:
-                            console.print("[yellow]Use --auto-install to automatically start Ollama[/yellow]")
-                    else:
-                        console.print(f"[red]✗ LLM fallback failed with error: {str(e)}[/red]")
-                
-                # Strategy 2: Simple pattern matching as last resort
-                if not fallback_success:
-                    console.print("[yellow]Attempting pattern-based fallback...[/yellow]")
-                    query_lower = query.lower()
-                    
-                    # Simple pattern matching for common commands
-                    if "docker" in query_lower:
-                        if any(word in query_lower for word in ["uruchom", "start", "run", "uruchomić"]):
-                            command = "docker run -it ubuntu bash"
-                            detected_domain = "docker"
-                            detected_intent = "pattern_fallback"
-                            console.print("[green]✓ Pattern fallback succeeded[/green]")
-                            fallback_success = True
-                    elif "git" in query_lower:
-                        if any(word in query_lower for word in ["klonuj", "clone"]):
-                            command = "git clone <repository_url>"
-                            detected_domain = "shell"
-                            detected_intent = "pattern_fallback"
-                            console.print("[green]✓ Pattern fallback succeeded[/green]")
-                            fallback_success = True
-                
-                if not fallback_success:
-                    console.print("[red]✗ All fallback strategies failed[/red]")
-                    return
+                        used_generated_command = True
+                elif "git" in query_lower:
+                    if any(word in query_lower for word in ["klonuj", "clone"]):
+                        command = "git clone <repository_url>"
+                        detected_domain = "shell"
+                        detected_intent = "pattern_fallback"
+                        console.print("[green]✓ Pattern fallback succeeded[/green]")
+                        fallback_success = True
+                        used_generated_command = True
+            
+            if not fallback_success:
+                console.print("[red]✗ All fallback strategies failed[/red]")
+                return
 
-        if result.success:
+        if (not used_generated_command) and result.success:
             command = result.command
             detected_domain = result.domain
             detected_intent = result.intent

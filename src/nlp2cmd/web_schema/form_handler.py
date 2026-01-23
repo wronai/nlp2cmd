@@ -184,9 +184,9 @@ class FormHandler:
         
         return fields
     
-    def detect_submit_button(self, page) -> Optional[str]:
+    def detect_submit_button(self, page, data_loader: Optional[FormDataLoader] = None) -> Optional[str]:
         """Detect form submit button."""
-        loader = FormDataLoader()
+        loader = data_loader or FormDataLoader()
         submit_selectors = loader.get_submit_selectors()
         
         for selector in submit_selectors:
