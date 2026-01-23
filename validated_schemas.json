@@ -1,0 +1,562 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-23T15:26:39.833947",
+  "schemas": {
+    "find": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "find",
+          "description": "The `find` command is a powerful utility used to search for files and directories within a directory hierarchy. It can search based on various criteria such as name, type, size, modification time, etc.",
+          "category": "file",
+          "parameters": [],
+          "examples": [
+            "find /home/user -name \"*.txt\"",
+            "find /var/log -type f -mtime +7"
+          ],
+          "patterns": [
+            "find"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "find {{path}} -name \"{{filename}}\""
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "grep": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "grep",
+          "description": "The grep command is a powerful text search tool that scans files for lines containing a match to a specified pattern. It is widely used for searching plain-text data sets for lines that match a regular expression.",
+          "category": "text",
+          "parameters": [],
+          "examples": [
+            "grep 'hello' example.txt",
+            "grep -i 'error' log.txt"
+          ],
+          "patterns": [
+            "grep"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "grep {{pattern}} {{file}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "sed": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "sed",
+          "description": "The sed command is a stream editor that filters and transforms text, using a simple scripting language. It can perform basic text transformations on an input stream (a file or input from a pipeline).",
+          "category": "text",
+          "parameters": [],
+          "examples": [
+            "sed -e 's/foo/bar/g' example.txt",
+            "sed -e '/pattern/d' example.txt"
+          ],
+          "patterns": [
+            "sed"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "sed -e 's/{{pattern}}/{{replacement}}/g' {{input-file}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "awk": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "awk",
+          "description": "The 'awk' command is a powerful text-processing tool that scans each input line, applying a pattern-action program to generate output. It is widely used for data extraction and reporting.",
+          "category": "text",
+          "parameters": [],
+          "examples": [
+            "awk '{print $1}' /etc/passwd",
+            "awk '$3 > 500 {print $1, $6}' /etc/passwd"
+          ],
+          "patterns": [
+            "awk"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "awk '{{print $1}}' {{file}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "ls": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "ls",
+          "description": "The 'ls' command is used to list directory contents. It provides a quick overview of files and directories within a specified path, or the current directory if no path is provided.",
+          "category": "file",
+          "parameters": [],
+          "examples": [
+            "ls /home/user",
+            "ls -l",
+            "ls -a"
+          ],
+          "patterns": [
+            "ls"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "ls {{path}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "mkdir": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "mkdir",
+          "description": "The mkdir command is used to create new directories. It allows you to organize your files and folders by creating structured hierarchies.",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "mkdir my_folder",
+            "mkdir project/src"
+          ],
+          "patterns": [
+            "mkdir"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "mkdir {{directory_name}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "rm": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "rm",
+          "description": "The 'rm' command is used to remove files or directories. It can also be used to delete multiple files at once.",
+          "category": "file",
+          "parameters": [],
+          "examples": [
+            "rm file.txt",
+            "rm -r directory"
+          ],
+          "patterns": [
+            "rm"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "rm {{file}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "cp": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "cp",
+          "description": "The cp command is used to copy files or directories from one location to another. It can also be used to duplicate files within the same directory.",
+          "category": "file",
+          "parameters": [],
+          "examples": [
+            "cp file.txt /home/user/documents",
+            "cp -r directory1 directory2"
+          ],
+          "patterns": [
+            "cp"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "cp {{source}} {{destination}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "mv": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "mv",
+          "description": "The 'mv' command is used to move files or directories from one location to another, or to rename them. It can also be used to change the directory of a file without renaming it.",
+          "category": "file",
+          "parameters": [],
+          "examples": [
+            "mv /home/user/documents/report.txt /backup/",
+            "mv oldname.txt newname.txt"
+          ],
+          "patterns": [
+            "mv"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "mv {{source}} {{destination}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "ps": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "ps",
+          "description": "List running processes",
+          "category": "process",
+          "parameters": [],
+          "examples": [
+            "ps --help"
+          ],
+          "patterns": [
+            "ps"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "ps aux"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "top": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "top",
+          "description": "Display running processes dynamically",
+          "category": "process",
+          "parameters": [],
+          "examples": [
+            "top --help"
+          ],
+          "patterns": [
+            "top"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "top"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "kill": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "kill",
+          "description": "Send a signal to a process",
+          "category": "process",
+          "parameters": [],
+          "examples": [
+            "kill --help"
+          ],
+          "patterns": [
+            "kill"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "kill -{signal} {pid}"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "killall": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "killall",
+          "description": "Kill processes by name",
+          "category": "process",
+          "parameters": [],
+          "examples": [
+            "killall --help"
+          ],
+          "patterns": [
+            "killall"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "killall {process}"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "systemctl": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "systemctl",
+          "description": "Control systemd services",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "systemctl --help"
+          ],
+          "patterns": [
+            "systemctl"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "systemctl {action} {service}"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "service": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "service",
+          "description": "Run System V init scripts",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "service --help"
+          ],
+          "patterns": [
+            "service"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "service {name} {action}"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "docker": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "docker",
+          "description": "Docker is a platform that uses OS-level virtualization to package and run applications inside software containers.",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "docker run -it ubuntu bash",
+            "docker ps -a"
+          ],
+          "patterns": [
+            "docker"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "docker {{command}} {{options}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "docker-compose": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "docker-compose",
+          "description": "Docker Compose is a tool for defining and running multi-container Docker applications. It uses YAML files to configure services, networks, and volumes, then provides commands to create and start all the containers from your configuration.",
+          "category": "development",
+          "parameters": [],
+          "examples": [
+            "docker-compose up",
+            "docker-compose down",
+            "docker-compose build"
+          ],
+          "patterns": [
+            "docker-compose"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "docker-compose {{command}} {{file}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "kubectl": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "kubectl",
+          "description": "kubectl utility",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "kubectl --help"
+          ],
+          "patterns": [
+            "kubectl"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "git": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "git",
+          "description": "Git is a distributed version control system that tracks changes in source code during software development. It allows multiple developers to work on the same project simultaneously, coordinating their efforts through shared repositories.",
+          "category": "development",
+          "parameters": [],
+          "examples": [
+            "git clone https://github.com/user/repo.git",
+            "git commit -m 'Add new feature'",
+            "git push origin main"
+          ],
+          "patterns": [
+            "git"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "git {{command}} {{options}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "curl": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "curl",
+          "description": "The curl command is a versatile tool for transferring data with URLs. It supports various protocols including HTTP, HTTPS, FTP, and more. It can be used to download files, upload data, or interact with web services.",
+          "category": "network",
+          "parameters": [],
+          "examples": [
+            "curl https://www.example.com",
+            "curl -X POST -d 'name=John&age=30' https://api.example.com/user"
+          ],
+          "patterns": [
+            "curl"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "curl {{url}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "wget": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "wget",
+          "description": "Wget is a network utility to download files from the web. It supports HTTP, HTTPS, and FTP protocols, as well as retrieval through HTTP proxies.",
+          "category": "network",
+          "parameters": [],
+          "examples": [
+            "wget http://example.com/file.zip",
+            "wget https://example.com/data.json"
+          ],
+          "patterns": [
+            "wget"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "wget {{URL}}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    }
+  }
+}

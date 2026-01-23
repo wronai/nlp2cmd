@@ -1,0 +1,268 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-23T15:23:30.037608",
+  "schemas": {
+    "wget": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "wget",
+          "description": "A utility for non-interactive download of files from the web.",
+          "category": "network",
+          "parameters": [],
+          "examples": [
+            "wget http://example.com/file.zip",
+            "wget -O myfile.txt http://example.com/textfile"
+          ],
+          "patterns": [
+            "wget"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "wget {url}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "ping": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "ping",
+          "description": "ping command",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "ping --help"
+          ],
+          "patterns": [
+            "ping"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "ping -c {count} {host}"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "df": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "df",
+          "description": "Reports file system disk space usage.",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "df -h",
+            "df /home"
+          ],
+          "patterns": [
+            "df"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "df {options} [file...]"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "du": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "du",
+          "description": "Estimates file space usage.",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "du -h /path/to/directory",
+            "du -s /path/to/file"
+          ],
+          "patterns": [
+            "du"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "du [OPTION]... [FILE]..."
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "free": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "free",
+          "description": "free command",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "free --help"
+          ],
+          "patterns": [
+            "free"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "free -h"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "uname": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "uname",
+          "description": "uname command",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "uname --help"
+          ],
+          "patterns": [
+            "uname"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "uname -a"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "whoami": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "whoami",
+          "description": "whoami command",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "whoami --help"
+          ],
+          "patterns": [
+            "whoami"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "whoami"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    },
+    "id": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "id",
+          "description": "Retrieve the user ID of a specified user or the current user if no user is specified.",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "id",
+            "id username"
+          ],
+          "patterns": [
+            "id"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "id {USER}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "date": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "date",
+          "description": "Display or set the system date and time.",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "date",
+            "date -u",
+            "date '+%Y-%m-%d %H:%M:%S'",
+            "date -s '2023-10-05 14:30:00'"
+          ],
+          "patterns": [
+            "date"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "date [OPTION]... [+FORMAT]..."
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "uptime": {
+      "source_type": "predefined_template",
+      "commands": [
+        {
+          "name": "uptime",
+          "description": "uptime command",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "uptime --help"
+          ],
+          "patterns": [
+            "uptime"
+          ],
+          "source_type": "predefined_template",
+          "metadata": {
+            "predefined": true
+          },
+          "template": "uptime"
+        }
+      ],
+      "metadata": {
+        "predefined": true
+      }
+    }
+  }
+}

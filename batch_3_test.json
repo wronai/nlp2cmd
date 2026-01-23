@@ -1,0 +1,259 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-23T15:22:39.497469",
+  "schemas": {
+    "wget": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "wget",
+          "description": "wget command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "wget --help"
+          ],
+          "patterns": [
+            "wget"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "ping": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "ping",
+          "description": "ping command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "ping --help"
+          ],
+          "patterns": [
+            "ping"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "netstat": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "netstat",
+          "description": "netstat is a command-line utility used to display network connections, routing tables, interface statistics, masquerade connections, and multicast memberships.",
+          "category": "network",
+          "parameters": [],
+          "examples": [
+            "netstat -an",
+            "netstat -tuln",
+            "netstat -rn"
+          ],
+          "patterns": [
+            "netstat"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "netstat [-vWeenNcCF] [<Af>] -r         netstat {-V|--version|-h|--help}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "ss": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "ss",
+          "description": "ss command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "ss --help"
+          ],
+          "patterns": [
+            "ss"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "lsof": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "lsof",
+          "description": "lsof command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "lsof --help"
+          ],
+          "patterns": [
+            "lsof"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "df": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "df",
+          "description": "df command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "df --help"
+          ],
+          "patterns": [
+            "df"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "du": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "du",
+          "description": "du command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "du --help"
+          ],
+          "patterns": [
+            "du"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "free": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "free",
+          "description": "free command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "free --help"
+          ],
+          "patterns": [
+            "free"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "uname": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "uname",
+          "description": "uname command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "uname --help"
+          ],
+          "patterns": [
+            "uname"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "whoami": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "whoami",
+          "description": "whoami command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "whoami --help"
+          ],
+          "patterns": [
+            "whoami"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    }
+  }
+}
