@@ -26,6 +26,48 @@ class FileFormatSchema:
     generator: Callable[[dict[str, Any]], str]
     repair_rules: list[dict[str, Any]] = field(default_factory=list)
     examples: list[str] = field(default_factory=list)
+    description: str = ""
+    
+    def validate(self, content: str) -> dict[str, Any]:
+        """Validate content using this schema."""
+        return self.validator(content)
+    
+    def parse(self, content: str) -> dict[str, Any]:
+        """Parse content using this schema."""
+        return self.parser(content)
+    
+    def generate(self, data: dict[str, Any]) -> str:
+        """Generate content from data using this schema."""
+        return self.generator(data)
+    
+    def self_validate(self) -> dict[str, Any]:
+        """Validate the schema itself."""
+        errors = []
+        warnings = []
+        
+        if not self.name:
+            errors.append("Schema name cannot be empty")
+        
+        if not self.extensions:
+            errors.append("Schema must have at least one extension")
+        
+        if not self.mime_types:
+            errors.append("Schema must have at least one MIME type")
+        
+        if not self.validator:
+            errors.append("Schema must have a validator function")
+        
+        if not self.parser:
+            errors.append("Schema must have a parser function")
+        
+        if not self.generator:
+            errors.append("Schema must have a generator function")
+        
+        return {
+            "valid": len(errors) == 0,
+            "errors": errors,
+            "warnings": warnings
+        }
 
 
 class SchemaRegistry:
@@ -147,9 +189,9 @@ class SchemaRegistry:
             ],
         )
 
-    def register(self, schema: FileFormatSchema) -> None:
+    def register(self, name: str, schema: FileFormatSchema) -> None:
         """Register a new schema."""
-        self.schemas[schema.name.lower()] = schema
+        self.schemas[name.lower()] = schema
 
     def get(self, name: str) -> Optional[FileFormatSchema]:
         """Get schema by name."""
@@ -158,6 +200,114 @@ class SchemaRegistry:
     def has_schema(self, name: str) -> bool:
         """Check if schema exists."""
         return name.lower() in self.schemas
+
+    def list_schemas(self) -> list[str]:
+        """List all registered schema names."""
+        return list(self.schemas.keys())
+
+    def unregister(self, name: str) -> bool:
+        """Unregister a schema by name."""
+        name_lower = name.lower()
+        if name_lower in self.schemas:
+            # Prevent unregistering built-in schemas
+            if name_lower in ['dockerfile', 'docker-compose', 'kubernetes-deployment', 'github-workflow', 'env-file']:
+                raise ValueError(f"Cannot unregister built-in schema: {name}")
+            del self.schemas[name_lower]
+            return True
+        return False
+
+    def find_schema_for_file(self, filename: str) -> Optional[FileFormatSchema]:
+        """Find schema for a given filename."""
+        file_path = Path(filename)
+        return self.detect_format(file_path)
+
+    def find_schema_by_mime_type(self, mime_type: str) -> Optional[FileFormatSchema]:
+        """Find schema by MIME type."""
+        for schema in self.schemas.values():
+            if mime_type in schema.mime_types:
+                return schema
+        return None
+
+    def find_extension_conflicts(self) -> dict[str, list[str]]:
+        """Find extension conflicts between schemas."""
+        conflicts = {}
+        extension_map = {}
+        
+        for name, schema in self.schemas.items():
+            for ext in schema.extensions:
+                if ext not in extension_map:
+                    extension_map[ext] = []
+                extension_map[ext].append(name)
+        
+        for ext, schemas in extension_map.items():
+            if len(schemas) > 1:
+                conflicts[ext] = schemas
+        
+        return conflicts
+
+    def validate_integrity(self) -> bool:
+        """Validate registry integrity."""
+        # Check for extension conflicts
+        conflicts = self.find_extension_conflicts()
+        if conflicts:
+            return False
+        
+        # Check that all schemas have required methods
+        for name, schema in self.schemas.items():
+            if not hasattr(schema, 'validator') or not hasattr(schema, 'parser') or not hasattr(schema, 'generator'):
+                return False
+        
+        return True
+
+    def load_from_file(self, file_path: str) -> bool:
+        """Load schema from file."""
+        try:
+            path = Path(file_path)
+            if path.suffix == '.json':
+                import json
+                with open(path) as f:
+                    data = json.load(f)
+            elif path.suffix in ['.yml', '.yaml']:
+                with open(path) as f:
+                    data = yaml.safe_load(f)
+            else:
+                return False
+            
+            # Create FileFormatSchema from data
+            schema = FileFormatSchema(
+                name=data['name'],
+                extensions=data['extensions'],
+                mime_types=data['mime_types'],
+                validator=lambda c: {'valid': True, 'errors': [], 'warnings': []},
+                parser=lambda c: {'parsed': c},
+                generator=lambda d: d.get('content', ''),
+                repair_rules=data.get('repair_rules', []),
+                examples=data.get('examples', [])
+            )
+            
+            self.register(data['name'], schema)
+            return True
+        except Exception:
+            return False
+
+    def load_from_directory(self, directory: str) -> int:
+        """Load all schemas from directory."""
+        path = Path(directory)
+        loaded_count = 0
+        
+        for file_path in path.glob('*.json'):
+            if self.load_from_file(str(file_path)):
+                loaded_count += 1
+        
+        for file_path in path.glob('*.yaml'):
+            if self.load_from_file(str(file_path)):
+                loaded_count += 1
+        
+        for file_path in path.glob('*.yml'):
+            if self.load_from_file(str(file_path)):
+                loaded_count += 1
+        
+        return loaded_count
 
     def detect_format(self, file_path: Path) -> Optional[FileFormatSchema]:
         """Detect file format from path."""
@@ -170,6 +320,9 @@ class SchemaRegistry:
                     return schema
                 if self._match_pattern(full_path, pattern):
                     return schema
+
+        # Try content-based detection
+        return self._detect_by_content(file_path)
 
         # Try content-based detection
         return self._detect_by_content(file_path)

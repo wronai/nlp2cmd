@@ -84,6 +84,14 @@ async def demo_nlp_commands():
                 print("\n🐳 Docker Compose wygenerowany")
                 print("   (użyj pełnego przykładu aby zobaczyć szczegóły)")
             
+            if result.get('files_saved'):
+                print("\n💾 Zapisane pliki:")
+                for file_type, file_path in result['files_saved'].items():
+                    print(f"   📄 {file_type}: {file_path}")
+            
+            if result.get('note'):
+                print(f"\n📝 {result['note']}")
+            
             if result.get('services'):
                 print("\n📦 Aktywne usługi:")
                 for name, info in result['services'].items():
@@ -93,6 +101,34 @@ async def demo_nlp_commands():
                 print("\n💡 Przykłady:")
                 for ex in result['examples']:
                     print(f"   • {ex}")
+            
+            # Check if user wants to see generated files
+            if result.get('status') == 'success' and result.get('files_saved'):
+                show_files = input("\n🔍 Pokazać wygenerowane pliki? (t/n): ").strip().lower()
+                if show_files in ['t', 'tak', 'yes', 'y']:
+                    files_info = controller.get_generated_files_info()
+                    print(f"\n📁 Wygenerowane pliki w: {files_info['output_directory']}")
+                    if files_info['files']:
+                        print(f"   Łącznie {files_info['total_files']} plików:")
+                        for file_info in files_info['files']:
+                            print(f"   📄 {file_info['name']} ({file_info['size']} bytes)")
+                    else:
+                        print("   Brak plików")
+            
+            # Check if user wants to save full deployment plan
+            if len(controller.services) > 0:
+                save_plan = input("\n💾 Zapisać pełny plan deployment? (t/n): ").strip().lower()
+                if save_plan in ['t', 'tak', 'yes', 'y']:
+                    plan_result = await controller.save_full_deployment_plan()
+                    print(f"\n{plan_result['message']}")
+                    print(f"📁 Pliki zapisane w: {plan_result['output_directory']}")
+                    
+                    # Show generated files
+                    files_info = controller.get_generated_files_info()
+                    if files_info['files']:
+                        print(f"\n📁 Wygenerowane pliki:")
+                        for file_info in files_info['files']:
+                            print(f"   📄 {file_info['name']} ({file_info['size']} bytes)")
                     
         except KeyboardInterrupt:
             print("\n\n👋 Przerwano.")

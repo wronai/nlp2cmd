@@ -10,7 +10,7 @@ from pathlib import Path
 import tempfile
 import os
 
-from nlp2cmd.schemas import SchemaRegistry, FileFormatSchema
+from src.nlp2cmd.schemas import SchemaRegistry, FileFormatSchema
 
 
 class TestSchemaRegistry:
@@ -21,29 +21,38 @@ class TestSchemaRegistry:
         """Create registry instance."""
         return SchemaRegistry()
 
-    def test_builtin_schemas_registered(self, registry):
+    def test_builtin_schemas_registered(self):
         """Test that built-in schemas are registered."""
+        from src.nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         assert registry.has_schema("dockerfile")
         assert registry.has_schema("docker-compose")
         assert registry.has_schema("kubernetes-deployment")
         assert registry.has_schema("github-workflow")
         assert registry.has_schema("env-file")
 
-    def test_get_schema(self, registry):
+    def test_get_schema(self):
         """Test getting schema by name."""
+        from src.nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("dockerfile")
 
         assert schema is not None
         assert schema.name == "Dockerfile"
         assert "Dockerfile" in schema.extensions
 
-    def test_get_nonexistent_schema(self, registry):
+    def test_get_nonexistent_schema(self):
         """Test getting non-existent schema."""
+        from src.nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("nonexistent")
         assert schema is None
 
-    def test_register_custom_schema(self, registry):
+    def test_register_custom_schema(self):
         """Test registering custom schema."""
+        from src.nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
+        
         custom_schema = FileFormatSchema(
             name="Custom Format",
             extensions=["*.custom"],
@@ -59,21 +68,29 @@ class TestSchemaRegistry:
         retrieved = registry.get("custom")
         assert retrieved.name == "Custom Format"
 
-    def test_list_schemas(self, registry):
+    def test_list_schemas(self):
         """Test listing all schemas."""
+        from src.nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schemas = registry.list_schemas()
 
         assert isinstance(schemas, list)
         assert len(schemas) > 0
         assert all(isinstance(name, str) for name in schemas)
 
-    def test_unregister_schema(self, registry):
+    def test_unregister_schema(self):
         """Test unregistering a schema."""
+        from src.nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
+        
         # First register a custom schema
         custom_schema = FileFormatSchema(
             name="Test Schema",
             extensions=["*.test"],
+            mime_types=["application/x-test"],
             validator=lambda c: {"valid": True, "errors": [], "warnings": []},
+            parser=lambda c: {"content": c},
+            generator=lambda d: d.get("content", ""),
         )
         registry.register("test", custom_schema)
 
@@ -84,13 +101,18 @@ class TestSchemaRegistry:
 
         assert not registry.has_schema("test")
 
-    def test_unregister_builtin_schema(self, registry):
+    def test_unregister_builtin_schema(self):
         """Test that built-in schemas cannot be unregistered."""
+        from src.nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
+        
         with pytest.raises(ValueError, match="Cannot unregister built-in schema"):
             registry.unregister("dockerfile")
 
-    def test_schema_metadata(self, registry):
+    def test_schema_metadata(self):
         """Test schema metadata."""
+        from src.nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("dockerfile")
         
         assert hasattr(schema, 'name')
@@ -98,14 +120,17 @@ class TestSchemaRegistry:
         assert hasattr(schema, 'mime_types')
         assert hasattr(schema, 'description')
 
-    def test_schema_extensions_case_insensitive(self, registry):
+    def test_schema_extensions_case_insensitive(self):
         """Test that schema extensions are case insensitive."""
+        from src.nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("dockerfile")
         
         # Should match various case combinations
         assert registry.find_schema_for_file("Dockerfile") is not None
         assert registry.find_schema_for_file("dockerfile") is not None
         assert registry.find_schema_for_file("DOCKERFILE") is not None
+        assert registry.find_schema_for_file("Dockerfile.*") is not None
 
 
 class TestFileFormatSchema:

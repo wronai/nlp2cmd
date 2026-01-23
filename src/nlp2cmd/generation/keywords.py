@@ -155,6 +155,10 @@ class KeywordIntentDetector:
                 'zatrzymaj kontener', 'docker stop', 'stop container',
                 'zatrzymaj', 'kill container',
             ],
+            'remove': [
+                'usuń kontener', 'docker remove', 'remove container',
+                'usuń', 'docker rm',
+            ],
             'logs': [
                 'logi kontenera', 'docker logs', 'container logs',
                 'pokaż logi', 'show logs', 'dziennik',
@@ -245,7 +249,7 @@ class KeywordIntentDetector:
     PRIORITY_INTENTS: dict[str, list[str]] = {
         'sql': ['delete', 'update', 'insert', 'aggregate'],
         'shell': ['file_operation', 'archive', 'process', 'disk', 'system_maintenance', 'development', 'security', 'process_management'],
-        'docker': ['stop', 'prune', 'build', 'run', 'list', 'logs', 'exec', 'start'],
+        'docker': ['stop', 'prune', 'build', 'run', 'list', 'logs', 'exec', 'start', 'remove'],
         'kubernetes': ['delete', 'scale', 'describe', 'logs'],
     }
     

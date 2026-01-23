@@ -83,12 +83,16 @@ class ValidationResult:
     def __str__(self) -> str:
         """String representation of validation result."""
         status = "VALID" if self.is_valid else "INVALID"
-        error_summary = ""
+        details = []
         if self.errors:
-            error_summary = f" - {', '.join(self.errors[:2])}"
+            details.append(f" - {', '.join(self.errors[:2])}")
             if len(self.errors) > 2:
-                error_summary += f" (and {len(self.errors) - 2} more)"
-        return f"{status} ValidationResult(errors={len(self.errors)}, warnings={len(self.warnings)}){error_summary}"
+                details[-1] += f" (and {len(self.errors) - 2} more)"
+        if self.warnings:
+            details.append(f" - {', '.join(self.warnings[:2])}")
+            if len(self.warnings) > 2:
+                details[-1] += f" (and {len(self.warnings) - 2} more)"
+        return f"{status} ValidationResult(errors={len(self.errors)}, warnings={len(self.warnings)}){''.join(details)}"
 
 
 class BaseValidator(ABC):

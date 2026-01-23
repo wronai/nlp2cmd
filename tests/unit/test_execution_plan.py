@@ -67,8 +67,8 @@ class TestExecutionPlan:
             metadata={"source": "user_input"},
         )
 
-        # Test dataclass serialization
-        plan_dict = asdict(plan)
+        # Test model serialization
+        plan_dict = plan.model_dump()
         
         assert plan_dict["intent"] == "update"
         assert plan_dict["entities"]["table"] == "users"
@@ -85,7 +85,7 @@ class TestExecutionPlan:
         )
 
         # Test JSON serialization
-        plan_json = json.dumps(asdict(plan))
+        plan_json = json.dumps(plan.model_dump())
         parsed_plan = json.loads(plan_json)
 
         assert parsed_plan["intent"] == "create"
@@ -100,11 +100,11 @@ class TestExecutionPlan:
             metadata={"namespace": "default"},
         )
 
-        copied = original.copy()
+        copied = original.model_copy(deep=True)
         
         assert copied == original
         assert copied is not original  # Different objects
-        assert copied.entities is not original.entities  # Different dict
+        assert copied.entities is not original.entities  # Different dict (deep copy)
 
     def test_plan_merge_entities(self):
         """Test merging entities into plan."""

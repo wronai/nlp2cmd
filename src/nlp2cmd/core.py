@@ -71,6 +71,43 @@ class ExecutionPlan(BaseModel):
     )
     metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
     text: str = Field(default="", description="Original input text")
+    
+    def with_confidence(self, confidence: float) -> "ExecutionPlan":
+        """Create a copy with updated confidence."""
+        return self.model_copy(update={"confidence": confidence})
+    
+    def with_entities(self, entities: dict[str, Any]) -> "ExecutionPlan":
+        """Create a copy with updated entities (merged with existing)."""
+        merged_entities = {**self.entities, **entities}
+        return self.model_copy(update={"entities": merged_entities})
+    
+    def with_metadata(self, metadata: dict[str, Any]) -> "ExecutionPlan":
+        """Create a copy with updated metadata."""
+        return self.model_copy(update={"metadata": metadata})
+    
+    def with_context(self, context: dict[str, Any]) -> "ExecutionPlan":
+        """Create a copy with updated context."""
+        return self.model_copy(update={"metadata": {**self.metadata, "context": context}})
+    
+    def with_errors(self, errors: list[str]) -> "ExecutionPlan":
+        """Create a copy with error information in metadata."""
+        return self.model_copy(update={"metadata": {**self.metadata, "errors": errors}})
+    
+    def with_security(self, security_context: dict[str, Any]) -> "ExecutionPlan":
+        """Create a copy with security context."""
+        return self.model_copy(update={"metadata": {**self.metadata, "security": security_context}})
+    
+    def with_performance(self, performance_data: dict[str, Any]) -> "ExecutionPlan":
+        """Create a copy with performance data."""
+        return self.model_copy(update={"metadata": {**self.metadata, "performance": performance_data}})
+    
+    def is_valid(self) -> bool:
+        """Check if execution plan is valid."""
+        return (
+            len(self.intent.strip()) > 0 and
+            0.0 <= self.confidence <= 1.0 and
+            isinstance(self.entities, dict)
+        )
 
 
 @dataclass

@@ -22,8 +22,10 @@ class TestSchemaValidation:
         """Create registry instance."""
         return SchemaRegistry()
 
-    def test_dockerfile_validation(self, registry):
+    def test_dockerfile_validation(self):
         """Test Dockerfile validation."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("dockerfile")
         assert schema is not None
 
@@ -50,8 +52,10 @@ CMD ["nginx", "-g", "daemon off;"]
         assert result["valid"] is False
         assert any("FROM" in error.upper() for error in result["errors"])
 
-    def test_docker_compose_validation(self, registry):
+    def test_docker_compose_validation(self):
         """Test docker-compose validation."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("docker-compose")
         assert schema is not None
 
@@ -81,8 +85,10 @@ services:
         assert result["valid"] is False
         assert any("version" in error.lower() for error in result["errors"])
 
-    def test_kubernetes_deployment_validation(self, registry):
+    def test_kubernetes_deployment_validation(self):
         """Test Kubernetes deployment validation."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("kubernetes-deployment")
         assert schema is not None
 
@@ -132,8 +138,10 @@ spec:
         assert result["valid"] is False
         assert any("selector" in error.lower() for error in result["errors"])
 
-    def test_env_file_validation(self, registry):
+    def test_env_file_validation(self):
         """Test .env file validation."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("env-file")
         assert schema is not None
 
@@ -158,8 +166,10 @@ INVALID LINE WITH SPACES
         assert result["valid"] is False
         assert len(result["errors"]) >= 1
 
-    def test_github_workflow_validation(self, registry):
+    def test_github_workflow_validation(self):
         """Test GitHub workflow validation."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("github-workflow")
         assert schema is not None
 
@@ -190,8 +200,10 @@ on: [push, pull_request]
         assert result["valid"] is False
         assert any("jobs" in error.lower() for error in result["errors"])
 
-    def test_validation_warnings(self, registry):
+    def test_validation_warnings(self):
         """Test validation warnings."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("dockerfile")
         assert schema is not None
 
@@ -207,8 +219,11 @@ CMD ["bash"]
         assert result["valid"] is True
         assert len(result["warnings"]) > 0
 
-    def test_custom_validation_rules(self, registry):
+    def test_custom_validation_rules(self):
         """Test custom validation rules."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
+        
         def custom_validator(content):
             errors = []
             warnings = []
@@ -243,8 +258,10 @@ CMD ["bash"]
         assert result["valid"] is True
         assert "Consider using uppercase" in result["warnings"]
 
-    def test_validation_performance(self, registry):
+    def test_validation_performance(self):
         """Test validation performance."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("dockerfile")
         assert schema is not None
 
@@ -263,8 +280,10 @@ CMD ["bash"]
         # Should be fast (<10ms per validation)
         assert avg_time < 10, f"Validation too slow: {avg_time:.1f}ms average"
 
-    def test_validation_error_context(self, registry):
+    def test_validation_error_context(self):
         """Test validation error context information."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("dockerfile")
         assert schema is not None
 
@@ -283,8 +302,10 @@ CMD ["nginx"]
             assert isinstance(error, str)
             assert len(error) > 0
 
-    def test_partial_validation(self, registry):
+    def test_partial_validation(self):
         """Test partial validation for incomplete content."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("dockerfile")
         assert schema is not None
 
@@ -301,8 +322,10 @@ EXPOSE 80
         assert any("CMD" in error.upper() or "command" in error.lower() 
                    for error in result["errors"])
 
-    def test_validation_with_comments(self, registry):
+    def test_validation_with_comments(self):
         """Test validation handles comments correctly."""
+        from nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
         schema = registry.get("dockerfile")
         assert schema is not None
 
