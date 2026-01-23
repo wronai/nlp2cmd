@@ -98,11 +98,22 @@ class DeploymentPlan:
         # Add dependency services
         services.update(dependency_services)
         
+        # Collect all volumes from services
+        volumes = {}
+        for service_name, service_def in services.items():
+            if 'volumes' in service_def:
+                for volume in service_def['volumes']:
+                    if ':' in volume and not volume.startswith('/'):
+                        # Named volume (e.g., "postgres_data:/var/lib/postgresql/data")
+                        volume_name = volume.split(':')[0]
+                        volumes[volume_name] = None  # Use default driver
+        
         return {
             "services": services,
             "networks": {
                 self.network: {"driver": "bridge"}
-            }
+            },
+            "volumes": volumes
         }
     
     def _create_redis_service(self) -> dict[str, Any]:
@@ -418,6 +429,22 @@ class NLCommandParser:
         "zatrzymaj", "stop", "wyłącz", "disable", "usuń", "remove", "delete"
     ]
     
+    TEST_PATTERNS = [
+        "testuj", "test", "sprawdź działanie", "ping", "połącz", "verify", "validate"
+    ]
+    
+    MONITOR_PATTERNS = [
+        "monitoring", "monitoruj", "zużycie", "zasoby", "resource", "metrics", "dashboard"
+    ]
+    
+    LOG_PATTERNS = [
+        "logi", "logs", "dziennik", "journal", "show logs", "pokaż logi"
+    ]
+    
+    RESTART_PATTERNS = [
+        "restartuj", "zrestartuj", "uruchom ponownie", "reboot", "reload"
+    ]
+    
     # Service type detection
     SERVICE_KEYWORDS = {
         ServiceType.CHAT_SERVICE: ["czat", "chat", "komunikator", "messenger", "websocket"],
@@ -466,6 +493,22 @@ class NLCommandParser:
         for pattern in self.STATUS_PATTERNS:
             if pattern in text:
                 return "status"
+        
+        for pattern in self.LOG_PATTERNS:
+            if pattern in text:
+                return "logs"
+        
+        for pattern in self.TEST_PATTERNS:
+            if pattern in text:
+                return "test"
+        
+        for pattern in self.MONITOR_PATTERNS:
+            if pattern in text:
+                return "monitor"
+        
+        for pattern in self.RESTART_PATTERNS:
+            if pattern in text:
+                return "restart"
         
         for pattern in self.STOP_PATTERNS:
             if pattern in text:
@@ -564,6 +607,10 @@ class NLP2CMDWebController:
             "configure": self._handle_configure,
             "scale": self._handle_scale,
             "status": self._handle_status,
+            "logs": self._handle_logs,
+            "test": self._handle_test,
+            "monitor": self._handle_monitor,
+            "restart": self._handle_restart,
             "stop": self._handle_stop,
         }
         
@@ -710,6 +757,107 @@ class NLP2CMDWebController:
                 "Pokaż status usług",
             ]
         }
+    
+    async def _handle_logs(self, parsed: dict) -> dict[str, Any]:
+        """Handle logs intent."""
+        service_type = parsed.get("service_type")
+        
+        if service_type:
+            service_name = self._get_service_name_by_type(service_type)
+            return {
+                "status": "success",
+                "action": "logs",
+                "service": service_name,
+                "message": f"Pokazywanie logów dla {service_name}",
+                "docker_command": f"docker-compose logs -f {service_name}" if service_name else "docker-compose logs -f"
+            }
+        else:
+            return {
+                "status": "success",
+                "action": "logs",
+                "message": "Pokazywanie logów wszystkich usług",
+                "docker_command": "docker-compose logs -f"
+            }
+    
+    async def _handle_test(self, parsed: dict) -> dict[str, Any]:
+        """Handle test intent."""
+        service_type = parsed.get("service_type")
+        entities = parsed.get("entities", {})
+        
+        if service_type:
+            service_name = self._get_service_name_by_type(service_type)
+            return {
+                "status": "success",
+                "action": "test",
+                "service": service_name,
+                "message": f"Testowanie połączenia z {service_name}",
+                "test_commands": self._get_test_commands(service_type, entities)
+            }
+        else:
+            return {
+                "status": "needs_input",
+                "message": "Potrzebuję więcej informacji do konfiguracji.",
+                "required": ["service_type"]
+            }
+    
+    async def _handle_monitor(self, parsed: dict) -> dict[str, Any]:
+        """Handle monitor intent."""
+        return {
+            "status": "success",
+            "action": "monitor",
+            "message": "Uruchamianie monitoringu usług",
+            "monitoring_tools": ["docker stats", "htop", "docker-compose ps"],
+            "dashboard_url": "http://localhost:3000/grafana"
+        }
+    
+    async def _handle_restart(self, parsed: dict) -> dict[str, Any]:
+        """Handle restart intent."""
+        service_type = parsed.get("service_type")
+        
+        if service_type:
+            service_name = self._get_service_name_by_type(service_type)
+            return {
+                "status": "success",
+                "action": "restart",
+                "service": service_name,
+                "message": f"Restartowanie {service_name}",
+                "docker_command": f"docker-compose restart {service_name}"
+            }
+        else:
+            return {
+                "status": "success",
+                "action": "restart",
+                "message": "Restartowanie wszystkich usług",
+                "docker_command": "docker-compose restart"
+            }
+    
+    def _get_service_name_by_type(self, service_type: ServiceType) -> str:
+        """Get service name by service type."""
+        type_to_name = {
+            ServiceType.CHAT_SERVICE: "chat-service",
+            ServiceType.EMAIL_SERVICE: "email-service",
+            ServiceType.CONTACT_FORM: "contact-service",
+            ServiceType.DATABASE: "postgres",
+            ServiceType.CACHE: "redis",
+        }
+        return type_to_name.get(service_type, "unknown")
+    
+    def _get_test_commands(self, service_type: ServiceType, entities: dict) -> list[str]:
+        """Get test commands for service type."""
+        commands = []
+        
+        if service_type == ServiceType.CACHE:
+            commands.append("docker exec redis redis-cli ping")
+            commands.append("telnet localhost 6379")
+        elif service_type == ServiceType.DATABASE:
+            commands.append("docker exec postgres pg_isready -U nlp2cmd")
+            commands.append("psql -h localhost -U nlp2cmd -d postgresql -c 'SELECT 1;'")
+        elif service_type == ServiceType.CHAT_SERVICE:
+            port = entities.get("port", 8080)
+            commands.append(f"curl -f http://localhost:{port}/health")
+            commands.append(f"curl -f http://localhost:{port}/api/status")
+        
+        return commands
     
     async def save_full_deployment_plan(self, name: str = "full-deployment") -> dict[str, Any]:
         """Save complete deployment plan with all services."""
@@ -878,30 +1026,46 @@ class NLP2CMDWebController:
     def _create_email_template(self, entities: dict) -> ServiceConfig:
         """Create email service configuration."""
         port = entities.get("port", 8082)
+        email = entities.get("email", "contact@example.com")
+        
+        # Extract domain from email for SMTP/IMAP hosts
+        if "@" in email:
+            domain = email.split("@")[1]
+            imap_host = f"imap.{domain}"
+            smtp_host = f"smtp.{domain}"
+        else:
+            imap_host = "imap.gmail.com"
+            smtp_host = "smtp.gmail.com"
+        
         return ServiceConfig(
             name="email-service",
             service_type=ServiceType.EMAIL_SERVICE,
             port=port,
-            image="nlp2cmd/email-service:latest",
+            image="nginx:alpine",  # Use nginx for testing
             env_vars={
                 "PORT": str(port),
-                "IMAP_HOST": entities.get("host", "imap.example.com"),
-                "EMAIL_ADDRESS": entities.get("email", ""),
+                "EMAIL_ADDRESS": email,
+                "IMAP_HOST": imap_host,
+                "SMTP_HOST": smtp_host,
+                "EMAIL_SERVICE_ENABLED": "true",
             },
         )
     
     def _create_contact_template(self, entities: dict) -> ServiceConfig:
         """Create contact form service configuration."""
         port = entities.get("port", 8081)
+        email = entities.get("email", "contact@example.com")
+        
         return ServiceConfig(
             name="contact-service",
             service_type=ServiceType.CONTACT_FORM,
             port=port,
-            image="nlp2cmd/contact-service:latest",
+            image="nginx:alpine",  # Use nginx for testing
             env_vars={
                 "PORT": str(port),
-                "SMTP_HOST": entities.get("host", "smtp.example.com"),
-                "RECIPIENT_EMAIL": entities.get("email", "contact@example.com"),
+                "CONTACT_FORM_ENABLED": "true",
+                "RECIPIENT_EMAIL": email,
+                "SMTP_HOST": "smtp.gmail.com",
             },
         )
     

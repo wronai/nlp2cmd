@@ -5,3 +5,17 @@ Pokaż status usług
 Skaluj czat do 3 replik
 Uruchom Redis dla cache
 Deploy bazy PostgreSQL
+Sprawdź status wszystkich kontenerów
+Pokaż logi wszystkich usług
+Zatrzymaj wszystkie kontenery
+Uruchom ponownie serwis czatu
+Sprawdź działanie bazy danych
+Pokaż logi Redis
+Zrestartuj PostgreSQL
+Testuj połączenie z Redis
+Sprawdź porty usług
+Zatrzymaj tylko serwis czatu
+Uruchom monitoring usług
+Pokaż zużycie zasobów
+Testuj API endpointy
+Zatrzymaj Redis i PostgreSQL
