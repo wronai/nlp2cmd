@@ -9,6 +9,13 @@ from .resources import (
     format_last_metrics,
     get_system_info,
 )
+from .token_costs import (
+    TokenCostEstimator,
+    TokenCostEstimate,
+    estimate_token_cost,
+    format_token_estimate,
+    parse_metrics_string,
+)
 
 __all__ = [
     "ResourceMonitor",
@@ -18,4 +25,9 @@ __all__ = [
     "get_last_metrics",
     "format_last_metrics",
     "get_system_info",
+    "TokenCostEstimator",
+    "TokenCostEstimate",
+    "estimate_token_cost",
+    "format_token_estimate",
+    "parse_metrics_string",
 ]

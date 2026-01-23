@@ -30,7 +30,7 @@ from nlp2cmd.environment import EnvironmentAnalyzer
 from nlp2cmd.feedback import FeedbackAnalyzer, FeedbackResult, FeedbackType
 from nlp2cmd.schemas import SchemaRegistry
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
-from nlp2cmd.monitoring import measure_resources, format_last_metrics
+from nlp2cmd.monitoring import measure_resources, format_last_metrics, estimate_token_cost, format_token_estimate
 
 
 console = Console()
@@ -228,6 +228,23 @@ class InteractiveSession:
         metrics_str = format_last_metrics()
         if metrics_str:
             console.print(f"\n📊 {metrics_str}")
+            
+            # Show token cost estimate
+            try:
+                from nlp2cmd.monitoring.token_costs import parse_metrics_string
+                metrics = parse_metrics_string(metrics_str)
+                
+                if metrics.get("time_ms") is not None and metrics.get("cpu_percent") is not None and metrics.get("memory_mb") is not None:
+                    token_estimate = estimate_token_cost(
+                        metrics["time_ms"],
+                        metrics["cpu_percent"], 
+                        metrics["memory_mb"],
+                        metrics.get("energy_mj")
+                    )
+                    token_str = format_token_estimate(token_estimate)
+                    console.print(f"\n{token_str}")
+            except Exception as e:
+                console.print(f"\n[red]Token cost estimation failed: {e}[/red]")
 
     def run(self):
         """Run interactive REPL."""
@@ -439,6 +456,23 @@ def main(
                 metrics_str = format_last_metrics()
                 if metrics_str:
                     console.print(f"\n📊 {metrics_str}")
+                    
+                    # Show token cost estimate
+                    try:
+                        from nlp2cmd.monitoring.token_costs import parse_metrics_string
+                        metrics = parse_metrics_string(metrics_str)
+                        
+                        if metrics.get("time_ms") is not None and metrics.get("cpu_percent") is not None and metrics.get("memory_mb") is not None:
+                            token_estimate = estimate_token_cost(
+                                metrics["time_ms"],
+                                metrics["cpu_percent"], 
+                                metrics["memory_mb"],
+                                metrics.get("energy_mj")
+                            )
+                            token_str = format_token_estimate(token_estimate)
+                            console.print(f"\n{token_str}")
+                    except Exception as e:
+                        console.print(f"\n[red]Token cost estimation failed: {e}[/red]")
             else:
                 session = InteractiveSession(dsl=dsl, auto_repair=auto_repair)
                 feedback = session.process(query)
