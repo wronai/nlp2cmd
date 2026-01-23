@@ -97,6 +97,14 @@ async def run_demo_with_test():
     
     # Interactive mode
     await interactive_mode(controller)
+    
+    # Final cleanup
+    print("\n🧹 Final cleanup...")
+    if Path("./generated").exists():
+        shutil.rmtree("./generated")
+        print("✅ Wygenerowane pliki usunięte")
+    
+    print("\n🎉 Demo zakończone!")
 
 
 async def test_services(controller):
@@ -242,6 +250,8 @@ async def troubleshoot_and_fix(controller, original_command):
 
 async def interactive_mode(controller):
     """Interactive mode for additional commands."""
+    import sys
+    
     print("\n" + "=" * 70)
     print("🎮 Tryb Interaktywny")
     print("=" * 70)
@@ -252,6 +262,15 @@ async def interactive_mode(controller):
     print("  stop - zatrzymaj kontenery")
     print("  test - ponownie przetestuj usługi")
     print("  quit - wyjdź")
+    
+    # Check if we're in interactive mode
+    if not sys.stdin.isatty():
+        print("\n🤖 Tryb nieinteraktywny - kończę działanie")
+        # Auto-stop services in non-interactive mode
+        if controller.docker_manager:
+            print("🛑 Automatyczne zatrzymywanie kontenerów...")
+            await controller.stop_containers()
+        return
     
     while True:
         try:
@@ -311,6 +330,11 @@ async def interactive_mode(controller):
             break
         except Exception as e:
             print(f"\n❌ Błąd: {e}")
+    
+    # Cleanup on exit
+    if controller.docker_manager:
+        print("🛑 Zatrzymywanie kontenerów przed wyjściem...")
+        await controller.stop_containers()
 
 
 if __name__ == "__main__":
