@@ -10,11 +10,17 @@
 #   make docker-build  - Build Docker images
 #   make docker-up     - Start services
 #   make docker-test   - Run tests in Docker
+#   make docker-push   - Push Docker image to registry
+#   make push          - Complete release (bump version + build + push Docker + PyPI)
+#   make bump-patch    - Bump patch version (X.Y.Z -> X.Y.Z+1)
+#   make bump-minor    - Bump minor version (X.Y.Z -> X.Y+1.0)
+#   make bump-major    - Bump major version (X.Y.Z -> X+1.0.0)
+#   make publish       - Publish to PyPI (with automatic patch bump)
 # =============================================================================
 
 .PHONY: help install test test-unit test-e2e lint format clean \
-        docker-build docker-up docker-down docker-test docker-e2e \
-        dev demo test-examples
+        docker-build docker-up docker-down docker-test docker-e2e docker-push \
+        dev demo test-examples bump-patch bump-minor bump-major publish publish-test push
 
 # Default target
 .DEFAULT_GOAL := help
@@ -138,6 +144,14 @@ docker-shell: ## Open shell in container
 docker-ps: ## Show running containers
 	$(DOCKER_COMPOSE) ps
 
+docker-push: ## Push Docker image to registry
+	@echo "$(YELLOW)Building Docker image...$(NC)"
+	$(MAKE) docker-build
+	@echo "$(YELLOW)Pushing Docker image...$(NC)"
+	docker push nlp2cmd:latest
+	docker push nlp2cmd:$(shell $(PYTHON) -c "import toml; content = toml.load(open('pyproject.toml')); print(content['project']['version'])")
+	@echo "$(GREEN)Docker image pushed successfully!$(NC)"
+
 # =============================================================================
 # Development Utilities
 # =============================================================================
@@ -217,8 +231,40 @@ build: clean ## Build package
 publish-test: build ## Publish to TestPyPI
 	$(PYTHON) -m twine upload --repository testpypi dist/*
 
-publish: build ## Publish to PyPI
+bump-patch: ## Bump patch version (X.Y.Z -> X.Y.Z+1)
+	@echo "$(YELLOW)Bumping patch version...$(NC)"
+	$(PYTHON) bump_version.py patch
+
+bump-minor: ## Bump minor version (X.Y.Z -> X.Y+1.0)
+	@echo "$(YELLOW)Bumping minor version...$(NC)"
+	$(PYTHON) bump_version.py minor
+
+bump-major: ## Bump major version (X.Y.Z -> X+1.0.0)
+	@echo "$(YELLOW)Bumping major version...$(NC)"
+	$(PYTHON) bump_version.py major
+
+publish: build ## Publish to PyPI (with version bump)
+	@echo "$(YELLOW)Bumping patch version...$(NC)"
+	$(MAKE) bump-patch
+	@echo "$(YELLOW)Rebuilding package with new version...$(NC)"
+	$(MAKE) build
+	@echo "$(YELLOW)Publishing to PyPI...$(NC)"
 	$(PYTHON) -m twine upload dist/*
+
+push: ## Complete release (bump version + build + push Docker + PyPI)
+	@echo "$(YELLOW)Starting complete release process...$(NC)"
+	@echo "$(YELLOW)1. Bumping patch version...$(NC)"
+	$(MAKE) bump-patch
+	@echo "$(YELLOW)2. Building package...$(NC)"
+	$(MAKE) build
+	@echo "$(YELLOW)3. Publishing to PyPI...$(NC)"
+	$(PYTHON) -m twine upload dist/*
+	@echo "$(YELLOW)4. Building and pushing Docker image...$(NC)"
+	$(MAKE) docker-push
+	@echo "$(GREEN)🎉 Complete release finished successfully!$(NC)"
+	@echo "$(GREEN)   - Package published to PyPI$(NC)"
+	@echo "$(GREEN)   - Docker image pushed to registry$(NC)"
+	@echo "$(GREEN)   - Version bumped automatically$(NC)"
 
 # =============================================================================
 # Info

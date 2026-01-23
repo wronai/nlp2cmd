@@ -10,6 +10,19 @@ import time
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 
 
+def print_result(query, result, elapsed):
+    """Helper function to print results for both DSL and Thermodynamic sources."""
+    print(f"\n📝 Query: {query}")
+    
+    # Handle both DSL and Thermodynamic results
+    if result['source'] == 'dsl':
+        print(f"   Command: {result['result'].command}")
+    else:
+        print(f"   Solution: {result['result'].decoded_output}")
+    
+    print(f"   ⚡ Latency: {elapsed:.1f}ms")
+
+
 async def demo_file_operations():
     """Demonstracja operacji na plikach."""
     print("=" * 70)
@@ -38,9 +51,7 @@ async def demo_file_operations():
         result = await generator.generate(query)
         elapsed = (time.time() - start_time) * 1000
         
-        print(f"\n📝 Query: {query}")
-        print(f"   Command: {result['result'].command}")
-        print(f"   ⚡ Latency: {elapsed:.1f}ms")
+        print_result(query, result, elapsed)
 
 
 async def demo_system_monitoring():
@@ -71,9 +82,7 @@ async def demo_system_monitoring():
         result = await generator.generate(query)
         elapsed = (time.time() - start_time) * 1000
         
-        print(f"\n📝 Query: {query}")
-        print(f"   Command: {result['result'].command}")
-        print(f"   ⚡ Latency: {elapsed:.1f}ms")
+        print_result(query, result, elapsed)
 
 
 async def demo_network_operations():
@@ -104,9 +113,7 @@ async def demo_network_operations():
         result = await generator.generate(query)
         elapsed = (time.time() - start_time) * 1000
         
-        print(f"\n📝 Query: {query}")
-        print(f"   Command: {result['result'].command}")
-        print(f"   ⚡ Latency: {elapsed:.1f}ms")
+        print_result(query, result, elapsed)
 
 
 async def demo_process_management():
@@ -137,9 +144,7 @@ async def demo_process_management():
         result = await generator.generate(query)
         elapsed = (time.time() - start_time) * 1000
         
-        print(f"\n📝 Query: {query}")
-        print(f"   Command: {result['result'].command}")
-        print(f"   ⚡ Latency: {elapsed:.1f}ms")
+        print_result(query, result, elapsed)
 
 
 async def demo_development_tools():
@@ -170,9 +175,7 @@ async def demo_development_tools():
         result = await generator.generate(query)
         elapsed = (time.time() - start_time) * 1000
         
-        print(f"\n📝 Query: {query}")
-        print(f"   Command: {result['result'].command}")
-        print(f"   ⚡ Latency: {elapsed:.1f}ms")
+        print_result(query, result, elapsed)
 
 
 async def demo_security_operations():
@@ -203,9 +206,7 @@ async def demo_security_operations():
         result = await generator.generate(query)
         elapsed = (time.time() - start_time) * 1000
         
-        print(f"\n📝 Query: {query}")
-        print(f"   Command: {result['result'].command}")
-        print(f"   ⚡ Latency: {elapsed:.1f}ms")
+        print_result(query, result, elapsed)
 
 
 async def demo_backup_operations():
@@ -236,9 +237,7 @@ async def demo_backup_operations():
         result = await generator.generate(query)
         elapsed = (time.time() - start_time) * 1000
         
-        print(f"\n📝 Query: {query}")
-        print(f"   Command: {result['result'].command}")
-        print(f"   ⚡ Latency: {elapsed:.1f}ms")
+        print_result(query, result, elapsed)
 
 
 async def demo_system_maintenance():
@@ -269,9 +268,7 @@ async def demo_system_maintenance():
         result = await generator.generate(query)
         elapsed = (time.time() - start_time) * 1000
         
-        print(f"\n📝 Query: {query}")
-        print(f"   Command: {result['result'].command}")
-        print(f"   ⚡ Latency: {elapsed:.1f}ms")
+        print_result(query, result, elapsed)
 
 
 async def main():

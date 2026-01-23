@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "nlp2cmd"
-version = "0.1.0"
+version = "1.0.2"
 description = "Natural Language to Domain-Specific Commands with Thermodynamic Optimization - Transform natural language into SQL, Shell, Docker, Kubernetes and solve optimization problems using Langevin dynamics"
 readme = "README.md"
-license = "MIT"
+license = "Apache-2.0"
 requires-python = ">=3.10"
 authors = [
     { name = "NLP2CMD Team", email = "team@nlp2cmd.dev" }
