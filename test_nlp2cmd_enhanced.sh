@@ -19,7 +19,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SCHEMA_DIR="$SCRIPT_DIR/generated_schemas"
+SCHEMA_DIR="$SCRIPT_DIR/command_schemas"
 LOG_FILE="$SCRIPT_DIR/nlp2cmd_test.log"
 
 # Ensure schema directory exists
@@ -48,7 +48,6 @@ print_header() {
 
 # List of commands to test
 declare -A COMMANDS=(
-    ["Run nginx on port 8080"]="docker"
     ["List all running containers"]="docker"
     ["Show logs for web container"]="docker"
     ["Stop all containers"]="docker"

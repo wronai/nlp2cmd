@@ -27,10 +27,10 @@ Enhanced version with schema generation and logging.
 
 **Features:**
 
-- Automatic command detection and schema generation (cmd2schema)
+- Automatic command detection and schema generation (app2schema)
 - Comprehensive logging to `nlp2cmd_test.log`
 - Interactive command execution
-- Schema management
+- Schema management in `command_schemas/`
 - Support for dry-run mode
 
 **Usage:**
@@ -97,7 +97,7 @@ When a command is not found, the system:
 
 1. Uses `python -m app2schema` to generate a schema
 2. Creates an appspec JSON file for the command
-3. Saves the schema in `generated_schemas/` directory
+3. Saves the schema in `command_schemas/` directory
 4. Uses the schema to help nlp2cmd understand the command
 
 ### Example Generated Schema (appspec format)

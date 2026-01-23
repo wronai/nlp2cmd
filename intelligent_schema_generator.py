@@ -463,7 +463,7 @@ def main():
         print(f"  {category}: {count} commands")
     
     # Export to JSON
-    export_file = './generated_schemas.json'
+    export_file = './command_schemas.json'
     extractor.registry.save_cache(export_file)
     print(f"\n💾 All schemas exported to: {export_file}")
 

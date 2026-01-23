@@ -21,9 +21,9 @@ echo ""
 echo -e "${YELLOW}Step 1: Generating command schemas using app2schema...${NC}"
 if command -v python &> /dev/null; then
     # Generate schema for docker
-    python -m app2schema docker --type shell -o generated_schemas/docker.appspec.json 2>/dev/null || echo "Docker schema generation skipped"
+    python -m app2schema docker --type shell -o command_schemas/docker.appspec.json 2>/dev/null || echo "Docker schema generation skipped"
     # Generate schema for nginx
-    python -m app2schema nginx --type shell -o generated_schemas/nginx.appspec.json 2>/dev/null || echo "Nginx schema generation skipped"
+    python -m app2schema nginx --type shell -o command_schemas/nginx.appspec.json 2>/dev/null || echo "Nginx schema generation skipped"
     echo -e "${GREEN}✓ Schemas generated using app2schema${NC}"
 else
     echo -e "${YELLOW}! Python not found, skipping schema generation${NC}"

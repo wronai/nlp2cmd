@@ -25,7 +25,7 @@ except ImportError:
 class CommandSchemaGenerator:
     """Generate schemas for command-line tools."""
     
-    def __init__(self, output_dir: str = "generated_schemas", use_llm: bool = False):
+    def __init__(self, output_dir: str = "command_schemas", use_llm: bool = False):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
         self.use_llm = use_llm
@@ -210,7 +210,7 @@ def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(description="Generate schemas from command-line tools")
     parser.add_argument("commands", nargs="*", help="Commands to generate schemas for")
-    parser.add_argument("--output", "-o", default="generated_schemas", help="Output directory")
+    parser.add_argument("--output", "-o", default="command_schemas", help="Output directory")
     parser.add_argument("--llm", action="store_true", help="Use LLM for schema generation")
     parser.add_argument("--install", help="Attempt to install the specified command")
     parser.add_argument("--list", action="store_true", help="List available schemas")
