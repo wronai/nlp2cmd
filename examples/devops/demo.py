@@ -102,33 +102,29 @@ async def demo_nlp_commands():
                 for ex in result['examples']:
                     print(f"   • {ex}")
             
-            # Check if user wants to see generated files
+            # Automatically show generated files info
             if result.get('status') == 'success' and result.get('files_saved'):
-                show_files = input("\n🔍 Pokazać wygenerowane pliki? (t/n): ").strip().lower()
-                if show_files in ['t', 'tak', 'yes', 'y']:
-                    files_info = controller.get_generated_files_info()
-                    print(f"\n📁 Wygenerowane pliki w: {files_info['output_directory']}")
-                    if files_info['files']:
-                        print(f"   Łącznie {files_info['total_files']} plików:")
-                        for file_info in files_info['files']:
-                            print(f"   📄 {file_info['name']} ({file_info['size']} bytes)")
-                    else:
-                        print("   Brak plików")
+                files_info = controller.get_generated_files_info()
+                print(f"\n📁 Wygenerowane pliki w: {files_info['output_directory']}")
+                if files_info['files']:
+                    print(f"   Łącznie {files_info['total_files']} plików:")
+                    for file_info in files_info['files']:
+                        print(f"   📄 {file_info['name']} ({file_info['size']} bytes)")
+                else:
+                    print("   Brak plików")
             
-            # Check if user wants to save full deployment plan
+            # Automatically save full deployment plan when services exist
             if len(controller.services) > 0:
-                save_plan = input("\n💾 Zapisać pełny plan deployment? (t/n): ").strip().lower()
-                if save_plan in ['t', 'tak', 'yes', 'y']:
-                    plan_result = await controller.save_full_deployment_plan()
-                    print(f"\n{plan_result['message']}")
-                    print(f"📁 Pliki zapisane w: {plan_result['output_directory']}")
-                    
-                    # Show generated files
-                    files_info = controller.get_generated_files_info()
-                    if files_info['files']:
-                        print(f"\n📁 Wygenerowane pliki:")
-                        for file_info in files_info['files']:
-                            print(f"   📄 {file_info['name']} ({file_info['size']} bytes)")
+                print("\n💾 Automatyczne zapisywanie pełnego planu deployment...")
+                plan_result = await controller.save_full_deployment_plan()
+                print(f"{plan_result['message']}")
+                
+                # Show all generated files
+                files_info = controller.get_generated_files_info()
+                if files_info['files']:
+                    print(f"\n📁 Wszystkie wygenerowane pliki:")
+                    for file_info in files_info['files']:
+                        print(f"   📄 {file_info['name']} ({file_info['size']} bytes)")
                     
         except KeyboardInterrupt:
             print("\n\n👋 Przerwano.")

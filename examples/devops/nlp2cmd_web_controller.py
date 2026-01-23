@@ -63,6 +63,8 @@ class DeploymentPlan:
     def to_compose(self) -> dict[str, Any]:
         """Convert to docker-compose format."""
         services = {}
+        dependency_services = {}
+        
         for svc in self.services:
             service_def = {
                 "image": svc.image or f"nlp2cmd/{svc.name}:latest",
@@ -74,6 +76,12 @@ class DeploymentPlan:
                 service_def["volumes"] = svc.volumes
             if svc.depends_on:
                 service_def["depends_on"] = svc.depends_on
+                # Auto-add dependency services
+                for dep in svc.depends_on:
+                    if dep == "redis" and dep not in dependency_services:
+                        dependency_services[dep] = self._create_redis_service()
+                    elif dep == "postgres" and dep not in dependency_services:
+                        dependency_services[dep] = self._create_postgres_service()
             if svc.healthcheck:
                 service_def["healthcheck"] = {
                     "test": svc.healthcheck,
@@ -86,11 +94,42 @@ class DeploymentPlan:
             
             services[svc.name] = service_def
         
+        # Add dependency services
+        services.update(dependency_services)
+        
         return {
             "version": self.compose_version,
             "services": services,
             "networks": {
                 self.network: {"driver": "bridge"}
+            }
+        }
+    
+    def _create_redis_service(self) -> dict[str, Any]:
+        """Create Redis service configuration."""
+        return {
+            "image": "redis:7-alpine",
+            "ports": ["6379:6379"],
+            "networks": [self.network],
+        }
+    
+    def _create_postgres_service(self) -> dict[str, Any]:
+        """Create PostgreSQL service configuration."""
+        return {
+            "image": "postgres:15-alpine",
+            "ports": ["5432:5432"],
+            "environment": {
+                "POSTGRES_DB": "nlp2cmd_db",
+                "POSTGRES_USER": "nlp2cmd",
+                "POSTGRES_PASSWORD": "${DB_PASSWORD}"
+            },
+            "networks": [self.network],
+            "volumes": ["postgres_data:/var/lib/postgresql/data"],
+            "healthcheck": {
+                "test": "pg_isready -U nlp2cmd",
+                "interval": "30s",
+                "timeout": "10s",
+                "retries": 3,
             }
         }
 
@@ -458,8 +497,11 @@ class NLP2CMDWebController:
         
         # Save files
         compose_file = self.file_manager.save_docker_compose(compose, f"{name}-docker-compose.yml")
-        deployment_file = self.file_manager.save_deployment_plan({
-            "services": {name: {
+        
+        # Include dependency services in deployment plan
+        all_services = {}
+        for name, config in self.services.items():
+            all_services[name] = {
                 "name": config.name,
                 "service_type": config.service_type.value,
                 "port": config.port,
@@ -469,15 +511,51 @@ class NLP2CMDWebController:
                 "depends_on": config.depends_on,
                 "healthcheck": config.healthcheck,
                 "replicas": config.replicas,
-            } for name, config in self.services.items()},
-            "deployment_plan": plan.to_compose(),
+            }
+        
+        # Add dependency services to the plan
+        for service_name, service_def in compose["services"].items():
+            if service_name not in all_services:
+                # This is a dependency service (redis, postgres, etc.)
+                if service_name == "redis":
+                    all_services[service_name] = {
+                        "name": service_name,
+                        "service_type": "cache",
+                        "port": 6379,
+                        "image": "redis:7-alpine",
+                        "env_vars": {},
+                        "volumes": [],
+                        "depends_on": [],
+                        "healthcheck": None,
+                        "replicas": 1,
+                    }
+                elif service_name == "postgres":
+                    all_services[service_name] = {
+                        "name": service_name,
+                        "service_type": "database", 
+                        "port": 5432,
+                        "image": "postgres:15-alpine",
+                        "env_vars": {
+                            "POSTGRES_DB": "nlp2cmd_db",
+                            "POSTGRES_USER": "nlp2cmd",
+                            "POSTGRES_PASSWORD": "${DB_PASSWORD}"
+                        },
+                        "volumes": ["postgres_data:/var/lib/postgresql/data"],
+                        "depends_on": [],
+                        "healthcheck": "pg_isready -U nlp2cmd",
+                        "replicas": 1,
+                    }
+        
+        deployment_file = self.file_manager.save_deployment_plan({
+            "services": all_services,
+            "deployment_plan": compose,
             "generated_at": datetime.now().isoformat(),
-            "total_services": len(self.services),
+            "total_services": len(all_services),
         }, name)
         
         return {
             "status": "success",
-            "message": f"Zapisano pełen plan deployment z {len(self.services)} usługami",
+            "message": f"Zapisano pełen plan deployment z {len(all_services)} usługami (w tym zależności)",
             "files_saved": {
                 "docker_compose": compose_file,
                 "deployment_plan": deployment_file,

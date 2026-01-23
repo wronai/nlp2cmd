@@ -324,9 +324,6 @@ class SchemaRegistry:
         # Try content-based detection
         return self._detect_by_content(file_path)
 
-        # Try content-based detection
-        return self._detect_by_content(file_path)
-
     def _match_pattern(self, text: str, pattern: str) -> bool:
         """Match filename against pattern."""
         import fnmatch

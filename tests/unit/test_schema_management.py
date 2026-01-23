@@ -22,8 +22,11 @@ class TestSchemaDiscovery:
         """Create registry instance."""
         return SchemaRegistry()
 
-    def test_find_schema_for_file(self, registry):
+    def test_find_schema_for_file(self):
         """Test finding schema for a file."""
+        from src.nlp2cmd.schemas import SchemaRegistry
+        registry = SchemaRegistry()
+        
         # Test known extensions
         assert registry.find_schema_for_file("Dockerfile") is not None
         assert registry.find_schema_for_file("docker-compose.yml") is not None
