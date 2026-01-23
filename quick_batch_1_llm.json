@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-01-23T15:18:13.119123",
+  "timestamp": "2026-01-23T15:18:18.881559",
   "schemas": {
     "find": {
       "source_type": "llm_enhanced",
@@ -490,6 +490,81 @@
       ],
       "metadata": {
         "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "mv": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "mv",
+          "description": "Move or rename files and directories.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "SOURCE",
+              "type": "string",
+              "description": "The source file or directory to move.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "DEST",
+              "type": "string",
+              "description": "The destination file or directory where the SOURCE will be moved.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "mv /home/user/documents/report.txt /home/user/backup/",
+            "mv -T /home/user/temp/file.txt /home/user/final/",
+            "mv /home/user/images/*.jpg /home/user/archive/"
+          ],
+          "patterns": [
+            "mv",
+            "move or rename files and directories."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "mv {source} {destination}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "ps": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "ps",
+          "description": "ps command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "ps --help"
+          ],
+          "patterns": [
+            "ps"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
       }
     }
   }
