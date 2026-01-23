@@ -36,6 +36,22 @@ class FormDataLoader:
         self._load_env()
         self._load_json_files()
         self._build_field_values()
+
+    @staticmethod
+    def _dedupe_preserve_order(items: list[str]) -> list[str]:
+        seen: set[str] = set()
+        out: list[str] = []
+        for s in items:
+            if not isinstance(s, str):
+                continue
+            key = s.strip()
+            if not key:
+                continue
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(key)
+        return out
     
     def _load_schema(self) -> None:
         """Load form configuration from schema file."""
@@ -199,19 +215,74 @@ class FormDataLoader:
     
     def get_submit_selectors(self) -> list[str]:
         """Get list of submit button selectors from schema."""
-        return self._schema.get("submit_selectors", [
+        configured = self._schema.get("submit_selectors")
+        defaults = [
             'button[type="submit"]',
             'input[type="submit"]',
-        ])
+            '[type="submit"]',
+            'button:has-text("Wyślij")',
+            'button:has-text("Wyslij")',
+            'button:has-text("Submit")',
+            'button:has-text("Send")',
+            'button:has-text("Prześlij")',
+            'button:has-text("Przeslij")',
+            'button:has-text("OK")',
+            '.submit-button',
+        ]
+
+        if isinstance(configured, list):
+            return self._dedupe_preserve_order([*configured, *defaults])
+        return defaults
     
     def get_dismiss_selectors(self) -> list[str]:
         """Get list of popup dismiss selectors from schema."""
-        return self._schema.get("dismiss_selectors", [])
+        configured = self._schema.get("dismiss_selectors")
+        defaults = [
+            "button:has-text('Accept all')",
+            "button:has-text('Akceptuj wszystko')",
+            "button:has-text('Zaakceptuj')",
+            "button:has-text('Accept')",
+            "button:has-text('Zgadzam się')",
+            "button:has-text('Zgadzam sie')",
+            "button:has-text('I agree')",
+            "button:has-text('OK')",
+            "button[aria-label*='Accept']",
+            "button[aria-label*='Akceptuj']",
+            "button[id*='accept']",
+            "button[id*='consent']",
+            "#L2AGLb",
+        ]
+
+        if isinstance(configured, list):
+            return self._dedupe_preserve_order([*configured, *defaults])
+        return defaults
     
     def get_type_selectors(self, selector_type: str = "search") -> list[str]:
         """Get list of input selectors for typing from schema."""
         type_selectors = self._schema.get("type_selectors", {})
-        return type_selectors.get(selector_type, [])
+        configured: list[str] = []
+        if isinstance(type_selectors, dict):
+            c = type_selectors.get(selector_type)
+            if isinstance(c, list):
+                configured = c
+
+        defaults_map: dict[str, list[str]] = {
+            "search": [
+                "textarea[name='q']",
+                "input[name='q']",
+                "input[type='search']",
+                "textarea[aria-label*='Search'], textarea[aria-label*='Szukaj']",
+                "input[aria-label*='Search'], input[aria-label*='Szukaj']",
+            ],
+            "generic": [
+                "textarea",
+                "input[type='text']",
+                "input",
+            ],
+        }
+
+        defaults = defaults_map.get(str(selector_type or "search"), defaults_map["search"])
+        return self._dedupe_preserve_order([*configured, *defaults])
 
 
 def create_example_env_file(path: str = ".env.example") -> None:
