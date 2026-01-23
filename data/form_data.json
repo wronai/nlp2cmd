@@ -1,0 +1,17 @@
+{
+  "defaults": {
+    "imię": "Jan Kowalski",
+    "email": "jan.kowalski@example.com",
+    "telefon": "+48 123 456 789",
+    "wiadomość": "Dzień dobry, chciałbym uzyskać więcej informacji o ofercie."
+  },
+  "sites": {
+    "prototypowanie.pl": {
+      "Imię": "Jan Kowalski",
+      "Adres e-mail": "kontakt@example.com",
+      "Numer telefonu": "+48 123 456 789",
+      "Wiadomość": "Dzień dobry, jestem zainteresowany współpracą w zakresie prototypowania."
+    }
+  },
+  "_comment": "Ten plik zawiera domyślne dane do automatycznego wypełniania formularzy. Możesz też użyć .env z FORM_NAME, FORM_EMAIL, FORM_PHONE, FORM_MESSAGE."
+}

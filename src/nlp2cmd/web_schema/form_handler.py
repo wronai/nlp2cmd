@@ -235,12 +235,37 @@ class FormHandler:
         table.add_column("Source", style="dim")
         
         for f in fields:
-            # Skip checkbox, radio, and internal fields
-            if f.field_type in ('checkbox', 'radio'):
+            field_name_lower = (f.name or "").lower()
+            
+            # Skip internal/hidden-like fields
+            if field_name_lower in skip_fields:
                 continue
             
-            field_name_lower = (f.name or "").lower()
-            if field_name_lower in skip_fields:
+            # Handle checkbox fields (consent, RODO, etc.)
+            if f.field_type == 'checkbox':
+                # Check if we should auto-check this checkbox
+                consent_value = loader.get_value_for_field(
+                    field_name=f.name,
+                    field_id=f.id,
+                    field_label=f.label,
+                    field_placeholder=f.placeholder,
+                    field_type='checkbox',
+                )
+                # Also check for generic FORM_CONSENT
+                if not consent_value:
+                    consent_value = loader.get_env_value('FORM_CONSENT')
+                
+                if consent_value and consent_value.lower() in ('true', '1', 'yes', 'tak'):
+                    form_data.fields[f.selector] = '__checkbox__'
+                    table.add_row(
+                        f.get_display_name()[:30],
+                        "✓ (checked)",
+                        ".env / data/",
+                    )
+                continue
+            
+            # Skip radio buttons for now
+            if f.field_type == 'radio':
                 continue
             
             # Get value from loader
@@ -360,6 +385,16 @@ class FormHandler:
                     continue
                 
                 tag = elem.evaluate('el => el.tagName.toLowerCase()')
+                inp_type = elem.get_attribute('type') or ''
+                
+                # Handle checkbox
+                if inp_type == 'checkbox' or value == '__checkbox__':
+                    is_checked = elem.is_checked()
+                    if not is_checked:
+                        elem.click()
+                    page.wait_for_timeout(200)
+                    self.console.print(f"[green]✓[/green] Checked: {selector}")
+                    continue
                 
                 if tag == 'select':
                     elem.select_option(label=value)

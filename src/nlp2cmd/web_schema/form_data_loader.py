@@ -2,6 +2,7 @@
 Form data loader from .env and data/*.json files.
 
 Loads form field values from environment variables and JSON configuration files.
+Configuration is loaded from data/form_schema.json.
 """
 
 from __future__ import annotations
@@ -16,83 +17,42 @@ class FormDataLoader:
     """
     Loads form field data from multiple sources:
     1. .env file (for sensitive data like email, name, phone)
-    2. data/*.json files (for field mappings and default values)
+    2. data/form_schema.json (for field mappings configuration)
+    3. data/form_data.json (for default values)
     """
     
-    # Common field name mappings to env variables
-    FIELD_ENV_MAPPINGS = {
-        # Name fields
-        'imię': 'FORM_NAME',
-        'imie': 'FORM_NAME',
-        'name': 'FORM_NAME',
-        'first_name': 'FORM_NAME',
-        'firstname': 'FORM_NAME',
-        'your-name': 'FORM_NAME',
-        'nazwa': 'FORM_NAME',
-        
-        # Last name
-        'nazwisko': 'FORM_LASTNAME',
-        'surname': 'FORM_LASTNAME',
-        'last_name': 'FORM_LASTNAME',
-        'lastname': 'FORM_LASTNAME',
-        
-        # Email fields
-        'email': 'FORM_EMAIL',
-        'e-mail': 'FORM_EMAIL',
-        'adres e-mail': 'FORM_EMAIL',
-        'your-email': 'FORM_EMAIL',
-        'mail': 'FORM_EMAIL',
-        
-        # Phone fields
-        'telefon': 'FORM_PHONE',
-        'phone': 'FORM_PHONE',
-        'numer telefonu': 'FORM_PHONE',
-        'tel': 'FORM_PHONE',
-        'mobile': 'FORM_PHONE',
-        
-        # Message fields
-        'wiadomość': 'FORM_MESSAGE',
-        'wiadomosc': 'FORM_MESSAGE',
-        'message': 'FORM_MESSAGE',
-        'your-message': 'FORM_MESSAGE',
-        'treść': 'FORM_MESSAGE',
-        'tresc': 'FORM_MESSAGE',
-        'komentarz': 'FORM_MESSAGE',
-        'comment': 'FORM_MESSAGE',
-        
-        # Subject
-        'temat': 'FORM_SUBJECT',
-        'subject': 'FORM_SUBJECT',
-        
-        # Company
-        'firma': 'FORM_COMPANY',
-        'company': 'FORM_COMPANY',
-        'organization': 'FORM_COMPANY',
-        
-        # Address
-        'adres': 'FORM_ADDRESS',
-        'address': 'FORM_ADDRESS',
-        
-        # City
-        'miasto': 'FORM_CITY',
-        'city': 'FORM_CITY',
-        
-        # Website
-        'strona': 'FORM_WEBSITE',
-        'website': 'FORM_WEBSITE',
-        'url': 'FORM_WEBSITE',
-    }
-    
-    def __init__(self, data_dir: str = "./data", env_file: str = ".env"):
+    def __init__(self, data_dir: str = "./data", env_file: str = ".env", schema_file: str = "form_schema.json"):
         self.data_dir = Path(data_dir)
         self.env_file = Path(env_file)
+        self.schema_file = self.data_dir / schema_file
+        
         self._env_data: dict[str, str] = {}
         self._json_data: dict[str, Any] = {}
         self._field_values: dict[str, str] = {}
+        self._schema: dict[str, Any] = {}
+        self._field_mappings: dict[str, str] = {}  # pattern -> env_var
         
+        self._load_schema()
         self._load_env()
         self._load_json_files()
         self._build_field_values()
+    
+    def _load_schema(self) -> None:
+        """Load form configuration from schema file."""
+        if self.schema_file.exists():
+            try:
+                with open(self.schema_file) as f:
+                    self._schema = json.load(f)
+                    
+                # Build field mappings from schema
+                field_mappings = self._schema.get("field_mappings", {})
+                for field_type, config in field_mappings.items():
+                    env_var = config.get("env_var", "")
+                    patterns = config.get("patterns", [])
+                    for pattern in patterns:
+                        self._field_mappings[pattern.lower()] = env_var
+            except Exception:
+                pass
     
     def _load_env(self) -> None:
         """Load environment variables from .env file."""
@@ -157,10 +117,10 @@ class FormDataLoader:
             for key, value in self._json_data['fields'].items():
                 self._field_values[key.lower()] = str(value)
         
-        # Load from env (higher priority)
-        for field_name, env_key in self.FIELD_ENV_MAPPINGS.items():
+        # Load from env using schema-based field mappings (higher priority)
+        for field_pattern, env_key in self._field_mappings.items():
             if env_key in self._env_data:
-                self._field_values[field_name.lower()] = self._env_data[env_key]
+                self._field_values[field_pattern.lower()] = self._env_data[env_key]
     
     def get_value_for_field(
         self,

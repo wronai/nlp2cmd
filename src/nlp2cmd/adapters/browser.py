@@ -111,6 +111,16 @@ class BrowserAdapter(BaseDSLAdapter):
         form_keywords = ['formularz', 'form', 'wypełnij', 'wypelnij', 'fill form', 'fill out']
         return any(kw in text.lower() for kw in form_keywords)
     
+    @staticmethod
+    def _has_submit_action(text: str) -> bool:
+        """Check if text contains form submission intent."""
+        submit_keywords = [
+            'wyślij', 'wyslij', 'submit', 'send', 
+            'prześlij', 'przeslij', 'zatwierdź', 'zatwierdz',
+        ]
+        text_lower = text.lower()
+        return any(kw in text_lower for kw in submit_keywords)
+    
     def generate(self, plan: dict[str, Any]) -> str:
         text = str(plan.get("text") or plan.get("query") or "")
         entities = plan.get("entities") if isinstance(plan.get("entities"), dict) else {}
@@ -152,6 +162,12 @@ class BrowserAdapter(BaseDSLAdapter):
             params["press_key"] = "Enter"
             action_id = f"{action_id}_and_press_enter"
             explanation = f"{explanation} and press Enter"
+        
+        if self._has_submit_action(text):
+            actions.append({"action": "submit"})
+            params["submit"] = True
+            action_id = f"{action_id}_and_submit"
+            explanation = f"{explanation} and submit"
 
         if len(actions) == 1:
             payload = {

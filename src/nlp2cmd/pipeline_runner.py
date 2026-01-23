@@ -318,6 +318,17 @@ class PipelineRunner:
         
         if not url:
             return RunnerResult(success=False, kind="dom", error="Missing url for multi-action")
+
+        if not confirm:
+            for a in actions:
+                if isinstance(a, dict) and str(a.get("action") or "") == "press":
+                    if str(a.get("key") or "") in {"Enter", "Return"}:
+                        return RunnerResult(
+                            success=False,
+                            kind="dom",
+                            error="Action requires confirmation",
+                            data={"requires_confirmation": True},
+                        )
         
         if dry_run:
             return RunnerResult(
@@ -350,6 +361,49 @@ class PipelineRunner:
                         
                         # Try to dismiss common popups/cookie consents
                         self._dismiss_popups(page)
+
+                    elif action == "fill_form":
+                        # Automatic form filling from .env and data/*.json
+                        try:
+                            from nlp2cmd.web_schema.form_handler import FormHandler
+                            from nlp2cmd.web_schema.form_data_loader import FormDataLoader
+                            from rich.console import Console
+                            
+                            console = Console()
+                            form_handler = FormHandler(console=console)
+                            data_loader = FormDataLoader()
+                            
+                            # Wait for page to be fully loaded
+                            console.print("\n[cyan]⏳ Waiting for page to load...[/cyan]")
+                            page.wait_for_load_state("networkidle", timeout=10000)
+                            page.wait_for_timeout(1500)
+                            
+                            # Detect form fields
+                            console.print("[cyan]🔍 Detecting form fields...[/cyan]")
+                            fields = form_handler.detect_form_fields(page)
+                            
+                            if not fields:
+                                console.print("[yellow]No form fields detected on this page[/yellow]")
+                            else:
+                                # Automatic fill from .env and data/ files
+                                if data_loader.has_data():
+                                    console.print("[cyan]📂 Loading form data from .env and data/...[/cyan]")
+                                    form_data = form_handler.automatic_fill(fields, data_loader)
+                                else:
+                                    console.print("[yellow]No form data in .env or data/ - using interactive mode[/yellow]")
+                                    form_data = form_handler.interactive_fill(fields)
+                                if form_data is not None:
+                                    form_data.submit_selector = form_handler.detect_submit_button(page)
+                                
+                                # Fill the form if we have data
+                                if form_data and form_data.fields:
+                                    console.print("\n[cyan]📝 Filling form...[/cyan]")
+                                    form_handler.fill_form(page, form_data)
+                                
+                            page.wait_for_timeout(500)
+                            
+                        except Exception as e:
+                            return RunnerResult(success=False, kind="dom", error=f"Action {i}: Form filling failed: {e}")
                     
                     elif action == "type":
                         selector = action_spec.get("selector", "input[name='q'], input[type='search'], textarea")
@@ -441,53 +495,37 @@ class PipelineRunner:
                         page.keyboard.press(str(key))
                         page.wait_for_timeout(500)
                     
-                    elif action == "fill_form":
-                        # Automatic form filling from .env and data/*.json
-                        try:
-                            from nlp2cmd.web_schema.form_handler import FormHandler
-                            from nlp2cmd.web_schema.form_data_loader import FormDataLoader
-                            from rich.console import Console
-                            
-                            console = Console()
-                            form_handler = FormHandler(console=console)
-                            data_loader = FormDataLoader()
-                            
-                            # Wait for page to be fully loaded
-                            console.print("\n[cyan]⏳ Waiting for page to load...[/cyan]")
-                            page.wait_for_load_state("networkidle", timeout=10000)
-                            page.wait_for_timeout(1500)
-                            
-                            # Detect form fields
-                            console.print("[cyan]🔍 Detecting form fields...[/cyan]")
-                            fields = form_handler.detect_form_fields(page)
-                            
-                            if not fields:
-                                console.print("[yellow]No form fields detected on this page[/yellow]")
+                    elif action == "submit":
+                        # Submit form by clicking submit button
+                        from rich.console import Console
+                        console = Console()
+                        
+                        submit_selectors = [
+                            'button[type="submit"]',
+                            'input[type="submit"]',
+                            'button:has-text("Wyślij")',
+                            'button:has-text("Submit")',
+                            'button:has-text("Send")',
+                            'button:has-text("Prześlij")',
+                            '.submit-button',
+                        ]
+                        
+                        submitted = False
+                        for sel in submit_selectors:
+                            try:
+                                page.wait_for_selector(sel, state="visible", timeout=2000)
+                                page.click(sel)
+                                submitted = True
+                                console.print(f"[green]✓[/green] Form submitted via: {sel}")
+                                break
+                            except Exception:
                                 continue
-                            
-                            # Automatic fill from .env and data/ files
-                            if data_loader.has_data():
-                                console.print("[cyan]📂 Loading form data from .env and data/...[/cyan]")
-                                form_data = form_handler.automatic_fill(fields, data_loader)
-                            else:
-                                # Fallback to interactive if no data configured
-                                console.print("[yellow]No form data in .env or data/ - using interactive mode[/yellow]")
-                                form_data = form_handler.interactive_fill(fields)
-                            
-                            # Detect submit button
-                            form_data.submit_selector = form_handler.detect_submit_button(page)
-                            
-                            # Fill the form if we have data
-                            if form_data.fields:
-                                console.print("\n[cyan]📝 Filling form...[/cyan]")
-                                form_handler.fill_form(page, form_data)
-                            else:
-                                console.print("[yellow]No data to fill - skipping[/yellow]")
-                            
-                            page.wait_for_timeout(500)
-                            
-                        except Exception as e:
-                            return RunnerResult(success=False, kind="dom", error=f"Action {i}: Form filling failed: {e}")
+                        
+                        if not submitted:
+                            page.keyboard.press("Enter")
+                            console.print("[green]✓[/green] Form submitted via Enter key")
+                        
+                        page.wait_for_timeout(2000)
                     
                     else:
                         return RunnerResult(success=False, kind="dom", error=f"Action {i}: Unsupported action: {action}")
@@ -501,7 +539,75 @@ class PipelineRunner:
             except Exception as e:
                 browser.close()
                 return RunnerResult(success=False, kind="dom", error=f"Multi-action execution failed: {e}")
-    
+
+    @staticmethod
+    def _fill_form(page, *, values: Any = None) -> None:
+        """Heuristically fill a contact form.
+
+        This is best-effort. For reliable automation, prefer a site-specific schema.
+        """
+
+        def pick_value(meta: str, input_type: str) -> str:
+            meta_l = meta.lower()
+            if input_type == "email" or "mail" in meta_l:
+                return "test@example.com"
+            if "phone" in meta_l or "tel" in meta_l or "telefon" in meta_l:
+                return "123456789"
+            if "name" in meta_l or "imi" in meta_l or "nazw" in meta_l:
+                return "Test"
+            if "message" in meta_l or "wiadomo" in meta_l or "komentar" in meta_l:
+                return "Test message"
+            if "subject" in meta_l or "temat" in meta_l:
+                return "Test"
+            return "Test"
+
+        provided: dict[str, Any] = values if isinstance(values, dict) else {}
+
+        for el in page.query_selector_all("input, textarea, select"):
+            try:
+                tag = (el.evaluate("e => e.tagName") or "").lower()
+                itype = (el.get_attribute("type") or "").lower()
+
+                if tag == "input" and itype in {"hidden", "submit", "button", "image"}:
+                    continue
+
+                name = str(el.get_attribute("name") or "")
+                el_id = str(el.get_attribute("id") or "")
+                placeholder = str(el.get_attribute("placeholder") or "")
+                aria_label = str(el.get_attribute("aria-label") or "")
+                meta = " ".join([name, el_id, placeholder, aria_label]).strip()
+
+                # allow overriding by provided values
+                key = (name or el_id or "").strip()
+                if key and key in provided and provided[key] is not None:
+                    value = str(provided[key])
+                else:
+                    value = pick_value(meta, itype)
+
+                if tag == "select":
+                    try:
+                        # choose first non-empty option
+                        options = el.query_selector_all("option")
+                        chosen = None
+                        for opt in options:
+                            v = opt.get_attribute("value")
+                            if v is not None and str(v).strip():
+                                chosen = str(v)
+                                break
+                        if chosen is not None:
+                            el.select_option(chosen)
+                    except Exception:
+                        pass
+                    continue
+
+                if tag in {"input", "textarea"}:
+                    # skip checkboxes/radios; they often encode consent and should be explicit
+                    if itype in {"checkbox", "radio"}:
+                        continue
+                    el.fill(value)
+            except Exception:
+                continue
+
     @staticmethod
     def _dismiss_popups(page) -> None:
         """Try to dismiss common popups and cookie consents."""

@@ -524,18 +524,20 @@ def _handle_run_query(
     is_browser_command = False
     detected_has_typing = False
     
-    # Check if query contains typing/clicking actions
-    typing_keywords = ["wpisz", "type", "enter", "input", "napisz", "fill"]
-    clicking_keywords = ["kliknij", "click", "naciśnij", "press"]
+    # Check if query contains typing/clicking/form actions
+    typing_keywords = ["wpisz", "type", "input", "napisz", "fill"]
+    clicking_keywords = ["kliknij", "click", "naciśnij", "nacisnij", "press"]
+    form_keywords = ["formularz", "form", "wypełnij", "wypelnij", "fill out", "fill form", "wyślij", "wyslij", "submit", "prześlij", "przeslij"]
     
     query_lower = query.lower()
     has_typing = any(kw in query_lower for kw in typing_keywords)
     has_clicking = any(kw in query_lower for kw in clicking_keywords)
+    has_form = any(kw in query_lower for kw in form_keywords)
     
     if dsl == "auto":
         if detected_domain == "shell" and detected_intent in ("open_url", "search_web"):
             is_browser_command = True
-            detected_has_typing = has_typing or has_clicking
+            detected_has_typing = has_typing or has_clicking or has_form
             
             # Auto-enable execute_web if typing/clicking detected
             if detected_has_typing and not execute_web:
@@ -577,7 +579,15 @@ def _handle_run_query(
             # Execute with PipelineRunner
             from nlp2cmd.pipeline_runner import PipelineRunner
             pw_runner = PipelineRunner(headless=False)
-            result = pw_runner.run(ir, dry_run=False, confirm=False)
+            result = pw_runner.run(ir, dry_run=False, confirm=auto_confirm)
+
+            if (not result.success) and isinstance(result.data, dict) and result.data.get("requires_confirmation"):
+                if not auto_confirm:
+                    console.print("\n[yellow]This action may submit a form (e.g. press Enter). Proceed? [y/N][/yellow] ", end="")
+                    if console.input().strip().lower() not in {"y", "yes", "tak"}:
+                        console.print("[yellow]Cancelled by user[/yellow]")
+                        return
+                result = pw_runner.run(ir, dry_run=False, confirm=True)
 
             if result.success:
                 console.print(f"\n[green]✅ Browser automation completed successfully[/green]")
