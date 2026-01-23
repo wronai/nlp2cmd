@@ -1,7 +1,10 @@
 """
-Interactive form detection and filling.
+Automatic and interactive form detection and filling.
 
-Detects form fields on a page and allows interactive filling.
+Detects form fields on a page and fills them using:
+1. Environment variables from .env
+2. JSON data from data/ folder
+3. Interactive input (fallback)
 """
 
 from __future__ import annotations
@@ -12,6 +15,8 @@ from typing import Any, Optional
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
+
+from nlp2cmd.web_schema.form_data_loader import FormDataLoader
 
 
 @dataclass

@@ -450,8 +450,13 @@ class PipelineRunner:
                             console = Console()
                             form_handler = FormHandler(console=console)
                             
+                            # Wait for page to be fully loaded
+                            console.print("\n[cyan]⏳ Waiting for page to load...[/cyan]")
+                            page.wait_for_load_state("networkidle", timeout=10000)
+                            page.wait_for_timeout(1500)
+                            
                             # Detect form fields
-                            console.print("\n[cyan]🔍 Detecting form fields...[/cyan]")
+                            console.print("[cyan]🔍 Detecting form fields...[/cyan]")
                             fields = form_handler.detect_form_fields(page)
                             
                             if not fields:
