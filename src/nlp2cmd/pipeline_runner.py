@@ -441,6 +441,38 @@ class PipelineRunner:
                         page.keyboard.press(str(key))
                         page.wait_for_timeout(500)
                     
+                    elif action == "fill_form":
+                        # Interactive form filling
+                        try:
+                            from nlp2cmd.web_schema.form_handler import FormHandler
+                            from rich.console import Console
+                            
+                            console = Console()
+                            form_handler = FormHandler(console=console)
+                            
+                            # Detect form fields
+                            console.print("\n[cyan]🔍 Detecting form fields...[/cyan]")
+                            fields = form_handler.detect_form_fields(page)
+                            
+                            if not fields:
+                                console.print("[yellow]No form fields detected on this page[/yellow]")
+                                continue
+                            
+                            # Interactive fill
+                            form_data = form_handler.interactive_fill(fields)
+                            
+                            # Detect submit button
+                            form_data.submit_selector = form_handler.detect_submit_button(page)
+                            
+                            # Fill the form
+                            console.print("\n[cyan]📝 Filling form...[/cyan]")
+                            form_handler.fill_form(page, form_data)
+                            
+                            page.wait_for_timeout(500)
+                            
+                        except Exception as e:
+                            return RunnerResult(success=False, kind="dom", error=f"Action {i}: Form filling failed: {e}")
+                    
                     else:
                         return RunnerResult(success=False, kind="dom", error=f"Action {i}: Unsupported action: {action}")
                 

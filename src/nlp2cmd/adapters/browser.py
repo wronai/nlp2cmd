@@ -96,6 +96,12 @@ class BrowserAdapter(BaseDSLAdapter):
         return any(kw in text.lower() for kw in type_keywords)
     
     @staticmethod
+    def _has_form_action(text: str) -> bool:
+        """Check if text contains form filling action."""
+        form_keywords = ['formularz', 'form', 'wypełnij', 'wypelnij', 'fill form', 'fill out']
+        return any(kw in text.lower() for kw in form_keywords)
+    
+    @staticmethod
     def _has_press_enter_action(text: str) -> bool:
         """Check if text contains press enter action."""
         enter_patterns = [
@@ -119,6 +125,41 @@ class BrowserAdapter(BaseDSLAdapter):
             self.last_action_ir = None
             return "# Could not generate command"
 
+        # Check for form filling action
+        if self._has_form_action(text):
+            # Form filling action: goto + fill_form (interactive)
+            actions = [
+                {"action": "goto", "url": url},
+                {"action": "fill_form", "interactive": True},
+            ]
+            
+            # Add press enter/submit if detected
+            if self._has_press_enter_action(text):
+                actions.append({"action": "press", "key": "Enter"})
+            
+            payload = {
+                "dsl": "dom_dql.v1",
+                "actions": actions,
+                "url": url,
+            }
+            
+            explanation_parts = [f"goto {url}", "fill form interactively"]
+            if self._has_press_enter_action(text):
+                explanation_parts.append("press Enter")
+            
+            self.last_action_ir = ActionIR(
+                action_id="dom.fill_form",
+                dsl=json.dumps(payload, ensure_ascii=False),
+                dsl_kind="dom",  # type: ignore[arg-type]
+                params={"url": url, "fill_form": True, "press_enter": self._has_press_enter_action(text)},
+                output_format="raw",  # type: ignore[arg-type]
+                confidence=float(plan.get("confidence") or 0.8),
+                explanation=f"browser adapter: {' and '.join(explanation_parts)}",
+                metadata={"url": url, "fill_form": True, "press_enter": self._has_press_enter_action(text)},
+            )
+            
+            return self.last_action_ir.dsl
+        
         # Check if there's a typing action in the query
         type_text = self._extract_type_text(text)
         
