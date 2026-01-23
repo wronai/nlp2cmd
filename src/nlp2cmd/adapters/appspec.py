@@ -62,3 +62,32 @@ class AppSpecAdapter(BaseDSLAdapter):
         if not command or not str(command).strip():
             return {"valid": False, "errors": ["DSL is empty"], "warnings": []}
         return {"valid": True, "errors": [], "warnings": []}
+
+    def check_safety(self, command: str) -> dict[str, Any]:
+        # When AppSpec renders to shell commands, support a stricter policy shape.
+        policy = self.config.safety_policy
+        blocked = getattr(policy, "blocked_commands", None)
+        require_confirm = getattr(policy, "require_confirmation_for", None)
+
+        if isinstance(blocked, list) or isinstance(require_confirm, list):
+            cmd_l = (command or "").lower()
+
+            if isinstance(blocked, list):
+                for pattern in blocked:
+                    if isinstance(pattern, str) and pattern.lower() in cmd_l:
+                        return {
+                            "allowed": False,
+                            "reason": f"Command contains blocked pattern: {pattern}",
+                            "alternatives": [],
+                        }
+
+            requires_confirmation = False
+            if isinstance(require_confirm, list):
+                for pattern in require_confirm:
+                    if isinstance(pattern, str) and pattern.lower() in cmd_l:
+                        requires_confirmation = True
+                        break
+
+            return {"allowed": True, "requires_confirmation": requires_confirmation}
+
+        return super().check_safety(command)

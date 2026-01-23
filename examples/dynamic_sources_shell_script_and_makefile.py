@@ -56,7 +56,7 @@ done
     # Note: current CLI implementation writes a single AppSpec; if you need a merged spec
     # across multiple sources, generate one spec per source and merge externally.
     extract_appspec_to_file(str(sh_path), appspec_path, source_type="shell_script")
-    extract_appspec_to_file(str(mk_path), appspec_path, source_type="makefile")
+    extract_appspec_to_file(str(mk_path), appspec_path, source_type="makefile", merge=True)
 
     adapter = AppSpecAdapter(appspec_path=appspec_path)
     nlp = NLP2CMD(adapter=adapter)

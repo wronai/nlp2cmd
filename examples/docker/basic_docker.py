@@ -6,8 +6,12 @@ Demonstrates natural language to Docker command transformation
 with safety policies and compose file generation.
 """
 
+from pathlib import Path
+
+from app2schema import extract_schema_to_file
 from nlp2cmd import NLP2CMD
-from nlp2cmd.adapters import DockerAdapter, DockerSafetyPolicy
+from nlp2cmd.adapters.dynamic import DynamicAdapter
+from nlp2cmd.adapters.docker import DockerSafetyPolicy
 
 
 def main():
@@ -22,8 +26,15 @@ def main():
         max_cpus=2.0,
     )
 
-    # Create adapter
-    adapter = DockerAdapter(safety_policy=safety_policy)
+    # app2schema -> build dynamic schema export for docker CLI
+    export_path = Path("./generated_docker_dynamic_schema.json")
+    extract_schema_to_file("docker", export_path, source_type="shell", merge=True)
+
+    adapter = DynamicAdapter(
+        config={"custom_options": {"load_common_commands": False}},
+        safety_policy=safety_policy,
+    )
+    adapter.register_schema_source(str(export_path), source_type="auto")
     nlp = NLP2CMD(adapter=adapter)
 
     # Example commands
@@ -55,46 +66,6 @@ def main():
             print(f"\n⚠️ Warnings:")
             for warning in result.warnings:
                 print(f"   - {warning}")
-
-    # Docker Compose file generation
-    print("\n" + "=" * 60)
-    print("Docker Compose Generation")
-    print("=" * 60)
-
-    spec = {
-        "version": "3.8",
-        "services": {
-            "web": {
-                "image": "nginx:alpine",
-                "ports": ["8080:80"],
-                "volumes": ["./html:/usr/share/nginx/html:ro"],
-                "restart": "unless-stopped",
-            },
-            "api": {
-                "build": ".",
-                "ports": ["3000:3000"],
-                "environment": {
-                    "NODE_ENV": "production",
-                    "DATABASE_URL": "postgres://db:5432/app",
-                },
-                "depends_on": ["db"],
-            },
-            "db": {
-                "image": "postgres:15",
-                "volumes": ["pgdata:/var/lib/postgresql/data"],
-                "environment": {
-                    "POSTGRES_PASSWORD": "secret",
-                    "POSTGRES_DB": "app",
-                },
-            },
-        },
-        "volumes": {"pgdata": {}},
-    }
-
-    compose_yaml = adapter.generate_compose_file(spec)
-    print("\nGenerated docker-compose.yml:")
-    print("-" * 40)
-    print(compose_yaml)
 
     # Safety policy demo
     print("\n" + "=" * 60)

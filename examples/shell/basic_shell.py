@@ -21,7 +21,7 @@ import tempfile
 
 from app2schema import extract_appspec_to_file
 from nlp2cmd import NLP2CMD
-from nlp2cmd.adapters.dynamic import DynamicAdapter
+from nlp2cmd.schema_based import SchemaDrivenAppSpecAdapter
 from nlp2cmd.adapters.shell import ShellSafetyPolicy
 from nlp2cmd.environment import EnvironmentAnalyzer
 
@@ -57,55 +57,37 @@ def main():
         sandbox_mode=True,
     )
 
-    # Use app2schema to build a dynamic schema export with all detected tools
-    export_path = Path("./generated_shell_dynamic_schema.json")
-    
     # Build combined appspec with all tools
-    combined_actions = []
+    export_path = Path("./generated_shell_appspec.json")
+
+    first = True
     for tool_name, info in tools.items():
-        if info.available:
-            try:
-                # Extract to temporary file
-                with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
-                    tmp_path = Path(tmp.name)
-                
-                extract_appspec_to_file(tool_name, tmp_path, source_type="shell")
-                
-                # Load and merge actions
-                appspec = json.loads(tmp_path.read_text(encoding='utf-8'))
-                combined_actions.extend(appspec.get('actions', []))
-                
-                tmp_path.unlink()  # Clean up temp file
-                print(f"[BasicShell] Extracted schema for {tool_name}", file=sys.stderr)
-            except Exception as e:
-                print(f"[BasicShell] Failed to extract {tool_name}: {e}", file=sys.stderr)
-                continue
-    
-    # Write combined appspec
-    if combined_actions:
-        combined_appspec = {
-            "format": "app2schema.appspec",
-            "version": 1,
-            "app": {
-                "name": "shell_tools",
-                "kind": "shell",
-                "source": "environment",
-                "metadata": {"tools": [t for t, i in tools.items() if i.available]}
-            },
-            "actions": combined_actions,
-            "metadata": {}
-        }
-        export_path.write_text(json.dumps(combined_appspec, indent=2, ensure_ascii=False), encoding='utf-8')
-        print(f"[BasicShell] Generated combined appspec with {len(combined_actions)} actions", file=sys.stderr)
-    
-    # Use DynamicAdapter with the combined appspec
-    adapter = DynamicAdapter(
-        config={"custom_options": {"load_common_commands": True, "auto_save_path": "./runtime_schemas.json"}},
+        if not info.available:
+            continue
+        try:
+            extract_appspec_to_file(
+                tool_name,
+                export_path,
+                source_type="shell",
+                merge=not first,
+            )
+            first = False
+            print(f"[BasicShell] Extracted AppSpec for {tool_name}", file=sys.stderr)
+        except Exception as e:
+            print(f"[BasicShell] Failed to extract {tool_name}: {e}", file=sys.stderr)
+            continue
+
+    adapter = SchemaDrivenAppSpecAdapter(
+        appspec_path=export_path if export_path.exists() else None,
         safety_policy=safety_policy,
+        llm_config={
+            "model": "ollama/qwen2.5-coder:7b",
+            "api_base": "http://localhost:11434",
+            "temperature": 0.1,
+            "max_tokens": 512,
+            "timeout": 10,
+        }
     )
-    
-    if export_path.exists():
-        adapter.register_schema_source(str(export_path), source_type="auto")
 
     nlp = NLP2CMD(adapter=adapter)
 
@@ -129,17 +111,17 @@ def main():
         print(f"\n📝 Request: {cmd}")
         print("-" * 40)
 
-        result = nlp.transform(cmd)
+        ir = nlp.transform_ir(cmd)
 
-        print(f"Status: {result.status.value}")
-        print(f"Confidence: {result.confidence:.0%}")
+        print(f"Action: {ir.action_id}")
         print(f"\nGenerated command:")
-        print(f"   $ {result.command}")
-
-        if result.warnings:
-            print(f"\n⚠️ Warnings:")
-            for warning in result.warnings:
-                print(f"   - {warning}")
+        print(f"   $ {ir.dsl}")
+        
+        # Ask for feedback (optional)
+        if input("\nIs this correct? (Y/n): ").lower() == 'n':
+            correction = input("What should it be? ")
+            adapter.learn_from_feedback(cmd, ir.dsl, correction)
+            print("Thanks! I've learned from that.")
 
     # Safety policy demo
     print("\n" + "=" * 60)
@@ -153,11 +135,15 @@ def main():
 
     for cmd in dangerous_commands:
         print(f"\n📝 Request: {cmd}")
-        result = nlp.transform(cmd)
-        print(f"Status: {result.status.value}")
-
-        if not result.is_success:
-            print(f"❌ Blocked: {result.errors[0] if result.errors else 'Safety violation'}")
+        try:
+            ir = nlp.transform_ir(cmd)
+            print(f"Generated: {ir.dsl}")
+        except Exception as e:
+            print(f"❌ Blocked: {e}")
+    
+    # Save learned improvements
+    adapter.save_improvements("./learned_schemas.json")
+    print("\n✅ Saved learned improvements to learned_schemas.json")
 
 
 if __name__ == "__main__":

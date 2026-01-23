@@ -29,6 +29,9 @@ import httpx
 import yaml
 from pydantic import BaseModel, Field
 
+# Import per-command storage
+from ..storage.per_command_store import PerCommandSchemaStore
+
 
 def _ast_unparse(node: Optional[ast.AST]) -> str:
     if node is None:
@@ -1348,7 +1351,7 @@ class MakefileExtractor:
 class DynamicSchemaRegistry:
     """Registry for managing dynamically extracted schemas."""
     
-    def __init__(self, auto_save_path: Optional[Union[str, Path]] = None, use_llm: bool = False, llm_config: Optional[Dict] = None):
+    def __init__(self, auto_save_path: Optional[Union[str, Path]] = None, use_llm: bool = False, llm_config: Optional[Dict] = None, use_per_command_storage: bool = True, storage_dir: Optional[str] = None):
         self.schemas: Dict[str, ExtractedSchema] = {}
         self.openapi_extractor = OpenAPISchemaExtractor()
         self.shell_extractor = ShellHelpExtractor()
@@ -1356,6 +1359,15 @@ class DynamicSchemaRegistry:
         self.shell_script_extractor = ShellScriptExtractor()
         self.makefile_extractor = MakefileExtractor()
         self.auto_save_path = Path(auto_save_path) if auto_save_path else None
+        
+        # Initialize per-command storage
+        self.use_per_command_storage = use_per_command_storage
+        self.per_command_store = None
+        if use_per_command_storage:
+            storage_path = storage_dir or "./command_schemas"
+            self.per_command_store = PerCommandSchemaStore(storage_path)
+            # Load existing schemas from storage
+            self._load_from_storage()
         
         # Initialize LLM extractor if requested
         self.use_llm = use_llm
@@ -1367,6 +1379,39 @@ class DynamicSchemaRegistry:
         """Auto-save schemas to file if path is configured."""
         if self.auto_save_path:
             self.save_cache(self.auto_save_path)
+        # Also save to per-command storage if enabled
+        if self.use_per_command_storage and self.per_command_store:
+            self._save_to_storage()
+    
+    def _load_from_storage(self):
+        """Load schemas from per-command storage."""
+        if not self.per_command_store:
+            return
+        
+        print(f"[Registry] Loading schemas from {self.per_command_store.base_dir}")
+        commands = self.per_command_store.list_commands()
+        loaded = 0
+        
+        for command in commands:
+            schema = self.per_command_store.load_schema(command)
+            if schema:
+                self.schemas[schema.source] = schema
+                loaded += 1
+        
+        print(f"[Registry] Loaded {loaded} schemas from storage")
+    
+    def _save_to_storage(self):
+        """Save all schemas to per-command storage."""
+        if not self.per_command_store:
+            return
+        
+        saved = 0
+        for source, schema in self.schemas.items():
+            if self.per_command_store.store_schema(schema):
+                saved += 1
+        
+        if saved > 0:
+            print(f"[Registry] Saved {saved} schemas to per-command storage")
     
     def register_openapi_schema(self, source: Union[str, Path]) -> ExtractedSchema:
         """Register OpenAPI schema from URL or file."""
@@ -1421,78 +1466,9 @@ class DynamicSchemaRegistry:
         return schema
 
     def register_dynamic_export(self, file_path: Union[str, Path]) -> list[ExtractedSchema]:
-        file_path = Path(file_path)
-        if not file_path.exists():
-            raise FileNotFoundError(f"Dynamic schema export file not found: {file_path}")
-
-        try:
-            payload = json.loads(file_path.read_text(encoding="utf-8"))
-        except Exception as e:
-            raise ValueError(f"Failed to parse dynamic schema export from {file_path}: {e}")
-
-        exported = payload
-        if isinstance(payload, dict) and payload.get("format") == "nlp2cmd.dynamic_schema_export":
-            exported = payload.get("sources", {})
-
-        if not isinstance(exported, dict):
-            raise ValueError(f"Dynamic schema export has invalid structure: {file_path}")
-
-        imported: list[ExtractedSchema] = []
-        for source, schema_obj in exported.items():
-            if not isinstance(schema_obj, dict):
-                continue
-
-            commands: list[CommandSchema] = []
-            for cmd_obj in schema_obj.get("commands", []) or []:
-                if not isinstance(cmd_obj, dict):
-                    continue
-
-                params: list[CommandParameter] = []
-                for p_obj in cmd_obj.get("parameters", []) or []:
-                    if not isinstance(p_obj, dict):
-                        continue
-                    params.append(
-                        CommandParameter(
-                            name=str(p_obj.get("name", "")),
-                            type=str(p_obj.get("type", "string")),
-                            description=str(p_obj.get("description") or ""),
-                            required=bool(p_obj.get("required", False)),
-                            default=p_obj.get("default"),
-                            choices=list(p_obj.get("choices", []) or []),
-                            pattern=p_obj.get("pattern"),
-                            example=p_obj.get("example"),
-                            location=str(p_obj.get("location", "unknown")),
-                        )
-                    )
-
-                commands.append(
-                    CommandSchema(
-                        name=str(cmd_obj.get("name", "")),
-                        description=str(cmd_obj.get("description") or ""),
-                        category=str(cmd_obj.get("category") or "general"),
-                        parameters=params,
-                        examples=list(cmd_obj.get("examples", []) or []),
-                        patterns=list(cmd_obj.get("patterns", []) or []),
-                        source_type=str(
-                            cmd_obj.get("source_type")
-                            or schema_obj.get("source_type")
-                            or "dynamic_export"
-                        ),
-                        metadata=dict(cmd_obj.get("metadata", {}) or {}),
-                    )
-                )
-
-            extracted_schema = ExtractedSchema(
-                source=str(source),
-                source_type=str(schema_obj.get("source_type") or "dynamic_export"),
-                commands=commands,
-                metadata=dict(schema_obj.get("metadata", {}) or {}),
-            )
-
-            self.schemas[extracted_schema.source] = extracted_schema
-            imported.append(extracted_schema)
-
-        return imported
+        raise NotImplementedError(
+            "nlp2cmd.dynamic_schema_export is removed; use app2schema.appspec instead"
+        )
     
     def register_appspec_export(self, file_path: Union[str, Path]) -> ExtractedSchema:
         """Register an app2schema.appspec export file and convert to ExtractedSchema."""

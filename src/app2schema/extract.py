@@ -467,6 +467,7 @@ class App2SchemaResult:
                         "name": cmd.name,
                         "description": cmd.description,
                         "category": cmd.category,
+                        "template": cmd.template,
                         "parameters": [
                             {
                                 "name": p.name,
@@ -526,6 +527,9 @@ class App2SchemaResult:
                 elif cmd.source_type == "shell_help":
                     action_type = "shell"
                     dsl_kind = "shell"
+                elif cmd.source_type == "web_dom":
+                    action_type = "dom"
+                    dsl_kind = "dom"
 
                 action_id = f"{action_type}.{cmd.name}"
 
@@ -541,6 +545,10 @@ class App2SchemaResult:
                         "location": p.location,
                     }
 
+                schema_payload = dict(cmd.metadata or {})
+                if dsl_kind == "shell":
+                    schema_payload.setdefault("command", cmd.name)
+
                 actions.append(
                     {
                         "id": action_id,
@@ -552,7 +560,7 @@ class App2SchemaResult:
                             "template": cmd.metadata.get("template"),
                         },
                         "params": params,
-                        "schema": cmd.metadata,
+                        "schema": schema_payload,
                         "match": {"patterns": cmd.patterns, "examples": cmd.examples},
                         "executor": {"kind": dsl_kind, "config": {}},
                         "metadata": {"source": extracted.source, "source_type": extracted.source_type},
