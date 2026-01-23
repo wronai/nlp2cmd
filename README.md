@@ -83,11 +83,15 @@
 |----------|-------------|
 | **[Installation Guide](INSTALLATION.md)** | Setup instructions and installation options |
 | **[User Guide](docs/guides/user-guide.md)** | Complete usage tutorial and examples |
+| **[CLI Reference](docs/cli-reference.md)** | Comprehensive CLI documentation |
+| **[Python API Guide](docs/python-api.md)** | Detailed Python API usage |
+| **[Examples Guide](docs/examples-guide.md)** | Comprehensive examples overview |
 | **[API Reference](docs/api/README.md)** | Detailed API documentation |
 | **[Thermodynamic Integration](THERMODYNAMIC_INTEGRATION.md)** | Advanced optimization with Langevin dynamics |
 | **[Thermodynamic Architecture](THERMODYNAMIC_ARCHITECTURE.md)** | Deep technical architecture overview |
 | **[Contributing Guide](CONTRIBUTING.md)** | Development guidelines and contribution process |
 | **[Generation Module](README_GENERATION.md)** | DSL generation implementation details |
+| **[Quick Fix Reference](QUICK_FIX_REFERENCE.md)** | Common issues and solutions |
 
 ## 🚀 Quick Start
 
@@ -100,12 +104,70 @@ pip install nlp2cmd
 Or from source:
 
 ```bash
-git clone https://github.com/example/nlp2cmd.git
+git clone https://github.com/wronai/nlp2cmd.git
 cd nlp2cmd
 pip install -e ".[dev]"
 ```
 
-### Basic Usage (New Architecture)
+### CLI Usage
+
+The fastest way to use NLP2CMD is through the command line interface:
+
+```bash
+# Basic query
+nlp2cmd --query "Pokaż użytkowników"
+
+# Specific DSL
+nlp2cmd --dsl sql --query "SELECT * FROM users WHERE city = 'Warsaw'"
+nlp2cmd --dsl shell --query "Znajdź pliki .log większe niż 10MB"
+nlp2cmd --dsl docker --query "Pokaż wszystkie kontenery"
+nlp2cmd --dsl kubernetes --query "Skaluj deployment nginx do 3 replik"
+
+# With options
+nlp2cmd --explain --query "Sprawdź status systemu"
+nlp2cmd --auto-repair --query "Napraw konfigurację nginx"
+
+# Interactive mode
+nlp2cmd --interactive
+
+# Environment analysis
+nlp2cmd analyze-env
+nlp2cmd analyze-env --output environment.json
+
+# File validation and repair
+nlp2cmd validate config.json
+nlp2cmd repair docker-compose.yml --backup
+```
+
+#### Working Examples
+
+```bash
+$ nlp2cmd --query "Pokaż użytkowników"
+SELECT * FROM unknown_table;
+
+$ nlp2cmd --dsl docker --query "Pokaż wszystkie kontenery"
+docker ps -a
+
+$ nlp2cmd --dsl shell --query "Znajdź pliki .log większe niż 10MB"
+find . -type f -name "*.log" -size +10MB -exec ls -lh {} \;
+
+$ nlp2cmd analyze-env
+╭────── Environment Report ──────╮
+│ System: Linux 6.17.0-8-generic │
+╰────────────────────────────────╯
+                Tools                
+┏━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
+┃ Tool           ┃ Version ┃ Status ┃
+┡━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
+│ docker         │ 29.1.5  │ ✅     │
+│ kubectl        │ -       │ ✅     │
+│ git            │ 2.51.0  │ ✅     │
+└────────────────┴─────────┴────────┘
+```
+
+### Python API Usage
+
+#### Basic Usage (New Architecture)
 
 ```python
 from nlp2cmd import (
@@ -148,6 +210,22 @@ else:
 exec_result = executor.execute(plan)
 output = aggregator.aggregate(exec_result, format=OutputFormat.TABLE)
 print(output.data)
+```
+
+#### HybridThermodynamicGenerator (Recommended)
+
+```python
+from nlp2cmd.generation import HybridThermodynamicGenerator
+
+generator = HybridThermodynamicGenerator()
+
+# Simple query → DSL generation
+result = await generator.generate("Pokaż użytkowników")
+# → {'source': 'dsl', 'result': HybridResult(...)}
+
+# Optimization → Thermodynamic sampling
+result = await generator.generate("Zoptymalizuj przydzielanie zasobów")
+# → {'source': 'thermodynamic', 'result': ThermodynamicResult(...)}
 ```
 
 ### Multi-Step Plans with Foreach
@@ -338,6 +416,12 @@ See [Thermodynamic Integration](THERMODYNAMIC_INTEGRATION.md) for detailed docum
 
 ## 💡 Examples
 
+### CLI Examples
+- **[Shell Commands Demo](examples/use_cases/shell_commands_demo.sh)** - Complete CLI usage examples
+- **[Simple Demo](examples/use_cases/simple_demo_examples.py)** - Python API + Shell concepts
+- **[Complete Examples](examples/use_cases/complete_python_shell_examples.py)** - Full Python API examples
+- **[DSL Commands Demo](examples/use_cases/dsl_commands_demo.py)** - Direct DSL generation examples
+
 ### Quick Examples
 - **[Basic SQL](examples/sql/basic_sql.py)** - Simple SQL queries
 - **[Shell Commands](examples/shell/basic_shell.py)** - Common shell operations  
@@ -356,6 +440,11 @@ See [Thermodynamic Integration](THERMODYNAMIC_INTEGRATION.md) for detailed docum
 - **[Healthcare](examples/use_cases/healthcare.py)** - Medical applications
 - **[Finance & Trading](examples/use_cases/finance_trading.py)** - Financial operations
 - **[Smart Cities](examples/use_cases/smart_cities.py)** - Urban management
+
+### Documentation
+- **[CLI Reference](docs/cli-reference.md)** - Complete CLI documentation
+- **[Python API Guide](docs/python-api.md)** - Detailed Python API usage
+- **[Examples Guide](docs/examples-guide.md)** - Comprehensive examples overview
 
 See [Examples README](examples/use_cases/README.md) for all available examples.
 
