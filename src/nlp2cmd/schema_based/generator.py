@@ -280,9 +280,14 @@ def test_schema_based_generator():
     })
     
     # Load existing schemas if available
-    if Path('./validated_schemas.json').exists():
-        registry.load_from_file('./validated_schemas.json')
-        print(f"Loaded {len(registry.schemas)} schemas")
+    schema_candidates = [
+        Path('./command_schemas/exports/validated_schemas.json'),
+        Path('./validated_schemas.json'),
+    ]
+    schema_path = next((p for p in schema_candidates if p.exists()), None)
+    if schema_path:
+        registry.load_from_file(str(schema_path))
+        print(f"Loaded {len(registry.schemas)} schemas from {schema_path}")
     
     # Test generation
     test_cases = [

@@ -36,6 +36,7 @@ from nlp2cmd.adapters.dql import (
     EntityContext,
 )
 from nlp2cmd.adapters.appspec import AppSpecAdapter
+from nlp2cmd.adapters.browser import BrowserAdapter
 
 __all__ = [
     # Base
@@ -64,4 +65,6 @@ __all__ = [
     "EntityContext",
     # AppSpec
     "AppSpecAdapter",
+    # Browser
+    "BrowserAdapter",
 ]

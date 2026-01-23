@@ -434,10 +434,11 @@ def create_enhanced_prompt_list():
 def main():
     """Main function to generate CSV from prompt.txt."""
     
-    # Check if prompt.txt exists
-    prompt_file = Path('./prompt.txt')
+    # Check if prompt.txt exists (try data/ first, then root)
+    prompt_candidates = [Path('./data/prompt.txt'), Path('./prompt.txt')]
+    prompt_file = next((p for p in prompt_candidates if p.exists()), None)
     
-    if prompt_file.exists():
+    if prompt_file:
         print(f"Loading prompts from {prompt_file}")
         with open(prompt_file) as f:
             prompts = [line.strip() for line in f if line.strip()]
@@ -445,18 +446,24 @@ def main():
         print("Creating new prompt list...")
         prompts = create_enhanced_prompt_list()
         
-        # Save to prompt.txt
-        with open('./prompt.txt', 'w') as f:
+        # Save to data/prompt.txt
+        data_dir = Path('./data')
+        data_dir.mkdir(exist_ok=True)
+        prompt_path = data_dir / 'prompt.txt'
+        with open(prompt_path, 'w') as f:
             for prompt in prompts:
                 f.write(prompt + '\n')
+        print(f"Saved prompts to {prompt_path}")
     
     print(f"Processing {len(prompts)} prompts...")
     
     # Initialize generator
     generator = CommandGenerator(use_nlp2cmd=True)
     
-    # Generate CSV
-    output_file = './cmd.csv'
+    # Generate CSV in data/ folder
+    data_dir = Path('./data')
+    data_dir.mkdir(exist_ok=True)
+    output_file = str(data_dir / 'cmd.csv')
     with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(['prompt', 'cmd', 'version'])

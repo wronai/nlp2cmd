@@ -127,6 +127,16 @@ class RegexEntityExtractor:
             r'(?:szukaj|grep|find|wyszukaj)\s+[`"\']?(.+?)[`"\']?\s+(?:w|in)',
             r'(?:pattern|wzorzec)\s+[`"\']?(.+?)[`"\']?',
         ],
+        'url': [
+            r'(https?://[^\s\'"]+)',
+            r'(www\.[^\s\'"]+)',
+            r'(?:otwórz|open|go to|navigate to|wejdź na|idź do)\s+[`"\']?([a-zA-Z0-9][a-zA-Z0-9\-]*\.[a-zA-Z]{2,}(?:/[^\s\'"]*)?)[`"\']?',
+            r'\b([a-zA-Z0-9][a-zA-Z0-9\-]*\.(?:com|org|net|io|dev|pl|de|uk|eu|gov|edu)(?:/[^\s\'"]*)?)\b',
+        ],
+        'query': [
+            r'(?:wyszukaj|search|szukaj|znajdź|look up)\s+[`"\']?(.+?)[`"\']?(?:\s+w\s+|\s+in\s+|\s*$)',
+            r'(?:google|search for)\s+[`"\']?(.+?)[`"\']?',
+        ],
     }
     
     DOCKER_PATTERNS: dict[str, list[str]] = {

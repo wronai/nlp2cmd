@@ -138,6 +138,19 @@ class KeywordIntentDetector:
                 'uruchom w tle', 'uruchom skrypt', 'zatrzymaj usługę', 'uruchom usługę', 'status usługi',
                 'sprawdź status', 'monitor systemowy', 'htop', 'top'
             ],
+            'open_url': [
+                'otwórz przeglądarkę', 'open browser', 'otwórz stronę', 'open url', 'open website',
+                'otwórz link', 'browse to', 'navigate to', 'go to url', 'idź do strony',
+                'wejdź na stronę', 'przeglądarka', 'browser', 'xdg-open', 'open link',
+                'otwórz google', 'otwórz youtube', 'otwórz github', 'open google', 'open youtube',
+                'go to youtube', 'go to github', 'go to google', 'go to facebook',
+                'youtube.com', 'github.com', 'google.com', 'facebook.com',
+            ],
+            'search_web': [
+                'wyszukaj w google', 'google search', 'szukaj w internecie', 'search web',
+                'wyszukaj online', 'znajdź w internecie', 'look up online',
+                'wyszukaj w', 'szukaj w google', 'google python', 'google tutorial',
+            ],
         },
         'docker': {
             'list': [
@@ -249,7 +262,7 @@ class KeywordIntentDetector:
     # Priority intents - check these first as they are more specific/destructive
     PRIORITY_INTENTS: dict[str, list[str]] = {
         'sql': ['delete', 'update', 'insert', 'aggregate'],
-        'shell': ['file_operation', 'archive', 'process', 'disk', 'system_maintenance', 'development', 'security', 'process_management'],
+        'shell': ['open_url', 'search_web', 'file_operation', 'archive', 'process', 'disk', 'system_maintenance', 'development', 'security', 'process_management'],
         'docker': ['stop', 'prune', 'build', 'run', 'list', 'logs', 'exec', 'start', 'remove'],
         'kubernetes': ['delete', 'scale', 'describe', 'logs'],
     }
@@ -265,6 +278,31 @@ class KeywordIntentDetector:
             DetectionResult with domain, intent, confidence
         """
         text_lower = text.lower()
+
+        # Fast-path: browser/URL opening queries.
+        # Detect URLs or common website names in the query.
+        url_pattern = re.search(r'\b([a-zA-Z0-9][\w\-]*\.(?:com|org|net|io|dev|pl|de|uk|eu|gov|edu|tv|co))\b', text_lower)
+        browser_keywords = ['przeglądark', 'browser', 'otwórz stronę', 'open url', 'open website', 'go to', 'navigate to']
+        has_browser_keyword = any(kw in text_lower for kw in browser_keywords)
+        
+        # Check if it's a search query (can be with or without URL)
+        search_keywords = ['wyszukaj', 'szukaj', 'search for', 'google search', 'znajdź w', 'look up']
+        if any(kw in text_lower for kw in search_keywords):
+            return DetectionResult(
+                domain="shell",
+                intent="search_web",
+                confidence=0.9,
+                matched_keyword="search+web",
+            )
+        
+        # URL opening (needs URL pattern or browser keyword)
+        if url_pattern or has_browser_keyword:
+            return DetectionResult(
+                domain="shell",
+                intent="open_url",
+                confidence=0.9,
+                matched_keyword=url_pattern.group(1) if url_pattern else "browser",
+            )
 
         # Fast-path: docker-like queries without explicit 'docker' keyword.
         # Example: "run nginx on port 8080".

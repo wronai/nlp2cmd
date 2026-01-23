@@ -30,10 +30,14 @@ def validate_and_fix_schemas():
         "timeout": 10,
     }
     
+    export_dir = Path("./command_schemas/exports")
+    export_dir.mkdir(parents=True, exist_ok=True)
+    validated_path = export_dir / "validated_schemas.json"
+
     registry = DynamicSchemaRegistry(
-        auto_save_path="./validated_schemas.json",
+        auto_save_path=str(validated_path),
         use_llm=True,
-        llm_config=llm_config
+        llm_config=llm_config,
     )
     
     # Track validation results
@@ -103,12 +107,15 @@ def validate_and_fix_schemas():
     print(f"  Success rate: {validation_results['valid'] / validation_results['total'] * 100:.1f}%")
     
     # Save validation report
-    with open("validation_report.json", "w") as f:
+    artifacts_dir = Path("./artifacts")
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    report_path = artifacts_dir / "validation_report.json"
+    with open(report_path, "w") as f:
         json.dump(validation_results, f, indent=2)
     
     print("\nFiles saved:")
-    print("  - validated_schemas.json (all validated schemas)")
-    print("  - validation_report.json (detailed validation report)")
+    print(f"  - {validated_path} (all validated schemas)")
+    print(f"  - {report_path} (detailed validation report)")
     
     return validation_results
 

@@ -74,10 +74,10 @@ print(schema.commands[0].template)
 
 ```bash
 # Quick test
-python test_llm_quick.py
+python tools/manual_tests/test_llm_quick.py
 
 # Full test (compares with/without LLM)
-python test_100_commands.py
+python tools/manual_tests/test_100_commands.py
 
 # Or use the setup script
 ./run_test.sh

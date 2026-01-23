@@ -201,16 +201,16 @@ registry.load_cache("all_schemas.json")
 
 ```bash
 # 1. Generate schemas for common commands
-python3 update_schemas.py --force
+python3 tools/update_schemas.py --force
 
-# 2. Generate cmd.csv with prompts
-python3 generate_cmd_simple.py
+# 2. Generate commands from prompts
+python3 tools/generation/generate_cmd_simple.py
 
 # 3. Run schema flow demonstration
-python3 schema_flow_demo.py
+python3 demos/schema_flow_demo.py
 
 # 4. Run version detection demo
-python3 demo_version_detection.py
+python3 demos/demo_version_detection.py
 
 # 5. Test with specific command
 python3 -c "

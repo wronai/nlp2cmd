@@ -127,10 +127,10 @@ export ANTHROPIC_API_KEY="your-key"
 
 ```bash
 # Run basic tests
-python test_enhanced.py
+python tools/manual_tests/test_enhanced.py
 
 # Run full test suite
-python -m pytest test_enhanced.py -v
+python -m pytest tools/manual_tests/test_enhanced.py -v
 
 # Run demo
 python -c "from nlp2cmd.enhanced import demo_dynamic_extraction; demo_dynamic_extraction()"

@@ -28,7 +28,9 @@ def main():
     )
 
     # app2schema -> build appspec for docker CLI
-    appspec_path = Path("./generated_docker_appspec.json")
+    commands_dir = Path("./command_schemas/commands")
+    commands_dir.mkdir(parents=True, exist_ok=True)
+    appspec_path = commands_dir / "docker.appspec.json"
     try:
         extract_appspec_to_file("docker", appspec_path, source_type="shell", merge=True)
     except Exception as e:

@@ -13,9 +13,11 @@ def load_commands_from_files() -> List[str]:
     commands = set()
     
     # Load from cmd.csv
-    if Path('./cmd.csv').exists():
+    cmd_csv_candidates = [Path('./data/cmd.csv'), Path('./cmd.csv')]
+    cmd_csv_path = next((p for p in cmd_csv_candidates if p.exists()), None)
+    if cmd_csv_path:
         print("Loading commands from cmd.csv...")
-        with open('./cmd.csv') as f:
+        with open(cmd_csv_path) as f:
             reader = csv.reader(f)
             next(reader)  # Skip header
             for row in reader:
@@ -30,9 +32,11 @@ def load_commands_from_files() -> List[str]:
                             commands.add(cmd)
     
     # Load from cmd.txt
-    if Path('./cmd.txt').exists():
+    cmd_txt_candidates = [Path('./data/cmd.txt'), Path('./cmd.txt')]
+    cmd_txt_path = next((p for p in cmd_txt_candidates if p.exists()), None)
+    if cmd_txt_path:
         print("Loading commands from cmd.txt...")
-        with open('./cmd.txt') as f:
+        with open(cmd_txt_path) as f:
             for line in f:
                 cmd = line.strip()
                 if cmd and not cmd.startswith('#'):
@@ -104,15 +108,21 @@ def update_all_schemas(force_update: bool = True) -> None:
         print(f"  {category:15}: {count:3} commands")
     
     # Export all schemas
-    export_file = './all_schemas.json'
+    export_dir = Path('./command_schemas/exports')
+    export_dir.mkdir(parents=True, exist_ok=True)
+    export_file = str(export_dir / 'all_schemas.json')
     extractor.registry.save_cache(export_file)
-    print(f"\n💾 All schemas exported to: {export_file}")
+    print(f"\n")
+    print(f"💾 All schemas exported to: {export_file}")
     
     # Generate command list file
-    with open('./generated_commands.txt', 'w') as f:
+    artifacts_dir = Path('./artifacts')
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    commands_path = artifacts_dir / 'generated_commands.txt'
+    with open(commands_path, 'w') as f:
         for cmd in sorted(commands):
             f.write(f"{cmd}\n")
-    print(f"📝 Command list saved to: ./generated_commands.txt")
+    print(f"📝 Command list saved to: {commands_path}")
     
     # Show sample schemas
     print("\n" + "="*60)

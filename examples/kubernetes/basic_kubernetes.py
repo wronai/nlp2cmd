@@ -28,7 +28,9 @@ def main():
     )
 
     # app2schema -> build dynamic schema export for kubectl CLI
-    export_path = Path("./generated_kubectl_dynamic_schema.json")
+    export_dir = Path("./command_schemas/exports/dynamic")
+    export_dir.mkdir(parents=True, exist_ok=True)
+    export_path = export_dir / "kubectl_dynamic_schema.json"
     try:
         extract_schema_to_file("kubectl", export_path, source_type="shell", merge=True)
     except Exception as e:

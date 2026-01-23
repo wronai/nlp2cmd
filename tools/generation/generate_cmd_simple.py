@@ -8,10 +8,14 @@ from pathlib import Path
 from typing import List, Tuple, Optional
 
 
-def load_prompts(prompt_file: str = './prompt.txt') -> List[str]:
+def load_prompts(prompt_file: str = './data/prompt.txt') -> List[str]:
     """Load prompts from file or create default list."""
-    if Path(prompt_file).exists():
-        with open(prompt_file) as f:
+    # Try data/ first, then fallback to root
+    candidates = [Path(prompt_file), Path('./prompt.txt')]
+    prompt_path = next((p for p in candidates if p.exists()), None)
+    
+    if prompt_path:
+        with open(prompt_path) as f:
             return [line.strip() for line in f if line.strip()]
     else:
         # Create default prompts
@@ -518,8 +522,10 @@ def main():
     prompts = load_prompts()
     print(f"Loaded {len(prompts)} prompts")
     
-    # Generate CSV
-    output_file = './cmd.csv'
+    # Generate CSV in data/ folder
+    data_dir = Path('./data')
+    data_dir.mkdir(exist_ok=True)
+    output_file = str(data_dir / 'cmd.csv')
     with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(['prompt', 'cmd', 'version'])

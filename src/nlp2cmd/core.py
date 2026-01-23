@@ -673,6 +673,20 @@ class NLP2CMD:
         # Step 4: Check safety policy
         safety_result = self.adapter.check_safety(command)
         if not safety_result["allowed"]:
+            # Record blocked command in history
+            try:
+                from nlp2cmd.history.tracker import record_command
+                record_command(
+                    query=text,
+                    dsl=self.dsl_name,
+                    command=command,
+                    intent=plan.intent,
+                    success=False,
+                    error=safety_result.get("reason", "Blocked by safety policy"),
+                )
+            except Exception:
+                pass
+            
             return TransformResult(
                 status=TransformStatus.BLOCKED,
                 command=command,
@@ -707,6 +721,25 @@ class NLP2CMD:
 
         # Store in history
         self._history.append(result)
+        
+        # Record in global command history
+        try:
+            from nlp2cmd.history.tracker import record_command
+            record_command(
+                query=text,
+                dsl=self.dsl_name,
+                command=command,
+                intent=plan.intent,
+                success=(status == TransformStatus.SUCCESS),
+                error=errors[0] if errors else None,
+                metadata={
+                    "confidence": plan.confidence,
+                    "warnings": warnings,
+                    "suggestions": suggestions,
+                },
+            )
+        except Exception:
+            pass
 
         return result
 

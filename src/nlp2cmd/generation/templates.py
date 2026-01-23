@@ -55,6 +55,7 @@ class TemplateGenerator:
         'list_recursive': "ls -laR {path}",
         'grep': "grep -r '{pattern}' {path}",
         'grep_file': "grep '{pattern}' {file}",
+        'process': "ps aux",
         'process_list': "ps aux | grep {process_name}",
         'process_top': "ps aux --sort=-%{metric} | head -n {limit}",
         'disk_usage': "df -h {path}",
@@ -135,6 +136,11 @@ class TemplateGenerator:
         'service_restart': "systemctl restart {service}",
         'service_status': "systemctl status {service}",
         'text_search_errors': "grep -i error {file}",
+        # Browser/URL opening (cross-platform)
+        'open_url': "xdg-open '{url}'",
+        'open_browser': "xdg-open '{url}'",
+        'browse': "xdg-open '{url}'",
+        'search_web': "xdg-open 'https://www.google.com/search?q={query}'",
     }
     
     DOCKER_TEMPLATES: dict[str, str] = {
@@ -638,6 +644,20 @@ class TemplateGenerator:
             result.setdefault('service', entities.get('service', 'docker'))
         elif intent == 'text_search_errors':
             result.setdefault('file', '/var/log/syslog')
+        elif intent in ('open_url', 'open_browser', 'browse'):
+            url = entities.get('url', '')
+            if url and not url.startswith(('http://', 'https://')):
+                url = 'https://' + url
+            result['url'] = url or 'https://google.com'
+        elif intent == 'search_web':
+            query = entities.get('query', '')
+            if not query:
+                text = entities.get('text', '')
+                import re
+                match = re.search(r'(?:wyszukaj|search|szukaj|google)\s+(.+?)(?:\s+w\s+|\s*$)', text, re.IGNORECASE)
+                if match:
+                    query = match.group(1).strip()
+            result['query'] = query or 'nlp2cmd'
         
         return result
     

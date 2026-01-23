@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import sys
 import asyncio
+import shlex
 from pathlib import Path
 from typing import Any, Optional
 
@@ -26,7 +27,10 @@ from nlp2cmd.adapters import (
     ShellAdapter,
     SQLAdapter,
     AppSpecAdapter,
+    BrowserAdapter,
 )
+from nlp2cmd.pipeline_runner import PipelineRunner
+from nlp2cmd.execution import ExecutionRunner, open_url
 from nlp2cmd.environment import EnvironmentAnalyzer
 from nlp2cmd.feedback import FeedbackAnalyzer, FeedbackResult, FeedbackType
 from nlp2cmd.schemas import SchemaRegistry
@@ -93,6 +97,7 @@ def get_adapter(dsl: str, context: dict[str, Any]):
         "kubernetes": lambda: KubernetesAdapter(),
         "dql": lambda: DQLAdapter(),
         "appspec": lambda: AppSpecAdapter(),
+        "browser": lambda: BrowserAdapter(),
     }
 
     if dsl == "auto":
@@ -442,11 +447,285 @@ class InteractiveSession:
                     console.print(f"Install '{missing_tool}' using your system package manager or official docs.")
 
 
+def _handle_run_query(
+    query: str,
+    dsl: str,
+    appspec: Optional[Path],
+    auto_confirm: bool,
+    execute_web: bool,
+    auto_install: bool,
+):
+    """
+    Handle --run option: generate and execute command with error recovery.
+    
+    Features:
+    - Generate command from natural language
+    - Execute with real-time output
+    - Detect errors and suggest recovery
+    - Interactive retry loop with LLM assistance
+    """
+    from nlp2cmd.generation.pipeline import RuleBasedPipeline
+    
+    console.print(Panel(
+        f"[bold]{query}[/bold]",
+        title="[cyan]🚀 Run Mode[/cyan]",
+        border_style="cyan",
+    ))
+    
+    # Step 1: Generate command
+    console.print("\n[dim]Generating command...[/dim]")
+    
+    adapter_map = {
+        "sql": lambda: SQLAdapter(),
+        "shell": lambda: ShellAdapter(),
+        "docker": lambda: DockerAdapter(),
+        "kubernetes": lambda: KubernetesAdapter(),
+        "dql": lambda: DQLAdapter(),
+        "appspec": lambda: AppSpecAdapter(appspec_path=str(appspec) if appspec else None),
+        "browser": lambda: BrowserAdapter(),
+    }
+    
+    if dsl == "auto":
+        pipeline = RuleBasedPipeline()
+        result = pipeline.process(query)
+        
+        if not result.success:
+            console.print(f"[red]✗ Could not generate command: {result.command}[/red]")
+            return
+        
+        command = result.command
+        detected_domain = result.domain
+        detected_intent = result.intent
+        
+        console.print(f"[dim]Detected: {detected_domain}/{detected_intent}[/dim]")
+    else:
+        adapter = adapter_map.get(dsl, lambda: ShellAdapter())()
+        nlp = NLP2CMD(adapter=adapter)
+        transform_result = nlp.transform(query)
+        command = transform_result.command
+    
+    # Step 2: Check if it's a browser command and detect typing actions
+    is_browser_command = False
+    detected_has_typing = False
+    
+    # Check if query contains typing/clicking actions
+    typing_keywords = ["wpisz", "type", "enter", "input", "napisz", "fill"]
+    clicking_keywords = ["kliknij", "click", "naciśnij", "press"]
+    
+    query_lower = query.lower()
+    has_typing = any(kw in query_lower for kw in typing_keywords)
+    has_clicking = any(kw in query_lower for kw in clicking_keywords)
+    
+    if dsl == "auto":
+        if detected_domain == "shell" and detected_intent in ("open_url", "search_web"):
+            is_browser_command = True
+            detected_has_typing = has_typing or has_clicking
+            
+            # Auto-enable execute_web if typing/clicking detected
+            if detected_has_typing and not execute_web:
+                console.print("[dim]Auto-enabling browser automation (detected typing/clicking action)[/dim]")
+                execute_web = True
+    elif dsl == "browser":
+        is_browser_command = True
+        detected_has_typing = True
+        if not execute_web:
+            execute_web = True
+    
+    # Step 3: Execute with recovery
+    runner = ExecutionRunner(
+        console=console,
+        auto_confirm=auto_confirm,
+        max_retries=3,
+    )
+    
+    if is_browser_command and execute_web and detected_has_typing:
+        # Use PipelineRunner for complex browser automation (typing, clicking, etc.)
+        console.print("\n[cyan]Using Playwright for browser automation...[/cyan]")
+        
+        # Check and install Playwright if needed
+        from nlp2cmd.utils.playwright_installer import ensure_playwright_installed
+        
+        if not ensure_playwright_installed(console=console, auto_install=auto_install):
+            console.print("[yellow]Browser automation skipped - Playwright not available[/yellow]")
+            _fallback_open_url_from_query(query)
+            return
+        
+        try:
+            # Generate ActionIR using BrowserAdapter for multi-step actions
+            browser_adapter = BrowserAdapter()
+            nlp_browser = NLP2CMD(adapter=browser_adapter)
+            ir = nlp_browser.transform_ir(query)
+            
+            console.print(f"[dim]Actions: {ir.explanation}[/dim]\n")
+            
+            # Execute with PipelineRunner
+            from nlp2cmd.pipeline_runner import PipelineRunner
+            pw_runner = PipelineRunner(headless=False)
+            result = pw_runner.run(ir, dry_run=False, confirm=False)
+
+            if result.success:
+                console.print(f"\n[green]✅ Browser automation completed successfully[/green]")
+                console.print(f"[dim]Executed {result.data.get('actions_executed', 0)} actions in {result.duration_ms:.1f}ms[/dim]")
+                return
+
+            console.print(f"\n[red]❌ Browser automation failed: {result.error}[/red]")
+            _fallback_open_url(ir)
+            return
+        except Exception as e:
+            console.print(f"[red]Playwright error: {e}[/red]")
+            _fallback_open_url_from_query(query)
+            return
+    else:
+        # Execute shell command with recovery
+        exec_result = runner.run_with_recovery(command, query)
+        
+        if not exec_result.success and exec_result.error_context:
+            console.print("\n[yellow]Command failed. Analyzing error...[/yellow]")
+            
+            # Try to suggest next steps based on error
+            _suggest_next_steps(query, command, exec_result, runner)
+
+
+def _suggest_next_steps(
+    original_query: str,
+    command: str,
+    result,
+    runner: ExecutionRunner,
+):
+    """Suggest next steps based on error context."""
+    error = (result.stderr or result.stdout or "").lower()
+    
+    suggestions = []
+    
+    if "command not found" in error:
+        cmd_parts = command.split()
+        if cmd_parts:
+            tool = cmd_parts[0]
+            suggestions.append(f"Install missing tool: {tool}")
+            suggestions.append("Check if the tool is in your PATH")
+    
+    if "permission denied" in error:
+        suggestions.append(f"Try with sudo: sudo {command}")
+    
+    if "connection refused" in error or "could not connect" in error:
+        suggestions.append("Check if the target service is running")
+        suggestions.append("Verify the hostname/port is correct")
+    
+    if "no such file" in error:
+        suggestions.append("Verify the file/directory path exists")
+    
+    if "playwright" in error:
+        suggestions.append("Install Playwright: pip install playwright && playwright install")
+    
+    if suggestions:
+        console.print("\n[yellow]💡 Suggestions:[/yellow]")
+        for i, s in enumerate(suggestions, 1):
+            console.print(f"  {i}. {s}")
+        
+        console.print("\n[cyan]Would you like to try another command? [y/N]:[/cyan] ", end="")
+        response = console.input().strip().lower()
+        
+        if response in ("y", "yes", "tak"):
+            new_query = console.input("[bold green]Enter new query or command: [/bold green]").strip()
+            if new_query:
+                if new_query.startswith("!"):
+                    # Direct command execution
+                    runner.run_with_recovery(new_query[1:].strip(), original_query)
+                else:
+                    # Generate new command from query
+                    from nlp2cmd.generation.pipeline import RuleBasedPipeline
+                    pipeline = RuleBasedPipeline()
+                    new_result = pipeline.process(new_query)
+                    if new_result.success:
+                        runner.run_with_recovery(new_result.command, new_query)
+                    else:
+                        console.print(f"[red]Could not generate command from: {new_query}[/red]")
+
+
+def _is_playwright_error(msg: str) -> bool:
+    m = (msg or "").lower()
+    if not m:
+        return False
+    return (
+        "no module named 'playwright'" in m
+        or "playwright not available" in m
+        or "looks like playwright" in m
+        or "playwright install" in m
+        or "browsertype.launch" in m
+        or "executable doesn't exist" in m
+        or "executable doesn't exist" in m
+    )
+
+
+def _maybe_install_playwright(msg: str, runner: ExecutionRunner, *, auto_install: bool) -> bool:
+    if not _is_playwright_error(msg):
+        return False
+
+    if not auto_install:
+        console.print("\n[yellow]Playwright is required for browser automation. Install it now? [y/N][/yellow] ", end="")
+        if console.input().strip().lower() not in {"y", "yes", "tak"}:
+            return False
+
+    py = shlex.quote(sys.executable)
+    pip_cmd = f"{py} -m pip install -U playwright"
+    install_cmd = f"{py} -m playwright install chromium"
+
+    if not auto_install:
+        if not runner.confirm_execution(pip_cmd):
+            return False
+
+    res1 = runner.run_command(pip_cmd, stream_output=True)
+    if not res1.success:
+        return False
+
+    if not auto_install:
+        if not runner.confirm_execution(install_cmd):
+            return False
+
+    res2 = runner.run_command(install_cmd, stream_output=True)
+    return bool(res2.success)
+
+
+def _fallback_open_url(ir) -> None:
+    url = None
+    type_text = None
+
+    try:
+        params = getattr(ir, "params", None)
+        if isinstance(params, dict):
+            url = params.get("url")
+            type_text = params.get("type_text")
+    except Exception:
+        url = None
+
+    if isinstance(url, str) and url:
+        res = open_url(url, use_webbrowser=False)
+        if res.success:
+            console.print(f"\n[yellow]Opened URL without Playwright: {url}[/yellow]")
+            if isinstance(type_text, str) and type_text:
+                console.print(f"[yellow]Type manually: {type_text}[/yellow]")
+
+
+def _fallback_open_url_from_query(query: str) -> None:
+    try:
+        url = BrowserAdapter._extract_url(query)
+    except Exception:
+        url = None
+    if isinstance(url, str) and url:
+        res = open_url(url, use_webbrowser=False)
+        if res.success:
+            console.print(f"\n[yellow]Opened URL without Playwright: {url}[/yellow]")
+
+
+from nlp2cmd.cli.web_schema import web_schema_group
+from nlp2cmd.cli.history import history_group
+
+
 @click.group(cls=NLP2CMDGroup, invoke_without_command=True)
 @click.option("-i", "--interactive", is_flag=True, help="Start interactive mode")
 @click.option(
     "-d", "--dsl",
-    type=click.Choice(["auto", "sql", "shell", "docker", "kubernetes", "dql", "appspec"]),
+    type=click.Choice(["auto", "sql", "shell", "docker", "kubernetes", "dql", "appspec", "browser"]),
     default="auto",
     help="DSL type"
 )
@@ -456,8 +735,12 @@ class InteractiveSession:
     help="Path to an app2schema.appspec JSON file (required for --dsl appspec)",
 )
 @click.option("-q", "--query", help="Single query to process")
+@click.option("-r", "--run", "run_query", help="Execute query immediately with interactive error recovery")
 @click.option("--auto-repair", is_flag=True, help="Auto-apply repairs")
 @click.option("--explain", is_flag=True, help="Explain how the result was produced")
+@click.option("--execute-web", is_flag=True, help="Execute dom_dql.v1 actions via Playwright (requires playwright)")
+@click.option("--auto-confirm", is_flag=True, help="Skip confirmation prompts when using --run")
+@click.option("--auto-install", is_flag=True, help="Auto-install missing Python deps/tools when using --run (e.g. playwright)")
 @click.pass_context
 def main(
     ctx,
@@ -465,8 +748,12 @@ def main(
     dsl: str,
     appspec: Optional[Path],
     query: Optional[str],
+    run_query: Optional[str],
     auto_repair: bool,
     explain: bool,
+    execute_web: bool,
+    auto_confirm: bool,
+    auto_install: bool,
 ):
     """NLP2CMD - Natural Language to Domain-Specific Commands."""
     ctx.ensure_object(dict)
@@ -474,7 +761,16 @@ def main(
     ctx.obj["auto_repair"] = auto_repair
 
     if ctx.invoked_subcommand is None:
-        if query:
+        if run_query:
+            _handle_run_query(
+                run_query,
+                dsl=dsl,
+                appspec=appspec,
+                auto_confirm=auto_confirm,
+                execute_web=execute_web,
+                auto_install=auto_install,
+            )
+        elif query:
             if dsl == "appspec":
                 session = InteractiveSession(
                     dsl=dsl,
@@ -483,6 +779,17 @@ def main(
                 )
                 feedback = session.process(query)
                 session.display_feedback(feedback)
+                if execute_web:
+                    try:
+                        ir = NLP2CMD(adapter=AppSpecAdapter(appspec_path=str(appspec))).transform_ir(query)
+                        runner = PipelineRunner(headless=False)
+                        res = runner.run(ir, dry_run=False, confirm=True)
+                        if res.success:
+                            console.print(f"\n✅ Executed web action in {res.duration_ms:.1f}ms")
+                        else:
+                            console.print(f"\n❌ Web execution failed: {res.error}")
+                    except Exception as e:
+                        console.print(f"\n❌ Web execution error: {e}")
             elif dsl == "auto":
                 with measure_resources():
                     result = asyncio.run(HybridThermodynamicGenerator().generate(query, context={}))
@@ -542,6 +849,19 @@ def main(
                 )
                 feedback = session.process(query)
                 session.display_feedback(feedback)
+                if execute_web and dsl == "browser":
+                    try:
+                        adapter = BrowserAdapter()
+                        nlp = NLP2CMD(adapter=adapter)
+                        ir = nlp.transform_ir(query, context=session.context)
+                        runner = PipelineRunner(headless=False)
+                        res = runner.run(ir, dry_run=False, confirm=True)
+                        if res.success:
+                            console.print(f"\n✅ Opened URL via Playwright in {res.duration_ms:.1f}ms")
+                        else:
+                            console.print(f"\n❌ Playwright execution failed: {res.error}")
+                    except Exception as e:
+                        console.print(f"\n❌ Playwright execution error: {e}")
         elif interactive:
             session = InteractiveSession(
                 dsl=dsl,
@@ -714,6 +1034,11 @@ def analyze_env(ctx, output: Optional[str]):
             console.print("\n[yellow]Recommendations:[/yellow]")
             for rec in report.recommendations:
                 console.print(f"  • {rec}")
+
+
+# Register subcommands
+main.add_command(web_schema_group)
+main.add_command(history_group)
 
 
 if __name__ == "__main__":
