@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-01-23T15:17:29.594871",
+  "timestamp": "2026-01-23T15:17:34.810584",
   "schemas": {
     "find": {
       "source_type": "llm_enhanced",
@@ -4433,6 +4433,55 @@
             "enhanced": true
           },
           "template": "perl {programfile} {arguments}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "php": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "php",
+          "description": "The PHP command is used to run PHP scripts from the command line.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "-f",
+              "type": "boolean",
+              "description": "Reads and executes the specified file as a script.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "<file>",
+              "type": "string",
+              "description": "The PHP script to be executed.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "php -f /path/to/script.php",
+            "php /var/www/html/index.php arg1 arg2"
+          ],
+          "patterns": [
+            "php",
+            "the php command is used to run php scripts from the command line."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "php {file}"
         }
       ],
       "metadata": {

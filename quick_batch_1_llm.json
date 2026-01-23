@@ -1,0 +1,496 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-23T15:18:13.119123",
+  "schemas": {
+    "find": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "find",
+          "description": "The find command is used to search for files and directories within a directory hierarchy.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "path",
+              "type": "string",
+              "description": "The starting path from which the search begins. If not specified, the current directory is used.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "expression",
+              "type": "string",
+              "description": "A set of conditions to match files and directories. Common options include -type (file type), -size (file size), -mtime (modification time).",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "-H",
+              "type": "boolean",
+              "description": "Follow symbolic links if they lead to directories.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-L",
+              "type": "boolean",
+              "description": "Follow all symbolic links.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-P",
+              "type": "boolean",
+              "description": "Do not follow symbolic links.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-Olevel",
+              "type": "string",
+              "description": "Set optimization level for the search. Higher levels can speed up the search but may use more memory.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-D debugopts",
+              "type": "string",
+              "description": "Enable debugging options to help diagnose issues with the find command.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "find /home/user -type f -size +10M",
+            "find /var/log -mtime -7 -name '*.log'",
+            "find . -type d -empty"
+          ],
+          "patterns": [
+            "find",
+            "the find command is used to search for files and directories within a directory hierarchy."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "find {path} -type {type} -{option}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "grep": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "grep",
+          "description": "Searches for lines that match a pattern in files.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "PATTERNS",
+              "type": "string",
+              "description": "The search pattern to look for in the files.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "FILE",
+              "type": "array",
+              "description": "One or more files to search within. If not specified, grep reads from standard input.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "grep 'error' /var/log/syslog",
+            "grep -r 'hello' /home/user/documents",
+            "grep -i 'test' file.txt"
+          ],
+          "patterns": [
+            "grep",
+            "searches for lines that match a pattern in files."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "grep {pattern} {file}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "sed": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "sed",
+          "description": "A stream editor for filtering and transforming text.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "OPTION",
+              "type": "string",
+              "description": "Various options to control the behavior of sed, such as -n (suppress automatic printing), -e (add a script), etc.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "script-only-if-no-other-script",
+              "type": "string",
+              "description": "A script to be executed by sed. If no other scripts are provided, this one will be used.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "input-file",
+              "type": "array",
+              "description": "One or more input files to be processed by sed. If not specified, stdin is used.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "sed 's/foo/bar/g' file.txt",
+            "sed -n '/pattern/p' file.txt",
+            "sed -e 's/foo/bar/' -e 's/baz/qux/' file.txt"
+          ],
+          "patterns": [
+            "sed",
+            "a stream editor for filtering and transforming text."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "sed '{script}' {file}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "awk": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "awk",
+          "description": "awk is a powerful text-processing tool that scans each input line, evaluates any expressions and/or executes any commands that you've specified.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "POSIX or GNU style options",
+              "type": "string",
+              "description": "Options for POSIX or GNU style.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-f progfile",
+              "type": "string",
+              "description": "Read the program from the file progfile instead of from the standard input.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "--",
+              "type": "flag",
+              "description": "Indicates that no more options will be given on the command line, so all remaining arguments are treated as filenames even if they start with a dash.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "program",
+              "type": "string",
+              "description": "The program to execute. If not specified, the program is read from the standard input.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "file",
+              "type": "array",
+              "description": "One or more files to process.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "awk -f script.awk file.txt",
+            "awk 'BEGIN { FS = \"\\t\" } { print $1 }' data.tsv",
+            "awk '/pattern/ { print }' input.log"
+          ],
+          "patterns": [
+            "awk",
+            "awk is a powerful text-processing tool that scans each input line, evaluates any expressions and/or executes any commands that you've specified."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "awk -f {progfile} {file}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "ls": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "ls",
+          "description": "List directory contents",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "OPTION",
+              "type": "string",
+              "description": "Options to modify the behavior of ls, such as -l for long format or -a for all files including hidden ones.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "FILE",
+              "type": "string",
+              "description": "The file or directory to list. If not specified, the current directory is listed.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "ls -l /home/user",
+            "ls -a ~",
+            "ls /var/log/*.log"
+          ],
+          "patterns": [
+            "ls",
+            "list directory contents"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "ls {option} {path}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "mkdir": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "mkdir",
+          "description": "Create the specified directory.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "DIRECTORY",
+              "type": "string",
+              "description": "The name of the directory to create.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "mkdir mydir",
+            "mkdir -p /path/to/newdir",
+            "mkdir --parents /home/user/documents/project"
+          ],
+          "patterns": [
+            "mkdir",
+            "create the specified directory."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "mkdir {directory}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "rm": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "rm",
+          "description": "Remove files or directories.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "OPTION",
+              "type": "string",
+              "description": "Various options to modify the behavior of rm, such as -r for recursive removal and -f for force removal without prompting.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "FILE",
+              "type": "array",
+              "description": "The files or directories to be removed.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "rm file.txt",
+            "rm -r directory/",
+            "rm -f file.txt"
+          ],
+          "patterns": [
+            "rm",
+            "remove files or directories."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "rm {file}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "cp": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "cp",
+          "description": "Copy files and directories.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "SOURCE",
+              "type": "string",
+              "description": "The source file or directory to copy.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "DEST",
+              "type": "string",
+              "description": "The destination file or directory where the source will be copied.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "-T",
+              "type": "boolean",
+              "description": "Copy only if DEST does not exist and is not a symbolic link.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "cp file.txt /home/user/documents/",
+            "cp -R directory /backup/",
+            "cp --parents file.txt /home/user/backup/"
+          ],
+          "patterns": [
+            "cp",
+            "copy files and directories."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "cp {source} {destination}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    }
+  }
+}
