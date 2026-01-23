@@ -92,8 +92,18 @@ class BrowserAdapter(BaseDSLAdapter):
     @staticmethod
     def _has_type_action(text: str) -> bool:
         """Check if text contains typing action."""
-        type_keywords = ['wpisz', 'type', 'input', 'napisz', 'wpisać']
+        type_keywords = ['wpisz', 'type', 'enter', 'input', 'napisz', 'wpisać']
         return any(kw in text.lower() for kw in type_keywords)
+    
+    @staticmethod
+    def _has_fill_form_action(text: str) -> bool:
+        t = (text or "").lower()
+        return "wypełnij formularz" in t or "wypelnij formularz" in t or "fill form" in t
+
+    @staticmethod
+    def _has_press_enter(text: str) -> bool:
+        t = (text or "").lower()
+        return "enter" in t or "naciśnij enter" in t or "nacisnij enter" in t or "wciśnij enter" in t or "wcisnij enter" in t
     
     @staticmethod
     def _has_form_action(text: str) -> bool:
@@ -101,15 +111,6 @@ class BrowserAdapter(BaseDSLAdapter):
         form_keywords = ['formularz', 'form', 'wypełnij', 'wypelnij', 'fill form', 'fill out']
         return any(kw in text.lower() for kw in form_keywords)
     
-    @staticmethod
-    def _has_press_enter_action(text: str) -> bool:
-        """Check if text contains press enter action."""
-        enter_patterns = [
-            r'(?:naciśnij|nacisnij|press|hit)\s+(?:enter|return)',
-            r'(?:oraz|and|i)\s+enter',
-        ]
-        return any(re.search(pattern, text, flags=re.IGNORECASE) for pattern in enter_patterns)
-
     def generate(self, plan: dict[str, Any]) -> str:
         text = str(plan.get("text") or plan.get("query") or "")
         entities = plan.get("entities") if isinstance(plan.get("entities"), dict) else {}
@@ -125,94 +126,57 @@ class BrowserAdapter(BaseDSLAdapter):
             self.last_action_ir = None
             return "# Could not generate command"
 
-        # Check for form filling action
-        if self._has_form_action(text):
-            # Form filling action: goto + fill_form (interactive)
-            actions = [
-                {"action": "goto", "url": url},
-                {"action": "fill_form", "interactive": True},
-            ]
-            
-            # Add press enter/submit if detected
-            if self._has_press_enter_action(text):
-                actions.append({"action": "press", "key": "Enter"})
-            
-            payload = {
-                "dsl": "dom_dql.v1",
-                "actions": actions,
-                "url": url,
-            }
-            
-            explanation_parts = [f"goto {url}", "fill form interactively"]
-            if self._has_press_enter_action(text):
-                explanation_parts.append("press Enter")
-            
-            self.last_action_ir = ActionIR(
-                action_id="dom.fill_form",
-                dsl=json.dumps(payload, ensure_ascii=False),
-                dsl_kind="dom",  # type: ignore[arg-type]
-                params={"url": url, "fill_form": True, "press_enter": self._has_press_enter_action(text)},
-                output_format="raw",  # type: ignore[arg-type]
-                confidence=float(plan.get("confidence") or 0.8),
-                explanation=f"browser adapter: {' and '.join(explanation_parts)}",
-                metadata={"url": url, "fill_form": True, "press_enter": self._has_press_enter_action(text)},
-            )
-            
-            return self.last_action_ir.dsl
-        
-        # Check if there's a typing action in the query
+        actions: list[dict[str, Any]] = [{"action": "goto", "url": url}]
+        params: dict[str, Any] = {"url": url}
+        action_id = "dom.goto"
+        explanation = "browser adapter: goto"
+
+        if self._has_fill_form_action(text):
+            actions.append({"action": "fill_form"})
+            action_id = "dom.goto_and_fill_form"
+            explanation = f"browser adapter: goto {url} and fill form"
+
         type_text = self._extract_type_text(text)
-        
         if type_text and self._has_type_action(text):
-            # Multi-step action: goto + type (+ optional press enter)
-            actions = [
-                {"action": "goto", "url": url},
-                {"action": "type", "selector": "input[name='q'], input[type='search'], textarea", "text": type_text},
-            ]
-            
-            # Add press enter action if detected
-            if self._has_press_enter_action(text):
-                actions.append({"action": "press", "key": "Enter"})
-            
-            payload = {
-                "dsl": "dom_dql.v1",
-                "actions": actions,
-                "url": url,
-            }
-            
-            explanation_parts = [f"goto {url}", f"type '{type_text}'"]
-            if self._has_press_enter_action(text):
-                explanation_parts.append("press Enter")
-            
-            self.last_action_ir = ActionIR(
-                action_id="dom.goto_and_type" if not self._has_press_enter_action(text) else "dom.goto_type_enter",
-                dsl=json.dumps(payload, ensure_ascii=False),
-                dsl_kind="dom",  # type: ignore[arg-type]
-                params={"url": url, "type_text": type_text, "press_enter": self._has_press_enter_action(text)},
-                output_format="raw",  # type: ignore[arg-type]
-                confidence=float(plan.get("confidence") or 0.8),
-                explanation=f"browser adapter: {' and '.join(explanation_parts)}",
-                metadata={"url": url, "type_text": type_text, "press_enter": self._has_press_enter_action(text)},
-            )
-        else:
-            # Simple goto action
+            actions.append({"action": "type", "selector": "input[name='q'], input[type='search'], textarea", "text": type_text})
+            params["type_text"] = type_text
+            if action_id == "dom.goto":
+                action_id = "dom.goto_and_type"
+                explanation = f"browser adapter: goto {url} and type '{type_text}'"
+            else:
+                action_id = f"{action_id}_and_type"
+                explanation = f"{explanation} and type '{type_text}'"
+
+        if self._has_press_enter(text):
+            actions.append({"action": "press", "key": "Enter"})
+            params["press_key"] = "Enter"
+            action_id = f"{action_id}_and_press_enter"
+            explanation = f"{explanation} and press Enter"
+
+        if len(actions) == 1:
             payload = {
                 "dsl": "dom_dql.v1",
                 "action": "goto",
                 "url": url,
                 "params": {},
             }
+        else:
+            payload = {
+                "dsl": "dom_dql.v1",
+                "actions": actions,
+                "url": url,
+            }
 
-            self.last_action_ir = ActionIR(
-                action_id="dom.goto",
-                dsl=json.dumps(payload, ensure_ascii=False),
-                dsl_kind="dom",  # type: ignore[arg-type]
-                params={"url": url},
-                output_format="raw",  # type: ignore[arg-type]
-                confidence=float(plan.get("confidence") or 0.8),
-                explanation="browser adapter: goto",
-                metadata={"url": url},
-            )
+        self.last_action_ir = ActionIR(
+            action_id=action_id,
+            dsl=json.dumps(payload, ensure_ascii=False),
+            dsl_kind="dom",  # type: ignore[arg-type]
+            params=params,
+            output_format="raw",  # type: ignore[arg-type]
+            confidence=float(plan.get("confidence") or 0.8),
+            explanation=explanation,
+            metadata=params,
+        )
 
         return self.last_action_ir.dsl
 

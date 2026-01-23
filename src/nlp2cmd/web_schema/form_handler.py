@@ -206,6 +206,68 @@ class FormHandler:
         
         return None
     
+    def automatic_fill(
+        self,
+        fields: list[FormField],
+        data_loader: Optional[FormDataLoader] = None,
+    ) -> FormData:
+        """
+        Automatically fill form using data from .env and data/*.json files.
+        
+        Args:
+            fields: List of detected form fields
+            data_loader: Optional pre-configured FormDataLoader
+        
+        Returns:
+            FormData with values from configuration files
+        """
+        loader = data_loader or FormDataLoader()
+        form_data = FormData()
+        
+        # Skip internal/hidden-like fields
+        skip_fields = {'sl', 'tl', 'query', 'gtrans', 'vote', 'honeypot', 'bot'}
+        
+        self.console.print("\n[cyan]📋 Auto-filling form fields:[/cyan]\n")
+        
+        table = Table()
+        table.add_column("Field", style="yellow")
+        table.add_column("Value", style="green")
+        table.add_column("Source", style="dim")
+        
+        for f in fields:
+            # Skip checkbox, radio, and internal fields
+            if f.field_type in ('checkbox', 'radio'):
+                continue
+            
+            field_name_lower = (f.name or "").lower()
+            if field_name_lower in skip_fields:
+                continue
+            
+            # Get value from loader
+            value = loader.get_value_for_field(
+                field_name=f.name,
+                field_id=f.id,
+                field_label=f.label,
+                field_placeholder=f.placeholder,
+                field_type=f.field_type,
+            )
+            
+            if value:
+                form_data.fields[f.selector] = value
+                table.add_row(
+                    f.get_display_name(),
+                    value[:40] + "..." if len(value) > 40 else value,
+                    ".env / data/",
+                )
+        
+        if form_data.fields:
+            self.console.print(table)
+        else:
+            self.console.print("[yellow]No matching data found in .env or data/ files[/yellow]")
+            self.console.print("[dim]Create .env with FORM_NAME, FORM_EMAIL, etc. or data/form_data.json[/dim]")
+        
+        return form_data
+    
     def interactive_fill(
         self,
         fields: list[FormField],
