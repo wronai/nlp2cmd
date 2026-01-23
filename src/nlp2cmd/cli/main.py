@@ -26,6 +26,8 @@ from nlp2cmd.adapters import (
     ShellAdapter,
     SQLAdapter,
 )
+from nlp2cmd.adapters.dynamic import DynamicAdapter
+from nlp2cmd.schema_extraction import DynamicSchemaRegistry
 from nlp2cmd.environment import EnvironmentAnalyzer
 from nlp2cmd.feedback import FeedbackAnalyzer, FeedbackResult, FeedbackType
 from nlp2cmd.schemas import SchemaRegistry
@@ -91,6 +93,7 @@ def get_adapter(dsl: str, context: dict[str, Any]):
         "docker": lambda: DockerAdapter(),
         "kubernetes": lambda: KubernetesAdapter(),
         "dql": lambda: DQLAdapter(),
+        "dynamic": lambda: DynamicAdapter(),
     }
 
     if dsl == "auto":
@@ -111,9 +114,15 @@ class InteractiveSession:
         self,
         dsl: str = "auto",
         auto_repair: bool = False,
+        schema_sources: Optional[list[str]] = None,
+        schema_source_types: Optional[list[str]] = None,
+        schema_export: Optional[str] = None,
     ):
         self.dsl = dsl
         self.auto_repair = auto_repair
+        self.schema_sources = schema_sources or []
+        self.schema_source_types = schema_source_types or []
+        self.schema_export = schema_export
 
         # Initialize components
         self.env_analyzer = EnvironmentAnalyzer()
@@ -126,6 +135,26 @@ class InteractiveSession:
 
         # Analyze environment
         self._analyze_environment()
+
+        if self.dsl == "dynamic":
+            self._load_dynamic_schemas()
+
+    def _load_dynamic_schemas(self) -> None:
+        registry = DynamicSchemaRegistry()
+
+        for i, source in enumerate(self.schema_sources):
+            st = "auto"
+            if i < len(self.schema_source_types):
+                st = self.schema_source_types[i] or "auto"
+            DynamicAdapter(schema_registry=registry).register_schema_source(source, st)
+
+        if self.schema_export:
+            try:
+                Path(self.schema_export).write_text(registry.export_schemas("json"), encoding="utf-8")
+            except Exception:
+                pass
+
+        self.context["dynamic_schema_registry"] = registry
 
     def _analyze_environment(self):
         """Analyze current environment."""
@@ -146,7 +175,14 @@ class InteractiveSession:
     def process(self, user_input: str) -> FeedbackResult:
         """Process user input and return feedback."""
         # Select adapter
-        adapter = get_adapter(self.dsl, self.context["environment"])
+        if self.dsl == "dynamic":
+            registry = self.context.get("dynamic_schema_registry")
+            if isinstance(registry, DynamicSchemaRegistry):
+                adapter = DynamicAdapter(schema_registry=registry)
+            else:
+                adapter = DynamicAdapter()
+        else:
+            adapter = get_adapter(self.dsl, self.context["environment"])
         nlp2cmd = NLP2CMD(adapter=adapter)
 
         # Transform with monitoring
@@ -398,13 +434,29 @@ class InteractiveSession:
 @click.option("-i", "--interactive", is_flag=True, help="Start interactive mode")
 @click.option(
     "-d", "--dsl",
-    type=click.Choice(["auto", "sql", "shell", "docker", "kubernetes", "dql"]),
+    type=click.Choice(["auto", "sql", "shell", "docker", "kubernetes", "dql", "dynamic"]),
     default="auto",
     help="DSL type"
 )
 @click.option("-q", "--query", help="Single query to process")
 @click.option("--auto-repair", is_flag=True, help="Auto-apply repairs")
 @click.option("--explain", is_flag=True, help="Explain how the result was produced")
+@click.option(
+    "--schema-source",
+    multiple=True,
+    help="Schema/introspection source (OpenAPI url/file, shell cmd name, python file, or dynamic export json). Can be repeated.",
+)
+@click.option(
+    "--schema-type",
+    multiple=True,
+    type=click.Choice(["auto", "openapi", "shell", "python"]),
+    help="Optional type for each --schema-source (must align by position).",
+)
+@click.option(
+    "--schema-export",
+    type=click.Path(dir_okay=False, writable=True, path_type=Path),
+    help="Export loaded dynamic schemas to a JSON file (dynamic schema export format).",
+)
 @click.pass_context
 def main(
     ctx,
@@ -413,6 +465,9 @@ def main(
     query: Optional[str],
     auto_repair: bool,
     explain: bool,
+    schema_source: tuple[str, ...],
+    schema_type: tuple[str, ...],
+    schema_export: Optional[Path],
 ):
     """NLP2CMD - Natural Language to Domain-Specific Commands."""
     ctx.ensure_object(dict)
@@ -421,7 +476,17 @@ def main(
 
     if ctx.invoked_subcommand is None:
         if query:
-            if dsl == "auto":
+            if dsl == "dynamic":
+                session = InteractiveSession(
+                    dsl=dsl,
+                    auto_repair=auto_repair,
+                    schema_sources=list(schema_source),
+                    schema_source_types=list(schema_type),
+                    schema_export=str(schema_export) if schema_export else None,
+                )
+                feedback = session.process(query)
+                session.display_feedback(feedback)
+            elif dsl == "auto":
                 with measure_resources():
                     result = asyncio.run(HybridThermodynamicGenerator().generate(query, context={}))
                     if result["source"] == "thermodynamic":
@@ -474,11 +539,23 @@ def main(
                     except Exception as e:
                         console.print(f"\n[red]Token cost estimation failed: {e}[/red]")
             else:
-                session = InteractiveSession(dsl=dsl, auto_repair=auto_repair)
+                session = InteractiveSession(
+                    dsl=dsl,
+                    auto_repair=auto_repair,
+                    schema_sources=list(schema_source),
+                    schema_source_types=list(schema_type),
+                    schema_export=str(schema_export) if schema_export else None,
+                )
                 feedback = session.process(query)
                 session.display_feedback(feedback)
         elif interactive:
-            session = InteractiveSession(dsl=dsl, auto_repair=auto_repair)
+            session = InteractiveSession(
+                dsl=dsl,
+                auto_repair=auto_repair,
+                schema_sources=list(schema_source),
+                schema_source_types=list(schema_type),
+                schema_export=str(schema_export) if schema_export else None,
+            )
             session.run()
         else:
             console.print(ctx.get_help())

@@ -24,7 +24,7 @@ class TestSchemaDiscovery:
 
     def test_find_schema_for_file(self):
         """Test finding schema for a file."""
-        from src.nlp2cmd.schemas import SchemaRegistry
+        from nlp2cmd.schemas import SchemaRegistry
         registry = SchemaRegistry()
         
         # Test known extensions

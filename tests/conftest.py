@@ -3,9 +3,15 @@ Pytest configuration and fixtures for NLP2CMD tests.
 """
 
 import pytest
+import sys
 from pathlib import Path
 import tempfile
 import os
+
+_repo_root = Path(__file__).resolve().parents[1]
+_src_path = _repo_root / "src"
+if str(_src_path) not in sys.path:
+    sys.path.insert(0, str(_src_path))
 
 from nlp2cmd import NLP2CMD
 from nlp2cmd.adapters import (

@@ -434,17 +434,26 @@ class NLP2CMD:
         """
         self.adapter = adapter
         
-        # Initialize RuleBasedBackend with adapter's INTENTS if no backend provided
+        # Initialize backend if not provided
         if nlp_backend is None:
-            # Convert adapter INTENTS to rule format
-            rules = {}
-            for intent_name, intent_config in adapter.INTENTS.items():
-                patterns = intent_config.get("patterns", [])
-                rules[intent_name] = patterns
-            self.nlp_backend = RuleBasedBackend(
-                rules=rules,
-                config={"dsl": adapter.DSL_NAME},
-            )
+            dynamic_registry = getattr(adapter, "registry", None)
+            if adapter.DSL_NAME == "dynamic" and dynamic_registry is not None:
+                try:
+                    from nlp2cmd.nlp_enhanced import HybridNLPBackend
+
+                    self.nlp_backend = HybridNLPBackend(schema_registry=dynamic_registry, config={})
+                except Exception:
+                    self.nlp_backend = RuleBasedBackend(rules={}, config={"dsl": adapter.DSL_NAME})
+            else:
+                # Convert adapter INTENTS to rule format
+                rules = {}
+                for intent_name, intent_config in adapter.INTENTS.items():
+                    patterns = intent_config.get("patterns", [])
+                    rules[intent_name] = patterns
+                self.nlp_backend = RuleBasedBackend(
+                    rules=rules,
+                    config={"dsl": adapter.DSL_NAME},
+                )
         else:
             self.nlp_backend = nlp_backend
             
@@ -599,9 +608,9 @@ class NLP2CMD:
 
         # Step 1: NLP Processing - Generate execution plan
         try:
-            if isinstance(self.nlp_backend, LLMBackend):
+            try:
                 plan = self.nlp_backend.generate_plan(text, full_context)
-            else:
+            except NotImplementedError:
                 intent, confidence = self.nlp_backend.extract_intent(text)
                 entities = self.nlp_backend.extract_entities(text)
                 entity_dict = {e.name: e.value for e in entities}
@@ -610,7 +619,7 @@ class NLP2CMD:
                     intent=intent,
                     entities=entity_dict,
                     confidence=confidence,
-                    text=text,  # Add original text
+                    text=text,
                 )
         except Exception as e:
             logger.error(f"NLP processing failed: {e}")

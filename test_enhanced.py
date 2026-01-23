@@ -105,6 +105,59 @@ def hello(count, name):
         assert "greets NAME" in schema.commands[0].description
         assert len(schema.commands[0].parameters) >= 2
 
+    def test_shell_script_extraction(self):
+        """Test shell script schema extraction via shlex/regex."""
+        script = """#!/usr/bin/env bash
+# Demo script
+# Usage: demo.sh [--name NAME] [-v]
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --name)
+      NAME="$2"; shift 2;;
+    -v)
+      VERBOSE=1; shift;;
+    *)
+      shift;;
+  esac
+done
+"""
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.sh', delete=False) as f:
+            f.write(script)
+            temp_file = f.name
+
+        try:
+            registry = DynamicSchemaRegistry()
+            schema = registry.register_shell_script(temp_file)
+            assert schema.source_type == "shell_script"
+            assert len(schema.commands) == 1
+            assert schema.commands[0].category == "shell_script"
+        finally:
+            Path(temp_file).unlink()
+
+    def test_makefile_extraction(self):
+        """Test Makefile extraction (regex fallback)."""
+        mk = """# Build targets
+NAME = demo
+
+.PHONY: test
+test:
+\techo running tests for $(NAME)
+"""
+
+        with tempfile.NamedTemporaryFile(mode='w', suffix='Makefile', delete=False) as f:
+            f.write(mk)
+            temp_file = f.name
+
+        try:
+            registry = DynamicSchemaRegistry()
+            schema = registry.register_makefile(temp_file)
+            assert schema.source_type == "makefile"
+            assert any(cmd.name == "test" for cmd in schema.commands)
+        finally:
+            Path(temp_file).unlink()
+
 
 class TestDynamicAdapter:
     """Test dynamic adapter functionality."""
@@ -249,6 +302,15 @@ class TestEnhancedNLP2CMD:
         data = json.loads(exported)
         assert isinstance(data, dict)
         assert len(data) > 0
+
+        exported_yaml = nlp2cmd.export_schemas("yaml")
+        assert isinstance(exported_yaml, str)
+        assert "nlp2cmd.dynamic_schema_export" in exported_yaml
+
+        exported_schema = nlp2cmd.export_schemas("jsonschema")
+        schema_obj = json.loads(exported_schema)
+        assert isinstance(schema_obj, dict)
+        assert schema_obj.get("$schema")
     
     def test_convenience_function(self):
         """Test convenience function for creating enhanced NLP2CMD."""

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import re
+import shlex
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -107,13 +108,22 @@ class DynamicAdapter(BaseDSLAdapter):
         self._command_cache: Dict[str, CommandSchema] = {}
         
         # Initialize with some common shell commands
-        self._load_common_commands()
+        if bool(self.config.custom_options.get("load_common_commands", True)):
+            self._load_common_commands()
+
+    def check_safety(self, command: str) -> dict[str, Any]:
+        policy = self.config.safety_policy
+        check_fn = getattr(policy, "check_command", None)
+        if callable(check_fn):
+            return check_fn(command)
+        return super().check_safety(command)
     
     def _load_common_commands(self):
         """Load schemas for common shell commands."""
         common_commands = [
             'find', 'grep', 'sed', 'awk', 'ls', 'cd', 'mkdir', 'rm', 'cp', 'mv',
-            'ps', 'top', 'kill', 'systemctl', 'docker', 'git', 'curl', 'ping'
+            'ps', 'top', 'kill', 'systemctl', 'docker', 'git', 'curl', 'ping',
+            'df', 'du'
         ]
         
         for cmd in common_commands:
@@ -132,6 +142,10 @@ class DynamicAdapter(BaseDSLAdapter):
                     return self.registry.register_openapi_schema(source)
             elif source.endswith(('.py', '.pyx')):
                 return self.registry.register_python_code(source)
+            elif source.endswith('.sh'):
+                return self.registry.register_shell_script(source)
+            elif source.endswith('.mk') or source.endswith('/Makefile') or source.endswith('Makefile'):
+                return self.registry.register_makefile(source)
             elif source.endswith(('.json', '.yaml', '.yml')):
                 if source.endswith('.json') and self._is_dynamic_export_file(source):
                     imported = self.registry.register_dynamic_export(source)
@@ -157,6 +171,10 @@ class DynamicAdapter(BaseDSLAdapter):
             return self.registry.register_shell_help(source)
         elif source_type == "python":
             return self.registry.register_python_code(source)
+        elif source_type in {"shell_script", "sh"}:
+            return self.registry.register_shell_script(source)
+        elif source_type in {"makefile", "make"}:
+            return self.registry.register_makefile(source)
         else:
             raise ValueError(f"Unknown source type: {source_type}")
 
@@ -176,6 +194,18 @@ class DynamicAdapter(BaseDSLAdapter):
         intent = plan.get("intent", "")
         entities = plan.get("entities", {})
         text = plan.get("text", "") or plan.get("query", "") or ""
+
+        # If the NLP backend produced a full shell-like command (e.g. "git status"),
+        # prefer returning it directly when the base command exists in the registry.
+        try:
+            tokens = shlex.split(str(intent)) if intent else []
+        except Exception:
+            tokens = str(intent).split() if intent else []
+
+        if len(tokens) >= 2:
+            base = tokens[0]
+            if self.registry.get_command_by_name(base) is not None:
+                return str(intent)
         
         # Search for matching commands
         matching_commands = self._find_matching_commands(intent, entities, text)
@@ -240,8 +270,40 @@ class DynamicAdapter(BaseDSLAdapter):
             return self._generate_api_command(schema, entities, text)
         elif schema.source_type in ["python_click", "python_generic"]:
             return self._generate_python_command(schema, entities, text)
+        elif schema.source_type == "web_dom":
+            return self._generate_web_dql(schema, entities)
         else:
             return self._generate_generic_command(schema, entities, text)
+
+    def _generate_web_dql(self, schema: CommandSchema, entities: Dict[str, Any]) -> str:
+        action = str(schema.metadata.get("action") or "")
+        selector = str(schema.metadata.get("selector") or "")
+
+        params: dict[str, Any] = {}
+        if action in {"type", "select"}:
+            value = None
+            if "value" in entities and entities.get("value") is not None:
+                value = entities.get("value")
+            elif "quoted_string" in entities and entities.get("quoted_string") is not None:
+                value = entities.get("quoted_string")
+            elif "text" in entities and entities.get("text") is not None:
+                value = entities.get("text")
+            elif "input" in entities and entities.get("input") is not None:
+                value = entities.get("input")
+
+            if value is not None:
+                params["value"] = value
+
+        payload = {
+            "dsl": "dom_dql.v1",
+            "action": action,
+            "target": {
+                "by": "css" if selector.startswith(("#", ".")) or selector.startswith("input") else "auto",
+                "value": selector,
+            },
+            "params": params,
+        }
+        return json.dumps(payload, ensure_ascii=False)
     
     def _generate_shell_command(self, schema: CommandSchema, entities: Dict[str, Any], text: str) -> str:
         """Generate shell command from schema."""
@@ -273,11 +335,19 @@ class DynamicAdapter(BaseDSLAdapter):
         metadata = schema.metadata
         method = metadata.get("method", "GET").upper()
         path = metadata.get("path", "/")
+        base_url = str(metadata.get("base_url") or "")
         
         # Replace path parameters
         for param in schema.parameters:
-            if param.name in entities and f"{{{param.name}}}" in path:
+            if param.location == "path" and param.name in entities and f"{{{param.name}}}" in path:
                 path = path.replace(f"{{{param.name}}}", str(entities[param.name]))
+
+        url = path
+        if base_url and not url.startswith(("http://", "https://")):
+            if url.startswith("/"):
+                url = base_url.rstrip("/") + url
+            else:
+                url = base_url.rstrip("/") + "/" + url
         
         # Build curl command
         curl_parts = ["curl", "-X", method]
@@ -285,13 +355,13 @@ class DynamicAdapter(BaseDSLAdapter):
         # Add query parameters
         query_params = []
         for param in schema.parameters:
-            if param.name in entities and param.type != "path":
+            if param.location == "query" and param.name in entities:
                 query_params.append(f"{param.name}={entities[param.name]}")
         
         if query_params:
-            path += "?" + "&".join(query_params)
+            url += "?" + "&".join(query_params)
         
-        curl_parts.append(path)
+        curl_parts.append(url)
         
         # Add headers
         curl_parts.extend(["-H", "Content-Type: application/json"])
@@ -300,7 +370,7 @@ class DynamicAdapter(BaseDSLAdapter):
         if method in ["POST", "PUT", "PATCH"]:
             body_params = {}
             for param in schema.parameters:
-                if param.name in entities and param.type not in ["path", "query"]:
+                if param.location == "body" and param.name in entities:
                     body_params[param.name] = entities[param.name]
             
             if body_params:

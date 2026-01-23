@@ -8,7 +8,7 @@ entity extraction, and end-to-end transformation flows.
 import pytest
 from unittest.mock import Mock, patch
 
-from src.nlp2cmd.core import (
+from nlp2cmd.core import (
     NLP2CMD,
     TransformResult,
     TransformStatus,
@@ -18,7 +18,7 @@ from src.nlp2cmd.core import (
     SpaCyBackend,
     LLMBackend,
 )
-from src.nlp2cmd.adapters import SQLAdapter, ShellAdapter
+from nlp2cmd.adapters import SQLAdapter, ShellAdapter
 
 
 class TestNLPIntegration:
@@ -26,7 +26,7 @@ class TestNLPIntegration:
 
     def test_nlp2cmd_initialization(self):
         """Test NLP2CMD initialization."""
-        from src.nlp2cmd.adapters import SQLAdapter
+        from nlp2cmd.adapters import SQLAdapter
         adapter = SQLAdapter()
         nlp2cmd = NLP2CMD(adapter=adapter)
         
