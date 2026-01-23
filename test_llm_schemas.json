@@ -1,0 +1,336 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-23T15:09:25.659137",
+  "schemas": {
+    "find": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "find",
+          "description": "The find command is used to search for files and directories in a directory hierarchy.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "path",
+              "type": "string",
+              "description": "The starting point of the search. Defaults to the current directory if not specified.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "-H",
+              "type": "boolean",
+              "description": "Follow symbolic links on command line only.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-L",
+              "type": "boolean",
+              "description": "Follow all symbolic links.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-P",
+              "type": "boolean",
+              "description": "Do not follow any symbolic links.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-Olevel",
+              "type": "string",
+              "description": "Optimization level for the search algorithm.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-D debugopts",
+              "type": "string",
+              "description": "Debugging options to control the output of the command.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "find /home/user -name '*.txt'",
+            "find /var/log -type f -size +10M",
+            "find . -mtime -7 -exec rm {} \\;"
+          ],
+          "patterns": [
+            "find",
+            "the find command is used to search for files and directories in a directory hierarchy."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "find {path} -name \"{pattern}\""
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "grep": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "grep",
+          "description": "Searches for lines that match a pattern in files.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "PATTERNS",
+              "type": "string",
+              "description": "The search pattern to look for in the files.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "-r, --recursive",
+              "type": "boolean",
+              "description": "Read all files under each directory, recursively.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-i, --ignore-case",
+              "type": "boolean",
+              "description": "Ignore case distinctions in both the pattern and the input files.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-v, --invert-match",
+              "type": "boolean",
+              "description": "Invert the sense of matching, to select non-matching lines.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "grep 'error' /var/log/syslog",
+            "grep -r 'TODO' .",
+            "grep -i 'hello' example.txt"
+          ],
+          "patterns": [
+            "grep",
+            "searches for lines that match a pattern in files."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "grep {pattern} {file}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "tar": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "tar",
+          "description": "The tar command is used to create archive files and manipulate existing archives.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "OPTION",
+              "type": "string",
+              "description": "Various options to control the behavior of tar, such as creating an archive, extracting a file, or listing contents.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "FILE",
+              "type": "array",
+              "description": "Files and directories to be included in the archive or extracted from the archive.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "tar -czf backup.tar.gz /home/user/documents",
+            "tar -xzf backup.tar.gz -C /home/user/restore",
+            "tar -tf backup.tar.gz"
+          ],
+          "patterns": [
+            "tar",
+            "the tar command is used to create archive files and manipulate existing archives."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "tar {OPTION} {archive}.tar.gz {source}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "docker": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "docker",
+          "description": "Manage Docker containers, images, networks, and volumes.",
+          "category": "system",
+          "parameters": [
+            {
+              "name": "OPTIONS",
+              "type": "string",
+              "description": "Additional options to modify the command behavior.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "COMMAND",
+              "type": "string",
+              "description": "The specific Docker command to execute.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "docker run -it ubuntu bash",
+            "docker ps -a",
+            "docker images --filter \"dangling=true\""
+          ],
+          "patterns": [
+            "docker",
+            "manage docker containers, images, networks, and volumes."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "docker {command} {options}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "git": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "git",
+          "description": "Git is a distributed version control system designed to handle everything from small to very large projects with speed and efficiency.",
+          "category": "system",
+          "parameters": [
+            {
+              "name": "-v | --version",
+              "type": "boolean",
+              "description": "Display the version of Git installed on your system.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "flag"
+            },
+            {
+              "name": "-h | --help",
+              "type": "boolean",
+              "description": "Show help information about the git command or a specific subcommand.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "flag"
+            },
+            {
+              "name": "-C <path>",
+              "type": "string",
+              "description": "Run all following commands in the given directory.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-c <name>=<value>",
+              "type": "string",
+              "description": "Set a configuration variable for this command only.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "git clone https://github.com/user/repo.git",
+            "git commit -m 'Initial commit'",
+            "git push origin master"
+          ],
+          "patterns": [
+            "git",
+            "git is a distributed version control system designed to handle everything from small to very large projects with speed and efficiency."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "git {command} {options}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    }
+  }
+}

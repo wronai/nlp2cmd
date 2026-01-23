@@ -162,7 +162,7 @@ class DynamicAdapter(BaseDSLAdapter):
             elif source.endswith('.mk') or source.endswith('/Makefile') or source.endswith('Makefile'):
                 return self.registry.register_makefile(source)
             elif source.endswith(('.json', '.yaml', '.yml')):
-                # Try to detect format
+                # Try to detect AppSpec
                 if source.endswith('.json'):
                     try:
                         p = Path(source)
@@ -171,8 +171,6 @@ class DynamicAdapter(BaseDSLAdapter):
                             fmt = data.get("format")
                             if fmt == "app2schema.appspec":
                                 return self.registry.register_appspec_export(source)
-                            elif fmt == "nlp2cmd.dynamic_schema_export":
-                                return self.registry.register_dynamic_export(source)
                     except Exception:
                         pass  # Fall back to OpenAPI
                 return self.registry.register_openapi_schema(source)

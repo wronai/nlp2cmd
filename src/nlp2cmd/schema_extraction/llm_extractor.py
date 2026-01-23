@@ -92,6 +92,7 @@ Return only valid JSON without explanation:
                 return self._create_basic_schema(command)
             
             # Use LLM to enhance the schema
+            print(f"[LLMExtractor] Requesting schema for {command}...")
             response = completion(
                 model=self.model,
                 messages=[{
@@ -100,10 +101,30 @@ Return only valid JSON without explanation:
                 }],
                 temperature=self.temperature,
                 max_tokens=self.max_tokens,
+                timeout=self.timeout,
+                api_base=self.api_base,
             )
             
-            # Parse LLM response
-            llm_data = json.loads(response.choices[0].message.content)
+            # Get response content
+            content = response.choices[0].message.content
+            print(f"[LLMExtractor] Got response for {command}: {content[:100]}...")
+            
+            if not content:
+                raise ValueError("Empty response from LLM")
+            
+            # Parse LLM response - handle potential formatting issues
+            try:
+                # Try to extract JSON from the response
+                import re
+                json_match = re.search(r'\{.*\}', content, re.DOTALL)
+                if json_match:
+                    llm_data = json.loads(json_match.group())
+                else:
+                    llm_data = json.loads(content)
+            except json.JSONDecodeError as e:
+                print(f"[LLMExtractor] Failed to parse JSON for {command}: {e}")
+                print(f"[LLMExtractor] Raw response: {content}")
+                raise ValueError(f"Invalid JSON response: {e}")
             
             # Build enhanced schema
             parameters = []
@@ -131,6 +152,7 @@ Return only valid JSON without explanation:
                 template=llm_data.get("template"),
             )
             
+            print(f"[LLMExtractor] Successfully enhanced {command}")
             return ExtractedSchema(
                 source=command,
                 source_type="llm_enhanced",

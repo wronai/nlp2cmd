@@ -1,0 +1,5197 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-23T15:11:24.757827",
+  "schemas": {
+    "find": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "find",
+          "description": "Default path is the current directory; default expression is -print. Expression may consist of: operators, options, tests, and actions.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "display this help and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "output version information and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "find [-H] [-L] [-P] [-Olevel] [-D debugopts] [path...] [expression]"
+          ],
+          "patterns": [
+            "find [-H] [-L] [-P] [-Olevel] [-D debugopts] [path...] [expression]",
+            "default path is the current directory; default expression is -print. expression may consist of: operators, options, tests, and actions."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "find",
+            "help_lines": 46
+          },
+          "template": "find {path} -type f -size {size} -mtime -{days}"
+        }
+      ],
+      "metadata": {}
+    },
+    "grep": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "grep",
+          "description": "Search for PATTERNS in each FILE. Example: grep -i 'hello world' menu.h main.c PATTERNS can contain multiple patterns separated by newlines.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "no_ignore_case",
+              "type": "boolean",
+              "description": "do not ignore case distinctions (default)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "display this help text and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "line_buffered",
+              "type": "boolean",
+              "description": "flush output on every line",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "label",
+              "type": "boolean",
+              "description": "LABEL         use LABEL as the standard input file name prefix",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "binary_files",
+              "type": "boolean",
+              "description": "TYPE   assume that binary files are TYPE;",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "I",
+              "type": "file",
+              "description": "equivalent to --binary-files=without-match",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "include",
+              "type": "boolean",
+              "description": "GLOB        search only files that match GLOB (a file pattern)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude",
+              "type": "boolean",
+              "description": "GLOB        skip files that match GLOB",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_from",
+              "type": "boolean",
+              "description": "FILE   skip files that match any file pattern from FILE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_dir",
+              "type": "boolean",
+              "description": "GLOB    skip directories that match GLOB",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "group_separator",
+              "type": "boolean",
+              "description": "SEP  print SEP on line between matches with context",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_group_separator",
+              "type": "boolean",
+              "description": "do not print separator for matches with context",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "grep [OPTION]... PATTERNS [FILE]..."
+          ],
+          "patterns": [
+            "grep [OPTION]... PATTERNS [FILE]...",
+            "search for patterns in each file. example: grep -i 'hello world' menu.h main.c patterns can contain multiple patterns separated by newlines."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "grep",
+            "help_lines": 75
+          },
+          "template": "grep -r {pattern} {path}"
+        }
+      ],
+      "metadata": {}
+    },
+    "sed": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "sed",
+          "description": "suppress automatic printing of pattern space",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "e",
+              "type": "string",
+              "description": "script, --expression=script",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "file",
+              "description": "script-file, --file=script-file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "l",
+              "type": "string",
+              "description": "N, --line-length=N",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "display this help and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "output version information and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "sed [OPTION]... {script-only-if-no-other-script} [input-file]..."
+          ],
+          "patterns": [
+            "sed [OPTION]... {script-only-if-no-other-script} [input-file]...",
+            "suppress automatic printing of pattern space"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "sed",
+            "help_lines": 43
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "awk": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "awk",
+          "description": "POSIX options:\t\tGNU long options: (standard)",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "f",
+              "type": "file",
+              "description": "progfile\t\t--file=progfile",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "F",
+              "type": "string",
+              "description": "fs\t\t\t--field-separator=fs",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "string",
+              "description": "var=val\t\t--assign=var=val",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "b",
+              "type": "boolean",
+              "description": "--characters-as-bytes",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "--traditional",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "C",
+              "type": "boolean",
+              "description": "--copyright",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "e",
+              "type": "string",
+              "description": "'program-text'\t--source='program-text'",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "E",
+              "type": "file",
+              "description": "file\t\t\t--exec=file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "g",
+              "type": "boolean",
+              "description": "--gen-pot",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "h",
+              "type": "boolean",
+              "description": "--help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "i",
+              "type": "file",
+              "description": "includefile\t\t--include=includefile",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "I",
+              "type": "boolean",
+              "description": "--trace",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "k",
+              "type": "boolean",
+              "description": "--csv",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "l",
+              "type": "string",
+              "description": "library\t\t--load=library",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "M",
+              "type": "boolean",
+              "description": "--bignum",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "N",
+              "type": "boolean",
+              "description": "--use-lc-numeric",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "n",
+              "type": "boolean",
+              "description": "--non-decimal-data",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "O",
+              "type": "boolean",
+              "description": "--optimize",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "P",
+              "type": "boolean",
+              "description": "--posix",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "r",
+              "type": "boolean",
+              "description": "--re-interval",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "s",
+              "type": "boolean",
+              "description": "--no-optimize",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "S",
+              "type": "boolean",
+              "description": "--sandbox",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "--lint-old",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "V",
+              "type": "boolean",
+              "description": "--version",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "awk [POSIX or GNU style options] -f progfile [--] file ...",
+            "awk [POSIX or GNU style options] [--] 'program' file ..."
+          ],
+          "patterns": [
+            "awk [POSIX or GNU style options] -f progfile [--] file ...",
+            "awk [POSIX or GNU style options] [--] 'program' file ...",
+            "posix options:\t\tgnu long options: (standard)"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "awk",
+            "help_lines": 52
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "ls": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "ls",
+          "description": "List directory contents. Ignore files and directories starting with a '.' by default",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Print help information.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "format",
+              "type": "string",
+              "description": "<format>                          Set the display format.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "C",
+              "type": "boolean",
+              "description": "Display the files in columns.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "x",
+              "type": "boolean",
+              "description": "List entries in rows instead of in columns.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "m",
+              "type": "boolean",
+              "description": "List entries separated by commas.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "zero",
+              "type": "boolean",
+              "description": "List entries separated by ASCII NUL characters.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "o",
+              "type": "boolean",
+              "description": "Long format without group information.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "g",
+              "type": "boolean",
+              "description": "Long format without owner information.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "quoting_style",
+              "type": "string",
+              "description": "<quoting-style>            Set quoting style. [possible values: literal, shell, shell-escape, shell-always, shell-escape-always, c, escape]",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "show_control_chars",
+              "type": "boolean",
+              "description": "Show control characters 'as is' if they are not escaped.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "time",
+              "type": "string",
+              "description": "<field>                             Show time in <field>:",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "If the long listing format (e.g., -l, -o) is being used, print the",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "u",
+              "type": "boolean",
+              "description": "If the long listing format (e.g., -l, -o) is being used, print the",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "hide",
+              "type": "string",
+              "description": "<PATTERN>                           do not list implied entries matching shell PATTERN (overridden by -a or -A)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "sort",
+              "type": "string",
+              "description": "<field>                             Sort by <field>: name, none (-U), time (-t), size (-S), extension (-X) or width [possible values: name, none, time, size, version, extension, width]",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "S",
+              "type": "boolean",
+              "description": "Sort by file size, largest first.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Sort by modification time (the 'mtime' in the inode), newest first.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Natural sort of (version) numbers in the filenames.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "X",
+              "type": "boolean",
+              "description": "Sort alphabetically by entry extension.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "U",
+              "type": "boolean",
+              "description": "Do not sort; list the files in whatever order they are stored in the",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "dereference_command_line_symlink_to_dir",
+              "type": "boolean",
+              "description": "Do not follow symlinks except when they link to directories and are",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "author",
+              "type": "boolean",
+              "description": "Show author in long format. On the supported platforms,",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "si",
+              "type": "boolean",
+              "description": "Print human readable file sizes using powers of 1000 instead of 1024.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "block_size",
+              "type": "integer",
+              "description": "<BLOCK_SIZE>                  scale sizes by BLOCK_SIZE when printing them",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "indicator_style",
+              "type": "string",
+              "description": "<indicator-style>        Append indicator with style WORD to entry names:",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "dereference_command_line",
+              "type": "boolean",
+              "description": "(-H), --dereference (-L), or",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "dereference_command_line_symlink_to_dir",
+              "type": "string",
+              "description": "options are specified. [possible values: always, auto, never]",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file_type",
+              "type": "boolean",
+              "description": "Same as --classify, but do not append '*'",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "p",
+              "type": "boolean",
+              "description": "Append / indicator to directories.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "time_style",
+              "type": "string",
+              "description": "<TIME_STYLE>                  time/date format with -l; see TIME_STYLE below [env: TIME_STYLE=]",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "full_time",
+              "type": "string",
+              "description": "like -l --time-style=full-iso",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "group_directories_first",
+              "type": "boolean",
+              "description": "group directories before files; can be augmented with",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "ls [OPTION]... [FILE]..."
+          ],
+          "patterns": [
+            "ls [OPTION]... [FILE]...",
+            "list directory contents. ignore files and directories starting with a '.' by default"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "ls",
+            "help_lines": 105
+          },
+          "template": "ls -{flags} {path}"
+        }
+      ],
+      "metadata": {}
+    },
+    "mkdir": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "mkdir",
+          "description": "Create the given DIRECTORY(ies) if they do not exist",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "Z",
+              "type": "boolean",
+              "description": "set SELinux security context of each created directory to the default type",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "context",
+              "type": "string",
+              "description": "<CTX>  like -Z, or if CTX is specified then set the SELinux or SMACK security context to CTX",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "mkdir [OPTION]... DIRECTORY..."
+          ],
+          "patterns": [
+            "mkdir [OPTION]... DIRECTORY...",
+            "create the given directory(ies) if they do not exist"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "mkdir",
+            "help_lines": 18
+          },
+          "template": "mkdir {path}"
+        }
+      ],
+      "metadata": {}
+    },
+    "rm": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "rm",
+          "description": "Remove (unlink) the FILE(s).",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "i",
+              "type": "boolean",
+              "description": "prompt before every removal",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "I",
+              "type": "boolean",
+              "description": "prompt once before removing more than three files, or",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "one_file_system",
+              "type": "boolean",
+              "description": "when removing a hierarchy recursively, skip any",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_preserve_root",
+              "type": "boolean",
+              "description": "do not treat '/' specially",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "display this help and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "output version information and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "rm [OPTION]... [FILE]..."
+          ],
+          "patterns": [
+            "rm [OPTION]... [FILE]...",
+            "remove (unlink) the file(s)."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "rm",
+            "help_lines": 43
+          },
+          "template": "rm -{flags} {path}"
+        }
+      ],
+      "metadata": {}
+    },
+    "cp": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "cp",
+          "description": "or:  cp [OPTION]... SOURCE... DIRECTORY or:  cp [OPTION]... -t DIRECTORY SOURCE... Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "attributes_only",
+              "type": "boolean",
+              "description": "don't copy the file data, just the attributes",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "b",
+              "type": "boolean",
+              "description": "like --backup but does not accept an argument",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "copy_contents",
+              "type": "boolean",
+              "description": "copy contents of special files when recursive",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "d",
+              "type": "string",
+              "description": "same as --no-dereference --preserve=links",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "debug",
+              "type": "boolean",
+              "description": "explain how a file is copied.  Implies -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "H",
+              "type": "boolean",
+              "description": "follow command-line symbolic links in SOURCE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "p",
+              "type": "string",
+              "description": "same as --preserve=mode,ownership,timestamps",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_preserve",
+              "type": "boolean",
+              "description": "ATTR_LIST  don't preserve the specified attributes",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "parents",
+              "type": "boolean",
+              "description": "use full source file name under DIRECTORY",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "remove_destination",
+              "type": "boolean",
+              "description": "remove each existing destination file before",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "sparse",
+              "type": "boolean",
+              "description": "WHEN            control creation of sparse files. See below",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "strip_trailing_slashes",
+              "type": "boolean",
+              "description": "remove any trailing slashes from each SOURCE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "u",
+              "type": "string",
+              "description": "equivalent to --update[=older].  See below",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "keep_directory_symlink",
+              "type": "boolean",
+              "description": "follow existing symlinks to directories",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "Z",
+              "type": "boolean",
+              "description": "set SELinux security context of destination",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "display this help and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "output version information and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "cp [OPTION]... [-T] SOURCE DEST"
+          ],
+          "patterns": [
+            "cp [OPTION]... [-T] SOURCE DEST",
+            "or:  cp [option]... source... directory or:  cp [option]... -t directory source... copy source to dest, or multiple source(s) to directory."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "cp",
+            "help_lines": 99
+          },
+          "template": "cp -{flags} {source} {dest}"
+        }
+      ],
+      "metadata": {}
+    },
+    "mv": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "mv",
+          "description": "or:  mv [OPTION]... SOURCE... DIRECTORY or:  mv [OPTION]... -t DIRECTORY SOURCE... Rename SOURCE to DEST, or move SOURCE(s) to DIRECTORY.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "b",
+              "type": "boolean",
+              "description": "like --backup but does not accept an argument",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "debug",
+              "type": "boolean",
+              "description": "explain how a file is copied.  Implies -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exchange",
+              "type": "boolean",
+              "description": "exchange source and destination",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_copy",
+              "type": "boolean",
+              "description": "do not copy if renaming fails",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "strip_trailing_slashes",
+              "type": "boolean",
+              "description": "remove any trailing slashes from each SOURCE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "u",
+              "type": "string",
+              "description": "equivalent to --update[=older].  See below",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "display this help and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "output version information and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "mv [OPTION]... [-T] SOURCE DEST"
+          ],
+          "patterns": [
+            "mv [OPTION]... [-T] SOURCE DEST",
+            "or:  mv [option]... source... directory or:  mv [option]... -t directory source... rename source to dest, or move source(s) to directory."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "mv",
+            "help_lines": 52
+          },
+          "template": "mv -{flags} {source} {dest}"
+        }
+      ],
+      "metadata": {}
+    },
+    "ps": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "ps",
+          "description": "ps command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "ps --help"
+          ],
+          "patterns": [
+            "ps"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "top": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "top",
+          "description": "top command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "top --help"
+          ],
+          "patterns": [
+            "top"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "kill": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "kill",
+          "description": "kill command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "kill --help"
+          ],
+          "patterns": [
+            "kill"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "killall": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "killall",
+          "description": "killall command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "killall --help"
+          ],
+          "patterns": [
+            "killall"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "systemctl": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "systemctl",
+          "description": "systemctl command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "systemctl --help"
+          ],
+          "patterns": [
+            "systemctl"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "service": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "service",
+          "description": "service command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "service --help"
+          ],
+          "patterns": [
+            "service"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "docker": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "docker",
+          "description": "A self-sufficient runtime for containers",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "config",
+              "type": "boolean",
+              "description": "string      Location of client config files (default \"/home/tom/.docker\")",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tls",
+              "type": "boolean",
+              "description": "Use TLS; implied by --tlsverify",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tlscacert",
+              "type": "boolean",
+              "description": "string   Trust certs signed only by this CA (default \"/home/tom/.docker/ca.pem\")",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tlscert",
+              "type": "boolean",
+              "description": "string     Path to TLS certificate file (default \"/home/tom/.docker/cert.pem\")",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tlskey",
+              "type": "boolean",
+              "description": "string      Path to TLS key file (default \"/home/tom/.docker/key.pem\")",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tlsverify",
+              "type": "boolean",
+              "description": "Use TLS and verify the remote",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "docker [OPTIONS] COMMAND"
+          ],
+          "patterns": [
+            "docker [OPTIONS] COMMAND",
+            "a self-sufficient runtime for containers"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "docker",
+            "help_lines": 82
+          },
+          "template": "docker {subcommand} {options}"
+        }
+      ],
+      "metadata": {}
+    },
+    "docker-compose": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "docker-compose",
+          "description": "Define and run multi-container applications with Docker",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "all_resources",
+              "type": "boolean",
+              "description": "Include all resources, even those not used by services",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ansi",
+              "type": "boolean",
+              "description": "string                Control when to print ANSI control characters (\"never\"|\"always\"|\"auto\") (default \"auto\")",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "compatibility",
+              "type": "boolean",
+              "description": "Run compose in backward compatibility mode",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "dry_run",
+              "type": "boolean",
+              "description": "Execute command in dry run mode",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "env_file",
+              "type": "boolean",
+              "description": "stringArray       Specify an alternate environment file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "parallel",
+              "type": "boolean",
+              "description": "int               Control max parallelism, -1 for unlimited (default -1)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "profile",
+              "type": "boolean",
+              "description": "stringArray        Specify a profile to enable",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "progress",
+              "type": "boolean",
+              "description": "string            Set type of progress output (auto, tty, plain, json, quiet)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "project_directory",
+              "type": "boolean",
+              "description": "string   Specify an alternate working directory",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "docker compose [OPTIONS] COMMAND"
+          ],
+          "patterns": [
+            "docker compose [OPTIONS] COMMAND",
+            "define and run multi-container applications with docker"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "docker-compose",
+            "help_lines": 59
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "kubectl": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "kubectl",
+          "description": "kubectl command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "kubectl --help"
+          ],
+          "patterns": [
+            "kubectl"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "git": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "git",
+          "description": "usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]",
+          "category": "shell",
+          "parameters": [],
+          "examples": [
+            "git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]"
+          ],
+          "patterns": [
+            "git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]",
+            "usage: git [-v | --version] [-h | --help] [-c <path>] [-c <name>=<value>] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] [-p | --paginate | -p | --no-pager] [--no-replace-objects] [--no-lazy-fetch]"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "git",
+            "help_lines": 47
+          },
+          "template": "git {subcommand} {options}"
+        }
+      ],
+      "metadata": {}
+    },
+    "curl": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "curl",
+          "description": "This is not the full help; this menu is split into categories. Use \"--help category\" to get an overview of all categories, which are: auth, connection, curl, deprecated, dns, file, ftp, global, http, imap, ldap, output, pop3, post, proxy, scp, sftp, smtp, ssh, telnet, tftp, timeout, tls, upload, verbose.",
+          "category": "shell",
+          "parameters": [],
+          "examples": [
+            "curl [options...] <url>"
+          ],
+          "patterns": [
+            "curl [options...] <url>",
+            "this is not the full help; this menu is split into categories. use \"--help category\" to get an overview of all categories, which are: auth, connection, curl, deprecated, dns, file, ftp, global, http, imap, ldap, output, pop3, post, proxy, scp, sftp, smtp, ssh, telnet, tftp, timeout, tls, upload, verbose."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "curl",
+            "help_lines": 20
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "wget": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "wget",
+          "description": "GNU Wget 1.25.0, a non-interactive network retriever.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "report_speed",
+              "type": "boolean",
+              "description": "TYPE         output bandwidth as TYPE.  TYPE can be bits",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "config",
+              "type": "boolean",
+              "description": "FILE               specify config file to use",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_config",
+              "type": "boolean",
+              "description": "do not read any config file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "rejected_log",
+              "type": "boolean",
+              "description": "FILE         log reasons for URL rejection to FILE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "retry_connrefused",
+              "type": "boolean",
+              "description": "retry even if connection is refused",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "retry_on_host_error",
+              "type": "boolean",
+              "description": "consider host errors as non-fatal, transient errors",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "retry_on_http_error",
+              "type": "boolean",
+              "description": "ERRORS    comma-separated list of HTTP errors to retry",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_netrc",
+              "type": "boolean",
+              "description": "don't try to obtain credentials from .netrc",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "start_pos",
+              "type": "boolean",
+              "description": "OFFSET          start downloading from zero-based position OFFSET",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "progress",
+              "type": "boolean",
+              "description": "TYPE             select progress gauge type",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "show_progress",
+              "type": "boolean",
+              "description": "display the progress bar in any verbosity mode",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_if_modified_since",
+              "type": "boolean",
+              "description": "don't use conditional if-modified-since get",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_use_server_timestamps",
+              "type": "boolean",
+              "description": "don't set the local file's timestamp by",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "spider",
+              "type": "boolean",
+              "description": "don't download anything",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "dns_timeout",
+              "type": "boolean",
+              "description": "SECS          set the DNS lookup timeout to SECS",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "connect_timeout",
+              "type": "boolean",
+              "description": "SECS      set the connect timeout to SECS",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "read_timeout",
+              "type": "boolean",
+              "description": "SECS         set the read timeout to SECS",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "waitretry",
+              "type": "boolean",
+              "description": "SECONDS         wait 1..SECONDS between retries of a retrieval",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "random_wait",
+              "type": "boolean",
+              "description": "wait from 0.5*WAIT...1.5*WAIT secs between retrievals",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_proxy",
+              "type": "boolean",
+              "description": "explicitly turn off proxy",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "bind_address",
+              "type": "boolean",
+              "description": "ADDRESS      bind to ADDRESS (hostname or IP) on local host",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "limit_rate",
+              "type": "boolean",
+              "description": "RATE           limit download rate to RATE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_dns_cache",
+              "type": "boolean",
+              "description": "disable caching DNS lookups",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "restrict_file_names",
+              "type": "boolean",
+              "description": "OS    restrict chars in file names to ones OS allows",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_case",
+              "type": "boolean",
+              "description": "ignore case when matching files/directories",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "prefer_family",
+              "type": "boolean",
+              "description": "FAMILY      connect first to addresses of specified family,",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "user",
+              "type": "boolean",
+              "description": "USER                 set both ftp and http user to USER",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "password",
+              "type": "boolean",
+              "description": "PASS             set both ftp and http password to PASS",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ask_password",
+              "type": "boolean",
+              "description": "prompt for passwords",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "use_askpass",
+              "type": "boolean",
+              "description": "COMMAND       specify credential handler for requesting",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_iri",
+              "type": "boolean",
+              "description": "turn off IRI support",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "local_encoding",
+              "type": "boolean",
+              "description": "ENC        use ENC as the local encoding for IRIs",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "remote_encoding",
+              "type": "boolean",
+              "description": "ENC       use ENC as the default remote encoding",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "unlink",
+              "type": "boolean",
+              "description": "remove file before clobber",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "xattr",
+              "type": "boolean",
+              "description": "turn on storage of metadata in extended file attributes",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "protocol_directories",
+              "type": "boolean",
+              "description": "use protocol name in directories",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "cut_dirs",
+              "type": "boolean",
+              "description": "NUMBER           ignore NUMBER remote directory components",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "http_user",
+              "type": "boolean",
+              "description": "USER            set http user to USER",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "http_password",
+              "type": "boolean",
+              "description": "PASS        set http password to PASS",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_cache",
+              "type": "boolean",
+              "description": "disallow server-cached data",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "default_page",
+              "type": "boolean",
+              "description": "NAME         change the default page name (normally",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_length",
+              "type": "boolean",
+              "description": "ignore 'Content-Length' header field",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "header",
+              "type": "boolean",
+              "description": "STRING             insert STRING among the headers",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "compression",
+              "type": "boolean",
+              "description": "TYPE          choose compression, one of auto, gzip and none. (default: none)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "max_redirect",
+              "type": "boolean",
+              "description": "maximum redirections allowed per page",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "proxy_user",
+              "type": "boolean",
+              "description": "USER           set USER as proxy username",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "proxy_password",
+              "type": "boolean",
+              "description": "PASS       set PASS as proxy password",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "referer",
+              "type": "boolean",
+              "description": "URL               include 'Referer: URL' header in HTTP request",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "save_headers",
+              "type": "boolean",
+              "description": "save the HTTP headers to file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_http_keep_alive",
+              "type": "boolean",
+              "description": "disable HTTP keep-alive (persistent connections)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_cookies",
+              "type": "boolean",
+              "description": "don't use cookies",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "load_cookies",
+              "type": "boolean",
+              "description": "FILE         load cookies from FILE before session",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "save_cookies",
+              "type": "boolean",
+              "description": "FILE         save cookies to FILE after session",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "keep_session_cookies",
+              "type": "boolean",
+              "description": "load and save session (non-permanent) cookies",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "post_data",
+              "type": "boolean",
+              "description": "STRING          use the POST method; send STRING as the data",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "post_file",
+              "type": "boolean",
+              "description": "FILE            use the POST method; send contents of FILE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "method",
+              "type": "boolean",
+              "description": "HTTPMethod         use method \"HTTPMethod\" in the request",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "body_data",
+              "type": "boolean",
+              "description": "STRING          send STRING as data. --method MUST be set",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "body_file",
+              "type": "boolean",
+              "description": "FILE            send contents of FILE. --method MUST be set",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "content_disposition",
+              "type": "boolean",
+              "description": "honor the Content-Disposition header when",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "content_on_error",
+              "type": "boolean",
+              "description": "output the received content on server errors",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "auth_no_challenge",
+              "type": "boolean",
+              "description": "send Basic HTTP authentication information",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "secure_protocol",
+              "type": "boolean",
+              "description": "PR        choose secure protocol, one of auto, SSLv2,",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "https_only",
+              "type": "boolean",
+              "description": "only follow secure HTTPS links",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_check_certificate",
+              "type": "boolean",
+              "description": "don't validate the server's certificate",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "certificate",
+              "type": "boolean",
+              "description": "FILE          client certificate file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "certificate_type",
+              "type": "boolean",
+              "description": "TYPE     client certificate type, PEM or DER",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "private_key",
+              "type": "boolean",
+              "description": "FILE          private key file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "private_key_type",
+              "type": "boolean",
+              "description": "TYPE     private key type, PEM or DER",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ca_certificate",
+              "type": "boolean",
+              "description": "FILE       file with the bundle of CAs",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ca_directory",
+              "type": "boolean",
+              "description": "DIR          directory where hash list of CAs is stored",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "crl_file",
+              "type": "boolean",
+              "description": "FILE             file with bundle of CRLs",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "pinnedpubkey",
+              "type": "boolean",
+              "description": "FILE/HASHES  Public key (PEM/DER) file, or any number",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ciphers",
+              "type": "boolean",
+              "description": "STR           Set the priority string (GnuTLS) or cipher list string (OpenSSL) directly.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_hsts",
+              "type": "boolean",
+              "description": "disable HSTS",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "hsts_file",
+              "type": "boolean",
+              "description": "path of HSTS database (will override default)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ftp_user",
+              "type": "boolean",
+              "description": "USER             set ftp user to USER",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ftp_password",
+              "type": "boolean",
+              "description": "PASS         set ftp password to PASS",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_remove_listing",
+              "type": "boolean",
+              "description": "don't remove '.listing' files",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_glob",
+              "type": "boolean",
+              "description": "turn off FTP file name globbing",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_passive_ftp",
+              "type": "boolean",
+              "description": "disable the \"passive\" transfer mode",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "preserve_permissions",
+              "type": "boolean",
+              "description": "preserve remote file permissions",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "retr_symlinks",
+              "type": "boolean",
+              "description": "when recursing, get linked-to files (not dir)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ftps_implicit",
+              "type": "boolean",
+              "description": "use implicit FTPS (default port is 990)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ftps_resume_ssl",
+              "type": "boolean",
+              "description": "resume the SSL/TLS session started in the control connection when",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ftps_clear_data_connection",
+              "type": "boolean",
+              "description": "cipher the control channel only; all the data will be in plaintext",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ftps_fallback_to_ftp",
+              "type": "boolean",
+              "description": "fall back to FTP if FTPS is not supported in the target server",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "warc_file",
+              "type": "boolean",
+              "description": "FILENAME        save request/response data to a .warc.gz file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "warc_header",
+              "type": "boolean",
+              "description": "STRING        insert STRING into the warcinfo record",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "warc_max_size",
+              "type": "boolean",
+              "description": "NUMBER      set maximum size of WARC files to NUMBER",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "warc_cdx",
+              "type": "boolean",
+              "description": "write CDX index files",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "warc_dedup",
+              "type": "boolean",
+              "description": "FILENAME       do not store records listed in this CDX file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_warc_compression",
+              "type": "boolean",
+              "description": "do not compress WARC files with GZIP",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_warc_digests",
+              "type": "boolean",
+              "description": "do not calculate SHA1 digests",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_warc_keep_log",
+              "type": "boolean",
+              "description": "do not store the log file in a WARC record",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "warc_tempdir",
+              "type": "boolean",
+              "description": "DIRECTORY    location for temporary files created by the",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "delete_after",
+              "type": "boolean",
+              "description": "delete files locally after downloading them",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "convert_file_only",
+              "type": "boolean",
+              "description": "convert the file part of the URLs only (usually known as the basename)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "backups",
+              "type": "boolean",
+              "description": "N                 before writing file X, rotate up to N backup files",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "strict_comments",
+              "type": "boolean",
+              "description": "turn on strict (SGML) handling of HTML comments",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "accept_regex",
+              "type": "boolean",
+              "description": "REGEX        regex matching accepted URLs",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "reject_regex",
+              "type": "boolean",
+              "description": "REGEX        regex matching rejected URLs",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "regex_type",
+              "type": "boolean",
+              "description": "TYPE           regex type (posix|pcre)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_domains",
+              "type": "boolean",
+              "description": "LIST      comma-separated list of rejected domains",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "follow_ftp",
+              "type": "boolean",
+              "description": "follow FTP links from HTML documents",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "follow_tags",
+              "type": "boolean",
+              "description": "LIST          comma-separated list of followed HTML tags",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_tags",
+              "type": "boolean",
+              "description": "LIST          comma-separated list of ignored HTML tags",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "trust_server_names",
+              "type": "boolean",
+              "description": "use the name specified by the redirection",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "wget [OPTION]... [URL]..."
+          ],
+          "patterns": [
+            "wget [OPTION]... [URL]...",
+            "gnu wget 1.25.0, a non-interactive network retriever."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "wget",
+            "help_lines": 209
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "ping": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "ping",
+          "description": "ping command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "ping --help"
+          ],
+          "patterns": [
+            "ping"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "netstat": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "netstat",
+          "description": "usage: netstat [-vWeenNcCF] [<Af>] -r         netstat {-V|--version|-h|--help} netstat [-vWnNcaeol] [<Socket> ...] netstat { [-vWeenNac] -i | [-cnNe] -M | -s [-6tuw] }",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "numeric_hosts",
+              "type": "boolean",
+              "description": "don't resolve host names",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "numeric_ports",
+              "type": "boolean",
+              "description": "don't resolve port names",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "numeric_users",
+              "type": "boolean",
+              "description": "don't resolve user names",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "netstat [-vWeenNcCF] [<Af>] -r         netstat {-V|--version|-h|--help}"
+          ],
+          "patterns": [
+            "netstat [-vWeenNcCF] [<Af>] -r         netstat {-V|--version|-h|--help}",
+            "usage: netstat [-vweennccf] [<af>] -r         netstat {-v|--version|-h|--help} netstat [-vwnncaeol] [<socket> ...] netstat { [-vweennac] -i | [-cnne] -m | -s [-6tuw] }"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "netstat",
+            "help_lines": 33
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "ss": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "ss",
+          "description": "ss [ OPTIONS ] [ FILTER ]",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "tipcinfo",
+              "type": "boolean",
+              "description": "show internal tipc socket information",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tos",
+              "type": "boolean",
+              "description": "show tos and priority information",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "cgroup",
+              "type": "boolean",
+              "description": "show cgroup information",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "bpf_maps",
+              "type": "boolean",
+              "description": "show all BPF socket-local storage maps",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "bpf_map_id",
+              "type": "boolean",
+              "description": "MAP-ID    show a BPF socket-local storage map",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tipc",
+              "type": "boolean",
+              "description": "display only TIPC sockets",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "vsock",
+              "type": "boolean",
+              "description": "display only vsock sockets",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "xdp",
+              "type": "boolean",
+              "description": "display only XDP sockets",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "inet_sockopt",
+              "type": "boolean",
+              "description": "show various inet socket options",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "ss [ OPTIONS ]"
+          ],
+          "patterns": [
+            "ss [ OPTIONS ]",
+            "ss [ options ] [ filter ]"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "ss",
+            "help_lines": 62
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "lsof": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "lsof",
+          "description": "lsof command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "lsof --help"
+          ],
+          "patterns": [
+            "lsof"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "df": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "df",
+          "description": "Show information about the file system on which each FILE resides, or all file systems by default.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "k",
+              "type": "string",
+              "description": "like --block-size=1K",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_sync",
+              "type": "boolean",
+              "description": "do not invoke sync before getting usage info (default)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "sync",
+              "type": "boolean",
+              "description": "invoke sync before getting usage info",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "total",
+              "type": "boolean",
+              "description": "elide all entries insignificant to available space,",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "(ignored)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "display this help and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "output version information and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "df [OPTION]... [FILE]..."
+          ],
+          "patterns": [
+            "df [OPTION]... [FILE]...",
+            "show information about the file system on which each file resides, or all file systems by default."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "df",
+            "help_lines": 44
+          },
+          "template": "df -h"
+        }
+      ],
+      "metadata": {}
+    },
+    "du": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "du",
+          "description": "Estimate file space usage",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Print help information.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "apparent_size",
+              "type": "boolean",
+              "description": "print apparent sizes, rather than disk usage although the apparent size is usually smaller, it may be larger due to holes in ('sparse') files, internal fragmentation, indirect blocks, and the like",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "inodes",
+              "type": "string",
+              "description": "list inode usage information instead of block usage like --block-size=1K",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "k",
+              "type": "string",
+              "description": "like --block-size=1K",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "m",
+              "type": "string",
+              "description": "like --block-size=1M",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "si",
+              "type": "boolean",
+              "description": "like -h, but use powers of 1000 not 1024",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude",
+              "type": "file",
+              "description": "<PATTERN>    exclude files that match PATTERN",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "files0_from",
+              "type": "file",
+              "description": "<FILE>   summarize device usage of the NUL-terminated file names specified in file F; if F is -, then read names from standard input",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "time_style",
+              "type": "integer",
+              "description": "<STYLE>   show times using style STYLE: full-iso, long-iso, iso, +FORMAT FORMAT is interpreted like 'date'",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "du [OPTION]... [FILE]..."
+          ],
+          "patterns": [
+            "du [OPTION]... [FILE]...",
+            "estimate file space usage"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "du",
+            "help_lines": 50
+          },
+          "template": "du -sh {path}"
+        }
+      ],
+      "metadata": {}
+    },
+    "free": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "free",
+          "description": "free command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "free --help"
+          ],
+          "patterns": [
+            "free"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "uname": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "uname",
+          "description": "Print certain system information. With no OPTION, same as -s.",
+          "category": "shell",
+          "parameters": [],
+          "examples": [
+            "uname [OPTION]..."
+          ],
+          "patterns": [
+            "uname [OPTION]...",
+            "print certain system information. with no option, same as -s."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "uname",
+            "help_lines": 16
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "whoami": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "whoami",
+          "description": "Print the current username.",
+          "category": "shell",
+          "parameters": [],
+          "examples": [
+            "whoami"
+          ],
+          "patterns": [
+            "whoami",
+            "print the current username."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "whoami",
+            "help_lines": 8
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "id": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "id",
+          "description": "Print user and group information for each specified USER, or (when USER omitted) for the current user.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "A",
+              "type": "boolean",
+              "description": "Display the process audit user ID and other process audit properties,",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "p",
+              "type": "boolean",
+              "description": "Make the output human-readable. Each display is on a separate line.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "P",
+              "type": "boolean",
+              "description": "Display the id as a password file entry.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "id [OPTION]... [USER]..."
+          ],
+          "patterns": [
+            "id [OPTION]... [USER]...",
+            "print user and group information for each specified user, or (when user omitted) for the current user."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "id",
+            "help_lines": 37
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "chmod": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "chmod",
+          "description": "or:  chmod [OPTION]... OCTAL-MODE FILE... or:  chmod [OPTION]... --reference=RFILE FILE... Change the mode of each FILE to MODE.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "dereference",
+              "type": "boolean",
+              "description": "affect the referent of each symbolic link,",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_preserve_root",
+              "type": "boolean",
+              "description": "do not treat '/' specially (the default)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "preserve_root",
+              "type": "boolean",
+              "description": "fail to operate recursively on '/'",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "reference",
+              "type": "boolean",
+              "description": "RFILE  use RFILE's mode instead of specifying MODE values.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "H",
+              "type": "boolean",
+              "description": "if a command line argument is a symbolic link",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "L",
+              "type": "boolean",
+              "description": "traverse every symbolic link to a directory",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "P",
+              "type": "boolean",
+              "description": "do not traverse any symbolic links",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "display this help and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "output version information and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "chmod [OPTION]... MODE[,MODE]... FILE..."
+          ],
+          "patterns": [
+            "chmod [OPTION]... MODE[,MODE]... FILE...",
+            "or:  chmod [option]... octal-mode file... or:  chmod [option]... --reference=rfile file... change the mode of each file to mode."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "chmod",
+            "help_lines": 37
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "chown": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "chown",
+          "description": "or:  chown [OPTION]... --reference=RFILE FILE... Change the owner and/or group of each FILE to OWNER and/or GROUP. With --reference, change the owner and group of each FILE to those of RFILE.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "dereference",
+              "type": "boolean",
+              "description": "affect the referent of each symbolic link (this is",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "from",
+              "type": "boolean",
+              "description": "CURRENT_OWNER:CURRENT_GROUP",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_preserve_root",
+              "type": "boolean",
+              "description": "do not treat '/' specially (the default)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "preserve_root",
+              "type": "boolean",
+              "description": "fail to operate recursively on '/'",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "reference",
+              "type": "boolean",
+              "description": "RFILE  use RFILE's ownership rather than specifying values",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "H",
+              "type": "boolean",
+              "description": "if a command line argument is a symbolic link",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "L",
+              "type": "boolean",
+              "description": "traverse every symbolic link to a directory",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "P",
+              "type": "boolean",
+              "description": "do not traverse any symbolic links",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "display this help and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "output version information and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "chown [OPTION]... [OWNER][:[GROUP]] FILE..."
+          ],
+          "patterns": [
+            "chown [OPTION]... [OWNER][:[GROUP]] FILE...",
+            "or:  chown [option]... --reference=rfile file... change the owner and/or group of each file to owner and/or group. with --reference, change the owner and group of each file to those of rfile."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "chown",
+            "help_lines": 50
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "chgrp": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "chgrp",
+          "description": "Change the group of each FILE to GROUP.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Print help information.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "quiet",
+              "type": "boolean",
+              "description": "suppress most error messages",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "preserve_root",
+              "type": "boolean",
+              "description": "fail to operate recursively on '/'",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_preserve_root",
+              "type": "boolean",
+              "description": "do not treat '/' specially (the default)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "reference",
+              "type": "file",
+              "description": "<RFILE>  use RFILE's group rather than specifying GROUP values",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "from",
+              "type": "string",
+              "description": "<GROUP>       change the group only if its current group matches GROUP",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "H",
+              "type": "boolean",
+              "description": "if a command line argument is a symbolic link to a directory, traverse it",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "L",
+              "type": "boolean",
+              "description": "traverse every symbolic link to a directory encountered",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "P",
+              "type": "boolean",
+              "description": "do not traverse any symbolic links (default)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "dereference",
+              "type": "boolean",
+              "description": "affect the referent of each symbolic link (this is the default), rather than the symbolic link itself",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "chgrp [OPTION]... GROUP FILE..."
+          ],
+          "patterns": [
+            "chgrp [OPTION]... GROUP FILE...",
+            "change the group of each file to group."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "chgrp",
+            "help_lines": 27
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "tar": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "tar",
+          "description": "GNU 'tar' saves many files together into a single tape or disk archive, and can restore individual files from the archive.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "delete",
+              "type": "boolean",
+              "description": "delete from the archive (not on mag tapes!)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "test_label",
+              "type": "boolean",
+              "description": "test the archive volume label and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "check_device",
+              "type": "boolean",
+              "description": "check device numbers when creating incremental",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "hole_detection",
+              "type": "boolean",
+              "description": "TYPE  technique to detect holes",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_failed_read",
+              "type": "boolean",
+              "description": "do not exit with nonzero on unreadable files",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "level",
+              "type": "boolean",
+              "description": "NUMBER         dump level for created listed-incremental archive",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_check_device",
+              "type": "boolean",
+              "description": "do not check device numbers when creating",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_seek",
+              "type": "boolean",
+              "description": "archive is not seekable",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "sparse_version",
+              "type": "string",
+              "description": "MAJOR[.MINOR]",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "add_file",
+              "type": "boolean",
+              "description": "FILE        add given FILE to the archive (useful if its name",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude",
+              "type": "boolean",
+              "description": "PATTERN      exclude files, given as a PATTERN",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_backups",
+              "type": "boolean",
+              "description": "exclude backup and lock files",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_caches",
+              "type": "boolean",
+              "description": "exclude contents of directories containing",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_caches_all",
+              "type": "boolean",
+              "description": "exclude directories containing CACHEDIR.TAG",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_caches_under",
+              "type": "boolean",
+              "description": "exclude everything under directories containing",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_ignore",
+              "type": "boolean",
+              "description": "FILE  read exclude patterns for each directory from",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_ignore_recursive",
+              "type": "boolean",
+              "description": "FILE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_tag",
+              "type": "boolean",
+              "description": "FILE     exclude contents of directories containing FILE,",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_tag_all",
+              "type": "boolean",
+              "description": "FILE exclude directories containing FILE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_tag_under",
+              "type": "boolean",
+              "description": "FILE   exclude everything under directories",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_vcs",
+              "type": "boolean",
+              "description": "exclude version control system directories",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_vcs_ignores",
+              "type": "boolean",
+              "description": "read exclude patterns from the VCS ignore files",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_null",
+              "type": "boolean",
+              "description": "disable the effect of the previous --null option",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_recursion",
+              "type": "boolean",
+              "description": "avoid descending automatically in directories",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_unquote",
+              "type": "boolean",
+              "description": "do not unquote input file or member names",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_verbatim_files_from",
+              "type": "boolean",
+              "description": "-T treats file names starting with dash as",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "null",
+              "type": "boolean",
+              "description": "-T reads null-terminated names; implies",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "recursion",
+              "type": "boolean",
+              "description": "recurse into directories (default)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "unquote",
+              "type": "boolean",
+              "description": "unquote input file or member names (default)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "verbatim_files_from",
+              "type": "boolean",
+              "description": "-T reads file names verbatim (no escape or option",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "anchored",
+              "type": "boolean",
+              "description": "patterns match file name start",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_case",
+              "type": "boolean",
+              "description": "ignore case",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_anchored",
+              "type": "boolean",
+              "description": "patterns match after any '/' (default for",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_ignore_case",
+              "type": "boolean",
+              "description": "case sensitive matching (default)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_wildcards",
+              "type": "boolean",
+              "description": "verbatim string matching",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_wildcards_match_slash",
+              "type": "boolean",
+              "description": "wildcards do not match '/'",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "wildcards",
+              "type": "boolean",
+              "description": "use wildcards (default for exclusion)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "wildcards_match_slash",
+              "type": "boolean",
+              "description": "wildcards match '/' (default for exclusion)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "keep_directory_symlink",
+              "type": "boolean",
+              "description": "preserve existing symlinks to directories when",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "keep_newer_files",
+              "type": "boolean",
+              "description": "don't replace existing files that are newer than",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_overwrite_dir",
+              "type": "boolean",
+              "description": "preserve metadata of existing directories",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "overwrite",
+              "type": "boolean",
+              "description": "overwrite existing files when extracting",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "overwrite_dir",
+              "type": "boolean",
+              "description": "overwrite metadata of existing directories when",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "recursive_unlink",
+              "type": "boolean",
+              "description": "empty hierarchies prior to extracting directory",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "remove_files",
+              "type": "boolean",
+              "description": "remove files after adding them to the archive",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "skip_old_files",
+              "type": "boolean",
+              "description": "don't replace existing files when extracting,",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_command_error",
+              "type": "boolean",
+              "description": "ignore exit codes of children",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_ignore_command_error",
+              "type": "boolean",
+              "description": "treat non-zero exit codes of children as",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "to_command",
+              "type": "boolean",
+              "description": "COMMAND   pipe extracted files to another program",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "clamp_mtime",
+              "type": "boolean",
+              "description": "only set time when the file is more recent than",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "delay_directory_restore",
+              "type": "boolean",
+              "description": "delay setting modification times and",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "group",
+              "type": "boolean",
+              "description": "NAME           force NAME as group for added files",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "group_map",
+              "type": "boolean",
+              "description": "FILE       use FILE to map file owner GIDs and names",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "mode",
+              "type": "boolean",
+              "description": "CHANGES         force (symbolic) mode CHANGES for added files",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "mtime",
+              "type": "boolean",
+              "description": "DATE-OR-FILE   set mtime for added files from DATE-OR-FILE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_same_owner",
+              "type": "boolean",
+              "description": "extract files as yourself (default for ordinary",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_same_permissions",
+              "type": "boolean",
+              "description": "apply the user's umask when extracting permissions",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "numeric_owner",
+              "type": "boolean",
+              "description": "always use numbers for user/group names",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "owner",
+              "type": "boolean",
+              "description": "NAME           force NAME as owner for added files",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "owner_map",
+              "type": "boolean",
+              "description": "FILE       use FILE to map file owner UIDs and names",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "same_owner",
+              "type": "boolean",
+              "description": "try extracting files with the same ownership as",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "sort",
+              "type": "boolean",
+              "description": "ORDER           directory sorting order: none (default), name or",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "acls",
+              "type": "boolean",
+              "description": "Enable the POSIX ACLs support",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_acls",
+              "type": "boolean",
+              "description": "Disable the POSIX ACLs support",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_selinux",
+              "type": "boolean",
+              "description": "Disable the SELinux context support",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_xattrs",
+              "type": "boolean",
+              "description": "Disable extended attributes support",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "selinux",
+              "type": "boolean",
+              "description": "Enable the SELinux context support",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "xattrs",
+              "type": "boolean",
+              "description": "Enable extended attributes support",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "xattrs_exclude",
+              "type": "boolean",
+              "description": "MASK  specify the exclude pattern for xattr keys",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "xattrs_include",
+              "type": "boolean",
+              "description": "MASK  specify the include pattern for xattr keys",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "force_local",
+              "type": "boolean",
+              "description": "archive file is local even if it has a colon",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "rmt_command",
+              "type": "boolean",
+              "description": "COMMAND  use given rmt COMMAND instead of rmt",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "rsh_command",
+              "type": "boolean",
+              "description": "COMMAND  use remote COMMAND instead of rsh",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "volno_file",
+              "type": "boolean",
+              "description": "FILE      use/update the volume number in FILE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "record_size",
+              "type": "boolean",
+              "description": "NUMBER   NUMBER of bytes per record, multiple of 512",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "pax_option",
+              "type": "string",
+              "description": "keyword[[:]=value][,keyword[[:]=value]]...",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "posix",
+              "type": "string",
+              "description": "same as --format=posix",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "lzip",
+              "type": "boolean",
+              "description": "filter the archive through lzip",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "lzma",
+              "type": "boolean",
+              "description": "filter the archive through xz",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "lzop",
+              "type": "boolean",
+              "description": "filter the archive through lzop",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_auto_compress",
+              "type": "boolean",
+              "description": "do not use archive suffix to determine the",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "zstd",
+              "type": "boolean",
+              "description": "filter the archive through zstd",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "hard_dereference",
+              "type": "boolean",
+              "description": "follow hard links; archive and dump the files they",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "newer_mtime",
+              "type": "boolean",
+              "description": "DATE     compare date and time when data changed only",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "one_file_system",
+              "type": "boolean",
+              "description": "stay in local file system when creating archive",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "suffix",
+              "type": "boolean",
+              "description": "STRING        backup before removal, override usual suffix ('~'",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "strip_components",
+              "type": "boolean",
+              "description": "NUMBER   strip NUMBER leading components from file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "transform",
+              "type": "string",
+              "description": "EXPRESSION, --xform=EXPRESSION",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "checkpoint_action",
+              "type": "boolean",
+              "description": "ACTION   execute ACTION on each checkpoint",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "full_time",
+              "type": "boolean",
+              "description": "print file time to its full resolution",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "index_file",
+              "type": "boolean",
+              "description": "FILE      send verbose output to FILE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_quote_chars",
+              "type": "boolean",
+              "description": "STRING   disable quoting for characters from STRING",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "quote_chars",
+              "type": "boolean",
+              "description": "STRING   additionally quote characters from STRING",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "quoting_style",
+              "type": "boolean",
+              "description": "STYLE  set name quoting style; see below for valid STYLE",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "show_defaults",
+              "type": "boolean",
+              "description": "show tar defaults",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "show_omitted_dirs",
+              "type": "boolean",
+              "description": "when listing or extracting, list each directory",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "utc",
+              "type": "boolean",
+              "description": "print file modification times in UTC",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "warning",
+              "type": "boolean",
+              "description": "KEYWORD      warning control",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "o",
+              "type": "boolean",
+              "description": "when creating, same as --old-archive; when",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "restrict",
+              "type": "boolean",
+              "description": "disable use of some potentially harmful options",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "usage",
+              "type": "boolean",
+              "description": "give a short usage message",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "print program version",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "format",
+              "type": "string",
+              "description": "gnu -f- -b20 --quoting-style=escape --rmt-command=/usr/sbin/rmt",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "rsh_command",
+              "type": "boolean",
+              "description": "/usr/bin/rsh",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "tar [OPTION...] [FILE]..."
+          ],
+          "patterns": [
+            "tar [OPTION...] [FILE]...",
+            "gnu 'tar' saves many files together into a single tape or disk archive, and can restore individual files from the archive."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "tar",
+            "help_lines": 326
+          },
+          "template": "tar -czf {archive}.tar.gz {source}"
+        }
+      ],
+      "metadata": {}
+    },
+    "zip": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "zip",
+          "description": "zip command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "zip --help"
+          ],
+          "patterns": [
+            "zip"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "unzip": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "unzip",
+          "description": "UnZip 6.00 of 20 April 2009, by Debian. Original by Info-ZIP.",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "p",
+              "type": "boolean",
+              "description": "extract files to pipe, no messages     -l  list files (short format)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "freshen existing files, create none    -t  test compressed archive data",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "u",
+              "type": "boolean",
+              "description": "update files, create if necessary      -z  display archive comment only",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "list verbosely/show version info       -T  timestamp archive to latest",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "x",
+              "type": "boolean",
+              "description": "exclude files that follow (in xlist)   -d  extract files into exdir",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "n",
+              "type": "file",
+              "description": "never overwrite existing files         -q  quiet mode (-qq => quieter)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "o",
+              "type": "boolean",
+              "description": "overwrite files WITHOUT prompting      -a  auto-convert any text files",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "j",
+              "type": "boolean",
+              "description": "junk paths (do not make directories)   -aa treat ALL files as text",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "U",
+              "type": "boolean",
+              "description": "use escapes for all non-ASCII Unicode  -UU ignore any Unicode fields",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "C",
+              "type": "boolean",
+              "description": "match filenames case-insensitively     -L  make (some) names lowercase",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "X",
+              "type": "boolean",
+              "description": "restore UID/GID info                   -V  retain VMS version numbers",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "K",
+              "type": "boolean",
+              "description": "keep setuid/setgid/tacky permissions   -M  pipe through \"more\" pager",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "O",
+              "type": "boolean",
+              "description": "CHARSET  specify a character encoding for DOS, Windows and OS/2 archives",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "I",
+              "type": "boolean",
+              "description": "CHARSET  specify a character encoding for UNIX and other archives",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "unzip [-Z] [-opts[modifiers]] file[.zip] [list] [-x xlist] [-d exdir]"
+          ],
+          "patterns": [
+            "unzip [-Z] [-opts[modifiers]] file[.zip] [list] [-x xlist] [-d exdir]",
+            "unzip 6.00 of 20 april 2009, by debian. original by info-zip."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "unzip",
+            "help_lines": 27
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "gzip": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "gzip",
+          "description": "Compress or uncompress FILEs (by default, compress FILES in-place).",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "rsyncable",
+              "type": "boolean",
+              "description": "make rsync-friendly archive",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "synchronous",
+              "type": "boolean",
+              "description": "synchronous output (safer if system crashes, but slower)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "gzip [OPTION]... [FILE]..."
+          ],
+          "patterns": [
+            "gzip [OPTION]... [FILE]...",
+            "compress or uncompress files (by default, compress files in-place)."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "gzip",
+            "help_lines": 29
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "gunzip": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "gunzip",
+          "description": "Uncompress FILEs (by default, in-place).",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "synchronous",
+              "type": "boolean",
+              "description": "synchronous output (safer if system crashes, but slower)",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "display this help and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "display version information and exit",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "/usr/bin/gunzip [OPTION]... [FILE]..."
+          ],
+          "patterns": [
+            "/usr/bin/gunzip [OPTION]... [FILE]...",
+            "uncompress files (by default, in-place)."
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "gunzip",
+            "help_lines": 24
+          },
+          "template": null
+        }
+      ],
+      "metadata": {}
+    },
+    "ssh": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "ssh",
+          "description": "ssh command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "ssh --help"
+          ],
+          "patterns": [
+            "ssh"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "scp": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "scp",
+          "description": "scp command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "scp --help"
+          ],
+          "patterns": [
+            "scp"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    }
+  }
+}

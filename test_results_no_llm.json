@@ -1,0 +1,85 @@
+{
+  "total": 116,
+  "successful": 98,
+  "failed": 18,
+  "with_templates": 14,
+  "errors": [
+    {
+      "command": "cd",
+      "error": "Failed to extract help for cd: Could not get help for command: cd"
+    },
+    {
+      "command": "alias",
+      "error": "Failed to extract help for alias: Could not get help for command: alias"
+    },
+    {
+      "command": "export",
+      "error": "Failed to extract help for export: Could not get help for command: export"
+    },
+    {
+      "command": "locate",
+      "error": "Failed to extract help for locate: Could not get help for command: locate"
+    },
+    {
+      "command": "type",
+      "error": "Failed to extract help for type: Could not get help for command: type"
+    },
+    {
+      "command": "help",
+      "error": "Failed to extract help for help: Could not get help for command: help"
+    },
+    {
+      "command": "cal",
+      "error": "Failed to extract help for cal: Could not get help for command: cal"
+    },
+    {
+      "command": "bg",
+      "error": "Failed to extract help for bg: Could not get help for command: bg"
+    },
+    {
+      "command": "fg",
+      "error": "Failed to extract help for fg: Could not get help for command: fg"
+    },
+    {
+      "command": "jobs",
+      "error": "Failed to extract help for jobs: Could not get help for command: jobs"
+    },
+    {
+      "command": "disown",
+      "error": "Failed to extract help for disown: Could not get help for command: disown"
+    },
+    {
+      "command": "tmux",
+      "error": "Failed to extract help for tmux: Could not get help for command: tmux"
+    },
+    {
+      "command": "emacs",
+      "error": "Failed to extract help for emacs: Could not get help for command: emacs"
+    },
+    {
+      "command": "npm",
+      "error": "Failed to extract help for npm: Could not get help for command: npm"
+    },
+    {
+      "command": "yarn",
+      "error": "Failed to extract help for yarn: Could not get help for command: yarn"
+    },
+    {
+      "command": "java",
+      "error": "Failed to extract help for java: Could not get help for command: java"
+    },
+    {
+      "command": "javac",
+      "error": "Failed to extract help for javac: Could not get help for command: javac"
+    },
+    {
+      "command": "go",
+      "error": "Failed to extract help for go: Could not get help for command: go"
+    }
+  ],
+  "timing": {
+    "start": 1769177375.561071,
+    "end": 1769177387.9243352,
+    "duration": 12.363264322280884
+  }
+}
