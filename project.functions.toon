@@ -1,5 +1,5 @@
 project: nlp2cmd
-generated: "2026-01-23T09:35:55.415712"
+generated: "2026-01-23T09:46:19.330211"
 modules[108]{path,lang,items}:
   termo1.py,python,1
   termo.py,python,4
@@ -8,7 +8,6 @@ modules[108]{path,lang,items}:
   termo2.py,python,29
   tests/conftest.py,python,19
   tests/__init__.py,python,0
-  htmlcov/coverage_html_cb_dd2e7eb5.js,javascript,6
   tests/iterative/test_iter_2_regex.py,python,41
   tests/iterative/test_iter_6_7_structured.py,python,38
   tests/iterative/test_iter_9_hybrid.py,python,32
@@ -43,6 +42,7 @@ modules[108]{path,lang,items}:
   src/nlp2cmd/__init__.py,python,0
   src/nlp2cmd/core.py,python,25
   src/nlp2cmd/monitoring/resources.py,python,10
+  src/nlp2cmd/monitoring/token_costs.py,python,10
   src/nlp2cmd/monitoring/__init__.py,python,0
   src/nlp2cmd/schemas/__init__.py,python,23
   src/nlp2cmd/generation/regex.py,python,10
@@ -182,14 +182,6 @@ function_details:
       sql_test_plans,function,() -> None,220-252,false,33,1,Provide sample SQL execution plans.
       shell_test_plans,function,() -> None,256-275,false,20,1,Provide sample Shell execution plans.
       pytest_configure,function,(config) -> None,279-289,false,11,1,Configure custom markers.
-  htmlcov/coverage_html_cb_dd2e7eb5.js:
-    functions[6]{name,kind,sig,loc,async,lines,cc,does}:
-      debounce,function,"(callback, wait) -> None",11-19,false,9,1,debounce
-      checkVisible,function,(element) -> None,21-26,false,6,1,checks visible
-      on_click,function,"(sel, fn) -> None",28-33,false,6,1,handles click
-      getCellValue,function,(row) -> None,36-48,false,13,1,retrieves cell value
-      rowComparator,function,"(rowA, rowB) -> None",50-57,false,8,1,row comparator
-      sortColumn,function,(th) -> None,59-110,false,52,1,sorts column
   tests/iterative/test_iter_2_regex.py:
     functions[41]{name,kind,sig,loc,async,lines,cc,does}:
       TestRegexEntityExtractor.extractor,method,() -> RegexEntityExtractor,16-17,false,2,1,extractor
@@ -1116,11 +1108,11 @@ function_details:
       NLP2CMD.__init__,method,"(adapter:BaseDSLAdapter, nlp_backend:Optional[NLPBackend]=None, validator:Optional[BaseValidator]=None, feedback_analyzer:Optional[FeedbackAnalyzer]=None, validation_mode:str='normal', auto_fix:bool=False) -> None",353-396,false,44,3,Initialize NLP2CMD instance.
       NLP2CMD.dsl_name,method,() -> str,399-401,false,3,1,Get the name of the current DSL adapter.
       NLP2CMD._normalize_entities,method,"(intent:str, entities:dict[str,Any], context:dict[str,Any]) -> dict[str, Any]",403-516,false,114,48,normalize entities
-      NLP2CMD.transform,method,"(text:str, context:Optional[dict[str,Any]]=None, dry_run:bool=False) -> TransformResult",518-624,false,107,11,Transform natural language text into a DSL command.
-      NLP2CMD.set_context,method,"(key:str, value:Any) -> None",626-628,false,3,1,Set a context value for subsequent transformations.
-      NLP2CMD.clear_context,method,() -> None,630-632,false,3,1,Clear all context.
-      NLP2CMD.get_history,method,"() -> list[TransformResult]",634-636,false,3,1,Get transformation history.
-      NLP2CMD.clear_history,method,() -> None,638-640,false,3,1,Clear transformation history.
+      NLP2CMD.transform,method,"(text:str, context:Optional[dict[str,Any]]=None, dry_run:bool=False) -> TransformResult",518-625,false,108,11,Transform natural language text into a DSL command.
+      NLP2CMD.set_context,method,"(key:str, value:Any) -> None",627-629,false,3,1,Set a context value for subsequent transformations.
+      NLP2CMD.clear_context,method,() -> None,631-633,false,3,1,Clear all context.
+      NLP2CMD.get_history,method,"() -> list[TransformResult]",635-637,false,3,1,Get transformation history.
+      NLP2CMD.clear_history,method,() -> None,639-641,false,3,1,Clear transformation history.
   src/nlp2cmd/monitoring/resources.py:
     functions[10]{name,kind,sig,loc,async,lines,cc,does}:
       get_monitor,function,() -> ResourceMonitor,104-106,false,3,1,Get the global resource monitor instance.
@@ -1133,6 +1125,18 @@ function_details:
       ResourceMonitor.measure_execution,method,() -> None,40-74,false,35,1,Context manager to measure resource usage during execution.
       ResourceMonitor.get_last_metrics,method,"() -> Optional[ResourceMetrics]",76-78,false,3,1,Get metrics from last execution.
       ResourceMonitor.format_metrics,method,"(metrics:ResourceMetrics) -> str",80-97,false,18,4,Format metrics for display.
+  src/nlp2cmd/monitoring/token_costs.py:
+    functions[10]{name,kind,sig,loc,async,lines,cc,does}:
+      estimate_token_cost,function,"(time_ms:float, cpu_percent:float, memory_mb:float, energy_mj:Optional[float]=None) -> TokenCostEstimate",191-198,false,8,1,Convenient function for token cost estimation.
+      format_token_estimate,function,"(estimate:TokenCostEstimate) -> str",201-203,false,3,1,Format token cost estimate for display.
+      parse_metrics_string,function,"(metrics_str:str) -> Dict[str, float]",206-251,false,46,12,"Parse metrics string like '⏱️ Time: 2.6ms | 💻 CPU: 0.0% | 🧠 RAM: 53.5MB (0.1%) |..."
+      TokenCostEstimator.__init__,method,() -> None,68-70,false,3,1,creates
+      TokenCostEstimator.estimate_from_metrics,method,"(time_ms:float, cpu_percent:float, memory_mb:float, energy_mj:Optional[float]=None) -> TokenCostEstimate",72-123,false,52,6,Estimate token cost from resource metrics.
+      TokenCostEstimator._estimate_tokens_from_cpu,method,"(time_seconds:float, cpu_percent:float) -> int",125-130,false,6,1,Estimate tokens based on CPU usage.
+      TokenCostEstimator._estimate_tokens_from_memory,method,"(time_seconds:float, memory_mb:float) -> int",132-141,false,10,1,Estimate tokens based on memory usage.
+      TokenCostEstimator._estimate_tokens_from_energy,method,"(energy_mj:float) -> int",143-148,false,6,1,Estimate tokens based on energy consumption.
+      TokenCostEstimator._determine_model_tier,method,"(time_ms:float, cpu_percent:float, memory_mb:float) -> str",150-168,false,19,4,Determine equivalent model tier based on resource usage.
+      TokenCostEstimator.format_estimate,method,"(estimate:TokenCostEstimate) -> str",170-184,false,15,2,Format token cost estimate for display.
   src/nlp2cmd/schemas/__init__.py:
     functions[23]{name,kind,sig,loc,async,lines,cc,does}:
       SchemaRegistry.__init__,method,() -> None,34-36,false,3,1,creates
@@ -1337,19 +1341,19 @@ function_details:
     functions[15]{name,kind,sig,loc,async,lines,cc,does}:
       _shell_env_context,function,"(context:dict[str,Any]) -> dict[str, Any]",66-83,false,18,5,shell env context
       get_adapter,function,"(dsl:str, context:dict[str,Any]) -> None",86-104,false,19,3,Get the appropriate adapter for the DSL type.
-      main,function,"(ctx, interactive:bool, dsl:str, query:Optional[str], auto_repair:bool, explain:bool) -> None",392-450,false,59,14,NLP2CMD - Natural Language to Domain-Specific Commands.
-      repair,function,"(ctx, file:str, backup:bool) -> None",457-506,false,50,11,Repair a configuration file.
-      validate,function,"(ctx, file:str) -> None",512-538,false,27,7,Validate a configuration file.
-      analyze_env,function,"(ctx, output:Optional[str]) -> None",544-613,false,70,12,Analyze system environment.
+      main,function,"(ctx, interactive:bool, dsl:str, query:Optional[str], auto_repair:bool, explain:bool) -> None",409-484,false,76,18,NLP2CMD - Natural Language to Domain-Specific Commands.
+      repair,function,"(ctx, file:str, backup:bool) -> None",491-540,false,50,11,Repair a configuration file.
+      validate,function,"(ctx, file:str) -> None",546-572,false,27,7,Validate a configuration file.
+      analyze_env,function,"(ctx, output:Optional[str]) -> None",578-647,false,70,12,Analyze system environment.
       NLP2CMDGroup.parse_args,method,"(ctx:Any, args:list[str]) -> None",40-63,false,24,9,parses args
       InteractiveSession.__init__,method,"(dsl:str='auto', auto_repair:bool=False) -> None",110-128,false,19,1,creates
       InteractiveSession._analyze_environment,method,() -> None,130-144,false,15,3,Analyze current environment.
       InteractiveSession.process,method,"(user_input:str) -> FeedbackResult",146-173,false,28,1,Process user input and return feedback.
-      InteractiveSession.display_feedback,method,"(feedback:FeedbackResult) -> None",175-230,false,56,13,Display feedback result with formatting.
-      InteractiveSession.run,method,() -> None,232-280,false,49,10,Run interactive REPL.
-      InteractiveSession._show_help,method,() -> None,282-298,false,17,1,Display help information.
-      InteractiveSession._handle_command,method,"(cmd:str) -> None",300-355,false,56,14,Handle special commands.
-      InteractiveSession._correction_loop,method,"(feedback:FeedbackResult) -> None",357-377,false,21,8,Interactive correction loop.
+      InteractiveSession.display_feedback,method,"(feedback:FeedbackResult) -> None",175-247,false,73,17,Display feedback result with formatting.
+      InteractiveSession.run,method,() -> None,249-297,false,49,10,Run interactive REPL.
+      InteractiveSession._show_help,method,() -> None,299-315,false,17,1,Display help information.
+      InteractiveSession._handle_command,method,"(cmd:str) -> None",317-372,false,56,14,Handle special commands.
+      InteractiveSession._correction_loop,method,"(feedback:FeedbackResult) -> None",374-394,false,21,8,Interactive correction loop.
   src/nlp2cmd/aggregator/__init__.py:
     functions[11]{name,kind,sig,loc,async,lines,cc,does}:
       ResultAggregator.__init__,method,"(default_format:OutputFormat=OutputFormat.TEXT) -> None",55-62,false,8,1,Initialize aggregator.
@@ -1545,25 +1549,25 @@ function_details:
     functions[21]{name,kind,sig,loc,async,lines,cc,does}:
       ShellAdapter.__init__,method,"(shell_type:str='bash', environment_context:Optional[dict[str,Any]]=None, safety_policy:Optional[ShellSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",203-225,false,23,4,Initialize Shell adapter.
       ShellAdapter._parse_environment_context,method,"(ctx:dict[str,Any]) -> EnvironmentContext",227-235,false,9,1,Parse environment context.
-      ShellAdapter.generate,method,"(plan:dict[str,Any]) -> str",237-293,false,57,18,Generate shell command from execution plan.
-      ShellAdapter._generate_file_search,method,"(entities:dict[str,Any]) -> str",295-350,false,56,24,Generate find command.
-      ShellAdapter._generate_file_operation,method,"(entities:dict[str,Any]) -> str",352-399,false,48,23,Generate file operation command.
-      ShellAdapter._generate_process_management,method,"(entities:dict[str,Any]) -> str",401-514,false,114,54,Generate process management command.
-      ShellAdapter._generate_process_monitoring,method,"(entities:dict[str,Any]) -> str",516-559,false,44,22,Generate process monitoring command.
-      ShellAdapter._generate_network,method,"(entities:dict[str,Any]) -> str",561-602,false,42,24,Generate network command.
-      ShellAdapter._generate_disk,method,"(entities:dict[str,Any]) -> str",604-624,false,21,11,Generate disk command.
-      ShellAdapter._generate_archive,method,"(entities:dict[str,Any]) -> str",626-670,false,45,30,Generate archive command.
-      ShellAdapter._generate_text_processing,method,"(entities:dict[str,Any]) -> str",672-686,false,15,6,Generate text processing command.
-      ShellAdapter._generate_git,method,"(entities:dict[str,Any]) -> str",688-708,false,21,5,Generate git command.
-      ShellAdapter._generate_system_maintenance,method,"(entities:dict[str,Any]) -> str",710-731,false,22,10,Generate system maintenance command.
-      ShellAdapter._generate_development,method,"(entities:dict[str,Any]) -> str",733-790,false,58,25,Generate development command.
-      ShellAdapter._generate_security,method,"(entities:dict[str,Any]) -> str",792-817,false,26,12,Generate security command.
-      ShellAdapter._generate_docker,method,"(entities:dict[str,Any]) -> str",819-849,false,31,4,Generate docker command.
-      ShellAdapter._generate_docker_script,method,"(actions:list[str], entities:dict[str,Any]) -> str",851-892,false,42,5,Generate multi-step docker script.
-      ShellAdapter._generate_generic,method,"(entities:dict[str,Any]) -> str",894-949,false,56,33,Generate generic command from entities.
-      ShellAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",951-986,false,36,8,Validate shell command syntax.
-      ShellAdapter.check_safety,method,"(command:str) -> dict[str, Any]",988-1054,false,67,18,Check shell command against safety policy.
-      ShellAdapter.check_tool_availability,method,"(command:str) -> dict[str, Any]",1056-1069,false,14,2,Check if required tools are available.
+      ShellAdapter.generate,method,"(plan:dict[str,Any]) -> str",237-290,false,54,18,Generate shell command from execution plan.
+      ShellAdapter._generate_file_search,method,"(entities:dict[str,Any]) -> str",292-347,false,56,24,Generate find command.
+      ShellAdapter._generate_file_operation,method,"(entities:dict[str,Any]) -> str",349-396,false,48,23,Generate file operation command.
+      ShellAdapter._generate_process_management,method,"(entities:dict[str,Any]) -> str",398-504,false,107,54,Generate process management command.
+      ShellAdapter._generate_process_monitoring,method,"(entities:dict[str,Any]) -> str",506-549,false,44,22,Generate process monitoring command.
+      ShellAdapter._generate_network,method,"(entities:dict[str,Any]) -> str",551-592,false,42,24,Generate network command.
+      ShellAdapter._generate_disk,method,"(entities:dict[str,Any]) -> str",594-614,false,21,11,Generate disk command.
+      ShellAdapter._generate_archive,method,"(entities:dict[str,Any]) -> str",616-660,false,45,30,Generate archive command.
+      ShellAdapter._generate_text_processing,method,"(entities:dict[str,Any]) -> str",662-676,false,15,6,Generate text processing command.
+      ShellAdapter._generate_git,method,"(entities:dict[str,Any]) -> str",678-698,false,21,5,Generate git command.
+      ShellAdapter._generate_system_maintenance,method,"(entities:dict[str,Any]) -> str",700-721,false,22,10,Generate system maintenance command.
+      ShellAdapter._generate_development,method,"(entities:dict[str,Any]) -> str",723-780,false,58,25,Generate development command.
+      ShellAdapter._generate_security,method,"(entities:dict[str,Any]) -> str",782-807,false,26,12,Generate security command.
+      ShellAdapter._generate_docker,method,"(entities:dict[str,Any]) -> str",809-839,false,31,4,Generate docker command.
+      ShellAdapter._generate_docker_script,method,"(actions:list[str], entities:dict[str,Any]) -> str",841-882,false,42,5,Generate multi-step docker script.
+      ShellAdapter._generate_generic,method,"(entities:dict[str,Any]) -> str",884-935,false,52,33,Generate generic command from entities.
+      ShellAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",937-972,false,36,8,Validate shell command syntax.
+      ShellAdapter.check_safety,method,"(command:str) -> dict[str, Any]",974-1040,false,67,18,Check shell command against safety policy.
+      ShellAdapter.check_tool_availability,method,"(command:str) -> dict[str, Any]",1042-1055,false,14,2,Check if required tools are available.
   src/nlp2cmd/environment/__init__.py:
     functions[15]{name,kind,sig,loc,async,lines,cc,does}:
       EnvironmentAnalyzer.__init__,method,() -> None,131-132,false,2,1,creates
