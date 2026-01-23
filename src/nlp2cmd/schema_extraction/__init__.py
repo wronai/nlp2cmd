@@ -1388,6 +1388,81 @@ class DynamicSchemaRegistry:
 
         return imported
     
+    def register_appspec_export(self, file_path: Union[str, Path]) -> ExtractedSchema:
+        """Register an app2schema.appspec export file and convert to ExtractedSchema."""
+        file_path = Path(file_path)
+        if not file_path.exists():
+            raise FileNotFoundError(f"AppSpec export file not found: {file_path}")
+
+        try:
+            payload = json.loads(file_path.read_text(encoding="utf-8"))
+        except Exception as e:
+            raise ValueError(f"Failed to parse AppSpec export from {file_path}: {e}")
+
+        if not isinstance(payload, dict) or payload.get("format") != "app2schema.appspec":
+            raise ValueError(f"Invalid AppSpec export format: {file_path}")
+
+        commands: list[CommandSchema] = []
+        for action in payload.get("actions", []):
+            if not isinstance(action, dict):
+                continue
+
+            # Convert parameters
+            params: list[CommandParameter] = []
+            for name, pinfo in (action.get("params") or {}).items():
+                if not isinstance(pinfo, dict):
+                    continue
+                params.append(
+                    CommandParameter(
+                        name=str(name),
+                        type=str(pinfo.get("type") or "string"),
+                        description=str(pinfo.get("description") or ""),
+                        required=bool(pinfo.get("required", False)),
+                        default=pinfo.get("default"),
+                        choices=list(pinfo.get("choices", []) or []),
+                        location="option",  # Assume options for appspec
+                    )
+                )
+
+            # Extract patterns and examples from match section
+            patterns = []
+            examples = []
+            if isinstance(action.get("match"), dict):
+                patterns = list(action["match"].get("patterns", []))
+                examples = list(action["match"].get("examples", []))
+
+            # Determine source_type from metadata or default to shell_help
+            source_type = "shell_help"
+            metadata = action.get("metadata", {})
+            if isinstance(metadata, dict):
+                source_type = str(metadata.get("source_type") or "shell_help")
+
+            commands.append(
+                CommandSchema(
+                    name=str(action.get("id", "").split(".")[-1] or "unknown"),
+                    description=str(action.get("description") or ""),
+                    category=str(action.get("type") or "general"),
+                    parameters=params,
+                    examples=examples,
+                    patterns=patterns,
+                    source_type=source_type,
+                    metadata=dict(action.get("metadata", {}) or {}),
+                )
+            )
+
+        # Use the app name as source, fallback to filename
+        app_info = payload.get("app", {})
+        source_name = str(app_info.get("name") or file_path.stem)
+
+        extracted_schema = ExtractedSchema(
+            source=source_name,
+            source_type="appspec_export",
+            commands=commands,
+            metadata=dict(payload.get("metadata", {}) or {}),
+        )
+        self.schemas[extracted_schema.source] = extracted_schema
+        return extracted_schema
+    
     def get_all_commands(self) -> List[CommandSchema]:
         """Get all registered commands."""
         all_commands = []
@@ -1396,36 +1471,68 @@ class DynamicSchemaRegistry:
         return all_commands
     
     def search_commands(self, query: str, limit: int = 10) -> List[CommandSchema]:
-        """Search commands by name, description, or patterns."""
-        query_lower = query.lower()
-        matches = []
-        
+        """Search commands by name, description, patterns and token overlap."""
+
+        def tokenize(text: str) -> set[str]:
+            return {t for t in re.split(r"\W+", (text or "").lower()) if t}
+
+        query_lower = (query or "").lower()
+        q_tokens = tokenize(query)
+        matches: list[tuple[CommandSchema, float]] = []
+
         for command in self.get_all_commands():
-            score = 0
-            
-            # Name match
-            if query_lower in command.name.lower():
-                score += 10
-            
-            # Description match
-            if query_lower in command.description.lower():
+            score = 0.0
+
+            name_l = (command.name or "").lower()
+            desc_l = (command.description or "").lower()
+
+            # Strong name matches
+            if query_lower == name_l:
+                score += 50
+            if name_l and name_l in query_lower:
+                score += 20
+            if query_lower and query_lower in name_l:
+                score += 8
+
+            # Token overlap with name
+            name_tokens = tokenize(command.name)
+            overlap = len(q_tokens & name_tokens)
+            score += min(overlap, 3) * 6
+
+            # Description overlap
+            desc_tokens = tokenize(command.description)
+            desc_overlap = len(q_tokens & desc_tokens)
+            score += min(desc_overlap, 6) * 1.5
+            if query_lower and query_lower in desc_l:
                 score += 5
-            
-            # Pattern match
+
+            # Pattern match (both directions + token overlap)
             for pattern in command.patterns:
-                if query_lower in pattern.lower():
-                    score += 3
+                p_l = (pattern or "").lower()
+                if not p_l:
+                    continue
+                if p_l in query_lower:
+                    score += 6
                     break
-            
+                if query_lower and query_lower in p_l:
+                    score += 2
+                    break
+                p_tokens = tokenize(pattern)
+                p_overlap = len(q_tokens & p_tokens)
+                if p_overlap:
+                    score += min(p_overlap, 3) * 1.5
+
             # Parameter name match
             for param in command.parameters:
-                if query_lower in param.name.lower():
-                    score += 2
-            
+                pnm = (param.name or "").lower()
+                if not pnm:
+                    continue
+                if pnm in query_lower:
+                    score += 1.0
+
             if score > 0:
                 matches.append((command, score))
-        
-        # Sort by score and return top matches
+
         matches.sort(key=lambda x: x[1], reverse=True)
         return [cmd for cmd, _ in matches[:limit]]
     

@@ -21,6 +21,7 @@ __author__ = "NLP2CMD Team"
 from nlp2cmd.core import NLP2CMD, TransformResult
 from nlp2cmd.adapters import (
     BaseDSLAdapter,
+    AppSpecAdapter,
     SQLAdapter,
     ShellAdapter,
     DockerAdapter,

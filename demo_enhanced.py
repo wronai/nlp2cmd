@@ -34,9 +34,9 @@ def main():
     print("-" * 40)
 
     # Generate schemas for system commands (static via help output)
-    extract_schema_to_file("git", shell_export_path, source_type="shell")
-    extract_schema_to_file("df", shell_export_path, source_type="shell")
-    extract_schema_to_file("du", shell_export_path, source_type="shell")
+    extract_schema_to_file("git", shell_export_path, source_type="shell", merge=True)
+    extract_schema_to_file("df", shell_export_path, source_type="shell", merge=True)
+    extract_schema_to_file("du", shell_export_path, source_type="shell", merge=True)
 
     # Generate a simple web schema from static HTML (no Playwright required)
     html = """

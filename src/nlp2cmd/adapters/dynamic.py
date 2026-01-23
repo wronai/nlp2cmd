@@ -102,6 +102,8 @@ class DynamicAdapter(BaseDSLAdapter):
         safety_policy: Optional[SafetyPolicy] = None,
     ):
         """Initialize dynamic adapter."""
+        if isinstance(config, dict):
+            config = AdapterConfig(**config)
         super().__init__(config, safety_policy or DynamicSafetyPolicy())
         
         self.registry = schema_registry or DynamicSchemaRegistry()
@@ -147,19 +149,19 @@ class DynamicAdapter(BaseDSLAdapter):
             elif source.endswith('.mk') or source.endswith('/Makefile') or source.endswith('Makefile'):
                 return self.registry.register_makefile(source)
             elif source.endswith(('.json', '.yaml', '.yml')):
-                if source.endswith('.json') and self._is_dynamic_export_file(source):
-                    imported = self.registry.register_dynamic_export(source)
-                    all_commands: list[CommandSchema] = []
-                    for s in imported:
-                        all_commands.extend(s.commands)
-
-                    return ExtractedSchema(
-                        source=str(source),
-                        source_type="dynamic_export_bundle",
-                        commands=all_commands,
-                        metadata={"imported_sources": [s.source for s in imported]},
-                    )
-
+                # Try to detect format
+                if source.endswith('.json'):
+                    try:
+                        p = Path(source)
+                        if p.exists():
+                            data = json.loads(p.read_text(encoding="utf-8"))
+                            fmt = data.get("format")
+                            if fmt == "app2schema.appspec":
+                                return self.registry.register_appspec_export(source)
+                            elif fmt == "nlp2cmd.dynamic_schema_export":
+                                return self.registry.register_dynamic_export(source)
+                    except Exception:
+                        pass  # Fall back to OpenAPI
                 return self.registry.register_openapi_schema(source)
             else:
                 # Assume it's a shell command
@@ -178,17 +180,6 @@ class DynamicAdapter(BaseDSLAdapter):
         else:
             raise ValueError(f"Unknown source type: {source_type}")
 
-    def _is_dynamic_export_file(self, file_path: str) -> bool:
-        try:
-            p = Path(file_path)
-            if not p.exists() or not p.is_file():
-                return False
-
-            data = json.loads(p.read_text(encoding="utf-8"))
-            return isinstance(data, dict) and data.get("format") == "nlp2cmd.dynamic_schema_export"
-        except Exception:
-            return False
-    
     def generate(self, plan: Dict[str, Any]) -> str:
         """Generate command from execution plan using dynamic schemas."""
         intent = plan.get("intent", "")
@@ -264,16 +255,28 @@ class DynamicAdapter(BaseDSLAdapter):
     
     def _generate_from_schema(self, schema: CommandSchema, entities: Dict[str, Any], text: str) -> str:
         """Generate a command based on the schema and entities."""
-        if schema.source_type == "shell_help":
+        if schema.source_type in {"shell_help", "shell_script"}:
             return self._generate_shell_command(schema, entities, text)
         elif schema.source_type == "openapi":
             return self._generate_api_command(schema, entities, text)
         elif schema.source_type in ["python_click", "python_generic"]:
             return self._generate_python_command(schema, entities, text)
+        elif schema.source_type == "makefile":
+            return self._generate_make_command(schema, entities)
         elif schema.source_type == "web_dom":
             return self._generate_web_dql(schema, entities)
         else:
             return self._generate_generic_command(schema, entities, text)
+
+    def _generate_make_command(self, schema: CommandSchema, entities: Dict[str, Any]) -> str:
+        parts = ["make", schema.name]
+
+        # Treat schema.parameters as Makefile variables (VAR=value)
+        for param in schema.parameters:
+            if param.name in entities and entities.get(param.name) is not None:
+                parts.append(f"{param.name}={entities[param.name]}")
+
+        return " ".join(parts)
 
     def _generate_web_dql(self, schema: CommandSchema, entities: Dict[str, Any]) -> str:
         action = str(schema.metadata.get("action") or "")
@@ -308,6 +311,29 @@ class DynamicAdapter(BaseDSLAdapter):
     def _generate_shell_command(self, schema: CommandSchema, entities: Dict[str, Any], text: str) -> str:
         """Generate shell command from schema."""
         command_parts = [schema.name]
+
+        text_lower = (text or "").lower()
+
+        # Heuristics for common subcommands / flags when entity extraction is empty.
+        if not entities:
+            if schema.name == "git":
+                for sub in ["status", "log", "diff", "branch"]:
+                    if sub in text_lower:
+                        command_parts.append(sub)
+                        return " ".join(command_parts)
+
+            if schema.name == "df":
+                if any(k in text_lower for k in ["disk", "space", "usage", "miejsce", "dysk"]):
+                    command_parts.append("-h")
+                    return " ".join(command_parts)
+
+            if schema.name == "du":
+                if any(k in text_lower for k in ["current directory", "this directory", "bieżąc", "aktualny", "katalog"]):
+                    command_parts.extend(["-sh", "."])
+                    return " ".join(command_parts)
+                if any(k in text_lower for k in ["disk", "space", "usage", "miejsce", "dysk"]):
+                    command_parts.append("-sh")
+                    return " ".join(command_parts)
         
         # Add parameters based on entities
         for param in schema.parameters:

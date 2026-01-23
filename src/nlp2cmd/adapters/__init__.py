@@ -35,7 +35,7 @@ from nlp2cmd.adapters.dql import (
     DQLSafetyPolicy,
     EntityContext,
 )
-from nlp2cmd.adapters.dynamic import DynamicAdapter
+from nlp2cmd.adapters.appspec import AppSpecAdapter
 
 __all__ = [
     # Base
@@ -62,6 +62,6 @@ __all__ = [
     "DQLAdapter",
     "DQLSafetyPolicy",
     "EntityContext",
-    # Dynamic
-    "DynamicAdapter",
+    # AppSpec
+    "AppSpecAdapter",
 ]

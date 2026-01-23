@@ -1,0 +1,48 @@
+{
+  "format": "app2schema.appspec",
+  "version": 1,
+  "app": {
+    "name": "app",
+    "kind": "shell",
+    "source": "curl",
+    "metadata": {
+      "target": "curl"
+    }
+  },
+  "actions": [
+    {
+      "id": "shell.curl",
+      "type": "shell",
+      "description": "This is not the full help; this menu is split into categories. Use \"--help category\" to get an overview of all categories, which are: auth, connection, curl, deprecated, dns, file, ftp, global, http, imap, ldap,",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": null
+      },
+      "params": {},
+      "schema": {
+        "command": "curl",
+        "help_lines": 22
+      },
+      "match": {
+        "patterns": [
+          "curl [options...] <url>",
+          "this is not the full help; this menu is split into categories. use \"--help category\" to get an overview of all categories, which are: auth, connection, curl, deprecated, dns, file, ftp, global, http, imap, ldap,"
+        ],
+        "examples": [
+          "curl [options...] <url>"
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "curl",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    }
+  ],
+  "metadata": {}
+}

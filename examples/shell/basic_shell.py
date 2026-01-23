@@ -14,8 +14,12 @@ with environment context and safety policies.
 - https://github.com/wronai/nlp2cmd/tree/main/examples/use_cases
 """
 
+from pathlib import Path
+
+from app2schema import extract_appspec_to_file
 from nlp2cmd import NLP2CMD
-from nlp2cmd.adapters import ShellAdapter, ShellSafetyPolicy
+from nlp2cmd.adapters.dynamic import DynamicAdapter
+from nlp2cmd.adapters.shell import ShellSafetyPolicy
 from nlp2cmd.environment import EnvironmentAnalyzer
 
 
@@ -50,15 +54,21 @@ def main():
         sandbox_mode=True,
     )
 
-    # Create adapter with environment context
-    adapter = ShellAdapter(
-        shell_type="bash",
-        environment_context={
-            "os": env_info["os"]["system"].lower(),
-            "available_tools": [t for t, i in tools.items() if i.available],
-        },
+    # app2schema -> build a dynamic schema export for detected tools
+    # (kept local to the example; no hardcoded keywords inside adapter)
+    export_path = Path("./generated_shell_dynamic_schema.json")
+    for tool_name, info in tools.items():
+        if info.available:
+            try:
+                extract_appspec_to_file(tool_name, export_path, source_type="shell")
+            except Exception:
+                continue
+
+    adapter = DynamicAdapter(
+        config={"custom_options": {"load_common_commands": False}},
         safety_policy=safety_policy,
     )
+    adapter.register_schema_source(str(export_path), source_type="auto")
 
     nlp = NLP2CMD(adapter=adapter)
 

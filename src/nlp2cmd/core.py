@@ -14,6 +14,8 @@ from typing import TYPE_CHECKING, Any, Callable, Optional
 
 from pydantic import BaseModel, Field
 
+from nlp2cmd.ir import ActionIR
+
 if TYPE_CHECKING:
     from nlp2cmd.adapters.base import BaseDSLAdapter
     from nlp2cmd.feedback import FeedbackAnalyzer
@@ -610,6 +612,8 @@ class NLP2CMD:
         try:
             try:
                 plan = self.nlp_backend.generate_plan(text, full_context)
+                # Always preserve original user input text in the plan.
+                plan = plan.model_copy(update={"text": text})
             except NotImplementedError:
                 intent, confidence = self.nlp_backend.extract_intent(text)
                 entities = self.nlp_backend.extract_entities(text)
@@ -645,6 +649,9 @@ class NLP2CMD:
                 dsl_type=self.dsl_name,
                 errors=[f"Generation error: {e}"],
             )
+
+        # If adapter produced a structured ActionIR, expose it in metadata.
+        action_ir = getattr(self.adapter, "last_action_ir", None)
 
         # Step 3: Validate command
         errors = []
@@ -690,10 +697,25 @@ class NLP2CMD:
             suggestions=suggestions,
         )
 
+        if isinstance(action_ir, ActionIR):
+            result.metadata["action_ir"] = action_ir.to_dict()
+
         # Store in history
         self._history.append(result)
 
         return result
+
+    def transform_ir(
+        self,
+        text: str,
+        context: Optional[dict[str, Any]] = None,
+        dry_run: bool = False,
+    ) -> ActionIR:
+        result = self.transform(text, context=context, dry_run=dry_run)
+        action_ir = getattr(self.adapter, "last_action_ir", None)
+        if isinstance(action_ir, ActionIR):
+            return action_ir
+        raise ValueError("Adapter did not produce ActionIR")
 
     def set_context(self, key: str, value: Any) -> None:
         """Set a context value for subsequent transformations."""
