@@ -102,17 +102,21 @@ class DynamicAdapter(BaseDSLAdapter):
         safety_policy: Optional[SafetyPolicy] = None,
     ):
         """Initialize dynamic adapter."""
-        if isinstance(config, dict):
+        if config is None:
+            config = AdapterConfig()
+        elif isinstance(config, dict):
             config = AdapterConfig(**config)
         super().__init__(config, safety_policy or DynamicSafetyPolicy())
         
         # Use auto_save_path from config if provided
-        auto_save_path = config.custom_options.get("auto_save_path")
+        auto_save_path = None
+        if config and config.custom_options:
+            auto_save_path = config.custom_options.get("auto_save_path")
         self.registry = schema_registry or DynamicSchemaRegistry(auto_save_path=auto_save_path)
         self._command_cache: Dict[str, CommandSchema] = {}
         
         # Initialize with some common shell commands
-        if bool(self.config.custom_options.get("load_common_commands", True)):
+        if config and config.custom_options and bool(config.custom_options.get("load_common_commands", True)):
             self._load_common_commands()
 
     def check_safety(self, command: str) -> dict[str, Any]:
