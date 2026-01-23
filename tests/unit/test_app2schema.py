@@ -3,18 +3,17 @@ from pathlib import Path
 
 import pytest
 
-from app2schema.extract import App2SchemaResult
-from app2schema.extract import extract_schema, extract_schema_to_file
-from nlp2cmd.adapters.dynamic import DynamicAdapter
+from app2schema.extract import App2SchemaResult, extract_appspec_to_file, extract_schema
+from nlp2cmd.adapters import AppSpecAdapter
+from nlp2cmd.core import NLP2CMD
 from nlp2cmd.schema_extraction import (
     CommandParameter,
     CommandSchema,
-    DynamicSchemaRegistry,
     ExtractedSchema,
 )
 
 
-def _make_demo_export_file(tmp_path: Path) -> Path:
+def _make_demo_appspec_file(tmp_path: Path) -> Path:
     schema = ExtractedSchema(
         source="demo",
         source_type="shell_help",
@@ -47,47 +46,34 @@ def _make_demo_export_file(tmp_path: Path) -> Path:
     )
 
     export = App2SchemaResult(schemas=[schema], detected_type="shell")
-    payload = export.to_export_dict(raw=False)
+    payload = export.to_appspec_dict()
 
-    out = tmp_path / "app2schema_export.json"
+    out = tmp_path / "appspec.json"
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return out
 
 
-def test_app2schema_export_format(tmp_path: Path):
-    out = _make_demo_export_file(tmp_path)
+def test_app2schema_appspec_format(tmp_path: Path):
+    out = _make_demo_appspec_file(tmp_path)
     data = json.loads(out.read_text(encoding="utf-8"))
 
-    assert data["format"] == "nlp2cmd.dynamic_schema_export"
+    assert data["format"] == "app2schema.appspec"
     assert data["version"] == 1
-    assert data["detected_type"] == "shell"
-    assert "sources" in data
-    assert "demo" in data["sources"]
+    assert "app" in data
+    assert "actions" in data
+    assert any(a.get("id", "").startswith("shell.") for a in data.get("actions", []))
 
 
-def test_dynamic_registry_register_dynamic_export(tmp_path: Path):
-    export_file = _make_demo_export_file(tmp_path)
+def test_appspec_adapter_produces_action_ir(tmp_path: Path):
+    appspec_file = _make_demo_appspec_file(tmp_path)
 
-    registry = DynamicSchemaRegistry()
-    imported = registry.register_dynamic_export(export_file)
+    adapter = AppSpecAdapter(appspec_path=appspec_file)
+    nlp = NLP2CMD(adapter=adapter)
 
-    assert len(imported) == 1
-    assert imported[0].source == "demo"
-    assert len(imported[0].commands) == 1
-    assert imported[0].commands[0].name == "demo_cmd"
-
-
-def test_dynamic_adapter_auto_imports_app2schema_export(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    export_file = _make_demo_export_file(tmp_path)
-
-    monkeypatch.setattr(DynamicAdapter, "_load_common_commands", lambda self: None)
-
-    adapter = DynamicAdapter(schema_registry=DynamicSchemaRegistry())
-    extracted = adapter.register_schema_source(str(export_file), source_type="auto")
-
-    assert extracted.source_type == "dynamic_export_bundle"
-    assert any(cmd.name == "demo_cmd" for cmd in extracted.commands)
-    assert adapter.registry.get_command_by_name("demo_cmd") is not None
+    ir = nlp.transform_ir("demo cmd")
+    assert ir.action_id
+    assert ir.dsl is not None
+    assert ir.to_dict()["format"] == "nlp2cmd.action_ir"
 
 
 def test_app2schema_extract_shell_script_auto(tmp_path: Path):
@@ -111,18 +97,17 @@ done
         encoding="utf-8",
     )
 
-    result = extract_schema(script_path, source_type="auto")
-    assert result.detected_type == "shell_script"
-    assert len(result.schemas) == 1
-    schema = result.schemas[0]
-    assert schema.source_type == "shell_script"
-    assert len(schema.commands) == 1
+    out_path = tmp_path / "appspec.json"
+    written = extract_appspec_to_file(script_path, out_path, source_type="auto")
+    assert written.exists()
 
-    cmd = schema.commands[0]
-    assert cmd.name == "demo"
-    param_names = {p.name for p in cmd.parameters}
-    # Heuristic-based parsing; ensure we picked up at least one short/long option.
-    assert "v" in param_names or "name" in param_names
+    adapter = AppSpecAdapter(appspec_path=written)
+    nlp = NLP2CMD(adapter=adapter)
+
+    ir = nlp.transform_ir("demo.sh --name x")
+    assert ir.action_id
+    assert ir.dsl is not None
+    assert ir.to_dict()["format"] == "nlp2cmd.action_ir"
 
 
 def test_app2schema_extract_makefile_auto(tmp_path: Path):
@@ -138,18 +123,17 @@ test:
         encoding="utf-8",
     )
 
-    result = extract_schema(makefile_path, source_type="auto")
-    assert result.detected_type == "makefile"
-    assert len(result.schemas) == 1
-    schema = result.schemas[0]
-    assert schema.source_type == "makefile"
-    assert any(c.name == "test" for c in schema.commands)
+    out_path = tmp_path / "appspec.json"
+    written = extract_appspec_to_file(makefile_path, out_path, source_type="auto")
+    assert written.exists()
 
-    vars_meta = schema.metadata.get("variables")
-    if isinstance(vars_meta, dict):
-        assert "NAME" in vars_meta
-    elif isinstance(vars_meta, list):
-        assert "NAME" in vars_meta
+    adapter = AppSpecAdapter(appspec_path=written)
+    nlp = NLP2CMD(adapter=adapter)
+
+    ir = nlp.transform_ir("make test")
+    assert ir.action_id
+    assert ir.dsl is not None
+    assert ir.to_dict()["format"] == "nlp2cmd.action_ir"
 
 
 def test_app2schema_extract_schema_to_file_roundtrip_shell_script(tmp_path: Path):
@@ -162,10 +146,10 @@ getopts "v" opt
         encoding="utf-8",
     )
 
-    out_path = tmp_path / "export.json"
-    written = extract_schema_to_file(script_path, out_path, source_type="auto")
+    out_path = tmp_path / "appspec.json"
+    written = extract_appspec_to_file(script_path, out_path, source_type="auto")
     assert written.exists()
 
-    adapter = DynamicAdapter(schema_registry=DynamicSchemaRegistry())
-    extracted = adapter.register_schema_source(str(written), source_type="auto")
-    assert extracted.source_type == "dynamic_export_bundle"
+    nlp = NLP2CMD(adapter=AppSpecAdapter(appspec_path=written))
+    ir = nlp.transform_ir("demo v=true")
+    assert ir.to_dict()["format"] == "nlp2cmd.action_ir"

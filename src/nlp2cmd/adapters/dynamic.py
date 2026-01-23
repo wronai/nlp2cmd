@@ -106,7 +106,9 @@ class DynamicAdapter(BaseDSLAdapter):
             config = AdapterConfig(**config)
         super().__init__(config, safety_policy or DynamicSafetyPolicy())
         
-        self.registry = schema_registry or DynamicSchemaRegistry()
+        # Use auto_save_path from config if provided
+        auto_save_path = config.custom_options.get("auto_save_path")
+        self.registry = schema_registry or DynamicSchemaRegistry(auto_save_path=auto_save_path)
         self._command_cache: Dict[str, CommandSchema] = {}
         
         # Initialize with some common shell commands
@@ -123,17 +125,28 @@ class DynamicAdapter(BaseDSLAdapter):
     def _load_common_commands(self):
         """Load schemas for common shell commands."""
         common_commands = [
-            'find', 'grep', 'sed', 'awk', 'ls', 'cd', 'mkdir', 'rm', 'cp', 'mv',
+            'find', 'grep', 'sed', 'awk', 'ls', 'mkdir', 'rm', 'cp', 'mv',
             'ps', 'top', 'kill', 'systemctl', 'docker', 'git', 'curl', 'ping',
-            'df', 'du'
+            'df', 'du', 'tar'
         ]
         
         for cmd in common_commands:
             try:
+                # Register with shell help - templates will be generated automatically
                 self.registry.register_shell_help(cmd)
             except Exception:
-                # Skip commands that don't have help available
-                continue
+                # If shell help fails, create minimal schema without template
+                from nlp2cmd.schema_extraction import CommandSchema
+                schema = CommandSchema(
+                    name=cmd,
+                    description=f"{cmd} command",
+                    category="shell",
+                    parameters=[],
+                    examples=[f"{cmd} --help"],
+                    patterns=[cmd],
+                    source_type="shell_common",
+                )
+                self.registry.register_command(schema)
     
     def register_schema_source(self, source: str, source_type: str = "auto") -> ExtractedSchema:
         """Register a new schema source."""
@@ -308,32 +321,133 @@ class DynamicAdapter(BaseDSLAdapter):
         }
         return json.dumps(payload, ensure_ascii=False)
     
+    def _generate_from_template(self, schema: CommandSchema, entities: Dict[str, Any], text: str) -> str:
+        """Generate command using template if available."""
+        template = schema.template or schema.metadata.get('template')
+        if not template:
+            return None
+        
+        text_lower = text.lower()
+        
+        # Extract values from text for template variables
+        template_vars = {}
+        
+        # Size extraction (e.g., "100MB", "1GB")
+        import re
+        size_match = re.search(r'(\d+(?:\.\d+)?)\s*(MB|GB|KB|M|G|K)', text, re.IGNORECASE)
+        if size_match:
+            size = size_match.group(1)
+            unit = size_match.group(2)
+            if unit.upper() in ['MB', 'M']:
+                template_vars['size'] = f"+{size}M"
+            elif unit.upper() in ['GB', 'G']:
+                template_vars['size'] = f"+{size}G"
+            elif unit.upper() in ['KB', 'K']:
+                template_vars['size'] = f"+{size}k"
+        
+        # Time extraction (e.g., "last week", "recent")
+        if any(k in text_lower for k in ['last week', 'week', 'recent']):
+            template_vars['days'] = '7'
+        elif any(k in text_lower for k in ['today', 'yesterday']):
+            template_vars['days'] = '1'
+        elif any(k in text_lower for k in ['last month', 'month']):
+            template_vars['days'] = '30'
+        
+        # Pattern extraction
+        if 'todo' in text_lower:
+            template_vars['pattern'] = 'TODO'
+        elif 'python' in text_lower:
+            template_vars['pattern'] = '--include=*.py'
+        
+        # Path extraction
+        if any(k in text_lower for k in ['current directory', 'this directory', 'here']):
+            template_vars['path'] = '.'
+        elif 'logs' in text_lower:
+            template_vars['path'] = 'logs/'
+            template_vars['source'] = 'logs'
+            template_vars['archive'] = 'logs'
+        
+        # Subcommand extraction
+        subcommand_map = {
+            'docker': {
+                'list': 'ps -a',
+                'images': 'images',
+                'logs': 'logs',
+                'run': 'run',
+            },
+            'git': {
+                'status': 'status',
+                'log': 'log',
+                'diff': 'diff',
+                'branch': 'branch',
+                'add': 'add',
+                'commit': 'commit',
+                'push': 'push',
+                'pull': 'pull',
+            }
+        }
+        
+        if schema.name in subcommand_map:
+            for keyword, subcmd in subcommand_map[schema.name].items():
+                if keyword in text_lower:
+                    template_vars['subcommand'] = subcmd
+                    break
+        
+        # Special cases
+        if 'top 10' in text_lower or 'top processes' in text_lower:
+            template_vars['limit'] = '10'
+        
+        # Fill template
+        try:
+            cmd = template.format(**template_vars)
+            # Clean up double spaces and trailing spaces
+            cmd = ' '.join(cmd.split())
+            return cmd
+        except KeyError:
+            # Missing template variable, try to fill with defaults
+            default_vars = {
+                'size': '+100M',
+                'days': '7',
+                'path': '.',
+                'pattern': 'TODO',
+                'subcommand': 'help',
+                'options': '',
+                'limit': '10',
+                'archive': 'archive',
+                'source': 'directory',
+            }
+            
+            # Merge with extracted vars
+            final_vars = {**default_vars, **template_vars}
+            
+            try:
+                cmd = template.format(**final_vars)
+                # Clean up double spaces and trailing spaces
+                cmd = ' '.join(cmd.split())
+                return cmd
+            except KeyError as e:
+                # Still missing variables, return template with placeholders
+                return template
+    
     def _generate_shell_command(self, schema: CommandSchema, entities: Dict[str, Any], text: str) -> str:
         """Generate shell command from schema."""
+        # First try template-based generation
+        template_cmd = self._generate_from_template(schema, entities, text)
+        if template_cmd:
+            return template_cmd
+        
+        # Fallback to heuristics if no template
         command_parts = [schema.name]
-
         text_lower = (text or "").lower()
 
-        # Heuristics for common subcommands / flags when entity extraction is empty.
-        if not entities:
-            if schema.name == "git":
-                for sub in ["status", "log", "diff", "branch"]:
-                    if sub in text_lower:
-                        command_parts.append(sub)
-                        return " ".join(command_parts)
-
-            if schema.name == "df":
-                if any(k in text_lower for k in ["disk", "space", "usage", "miejsce", "dysk"]):
-                    command_parts.append("-h")
-                    return " ".join(command_parts)
-
-            if schema.name == "du":
-                if any(k in text_lower for k in ["current directory", "this directory", "bieżąc", "aktualny", "katalog"]):
-                    command_parts.extend(["-sh", "."])
-                    return " ".join(command_parts)
-                if any(k in text_lower for k in ["disk", "space", "usage", "miejsce", "dysk"]):
-                    command_parts.append("-sh")
-                    return " ".join(command_parts)
+        # Minimal heuristics for fallback
+        if schema.name == "ps" and "processes" in text_lower:
+            command_parts.extend(["aux", "|", "head", "-10"])
+            return " ".join(command_parts)
+        
+        if schema.name == "find" and "files" in text_lower:
+            command_parts.append(".")
+            return " ".join(command_parts)
         
         # Add parameters based on entities
         for param in schema.parameters:

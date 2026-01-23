@@ -444,7 +444,12 @@ class NLP2CMD:
                     from nlp2cmd.nlp_enhanced import HybridNLPBackend
 
                     self.nlp_backend = HybridNLPBackend(schema_registry=dynamic_registry, config={})
-                except Exception:
+                    import sys
+                    print(f"[NLP2CMD] Using HybridNLPBackend with {len(dynamic_registry.get_all_commands())} commands", file=sys.stderr)
+                except Exception as e:
+                    # Fallback to rule-based with dynamic-generated rules
+                    import sys
+                    print(f"[NLP2CMD] Failed to import HybridNLPBackend: {e}", file=sys.stderr)
                     self.nlp_backend = RuleBasedBackend(rules={}, config={"dsl": adapter.DSL_NAME})
             else:
                 # Convert adapter INTENTS to rule format

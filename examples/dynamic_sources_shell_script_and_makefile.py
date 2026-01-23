@@ -4,8 +4,6 @@ Dynamic sources example: Shell script + Makefile.
 
 This example demonstrates the intended flow:
 1) app2schema: extract schema from local sources (.sh, Makefile)
-2) nlp2cmd: import the generated dynamic schema export into DynamicAdapter
-3) transform: generate commands using schema-driven dynamic routing
 """
 
 from __future__ import annotations
@@ -14,8 +12,8 @@ import json
 import tempfile
 from pathlib import Path
 
-from app2schema import extract_schema_to_file
-from nlp2cmd.adapters.dynamic import DynamicAdapter
+from app2schema import extract_appspec_to_file
+from nlp2cmd.adapters import AppSpecAdapter
 from nlp2cmd.core import NLP2CMD
 
 
@@ -52,28 +50,20 @@ done
         encoding="utf-8",
     )
 
-    export_path = tmp_dir / "dynamic_export.json"
+    appspec_path = tmp_dir / "appspec.json"
 
-    # app2schema: produce a validated dynamic schema export (single file)
-    extract_schema_to_file(str(sh_path), export_path, source_type="shell_script")
-    extract_schema_to_file(str(mk_path), export_path, source_type="makefile")
+    # app2schema: produce AppSpec (single file)
+    # Note: current CLI implementation writes a single AppSpec; if you need a merged spec
+    # across multiple sources, generate one spec per source and merge externally.
+    extract_appspec_to_file(str(sh_path), appspec_path, source_type="shell_script")
+    extract_appspec_to_file(str(mk_path), appspec_path, source_type="makefile")
 
-    # nlp2cmd: import exported schemas
-    adapter = DynamicAdapter(config={"custom_options": {"load_common_commands": False}})
-    adapter.register_schema_source(str(export_path), source_type="auto")
+    adapter = AppSpecAdapter(appspec_path=appspec_path)
     nlp = NLP2CMD(adapter=adapter)
 
-    # Transform examples
-    print("=== Commands available ===")
-    print([c.name for c in adapter.registry.get_all_commands()])
-
-    print("\n=== Transform examples ===")
-    print(nlp.transform("run make test").command)
-    print(nlp.transform("run demo script with verbose").command)
-
-    print("\n=== Export preview ===")
-    payload = json.loads(export_path.read_text(encoding="utf-8"))
-    print(f"sources: {list((payload.get('sources') or {}).keys())}")
+    print("\n=== Transform (ActionIR) ===")
+    ir = nlp.transform_ir("run demo script with verbose")
+    print(json.dumps(ir.to_dict(), indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":

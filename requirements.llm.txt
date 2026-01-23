@@ -1,0 +1,11 @@
+# Add these packages to your requirements.txt
+
+# For LLM support
+litellm>=1.0.0
+pyyaml>=6.0
+
+# Core dependencies (already present)
+pydantic>=2.0.0
+httpx>=0.24.0
+click>=8.0.0
+rich>=13.0.0

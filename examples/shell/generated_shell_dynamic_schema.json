@@ -2,14 +2,173 @@
   "format": "app2schema.appspec",
   "version": 1,
   "app": {
-    "name": "app",
+    "name": "shell_tools",
     "kind": "shell",
-    "source": "curl",
+    "source": "environment",
     "metadata": {
-      "target": "curl"
+      "tools": [
+        "docker",
+        "git",
+        "kubectl",
+        "curl"
+      ]
     }
   },
   "actions": [
+    {
+      "id": "shell.docker",
+      "type": "shell",
+      "description": "A self-sufficient runtime for containers",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": null
+      },
+      "params": {
+        "config": {
+          "type": "boolean",
+          "required": false,
+          "description": "string      Location of client config files (default",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tls": {
+          "type": "boolean",
+          "required": false,
+          "description": "Use TLS; implied by --tlsverify",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlscacert": {
+          "type": "boolean",
+          "required": false,
+          "description": "string   Trust certs signed only by this CA (default",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlscert": {
+          "type": "boolean",
+          "required": false,
+          "description": "string     Path to TLS certificate file (default",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlskey": {
+          "type": "boolean",
+          "required": false,
+          "description": "string      Path to TLS key file (default",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlsverify": {
+          "type": "boolean",
+          "required": false,
+          "description": "Use TLS and verify the remote",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        }
+      },
+      "schema": {
+        "command": "docker",
+        "help_lines": 89
+      },
+      "match": {
+        "patterns": [
+          "docker [OPTIONS] COMMAND",
+          "a self-sufficient runtime for containers"
+        ],
+        "examples": [
+          "docker [OPTIONS] COMMAND"
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "docker",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    },
+    {
+      "id": "shell.git",
+      "type": "shell",
+      "description": "usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": null
+      },
+      "params": {},
+      "schema": {
+        "command": "git",
+        "help_lines": 47
+      },
+      "match": {
+        "patterns": [
+          "git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]",
+          "usage: git [-v | --version] [-h | --help] [-c <path>] [-c <name>=<value>] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] [-p | --paginate | -p | --no-pager] [--no-replace-objects] [--no-lazy-fetch]"
+        ],
+        "examples": [
+          "git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]"
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "git",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    },
+    {
+      "id": "shell.kubectl",
+      "type": "shell",
+      "description": "kubectl controls the Kubernetes cluster manager.",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": null
+      },
+      "params": {},
+      "schema": {
+        "command": "kubectl",
+        "help_lines": 70
+      },
+      "match": {
+        "patterns": [
+          "",
+          "kubectl controls the kubernetes cluster manager."
+        ],
+        "examples": [
+          ""
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "kubectl",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    },
     {
       "id": "shell.curl",
       "type": "shell",

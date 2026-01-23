@@ -15,6 +15,9 @@ with environment context and safety policies.
 """
 
 from pathlib import Path
+import sys
+import json
+import tempfile
 
 from app2schema import extract_appspec_to_file
 from nlp2cmd import NLP2CMD
@@ -54,21 +57,55 @@ def main():
         sandbox_mode=True,
     )
 
-    # app2schema -> build a dynamic schema export for detected tools
-    # (kept local to the example; no hardcoded keywords inside adapter)
+    # Use app2schema to build a dynamic schema export with all detected tools
     export_path = Path("./generated_shell_dynamic_schema.json")
+    
+    # Build combined appspec with all tools
+    combined_actions = []
     for tool_name, info in tools.items():
         if info.available:
             try:
-                extract_appspec_to_file(tool_name, export_path, source_type="shell")
-            except Exception:
+                # Extract to temporary file
+                with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tmp:
+                    tmp_path = Path(tmp.name)
+                
+                extract_appspec_to_file(tool_name, tmp_path, source_type="shell")
+                
+                # Load and merge actions
+                appspec = json.loads(tmp_path.read_text(encoding='utf-8'))
+                combined_actions.extend(appspec.get('actions', []))
+                
+                tmp_path.unlink()  # Clean up temp file
+                print(f"[BasicShell] Extracted schema for {tool_name}", file=sys.stderr)
+            except Exception as e:
+                print(f"[BasicShell] Failed to extract {tool_name}: {e}", file=sys.stderr)
                 continue
-
+    
+    # Write combined appspec
+    if combined_actions:
+        combined_appspec = {
+            "format": "app2schema.appspec",
+            "version": 1,
+            "app": {
+                "name": "shell_tools",
+                "kind": "shell",
+                "source": "environment",
+                "metadata": {"tools": [t for t, i in tools.items() if i.available]}
+            },
+            "actions": combined_actions,
+            "metadata": {}
+        }
+        export_path.write_text(json.dumps(combined_appspec, indent=2, ensure_ascii=False), encoding='utf-8')
+        print(f"[BasicShell] Generated combined appspec with {len(combined_actions)} actions", file=sys.stderr)
+    
+    # Use DynamicAdapter with the combined appspec
     adapter = DynamicAdapter(
-        config={"custom_options": {"load_common_commands": False}},
+        config={"custom_options": {"load_common_commands": True, "auto_save_path": "./runtime_schemas.json"}},
         safety_policy=safety_policy,
     )
-    adapter.register_schema_source(str(export_path), source_type="auto")
+    
+    if export_path.exists():
+        adapter.register_schema_source(str(export_path), source_type="auto")
 
     nlp = NLP2CMD(adapter=adapter)
 

@@ -701,6 +701,7 @@ def extract_appspec_to_file(
     source_type: SourceType = "auto",
     discover_openapi: bool = True,
     validate: bool = True,
+    merge: bool = False,
 ) -> Path:
     result = extract_schema(
         target,
@@ -711,6 +712,51 @@ def extract_appspec_to_file(
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     payload = result.to_appspec_dict()
+
+    if merge and out_path.exists():
+        try:
+            existing = json.loads(out_path.read_text(encoding="utf-8"))
+        except Exception:
+            existing = None
+
+        if isinstance(existing, dict) and existing.get("format") == "app2schema.appspec":
+            existing_actions = existing.get("actions") if isinstance(existing.get("actions"), list) else []
+            new_actions = payload.get("actions") if isinstance(payload.get("actions"), list) else []
+
+            merged_by_id: dict[str, dict[str, Any]] = {}
+            for a in existing_actions:
+                if isinstance(a, dict) and isinstance(a.get("id"), str):
+                    merged_by_id[a["id"]] = a
+            for a in new_actions:
+                if isinstance(a, dict) and isinstance(a.get("id"), str):
+                    merged_by_id[a["id"]] = a
+
+            merged_actions = list(merged_by_id.values())
+
+            existing_app = existing.get("app") if isinstance(existing.get("app"), dict) else {}
+            new_app = payload.get("app") if isinstance(payload.get("app"), dict) else {}
+
+            kind_existing = str(existing_app.get("kind") or "")
+            kind_new = str(new_app.get("kind") or "")
+            merged_kind = kind_existing or kind_new
+            if kind_existing and kind_new and kind_existing != kind_new:
+                merged_kind = "mixed"
+
+            merged_app = dict(existing_app)
+            merged_app.setdefault("name", new_app.get("name") or "app")
+            merged_app["kind"] = merged_kind
+
+            merged_meta = dict(existing.get("metadata") or {})
+            merged_meta["merged"] = True
+
+            payload = {
+                "format": "app2schema.appspec",
+                "version": int(existing.get("version") or payload.get("version") or 1),
+                "app": merged_app,
+                "actions": merged_actions,
+                "metadata": merged_meta,
+            }
+
     if validate:
         validate_appspec(payload)
     out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

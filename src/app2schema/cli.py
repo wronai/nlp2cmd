@@ -43,6 +43,7 @@ from app2schema.extract import extract_appspec_to_file, extract_schema_to_file
     type=click.Path(dir_okay=False, path_type=Path),
     required=True,
 )
+@click.option("--merge", is_flag=True)
 @click.option("--no-validate", is_flag=True)
 @click.option("--no-discover", is_flag=True)
 def main(
@@ -62,6 +63,7 @@ def main(
             source_type=source_type,  # type: ignore[arg-type]
             discover_openapi=not no_discover,
             validate=not no_validate,
+            merge=merge,
         )
     else:
         written = extract_schema_to_file(

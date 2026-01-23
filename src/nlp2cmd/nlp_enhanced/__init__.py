@@ -355,38 +355,21 @@ Only respond with valid JSON.
         return entities
     
     def _fallback_intent_extraction(self, text: str) -> Tuple[str, float]:
-        """Fallback intent extraction using keyword matching."""
-        text_lower = text.lower()
+        """Fallback intent extraction using schema registry search."""
+        # Search for matching commands in the registry
+        matches = self.registry.search_commands(text, limit=10)
         
-        # Common intent keywords
-        intent_keywords = {
-            "find": ["find", "search", "look for", "znajdź", "szukaj"],
-            "list": ["list", "show", "display", "pokaż", "wyświetl", "lista"],
-            "create": ["create", "make", "new", "utwórz", "stwórz", "nowy"],
-            "delete": ["delete", "remove", "rm", "usuń", "usuwanie"],
-            "copy": ["copy", "cp", "duplicate", "kopiuj", "skopiuj"],
-            "move": ["move", "mv", "relocate", "przenieś", "przesuń"],
-            "run": ["run", "execute", "start", "uruchom", "startuj"],
-            "stop": ["stop", "kill", "terminate", "zatrzymaj", "zabij"],
-            "check": ["check", "verify", "test", "sprawdź", "testuj"],
-            "install": ["install", "setup", "zainstaluj", "instalacja"],
-        }
+        import sys
+        print(f"[FallbackIntent] Query: {text!r}, matches: {[c.name for c in matches]}", file=sys.stderr)
         
-        best_intent = "unknown"
-        best_score = 0.0
+        if matches:
+            best_cmd = matches[0]
+            # Simple confidence based on search order (could be improved)
+            confidence = 0.8 if len(matches) == 1 else max(0.3, 1.0 - (len(matches) - 1) * 0.1)
+            return best_cmd.name, confidence
         
-        for intent, keywords in intent_keywords.items():
-            score = 0.0
-            for keyword in keywords:
-                if keyword in text_lower:
-                    score += 1.0
-            
-            if score > best_score:
-                best_score = score
-                best_intent = intent
-        
-        confidence = min(best_score / 2.0, 1.0)  # Normalize to 0-1
-        return best_intent, confidence
+        # If no commands match, return unknown
+        return "unknown", 0.0
     
     def _fallback_plan_generation(self, text: str, context: Optional[Dict] = None) -> ExecutionPlan:
         """Fallback plan generation using simple heuristics."""
@@ -489,14 +472,16 @@ class HybridNLPBackend(NLPBackend):
         """Generate plan using hybrid approach."""
         # Try shell-gpt first
         plan = self.shell_gpt.generate_plan(text, context)
-        if plan.intent != "unknown" and plan.confidence > 0.5:
+        import sys
+        print(f"[HybridPlan] ShellGPT plan: intent={plan.intent!r}, confidence={plan.confidence}", file=sys.stderr)
+        if plan.intent != "unknown" and plan.confidence > 0.2:  # Lower threshold from 0.5 to 0.2
             return plan
         
         # Try LLM backend
         if self.llm_backend:
             try:
                 plan = self.llm_backend.generate_plan(text, context)
-                if plan.intent != "unknown" and plan.confidence > 0.5:
+                if plan.intent != "unknown" and plan.confidence > 0.2:
                     return plan
             except Exception:
                 pass
@@ -506,7 +491,7 @@ class HybridNLPBackend(NLPBackend):
         entities = self.rule_backend.extract_entities(text)
         entity_dict = {e.name: e.value for e in entities}
         
-        return ExecutionPlan(
+        fallback_plan = ExecutionPlan(
             intent=intent,
             entities=entity_dict,
             confidence=confidence,
@@ -516,3 +501,5 @@ class HybridNLPBackend(NLPBackend):
                 "context": context or {},
             }
         )
+        print(f"[HybridPlan] Fallback plan: intent={intent!r}, confidence={confidence}", file=sys.stderr)
+        return fallback_plan
