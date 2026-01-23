@@ -2,118 +2,7 @@
   "command": "sensors",
   "description": "Usage: sensors [OPTION]... [CHIP]...",
   "category": "file",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "f",
-      "type": "boolean",
-      "description": "Option -f",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "r",
-      "type": "boolean",
-      "description": "Option -r",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "A",
-      "type": "boolean",
-      "description": "Option -A",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "v",
-      "type": "boolean",
-      "description": "Option -v",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "ignore_case",
-      "type": "boolean",
-      "description": "Option --ignore-case",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "u",
-      "type": "boolean",
-      "description": "Option -u",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "c",
-      "type": "boolean",
-      "description": "Option -c",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "sensors ... ..."
   ],
@@ -147,6 +36,6 @@
     ]
   },
   "template": "sensors {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.202213",
+  "stored_at": "2026-01-23T15:57:22.529605",
   "version": "1.0"
 }

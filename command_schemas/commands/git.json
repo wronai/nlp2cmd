@@ -2,88 +2,7 @@
   "command": "git",
   "description": "usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]",
   "category": "version_control",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "f",
-      "type": "boolean",
-      "description": "Option -f",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "help",
-      "type": "boolean",
-      "description": "Option --help",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "v",
-      "type": "boolean",
-      "description": "Option -v",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "output",
-      "type": "file",
-      "description": "Option --output",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "usage: git"
   ],
@@ -106,6 +25,6 @@
     ]
   },
   "template": "git {options}",
-  "stored_at": "2026-01-23T15:53:25.203281",
+  "stored_at": "2026-01-23T15:57:22.530637",
   "version": "1.0"
 }

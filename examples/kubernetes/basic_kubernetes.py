@@ -8,9 +8,9 @@ and manifest generation with safety policies.
 
 from pathlib import Path
 
-from app2schema import extract_schema_to_file
+from app2schema import extract_appspec_to_file
 from nlp2cmd import NLP2CMD
-from nlp2cmd.adapters.dynamic import DynamicAdapter
+from nlp2cmd.adapters import AppSpecAdapter
 from nlp2cmd.adapters.kubernetes import KubernetesSafetyPolicy
 
 
@@ -26,15 +26,11 @@ def main():
         require_resource_limits=True,
     )
 
-    # app2schema -> build dynamic schema export for kubectl CLI
-    export_path = Path("./generated_kubectl_dynamic_schema.json")
-    extract_schema_to_file("kubectl", export_path, source_type="shell", merge=True)
+    # app2schema -> build appspec for kubectl CLI
+    appspec_path = Path("./generated_kubectl_appspec.json")
+    extract_appspec_to_file("kubectl", appspec_path, source_type="shell", merge=True)
 
-    adapter = DynamicAdapter(
-        config={"custom_options": {"load_common_commands": False}},
-        safety_policy=safety_policy,
-    )
-    adapter.register_schema_source(str(export_path), source_type="auto")
+    adapter = AppSpecAdapter(appspec_path=appspec_path, safety_policy=safety_policy)
     nlp = NLP2CMD(adapter=adapter)
 
     # Example commands
@@ -57,17 +53,11 @@ def main():
         print(f"\n📝 Request: {cmd}")
         print("-" * 40)
 
-        result = nlp.transform(cmd)
+        ir = nlp.transform_ir(cmd)
 
-        print(f"Status: {result.status.value}")
-        print(f"Confidence: {result.confidence:.0%}")
+        print(f"Action: {ir.action_id}")
         print(f"\nGenerated command:")
-        print(f"   $ {result.command}")
-
-        if result.warnings:
-            print(f"\n⚠️ Warnings:")
-            for warning in result.warnings:
-                print(f"   - {warning}")
+        print(f"   $ {ir.dsl}")
 
     # Safety policy demo
     print("\n" + "=" * 60)
@@ -82,11 +72,11 @@ def main():
 
     for cmd in blocked_commands:
         print(f"\n📝 Request: {cmd}")
-        result = nlp.transform(cmd)
-        print(f"Status: {result.status.value}")
-
-        if not result.is_success:
-            print(f"❌ Blocked: {result.errors[0] if result.errors else 'Safety violation'}")
+        try:
+            ir = nlp.transform_ir(cmd)
+            print(f"Generated: {ir.dsl}")
+        except Exception as e:
+            print(f"❌ Blocked: {e}")
 
 
 if __name__ == "__main__":

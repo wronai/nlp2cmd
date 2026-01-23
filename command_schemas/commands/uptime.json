@@ -2,78 +2,7 @@
   "command": "uptime",
   "description": "uptime [options]",
   "category": "system",
-  "parameters": [
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "help",
-      "type": "boolean",
-      "description": "Option --help",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "v",
-      "type": "boolean",
-      "description": "Option -v",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "V",
-      "type": "boolean",
-      "description": "Option -V",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "p",
-      "type": "boolean",
-      "description": "Option -p",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "s",
-      "type": "boolean",
-      "description": "Option -s",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    }
-  ],
+  "parameters": [],
   "examples": [
     ""
   ],
@@ -95,6 +24,6 @@
     ]
   },
   "template": "uptime {options}",
-  "stored_at": "2026-01-23T15:53:25.200576",
+  "stored_at": "2026-01-23T15:57:22.528170",
   "version": "1.0"
 }

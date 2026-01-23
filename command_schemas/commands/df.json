@@ -2,118 +2,7 @@
   "command": "df",
   "description": "Show information about the file system on which each FILE resides,",
   "category": "file",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "H",
-      "type": "boolean",
-      "description": "Option -H",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "i",
-      "type": "boolean",
-      "description": "Option -i",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "t",
-      "type": "boolean",
-      "description": "Option -t",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "B",
-      "type": "boolean",
-      "description": "Option -B",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "T",
-      "type": "boolean",
-      "description": "Option -T",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "k",
-      "type": "boolean",
-      "description": "Option -k",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "df ... ..."
   ],
@@ -152,6 +41,6 @@
     ]
   },
   "template": "df {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.200005",
+  "stored_at": "2026-01-23T15:57:22.527721",
   "version": "1.0"
 }

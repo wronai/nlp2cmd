@@ -2,108 +2,7 @@
   "command": "node",
   "description": "node inspect [options] [ script.js | host:port ] [arguments]",
   "category": "system",
-  "parameters": [
-    {
-      "name": "ignore_case",
-      "type": "boolean",
-      "description": "Option --ignore-case",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "c",
-      "type": "boolean",
-      "description": "Option -c",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "experimental_network_imports",
-      "type": "integer",
-      "description": "Option --experimental-network-imports",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "report_compact",
-      "type": "integer",
-      "description": "Option --report-compact",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "trace_exit",
-      "type": "boolean",
-      "description": "Option --trace-exit",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "no_experimental_fetch",
-      "type": "boolean",
-      "description": "Option --no-experimental-fetch",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "force_node_api_uncaught_exceptions_policy",
-      "type": "boolean",
-      "description": "Option --force-node-api-uncaught-exceptions-policy",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "huge_max_old_generation_size",
-      "type": "integer",
-      "description": "Option --huge-max-old-generation-size",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "no_deprecation",
-      "type": "boolean",
-      "description": "Option --no-deprecation",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "node"
   ],
@@ -217,6 +116,6 @@
     ]
   },
   "template": "node {options}",
-  "stored_at": "2026-01-23T15:53:25.210209",
+  "stored_at": "2026-01-23T15:57:22.536621",
   "version": "1.0"
 }

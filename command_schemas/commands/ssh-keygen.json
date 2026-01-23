@@ -2,108 +2,7 @@
   "command": "ssh-keygen",
   "description": "SSH-KEYGEN(1)                General Commands Manual              SSH-KEYGEN(1)",
   "category": "security",
-  "parameters": [
-    {
-      "name": "Z",
-      "type": "boolean",
-      "description": "Option -Z",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "A",
-      "type": "boolean",
-      "description": "Option -A",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "Q",
-      "type": "boolean",
-      "description": "Option -Q",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "y",
-      "type": "boolean",
-      "description": "Option -y",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "H",
-      "type": "boolean",
-      "description": "Option -H",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "c",
-      "type": "boolean",
-      "description": "Option -c",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "i",
-      "type": "boolean",
-      "description": "Option -i",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "ssh-keygen --help",
     "man ssh-keygen"
@@ -166,6 +65,6 @@
     ]
   },
   "template": "ssh-keygen {options}",
-  "stored_at": "2026-01-23T15:53:25.214299",
+  "stored_at": "2026-01-23T15:57:22.539351",
   "version": "1.0"
 }

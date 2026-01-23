@@ -2,128 +2,7 @@
   "command": "ls",
   "description": "List directory contents.",
   "category": "text",
-  "parameters": [
-    {
-      "name": "Z",
-      "type": "boolean",
-      "description": "Option -Z",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "A",
-      "type": "boolean",
-      "description": "Option -A",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "Q",
-      "type": "boolean",
-      "description": "Option -Q",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "ignore_case",
-      "type": "boolean",
-      "description": "Option --ignore-case",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "H",
-      "type": "boolean",
-      "description": "Option -H",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "c",
-      "type": "boolean",
-      "description": "Option -c",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "i",
-      "type": "boolean",
-      "description": "Option -i",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    },
-    {
-      "name": "pattern",
-      "type": "string",
-      "description": "Search pattern",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "ls ... ..."
   ],
@@ -199,6 +78,6 @@
     ]
   },
   "template": "ls {options} {pattern}",
-  "stored_at": "2026-01-23T15:53:25.217425",
+  "stored_at": "2026-01-23T15:57:22.541610",
   "version": "1.0"
 }

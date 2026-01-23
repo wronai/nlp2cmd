@@ -28,6 +28,52 @@ class KubernetesSafetyPolicy(SafetyPolicy):
     max_replicas: int = 10
     require_resource_limits: bool = True
 
+    def check_command(self, command: str, context: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+        """Check kubectl command against safety policy.
+
+        Exposed for DynamicAdapter compatibility (it calls safety_policy.check_command if present).
+        """
+        # Check delete operations
+        if " delete " in f" {command} " and not self.allow_delete:
+            return {
+                "allowed": False,
+                "reason": "Delete operations are not allowed",
+                "risk_level": "high",
+            }
+
+        # Check exec operations
+        if " exec " in f" {command} " and not self.allow_exec:
+            return {
+                "allowed": False,
+                "reason": "Exec operations are not allowed",
+                "risk_level": "high",
+            }
+
+        # Check namespace restrictions
+        for ns in self.blocked_namespaces:
+            if f"-n {ns}" in command or f"--namespace={ns}" in command:
+                return {
+                    "allowed": False,
+                    "reason": f"Operations in namespace '{ns}' are blocked",
+                    "risk_level": "high",
+                }
+
+        # Check scale limits
+        if " scale " in f" {command} " and "--replicas" in command:
+            import re
+
+            match = re.search(r"--replicas[=\s](\d+)", command)
+            if match:
+                replicas = int(match.group(1))
+                if replicas > self.max_replicas:
+                    return {
+                        "allowed": False,
+                        "reason": f"Replica count {replicas} exceeds limit {self.max_replicas}",
+                        "risk_level": "high",
+                    }
+
+        return {"allowed": True, "requires_confirmation": False, "risk_level": "low"}
+
 
 @dataclass
 class ClusterContext:

@@ -1,13 +1,13 @@
 {
   "version": "1.0",
   "created": "2026-01-23T15:52:25.939044",
-  "last_updated": "2026-01-23T15:53:25.221077",
+  "last_updated": "2026-01-23T15:57:22.544484",
   "commands": {
     "kubectl": {
       "file": "commands/kubectl.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.195023",
+      "last_updated": "2026-01-23T15:57:22.516528",
       "examples_count": 1,
       "has_template": true
     },
@@ -15,7 +15,7 @@
       "file": "commands/find.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.195679",
+      "last_updated": "2026-01-23T15:57:22.517129",
       "examples_count": 1,
       "has_template": true
     },
@@ -23,7 +23,7 @@
       "file": "commands/grep.json",
       "category": "text",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.196326",
+      "last_updated": "2026-01-23T15:57:22.524455",
       "examples_count": 1,
       "has_template": true
     },
@@ -31,7 +31,7 @@
       "file": "commands/cp.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.196899",
+      "last_updated": "2026-01-23T15:57:22.524972",
       "examples_count": 1,
       "has_template": true
     },
@@ -39,7 +39,7 @@
       "file": "commands/mv.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.197435",
+      "last_updated": "2026-01-23T15:57:22.525440",
       "examples_count": 1,
       "has_template": true
     },
@@ -47,7 +47,7 @@
       "file": "commands/tar.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.198031",
+      "last_updated": "2026-01-23T15:57:22.525932",
       "examples_count": 5,
       "has_template": true
     },
@@ -55,7 +55,7 @@
       "file": "commands/zip.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.198557",
+      "last_updated": "2026-01-23T15:57:22.526416",
       "examples_count": 1,
       "has_template": true
     },
@@ -63,7 +63,7 @@
       "file": "commands/ps.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.199082",
+      "last_updated": "2026-01-23T15:57:22.526893",
       "examples_count": 1,
       "has_template": true
     },
@@ -71,7 +71,7 @@
       "file": "commands/free.json",
       "category": "system",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.199629",
+      "last_updated": "2026-01-23T15:57:22.527348",
       "examples_count": 1,
       "has_template": true
     },
@@ -79,7 +79,7 @@
       "file": "commands/df.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.200193",
+      "last_updated": "2026-01-23T15:57:22.527839",
       "examples_count": 1,
       "has_template": true
     },
@@ -87,7 +87,7 @@
       "file": "commands/uptime.json",
       "category": "system",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.200754",
+      "last_updated": "2026-01-23T15:57:22.528276",
       "examples_count": 1,
       "has_template": true
     },
@@ -95,7 +95,7 @@
       "file": "commands/netstat.json",
       "category": "network",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.201309",
+      "last_updated": "2026-01-23T15:57:22.528795",
       "examples_count": 1,
       "has_template": true
     },
@@ -103,7 +103,7 @@
       "file": "commands/lsof.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.201876",
+      "last_updated": "2026-01-23T15:57:22.529260",
       "examples_count": 1,
       "has_template": true
     },
@@ -111,15 +111,15 @@
       "file": "commands/sensors.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.202392",
+      "last_updated": "2026-01-23T15:57:22.529766",
       "examples_count": 1,
       "has_template": true
     },
     "docker": {
       "file": "commands/docker.json",
-      "category": "container",
-      "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.202934",
+      "category": "shell",
+      "source_type": "shell_help",
+      "last_updated": "2026-01-23T15:57:22.530285",
       "examples_count": 1,
       "has_template": true
     },
@@ -127,7 +127,7 @@
       "file": "commands/git.json",
       "category": "version_control",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.203460",
+      "last_updated": "2026-01-23T15:57:22.530761",
       "examples_count": 1,
       "has_template": true
     },
@@ -135,7 +135,7 @@
       "file": "commands/cat.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.204054",
+      "last_updated": "2026-01-23T15:57:22.531212",
       "examples_count": 1,
       "has_template": true
     },
@@ -143,7 +143,7 @@
       "file": "commands/traceroute.json",
       "category": "general",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.204554",
+      "last_updated": "2026-01-23T15:57:22.532026",
       "examples_count": 2,
       "has_template": true
     },
@@ -151,7 +151,7 @@
       "file": "commands/nmap.json",
       "category": "network",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.205266",
+      "last_updated": "2026-01-23T15:57:22.532539",
       "examples_count": 4,
       "has_template": true
     },
@@ -159,7 +159,7 @@
       "file": "commands/nslookup.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.205851",
+      "last_updated": "2026-01-23T15:57:22.533038",
       "examples_count": 2,
       "has_template": true
     },
@@ -167,7 +167,7 @@
       "file": "commands/openssl.json",
       "category": "security",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.206592",
+      "last_updated": "2026-01-23T15:57:22.533487",
       "examples_count": 2,
       "has_template": true
     },
@@ -175,7 +175,7 @@
       "file": "commands/pip.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.207140",
+      "last_updated": "2026-01-23T15:57:22.533974",
       "examples_count": 1,
       "has_template": true
     },
@@ -183,7 +183,7 @@
       "file": "commands/python3.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.207671",
+      "last_updated": "2026-01-23T15:57:22.534414",
       "examples_count": 1,
       "has_template": true
     },
@@ -191,7 +191,7 @@
       "file": "commands/make.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.208196",
+      "last_updated": "2026-01-23T15:57:22.534901",
       "examples_count": 1,
       "has_template": true
     },
@@ -199,7 +199,7 @@
       "file": "commands/pytest.json",
       "category": "development",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.208739",
+      "last_updated": "2026-01-23T15:57:22.535357",
       "examples_count": 1,
       "has_template": true
     },
@@ -207,7 +207,7 @@
       "file": "commands/black.json",
       "category": "text",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.209293",
+      "last_updated": "2026-01-23T15:57:22.535838",
       "examples_count": 1,
       "has_template": true
     },
@@ -215,7 +215,7 @@
       "file": "commands/eslint.json",
       "category": "general",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.209863",
+      "last_updated": "2026-01-23T15:57:22.536277",
       "examples_count": 2,
       "has_template": true
     },
@@ -223,7 +223,7 @@
       "file": "commands/node.json",
       "category": "system",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.210413",
+      "last_updated": "2026-01-23T15:57:22.536777",
       "examples_count": 1,
       "has_template": true
     },
@@ -231,7 +231,7 @@
       "file": "commands/npm.json",
       "category": "general",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.210952",
+      "last_updated": "2026-01-23T15:57:22.537244",
       "examples_count": 2,
       "has_template": true
     },
@@ -239,7 +239,7 @@
       "file": "commands/psql.json",
       "category": "database",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.211682",
+      "last_updated": "2026-01-23T15:57:22.537713",
       "examples_count": 2,
       "has_template": true
     },
@@ -247,7 +247,7 @@
       "file": "commands/mysql.json",
       "category": "database",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.212439",
+      "last_updated": "2026-01-23T15:57:22.538164",
       "examples_count": 2,
       "has_template": true
     },
@@ -255,7 +255,7 @@
       "file": "commands/mongodump.json",
       "category": "general",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.213177",
+      "last_updated": "2026-01-23T15:57:22.538585",
       "examples_count": 2,
       "has_template": true
     },
@@ -263,7 +263,7 @@
       "file": "commands/chmod.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.213912",
+      "last_updated": "2026-01-23T15:57:22.539030",
       "examples_count": 1,
       "has_template": true
     },
@@ -271,7 +271,7 @@
       "file": "commands/ssh-keygen.json",
       "category": "security",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.214515",
+      "last_updated": "2026-01-23T15:57:22.539465",
       "examples_count": 2,
       "has_template": true
     },
@@ -279,7 +279,7 @@
       "file": "commands/gpg.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.215082",
+      "last_updated": "2026-01-23T15:57:22.539944",
       "examples_count": 2,
       "has_template": true
     },
@@ -287,7 +287,7 @@
       "file": "commands/iptables.json",
       "category": "database",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.215605",
+      "last_updated": "2026-01-23T15:57:22.540392",
       "examples_count": 1,
       "has_template": true
     },
@@ -295,7 +295,7 @@
       "file": "commands/sed.json",
       "category": "system",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.216241",
+      "last_updated": "2026-01-23T15:57:22.540837",
       "examples_count": 1,
       "has_template": true
     },
@@ -303,7 +303,7 @@
       "file": "commands/sort.json",
       "category": "text",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.217002",
+      "last_updated": "2026-01-23T15:57:22.541282",
       "examples_count": 1,
       "has_template": true
     },
@@ -311,7 +311,7 @@
       "file": "commands/ls.json",
       "category": "text",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.217662",
+      "last_updated": "2026-01-23T15:57:22.541732",
       "examples_count": 1,
       "has_template": true
     },
@@ -319,7 +319,7 @@
       "file": "commands/iconv.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.218254",
+      "last_updated": "2026-01-23T15:57:22.542179",
       "examples_count": 1,
       "has_template": true
     },
@@ -327,7 +327,7 @@
       "file": "commands/split.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.218837",
+      "last_updated": "2026-01-23T15:57:22.542646",
       "examples_count": 1,
       "has_template": true
     },
@@ -335,7 +335,7 @@
       "file": "commands/jq.json",
       "category": "text",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.219414",
+      "last_updated": "2026-01-23T15:57:22.543113",
       "examples_count": 1,
       "has_template": true
     },
@@ -343,7 +343,7 @@
       "file": "commands/rsync.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.220000",
+      "last_updated": "2026-01-23T15:57:22.543584",
       "examples_count": 1,
       "has_template": true
     },
@@ -351,7 +351,7 @@
       "file": "commands/mysqldump.json",
       "category": "database",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.220472",
+      "last_updated": "2026-01-23T15:57:22.544025",
       "examples_count": 2,
       "has_template": true
     },
@@ -359,14 +359,15 @@
       "file": "commands/rm.json",
       "category": "file",
       "source_type": "intelligent_extraction",
-      "last_updated": "2026-01-23T15:53:25.221071",
+      "last_updated": "2026-01-23T15:57:22.544479",
       "examples_count": 1,
       "has_template": true
     }
   },
   "categories": {
     "shell": [
-      "kubectl"
+      "kubectl",
+      "docker"
     ],
     "file": [
       "find",

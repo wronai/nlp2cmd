@@ -2,118 +2,7 @@
   "command": "python3",
   "description": "usage: python3 [option] ... [-c cmd | -m mod | file | -] [arg] ...",
   "category": "file",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "c",
-      "type": "boolean",
-      "description": "Option -c",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "i",
-      "type": "boolean",
-      "description": "Option -i",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "B",
-      "type": "boolean",
-      "description": "Option -B",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "s",
-      "type": "boolean",
-      "description": "Option -s",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "q",
-      "type": "boolean",
-      "description": "Option -q",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "u",
-      "type": "boolean",
-      "description": "Option -u",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "X",
-      "type": "boolean",
-      "description": "Option -X",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "usage: python3  ...   ..."
   ],
@@ -155,6 +44,6 @@
     ]
   },
   "template": "python3 {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.207478",
+  "stored_at": "2026-01-23T15:57:22.534302",
   "version": "1.0"
 }

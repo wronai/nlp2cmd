@@ -2,118 +2,7 @@
   "command": "find",
   "description": "Default path is the current directory; default expression is -print.",
   "category": "file",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "ignore_case",
-      "type": "boolean",
-      "description": "Option --ignore-case",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "c",
-      "type": "boolean",
-      "description": "Option -c",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "i",
-      "type": "boolean",
-      "description": "Option -i",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "n",
-      "type": "boolean",
-      "description": "Option -n",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "w",
-      "type": "boolean",
-      "description": "Option -w",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "r",
-      "type": "boolean",
-      "description": "Option -r",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "l",
-      "type": "boolean",
-      "description": "Option -l",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "u",
-      "type": "boolean",
-      "description": "Option -u",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "find"
   ],
@@ -149,6 +38,6 @@
     ]
   },
   "template": "find {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.195454",
+  "stored_at": "2026-01-23T15:57:22.516980",
   "version": "1.0"
 }

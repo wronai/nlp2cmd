@@ -2,118 +2,7 @@
   "command": "cp",
   "description": "or:  cp [OPTION]... SOURCE... DIRECTORY",
   "category": "file",
-  "parameters": [
-    {
-      "name": "Z",
-      "type": "boolean",
-      "description": "Option -Z",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "ignore_case",
-      "type": "boolean",
-      "description": "Option --ignore-case",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "H",
-      "type": "boolean",
-      "description": "Option -H",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "i",
-      "type": "boolean",
-      "description": "Option -i",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "t",
-      "type": "boolean",
-      "description": "Option -t",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "copy_contents",
-      "type": "boolean",
-      "description": "Option --copy-contents",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "s",
-      "type": "boolean",
-      "description": "Option -s",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "cp ...  SOURCE DEST"
   ],
@@ -167,6 +56,6 @@
     ]
   },
   "template": "cp {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.196702",
+  "stored_at": "2026-01-23T15:57:22.524838",
   "version": "1.0"
 }

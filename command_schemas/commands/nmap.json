@@ -2,108 +2,7 @@
   "command": "nmap",
   "description": "Nmap 7.95 ( https://nmap.org )",
   "category": "network",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "A",
-      "type": "boolean",
-      "description": "Option -A",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "resume",
-      "type": "boolean",
-      "description": "Option --resume",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "i",
-      "type": "boolean",
-      "description": "Option -i",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "port",
-      "type": "integer",
-      "description": "Option --port",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "t",
-      "type": "boolean",
-      "description": "Option -t",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "spoof_mac",
-      "type": "boolean",
-      "description": "Option --spoof-mac",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "nmap -v -A scanme.nmap.org",
     "nmap -v -sn 192.168.0.0/16 10.0.0.0/8",
@@ -173,6 +72,6 @@
     ]
   },
   "template": "nmap {options} {url}",
-  "stored_at": "2026-01-23T15:53:25.205010",
+  "stored_at": "2026-01-23T15:57:22.532398",
   "version": "1.0"
 }

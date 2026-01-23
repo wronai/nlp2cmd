@@ -1,92 +1,12 @@
 {
   "command": "docker",
   "description": "A self-sufficient runtime for containers",
-  "category": "container",
+  "category": "shell",
   "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "ignore_case",
-      "type": "boolean",
-      "description": "Option --ignore-case",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "H",
-      "type": "boolean",
-      "description": "Option -H",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "c",
-      "type": "boolean",
-      "description": "Option -c",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "i",
-      "type": "boolean",
-      "description": "Option -i",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "port",
-      "type": "integer",
-      "description": "Option --port",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
     {
       "name": "config",
       "type": "boolean",
-      "description": "Option --config",
+      "description": "string      Location of client config files (default",
       "required": false,
       "default": null,
       "choices": [],
@@ -94,9 +14,49 @@
       "location": "option"
     },
     {
-      "name": "t",
+      "name": "tls",
       "type": "boolean",
-      "description": "Option -t",
+      "description": "Use TLS; implied by --tlsverify",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "tlscacert",
+      "type": "boolean",
+      "description": "string   Trust certs signed only by this CA (default",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "tlscert",
+      "type": "boolean",
+      "description": "string     Path to TLS certificate file (default",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "tlskey",
+      "type": "boolean",
+      "description": "string      Path to TLS key file (default",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "tlsverify",
+      "type": "boolean",
+      "description": "Use TLS and verify the remote",
       "required": false,
       "default": null,
       "choices": [],
@@ -105,45 +65,18 @@
     }
   ],
   "examples": [
-    "docker  COMMAND"
+    "docker [OPTIONS] COMMAND"
   ],
   "patterns": [
-    "docker"
+    "docker [OPTIONS] COMMAND",
+    "a self-sufficient runtime for containers"
   ],
-  "source_type": "intelligent_extraction",
+  "source_type": "shell_help",
   "metadata": {
-    "generated_at": "2026-01-23T15:53:23.304615",
-    "help_available": true,
-    "common_options": [
-      "--file",
-      "--verbose",
-      "--ignore-case",
-      "-H",
-      "-h",
-      "-c",
-      "-i",
-      "--port",
-      "--config",
-      "-t",
-      "-o",
-      "-r",
-      "-l",
-      "--tlsverify",
-      "--tlskey",
-      "-f",
-      "--help",
-      "-v",
-      "-D",
-      "--tls",
-      "--tlscert",
-      "--timeout",
-      "-p",
-      "--output",
-      "--recursive",
-      "--tlscacert"
-    ]
+    "command": "docker",
+    "help_lines": 89
   },
-  "template": "docker {options}",
-  "stored_at": "2026-01-23T15:53:25.202759",
+  "template": "docker {subcommand} {options}",
+  "stored_at": "2026-01-23T15:57:22.530131",
   "version": "1.0"
 }

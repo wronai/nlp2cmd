@@ -2,118 +2,7 @@
   "command": "cat",
   "description": "Concatenate FILE(s), or standard input, to standard output",
   "category": "file",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "f",
-      "type": "boolean",
-      "description": "Option -f",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "A",
-      "type": "boolean",
-      "description": "Option -A",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "E",
-      "type": "boolean",
-      "description": "Option -E",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "v",
-      "type": "boolean",
-      "description": "Option -v",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "V",
-      "type": "boolean",
-      "description": "Option -V",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "e",
-      "type": "boolean",
-      "description": "Option -e",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "u",
-      "type": "boolean",
-      "description": "Option -u",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "s",
-      "type": "boolean",
-      "description": "Option -s",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "cat ... ..."
   ],
@@ -146,6 +35,6 @@
     ]
   },
   "template": "cat {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.203854",
+  "stored_at": "2026-01-23T15:57:22.531103",
   "version": "1.0"
 }

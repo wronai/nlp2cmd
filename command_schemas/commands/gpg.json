@@ -2,118 +2,7 @@
   "command": "gpg",
   "description": "gpg (GnuPG) 2.4.8",
   "category": "file",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "quick_add_uid",
-      "type": "boolean",
-      "description": "Option --quick-add-uid",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "include_key_block",
-      "type": "boolean",
-      "description": "Option --include-key-block",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "sign_key",
-      "type": "boolean",
-      "description": "Option --sign-key",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "delete_keys",
-      "type": "boolean",
-      "description": "Option --delete-keys",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "ignore_case",
-      "type": "boolean",
-      "description": "Option --ignore-case",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "export",
-      "type": "integer",
-      "description": "Option --export",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "refresh_keys",
-      "type": "boolean",
-      "description": "Option --refresh-keys",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "log_file",
-      "type": "file",
-      "description": "Option --log-file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "encrypt_to",
-      "type": "boolean",
-      "description": "Option --encrypt-to",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "gpg --help",
     "man gpg"
@@ -198,6 +87,6 @@
     ]
   },
   "template": "gpg {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.214879",
+  "stored_at": "2026-01-23T15:57:22.539809",
   "version": "1.0"
 }

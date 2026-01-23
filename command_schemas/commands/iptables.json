@@ -2,108 +2,7 @@
   "command": "iptables",
   "description": "iptables v1.8.11 (nf_tables)",
   "category": "database",
-  "parameters": [
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "zero",
-      "type": "boolean",
-      "description": "Option --zero",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "exact",
-      "type": "boolean",
-      "description": "Option --exact",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "wait",
-      "type": "boolean",
-      "description": "Option --wait",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "jump",
-      "type": "boolean",
-      "description": "Option --jump",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "port",
-      "type": "integer",
-      "description": "Option --port",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "t",
-      "type": "boolean",
-      "description": "Option -t",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "ipv4",
-      "type": "boolean",
-      "description": "Option --ipv4",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "new",
-      "type": "boolean",
-      "description": "Option --new",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "insert",
-      "type": "boolean",
-      "description": "Option --insert",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "iptables - chain rule-specification"
   ],
@@ -149,6 +48,6 @@
     ]
   },
   "template": "iptables {options}",
-  "stored_at": "2026-01-23T15:53:25.215428",
+  "stored_at": "2026-01-23T15:57:22.540276",
   "version": "1.0"
 }

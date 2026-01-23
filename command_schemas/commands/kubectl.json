@@ -2,58 +2,7 @@
   "command": "kubectl",
   "description": "kubectl controls the Kubernetes cluster manager.",
   "category": "file",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "output",
-      "type": "file",
-      "description": "Option --output",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "f",
-      "type": "boolean",
-      "description": "Option -f",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     ""
   ],
@@ -74,6 +23,6 @@
     ]
   },
   "template": "kubectl {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.194809",
+  "stored_at": "2026-01-23T15:57:22.516079",
   "version": "1.0"
 }

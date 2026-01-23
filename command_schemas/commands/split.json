@@ -2,118 +2,7 @@
   "command": "split",
   "description": "Create output files containing consecutive or interleaved sections of input",
   "category": "file",
-  "parameters": [
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "C",
-      "type": "boolean",
-      "description": "Option -C",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "f",
-      "type": "boolean",
-      "description": "Option -f",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "V",
-      "type": "boolean",
-      "description": "Option -V",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "l",
-      "type": "boolean",
-      "description": "Option -l",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "e",
-      "type": "boolean",
-      "description": "Option -e",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "additional_suffix",
-      "type": "boolean",
-      "description": "Option --additional-suffix",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "b",
-      "type": "boolean",
-      "description": "Option -b",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "split ... ]"
   ],
@@ -148,6 +37,6 @@
     ]
   },
   "template": "split {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.218623",
+  "stored_at": "2026-01-23T15:57:22.542529",
   "version": "1.0"
 }

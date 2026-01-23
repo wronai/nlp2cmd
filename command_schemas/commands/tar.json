@@ -2,118 +2,7 @@
   "command": "tar",
   "description": "GNU 'tar' saves many files together into a single tape or disk archive, and can",
   "category": "file",
-  "parameters": [
-    {
-      "name": "Z",
-      "type": "boolean",
-      "description": "Option -Z",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "no_unquote",
-      "type": "boolean",
-      "description": "Option --no-unquote",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "A",
-      "type": "boolean",
-      "description": "Option -A",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "ignore_case",
-      "type": "boolean",
-      "description": "Option --ignore-case",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "H",
-      "type": "boolean",
-      "description": "Option -H",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "c",
-      "type": "boolean",
-      "description": "Option -c",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "no_recursion",
-      "type": "boolean",
-      "description": "Option --no-recursion",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "keep_newer_files",
-      "type": "file",
-      "description": "Option --keep-newer-files",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "B",
-      "type": "boolean",
-      "description": "Option -B",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "tar -cf archive.tar foo bar  # Create archive.tar from files foo and bar.",
     "tar -tvf archive.tar         # List all files in archive.tar verbosely.",
@@ -251,6 +140,6 @@
     ]
   },
   "template": "tar {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.197809",
+  "stored_at": "2026-01-23T15:57:22.525779",
   "version": "1.0"
 }

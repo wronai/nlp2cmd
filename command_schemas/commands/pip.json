@@ -2,118 +2,7 @@
   "command": "pip",
   "description": "pip <command> [options]",
   "category": "file",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "log",
-      "type": "boolean",
-      "description": "Option --log",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "no_cache_dir",
-      "type": "boolean",
-      "description": "Option --no-cache-dir",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "disable_pip_version_check",
-      "type": "boolean",
-      "description": "Option --disable-pip-version-check",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "require_virtualenv",
-      "type": "boolean",
-      "description": "Option --require-virtualenv",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "client_cert",
-      "type": "boolean",
-      "description": "Option --client-cert",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "resume_retries",
-      "type": "boolean",
-      "description": "Option --resume-retries",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "no_input",
-      "type": "file",
-      "description": "Option --no-input",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     ""
   ],
@@ -159,6 +48,6 @@
     ]
   },
   "template": "pip {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.206953",
+  "stored_at": "2026-01-23T15:57:22.533853",
   "version": "1.0"
 }

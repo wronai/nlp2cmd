@@ -2,118 +2,7 @@
   "command": "rsync",
   "description": "rsync  version 3.4.1  protocol version 32",
   "category": "file",
-  "parameters": [
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "verbose",
-      "type": "boolean",
-      "description": "Option --verbose",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "del",
-      "type": "boolean",
-      "description": "Option --del",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "delete_delay",
-      "type": "boolean",
-      "description": "Option --delete-delay",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "ignore_errors",
-      "type": "boolean",
-      "description": "Option --ignore-errors",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "size_only",
-      "type": "integer",
-      "description": "Option --size-only",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "output",
-      "type": "file",
-      "description": "Option --output",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "force",
-      "type": "boolean",
-      "description": "Option --force",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "h",
-      "type": "boolean",
-      "description": "Option -h",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "no_OPTION",
-      "type": "boolean",
-      "description": "Option --no-OPTION",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "File to process",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "argument"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "rsync ... SRC ... DEST"
   ],
@@ -184,6 +73,6 @@
     ]
   },
   "template": "rsync {options} {file}",
-  "stored_at": "2026-01-23T15:53:25.219791",
+  "stored_at": "2026-01-23T15:57:22.543459",
   "version": "1.0"
 }

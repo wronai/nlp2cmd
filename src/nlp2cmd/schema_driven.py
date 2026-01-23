@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 from typing import Any, Optional
@@ -57,7 +58,8 @@ class SchemaDrivenNLP2CMD:
                         score += 0.2
                         break
 
-            score += min(len(patterns), 5) * 0.02
+            if score > 0:
+                score += min(len(patterns), 5) * 0.02
 
             if best is None or score > best.score:
                 best = MatchResult(action=action, score=score)
@@ -100,6 +102,11 @@ class SchemaDrivenNLP2CMD:
             else:
                 params[key] = value
 
+        if "value" in (action.params or {}) and "value" not in params:
+            m = re.search(r"\"([^\"]+)\"|'([^']+)'", text)
+            if m:
+                params["value"] = m.group(1) or m.group(2)
+
         return params
 
     def _render_dsl(self, action: AppAction, params: dict[str, Any], text: str) -> str:
@@ -116,7 +123,32 @@ class SchemaDrivenNLP2CMD:
         if action.dsl_kind == "shell":
             return self._render_shell(action, params)
 
+        if action.dsl_kind == "dom":
+            return self._render_dom(action, params)
+
         return f"# action={action.id} (provide dsl.template to render), params={params}"
+
+    def _render_dom(self, action: AppAction, params: dict[str, Any]) -> str:
+        schema = action.schema or {}
+        dom_action = str(schema.get("action") or "")
+        selector = str(schema.get("selector") or "")
+        base_url = schema.get("base_url")
+
+        payload: dict[str, Any] = {
+            "dsl": "dom_dql.v1",
+            "action": dom_action,
+            "target": {"by": "css", "value": selector},
+            "params": {},
+        }
+
+        if isinstance(base_url, str) and base_url.strip():
+            payload["url"] = base_url
+
+        if dom_action in {"type", "select"}:
+            if "value" in params and params.get("value") is not None:
+                payload["params"]["value"] = params["value"]
+
+        return json.dumps(payload, ensure_ascii=False)
 
     def _render_http(self, action: AppAction, params: dict[str, Any]) -> str:
         schema = action.schema or {}
@@ -168,6 +200,29 @@ class SchemaDrivenNLP2CMD:
                 cmd = action.id
 
         parts = [cmd]
+
+        if not params:
+            text_lower = (action.schema or {}).get("text")
+            if not isinstance(text_lower, str):
+                text_lower = ""
+            text_lower = text_lower.lower()
+
+            if cmd == "git":
+                for sub in ["status", "log", "diff", "branch"]:
+                    if sub in text_lower:
+                        parts.append(sub)
+                        break
+
+            if cmd == "df":
+                if any(k in text_lower for k in ["disk", "space", "usage", "miejsce", "dysk"]):
+                    parts.append("-h")
+
+            if cmd == "du":
+                if any(k in text_lower for k in ["current directory", "this directory", "bieżąc", "aktualny", "katalog"]):
+                    parts.extend(["-sh", "."])
+                elif any(k in text_lower for k in ["disk", "space", "usage", "miejsce", "dysk"]):
+                    parts.append("-sh")
+
         for name, value in params.items():
             spec = action.params.get(name) or {}
             loc = str(spec.get("location") or "option")

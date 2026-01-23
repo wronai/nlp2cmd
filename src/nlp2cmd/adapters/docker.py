@@ -27,6 +27,56 @@ class DockerSafetyPolicy(SafetyPolicy):
     max_memory: str = "4g"
     max_cpus: float = 2.0
 
+    def check_command(self, command: str, context: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+        """Check Docker command against safety policy.
+
+        Exposed for DynamicAdapter compatibility (it calls safety_policy.check_command if present).
+        """
+        # Check privileged mode
+        if not self.allow_privileged and "--privileged" in command:
+            return {
+                "allowed": False,
+                "reason": "Privileged mode is not allowed",
+                "risk_level": "high",
+            }
+
+        # Check host network
+        if not self.allow_host_network and "--network host" in command:
+            return {
+                "allowed": False,
+                "reason": "Host network mode is not allowed",
+                "risk_level": "high",
+            }
+
+        # Check host PID
+        if not self.allow_host_pid and "--pid host" in command:
+            return {
+                "allowed": False,
+                "reason": "Host PID mode is not allowed",
+                "risk_level": "high",
+            }
+
+        # Check blocked images
+        for blocked in self.blocked_images:
+            if blocked in command:
+                return {
+                    "allowed": False,
+                    "reason": f"Image '{blocked}' is blocked",
+                    "risk_level": "high",
+                }
+
+        # Check for dangerous volume mounts
+        dangerous_mounts = ["-v /:/", "-v /etc:/", "-v /var/run/docker.sock"]
+        for mount in dangerous_mounts:
+            if mount in command:
+                return {
+                    "allowed": False,
+                    "reason": f"Dangerous volume mount detected: {mount}",
+                    "risk_level": "high",
+                }
+
+        return {"allowed": True, "requires_confirmation": False, "risk_level": "low"}
+
 
 @dataclass
 class ComposeContext:

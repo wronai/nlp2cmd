@@ -2,108 +2,7 @@
   "command": "sed",
   "description": "suppress automatic printing of pattern space",
   "category": "system",
-  "parameters": [
-    {
-      "name": "posix",
-      "type": "boolean",
-      "description": "Option --posix",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "file",
-      "type": "file",
-      "description": "Option --file",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "o",
-      "type": "boolean",
-      "description": "Option -o",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "f",
-      "type": "boolean",
-      "description": "Option -f",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "help",
-      "type": "boolean",
-      "description": "Option --help",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "version",
-      "type": "boolean",
-      "description": "Option --version",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "E",
-      "type": "boolean",
-      "description": "Option -E",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "l",
-      "type": "boolean",
-      "description": "Option -l",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "follow_symlinks",
-      "type": "boolean",
-      "description": "Option --follow-symlinks",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "e",
-      "type": "boolean",
-      "description": "Option -e",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "sed ... {script-only-if-no-other-script} ..."
   ],
@@ -136,6 +35,6 @@
     ]
   },
   "template": "sed {options}",
-  "stored_at": "2026-01-23T15:53:25.216033",
+  "stored_at": "2026-01-23T15:57:22.540726",
   "version": "1.0"
 }

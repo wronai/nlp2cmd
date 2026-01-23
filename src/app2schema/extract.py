@@ -415,6 +415,7 @@ class App2SchemaResult:
                 schema_payload = dict(cmd.metadata or {})
                 if dsl_kind == "shell":
                     schema_payload.setdefault("command", cmd.name)
+                    schema_payload.setdefault("text", self.metadata.get("target") or "")
 
                 actions.append(
                     {
