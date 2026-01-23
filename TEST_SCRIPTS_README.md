@@ -164,7 +164,7 @@ The enhanced script provides:
 
 ### Log File Format
 
-```
+```text
 nlp2cmd Test Log - 2024-01-23 10:30:00
 =========================
 [INFO] Checking nlp2cmd Installation
@@ -236,7 +236,7 @@ The generated appspec schemas can be used with nlp2cmd:
 nlp2cmd --query "run nginx on port 8080" --dsl appspec --appspec docker.appspec.json
 ```
 
-## Integration with nlp2cmd
+## How Generated Schemas Help nlp2cmd
 
 The generated schemas can be used by nlp2cmd to:
 

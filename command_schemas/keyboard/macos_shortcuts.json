@@ -1,0 +1,80 @@
+{
+  "name": "macos_keyboard_shortcuts",
+  "description": "Common keyboard shortcuts for macOS",
+  "category": "keyboard",
+  "source_type": "keyboard_shortcuts",
+  "shortcuts": {
+    "system": {
+      "spotlight": {"keys": "Cmd+Space", "description": "Open Spotlight search"},
+      "force_quit": {"keys": "Cmd+Option+Esc", "description": "Force quit applications"},
+      "screenshot": {"keys": "Cmd+Shift+3", "description": "Screenshot full screen"},
+      "screenshot_area": {"keys": "Cmd+Shift+4", "description": "Screenshot selected area"},
+      "screenshot_window": {"keys": "Cmd+Shift+4+Space", "description": "Screenshot window"},
+      "lock_screen": {"keys": "Cmd+Ctrl+Q", "description": "Lock screen"},
+      "sleep": {"keys": "Cmd+Option+Power", "description": "Put to sleep"},
+      "switch_app": {"keys": "Cmd+Tab", "description": "Switch between apps"},
+      "switch_window": {"keys": "Cmd+`", "description": "Switch windows of same app"},
+      "mission_control": {"keys": "Ctrl+Up", "description": "Mission Control"},
+      "show_desktop": {"keys": "F11", "description": "Show desktop"},
+      "launchpad": {"keys": "F4", "description": "Open Launchpad"},
+      "close_window": {"keys": "Cmd+W", "description": "Close window"},
+      "quit_app": {"keys": "Cmd+Q", "description": "Quit application"},
+      "minimize": {"keys": "Cmd+M", "description": "Minimize window"},
+      "hide_app": {"keys": "Cmd+H", "description": "Hide application"},
+      "fullscreen": {"keys": "Cmd+Ctrl+F", "description": "Toggle fullscreen"},
+      "preferences": {"keys": "Cmd+,", "description": "Open preferences"},
+      "finder": {"keys": "Cmd+Option+Space", "description": "Open Finder search"}
+    },
+    "text_editing": {
+      "copy": {"keys": "Cmd+C", "description": "Copy"},
+      "paste": {"keys": "Cmd+V", "description": "Paste"},
+      "cut": {"keys": "Cmd+X", "description": "Cut"},
+      "undo": {"keys": "Cmd+Z", "description": "Undo"},
+      "redo": {"keys": "Cmd+Shift+Z", "description": "Redo"},
+      "select_all": {"keys": "Cmd+A", "description": "Select all"},
+      "find": {"keys": "Cmd+F", "description": "Find"},
+      "replace": {"keys": "Cmd+Option+F", "description": "Find and replace"},
+      "save": {"keys": "Cmd+S", "description": "Save"},
+      "save_as": {"keys": "Cmd+Shift+S", "description": "Save as"},
+      "new": {"keys": "Cmd+N", "description": "New"},
+      "open": {"keys": "Cmd+O", "description": "Open"},
+      "print": {"keys": "Cmd+P", "description": "Print"},
+      "bold": {"keys": "Cmd+B", "description": "Bold"},
+      "italic": {"keys": "Cmd+I", "description": "Italic"},
+      "underline": {"keys": "Cmd+U", "description": "Underline"}
+    },
+    "browser": {
+      "new_tab": {"keys": "Cmd+T", "description": "New tab"},
+      "close_tab": {"keys": "Cmd+W", "description": "Close tab"},
+      "reopen_tab": {"keys": "Cmd+Shift+T", "description": "Reopen closed tab"},
+      "next_tab": {"keys": "Cmd+Option+Right", "description": "Next tab"},
+      "prev_tab": {"keys": "Cmd+Option+Left", "description": "Previous tab"},
+      "address_bar": {"keys": "Cmd+L", "description": "Focus address bar"},
+      "refresh": {"keys": "Cmd+R", "description": "Refresh"},
+      "hard_refresh": {"keys": "Cmd+Shift+R", "description": "Hard refresh"},
+      "back": {"keys": "Cmd+[", "description": "Go back"},
+      "forward": {"keys": "Cmd+]", "description": "Go forward"},
+      "fullscreen": {"keys": "Cmd+Ctrl+F", "description": "Toggle fullscreen"},
+      "dev_tools": {"keys": "Cmd+Option+I", "description": "Developer tools"},
+      "bookmarks": {"keys": "Cmd+Option+B", "description": "Show bookmarks"},
+      "history": {"keys": "Cmd+Y", "description": "Show history"}
+    },
+    "terminal": {
+      "new_tab": {"keys": "Cmd+T", "description": "New terminal tab"},
+      "close_tab": {"keys": "Cmd+W", "description": "Close terminal tab"},
+      "clear": {"keys": "Cmd+K", "description": "Clear terminal"},
+      "interrupt": {"keys": "Ctrl+C", "description": "Interrupt process"},
+      "eof": {"keys": "Ctrl+D", "description": "End of file / exit"},
+      "split_horizontal": {"keys": "Cmd+D", "description": "Split pane horizontal"},
+      "split_vertical": {"keys": "Cmd+Shift+D", "description": "Split pane vertical"}
+    }
+  },
+  "patterns": [
+    "shortcut", "skrót", "macos", "mac", "cmd", "command", "option",
+    "hotkey", "key", "press"
+  ],
+  "metadata": {
+    "platform": "darwin",
+    "versions": ["macOS Monterey", "macOS Ventura", "macOS Sonoma"]
+  }
+}

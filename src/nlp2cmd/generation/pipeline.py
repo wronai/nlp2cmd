@@ -134,12 +134,36 @@ class RuleBasedPipeline:
         # Add original text to entities for context-aware template selection
         entities_with_text = extraction.entities.copy()
         entities_with_text['text'] = text
-        
+
         template_result = self.generator.generate(
             domain=detection.domain,
             intent=detection.intent,
             entities=entities_with_text,
         )
+
+        if not template_result.success:
+            fallback_results: list[tuple[DetectionResult, ExtractionResult, TemplateResult]] = []
+            for cand in self.detector.detect_all(text)[:8]:
+                if cand.domain == detection.domain and cand.intent == detection.intent:
+                    continue
+
+                cand_extraction = self.extractor.extract(text, cand.domain)
+                cand_entities = cand_extraction.entities.copy()
+                cand_entities["text"] = text
+                cand_template = self.generator.generate(
+                    domain=cand.domain,
+                    intent=cand.intent,
+                    entities=cand_entities,
+                )
+                if cand_template.success:
+                    fallback_results.append((cand, cand_extraction, cand_template))
+                    break
+
+            if fallback_results:
+                chosen_detection, chosen_extraction, chosen_template = fallback_results[0]
+                detection = chosen_detection
+                extraction = chosen_extraction
+                template_result = chosen_template
         
         if not template_result.success:
             errors.append(f"Template generation failed: {template_result.command}")

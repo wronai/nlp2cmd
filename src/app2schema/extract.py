@@ -35,6 +35,35 @@ SourceType = Literal[
     "web_runtime",
 ]
 
+
+def validate_app2schema_export(payload: dict[str, Any]) -> None:
+    fmt = payload.get("format")
+    if fmt != "nlp2cmd.dynamic_schema_export":
+        raise ValueError(f"Invalid export format: {fmt}")
+
+    version = payload.get("version")
+    if not isinstance(version, int) or version < 1:
+        raise ValueError(f"Invalid export version: {version}")
+
+    if not isinstance(payload.get("detected_type"), str):
+        raise ValueError("Invalid export detected_type")
+
+    sources = payload.get("sources")
+    if not isinstance(sources, dict):
+        raise ValueError("Invalid export sources")
+
+    for key, src in sources.items():
+        if not isinstance(key, str) or not key:
+            raise ValueError("Invalid export source key")
+        if not isinstance(src, dict):
+            raise ValueError(f"Invalid export source payload for: {key}")
+        if not isinstance(src.get("source_type"), str):
+            raise ValueError(f"Invalid export source_type for: {key}")
+        if not isinstance(src.get("commands"), list):
+            raise ValueError(f"Invalid export commands for: {key}")
+        if not isinstance(src.get("metadata"), dict):
+            raise ValueError(f"Invalid export metadata for: {key}")
+
 APP2SCHEMA_APPSPEC_JSON_SCHEMA_V1: dict[str, Any] = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -365,9 +394,56 @@ def _extract_web_dom_schema(
 
 
 @dataclass
+class App2SchemaResult:
     schemas: list[ExtractedSchema]
     detected_type: str
     metadata: dict[str, Any] = field(default_factory=dict)
+
+    def to_export_dict(self, raw: bool = False) -> dict[str, Any]:
+        sources: dict[str, Any] = {}
+        for schema in self.schemas:
+            sources[schema.source] = {
+                "source_type": schema.source_type,
+                "commands": [
+                    {
+                        "name": cmd.name,
+                        "description": cmd.description,
+                        "category": cmd.category,
+                        "template": cmd.template,
+                        "parameters": [
+                            {
+                                "name": p.name,
+                                "type": p.type,
+                                "description": p.description,
+                                "required": p.required,
+                                "default": p.default,
+                                "choices": p.choices,
+                                "pattern": p.pattern,
+                                "example": p.example,
+                                "location": p.location,
+                            }
+                            for p in cmd.parameters
+                        ],
+                        "examples": cmd.examples,
+                        "patterns": cmd.patterns,
+                        "source_type": cmd.source_type,
+                        "metadata": cmd.metadata,
+                    }
+                    for cmd in schema.commands
+                ],
+                "metadata": schema.metadata,
+            }
+
+        if raw:
+            return sources
+
+        return {
+            "format": "nlp2cmd.dynamic_schema_export",
+            "version": 1,
+            "detected_type": self.detected_type,
+            "sources": sources,
+            "metadata": self.metadata,
+        }
 
     def to_appspec_dict(self) -> dict[str, Any]:
         actions: list[dict[str, Any]] = []
@@ -769,5 +845,59 @@ def extract_appspec_to_file(
 
     if validate:
         validate_appspec(payload)
+    out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return out_path
+
+
+def extract_schema_to_file(
+    target: Union[str, Path],
+    out_path: Union[str, Path],
+    *,
+    source_type: SourceType = "auto",
+    discover_openapi: bool = True,
+    raw: bool = False,
+    validate: bool = True,
+    merge: bool = False,
+) -> Path:
+    result = extract_schema(
+        target,
+        source_type=source_type,
+        discover_openapi=discover_openapi,
+    )
+
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = result.to_export_dict(raw=raw)
+
+    if merge and out_path.exists() and not raw:
+        try:
+            existing = json.loads(out_path.read_text(encoding="utf-8"))
+        except Exception:
+            existing = None
+
+        if isinstance(existing, dict) and existing.get("format") == "nlp2cmd.dynamic_schema_export":
+            existing_sources = existing.get("sources") if isinstance(existing.get("sources"), dict) else {}
+            new_sources = payload.get("sources") if isinstance(payload.get("sources"), dict) else {}
+            merged_sources = {**existing_sources, **new_sources}
+
+            existing_meta = existing.get("metadata") if isinstance(existing.get("metadata"), dict) else {}
+            new_meta = payload.get("metadata") if isinstance(payload.get("metadata"), dict) else {}
+            merged_meta = {**existing_meta, **new_meta, "merged": True}
+
+            detected_type = str(existing.get("detected_type") or payload.get("detected_type") or "mixed")
+            if str(payload.get("detected_type") or "") and detected_type != str(payload.get("detected_type")):
+                detected_type = "mixed"
+
+            payload = {
+                "format": "nlp2cmd.dynamic_schema_export",
+                "version": int(existing.get("version") or payload.get("version") or 1),
+                "detected_type": detected_type,
+                "sources": merged_sources,
+                "metadata": merged_meta,
+            }
+
+    if validate and not raw:
+        validate_app2schema_export(payload)
+
     out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return out_path

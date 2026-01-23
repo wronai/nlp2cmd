@@ -4,7 +4,7 @@ from pathlib import Path
 
 import click
 
-from app2schema.extract import extract_appspec_to_file
+from app2schema.extract import extract_appspec_to_file, extract_schema_to_file
 
 
 @click.command()
@@ -28,6 +28,13 @@ from app2schema.extract import extract_appspec_to_file
     ),
     default="auto",
 )
+@click.option(
+    "--format",
+    "out_format",
+    type=click.Choice(["appspec", "dynamic"], case_sensitive=False),
+    default="appspec",
+)
+@click.option("--raw", is_flag=True)
 @click.option("--merge", is_flag=True)
 @click.option(
     "-o",
@@ -41,19 +48,34 @@ from app2schema.extract import extract_appspec_to_file
 def main(
     target: str,
     source_type: str,
+    out_format: str,
+    raw: bool,
     out_path: Path,
     merge: bool,
     no_validate: bool,
     no_discover: bool,
 ) -> None:
-    written = extract_appspec_to_file(
-        target,
-        out_path,
-        source_type=source_type,  # type: ignore[arg-type]
-        discover_openapi=not no_discover,
-        validate=not no_validate,
-        merge=merge,
-    )
+    if out_format.lower() == "dynamic":
+        written = extract_schema_to_file(
+            target,
+            out_path,
+            source_type=source_type,  # type: ignore[arg-type]
+            discover_openapi=not no_discover,
+            raw=raw,
+            validate=not no_validate,
+            merge=merge,
+        )
+    else:
+        if raw:
+            raise click.UsageError("--raw is only supported for --format dynamic")
+        written = extract_appspec_to_file(
+            target,
+            out_path,
+            source_type=source_type,  # type: ignore[arg-type]
+            discover_openapi=not no_discover,
+            validate=not no_validate,
+            merge=merge,
+        )
     click.echo(str(written))
 
 

@@ -1,0 +1,84 @@
+{
+  "name": "linux_keyboard_shortcuts",
+  "description": "Common keyboard shortcuts for Linux desktop environments",
+  "category": "keyboard",
+  "source_type": "keyboard_shortcuts",
+  "shortcuts": {
+    "system": {
+      "open_terminal": {"keys": "Ctrl+Alt+T", "description": "Open terminal emulator"},
+      "switch_workspace_left": {"keys": "Ctrl+Alt+Left", "description": "Switch to left workspace"},
+      "switch_workspace_right": {"keys": "Ctrl+Alt+Right", "description": "Switch to right workspace"},
+      "show_desktop": {"keys": "Super+D", "description": "Show desktop / minimize all windows"},
+      "lock_screen": {"keys": "Super+L", "description": "Lock screen"},
+      "logout": {"keys": "Ctrl+Alt+Delete", "description": "Logout / shutdown menu"},
+      "screenshot": {"keys": "Print", "description": "Take screenshot"},
+      "screenshot_window": {"keys": "Alt+Print", "description": "Screenshot current window"},
+      "screenshot_area": {"keys": "Shift+Print", "description": "Screenshot selected area"},
+      "app_menu": {"keys": "Super", "description": "Open application menu"},
+      "run_dialog": {"keys": "Alt+F2", "description": "Open run dialog"},
+      "switch_window": {"keys": "Alt+Tab", "description": "Switch between windows"},
+      "close_window": {"keys": "Alt+F4", "description": "Close current window"},
+      "maximize_window": {"keys": "Super+Up", "description": "Maximize window"},
+      "minimize_window": {"keys": "Super+H", "description": "Minimize window"},
+      "tile_left": {"keys": "Super+Left", "description": "Tile window to left half"},
+      "tile_right": {"keys": "Super+Right", "description": "Tile window to right half"},
+      "file_manager": {"keys": "Super+E", "description": "Open file manager"}
+    },
+    "text_editing": {
+      "copy": {"keys": "Ctrl+C", "description": "Copy selection"},
+      "paste": {"keys": "Ctrl+V", "description": "Paste from clipboard"},
+      "cut": {"keys": "Ctrl+X", "description": "Cut selection"},
+      "undo": {"keys": "Ctrl+Z", "description": "Undo last action"},
+      "redo": {"keys": "Ctrl+Shift+Z", "description": "Redo last undone action"},
+      "select_all": {"keys": "Ctrl+A", "description": "Select all"},
+      "find": {"keys": "Ctrl+F", "description": "Find in document"},
+      "replace": {"keys": "Ctrl+H", "description": "Find and replace"},
+      "save": {"keys": "Ctrl+S", "description": "Save file"},
+      "save_as": {"keys": "Ctrl+Shift+S", "description": "Save file as"},
+      "new_file": {"keys": "Ctrl+N", "description": "New file"},
+      "open_file": {"keys": "Ctrl+O", "description": "Open file"},
+      "print": {"keys": "Ctrl+P", "description": "Print"},
+      "close_tab": {"keys": "Ctrl+W", "description": "Close current tab"}
+    },
+    "browser": {
+      "new_tab": {"keys": "Ctrl+T", "description": "Open new tab"},
+      "close_tab": {"keys": "Ctrl+W", "description": "Close current tab"},
+      "reopen_tab": {"keys": "Ctrl+Shift+T", "description": "Reopen closed tab"},
+      "next_tab": {"keys": "Ctrl+Tab", "description": "Switch to next tab"},
+      "prev_tab": {"keys": "Ctrl+Shift+Tab", "description": "Switch to previous tab"},
+      "address_bar": {"keys": "Ctrl+L", "description": "Focus address bar"},
+      "refresh": {"keys": "F5", "description": "Refresh page"},
+      "hard_refresh": {"keys": "Ctrl+F5", "description": "Hard refresh (clear cache)"},
+      "back": {"keys": "Alt+Left", "description": "Go back"},
+      "forward": {"keys": "Alt+Right", "description": "Go forward"},
+      "bookmarks": {"keys": "Ctrl+B", "description": "Show bookmarks"},
+      "history": {"keys": "Ctrl+H", "description": "Show history"},
+      "downloads": {"keys": "Ctrl+J", "description": "Show downloads"},
+      "dev_tools": {"keys": "F12", "description": "Open developer tools"},
+      "fullscreen": {"keys": "F11", "description": "Toggle fullscreen"},
+      "zoom_in": {"keys": "Ctrl+Plus", "description": "Zoom in"},
+      "zoom_out": {"keys": "Ctrl+Minus", "description": "Zoom out"},
+      "zoom_reset": {"keys": "Ctrl+0", "description": "Reset zoom"}
+    },
+    "terminal": {
+      "copy": {"keys": "Ctrl+Shift+C", "description": "Copy in terminal"},
+      "paste": {"keys": "Ctrl+Shift+V", "description": "Paste in terminal"},
+      "new_tab": {"keys": "Ctrl+Shift+T", "description": "New terminal tab"},
+      "close_tab": {"keys": "Ctrl+Shift+W", "description": "Close terminal tab"},
+      "clear": {"keys": "Ctrl+L", "description": "Clear terminal"},
+      "interrupt": {"keys": "Ctrl+C", "description": "Interrupt current process"},
+      "eof": {"keys": "Ctrl+D", "description": "End of file / exit"},
+      "search": {"keys": "Ctrl+Shift+F", "description": "Search in terminal"},
+      "zoom_in": {"keys": "Ctrl+Shift+Plus", "description": "Increase font size"},
+      "zoom_out": {"keys": "Ctrl+Minus", "description": "Decrease font size"}
+    }
+  },
+  "patterns": [
+    "shortcut", "skrót", "keyboard", "klawiatura", "hotkey", "key combination",
+    "ctrl", "alt", "shift", "super", "press", "naciśnij"
+  ],
+  "metadata": {
+    "platform": "linux",
+    "environments": ["GNOME", "KDE", "XFCE", "i3", "Cinnamon"]
+  }
+}

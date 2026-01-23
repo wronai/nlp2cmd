@@ -162,6 +162,14 @@ class InteractiveSession:
         with measure_resources():
             result = nlp2cmd.transform(user_input, context=self.context)
 
+        self.context["last_plan"] = result.plan.model_dump() if hasattr(result.plan, "model_dump") else {}
+        self.context["transform_status"] = result.status.value if hasattr(result.status, "value") else str(result.status)
+        prev = self.context.get("previous_commands")
+        if not isinstance(prev, list):
+            prev = []
+        prev.append(result.command)
+        self.context["previous_commands"] = prev
+
         # Analyze feedback
         feedback = self.feedback_analyzer.analyze(
             original_input=user_input,
@@ -386,21 +394,52 @@ class InteractiveSession:
             return
 
         if feedback.requires_user_input:
-            response = console.input("\n[yellow]Provide clarification or press Enter to skip:[/yellow] ").strip()
+            answers: list[str] = []
+            questions = list(feedback.clarification_questions or [])
+            if not questions:
+                questions = ["Please clarify the request."]
 
-            if response:
-                # Re-process with additional context
-                self.context["user_clarification"] = response
-                new_feedback = self.process(
-                    f"{feedback.original_input}. {response}"
-                )
+            max_questions = 5
+            for q in questions[:max_questions]:
+                response = console.input(f"\n[yellow]{q}[/yellow] ").strip()
+                if response:
+                    answers.append(response)
+
+            if answers:
+                combined = " ".join(answers)
+                self.context["user_clarification"] = combined
+                new_feedback = self.process(f"{feedback.original_input}. {combined}")
                 self.display_feedback(new_feedback)
+                if new_feedback.type != FeedbackType.SUCCESS:
+                    if new_feedback.requires_user_input:
+                        self._correction_loop(new_feedback)
+                return
 
         elif feedback.can_auto_fix and self.auto_repair:
             console.print("\n[cyan]Apply auto-corrections? [y/N]:[/cyan] ", end="")
             if console.input().strip().lower() == "y":
                 for original, fixed in feedback.auto_corrections.items():
                     console.print(f"Applied: {fixed[:60]}...")
+
+        missing_tool = feedback.metadata.get("missing_tool") if isinstance(feedback.metadata, dict) else None
+        if isinstance(missing_tool, str) and missing_tool:
+            console.print(f"\n[yellow]Missing tool detected:[/yellow] {missing_tool}")
+            console.print("[cyan]Show installation hints? [y/N]:[/cyan] ", end="")
+            if console.input().strip().lower() == "y":
+                console.print("Which package manager do you use? (apt/dnf/yum/pacman/brew/other)")
+                pm = console.input("[bold green]pm>[/bold green] ").strip().lower()
+                hints = {
+                    "apt": f"sudo apt-get update && sudo apt-get install -y {missing_tool}",
+                    "dnf": f"sudo dnf install -y {missing_tool}",
+                    "yum": f"sudo yum install -y {missing_tool}",
+                    "pacman": f"sudo pacman -S {missing_tool}",
+                    "brew": f"brew install {missing_tool}",
+                }
+                cmd = hints.get(pm)
+                if cmd:
+                    console.print(Panel(Syntax(cmd, "bash", theme="monokai", line_numbers=False), border_style="yellow"))
+                else:
+                    console.print(f"Install '{missing_tool}' using your system package manager or official docs.")
 
 
 @click.group(cls=NLP2CMDGroup, invoke_without_command=True)

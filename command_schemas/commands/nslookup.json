@@ -28,6 +28,6 @@
     ]
   },
   "template": "nslookup {options} {file}",
-  "stored_at": "2026-01-23T16:10:41.424508",
+  "stored_at": "2026-01-23T16:35:15.684327",
   "version": "1.0"
 }

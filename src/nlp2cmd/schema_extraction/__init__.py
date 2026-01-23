@@ -1352,7 +1352,14 @@ class MakefileExtractor:
 class DynamicSchemaRegistry:
     """Registry for managing dynamically extracted schemas."""
     
-    def __init__(self, auto_save_path: Optional[Union[str, Path]] = None, use_llm: bool = False, llm_config: Optional[Dict] = None, use_per_command_storage: bool = False, storage_dir: Optional[str] = None):
+    def __init__(
+        self,
+        auto_save_path: Optional[Union[str, Path]] = None,
+        use_llm: bool = False,
+        llm_config: Optional[Dict] = None,
+        use_per_command_storage: bool = True,
+        storage_dir: Optional[str] = "./command_schemas",
+    ):
         self.schemas: Dict[str, ExtractedSchema] = {}
         self.openapi_extractor = OpenAPISchemaExtractor()
         self.shell_extractor = ShellHelpExtractor()
@@ -1467,9 +1474,85 @@ class DynamicSchemaRegistry:
         return schema
 
     def register_dynamic_export(self, file_path: Union[str, Path]) -> list[ExtractedSchema]:
-        raise NotImplementedError(
-            "nlp2cmd.dynamic_schema_export is removed; use app2schema.appspec instead"
-        )
+        file_path = Path(file_path)
+        if not file_path.exists():
+            raise FileNotFoundError(f"Dynamic export file not found: {file_path}")
+
+        try:
+            payload = json.loads(file_path.read_text(encoding="utf-8"))
+        except Exception as e:
+            raise ValueError(f"Failed to parse dynamic export from {file_path}: {e}")
+
+        if not isinstance(payload, dict) or payload.get("format") != "nlp2cmd.dynamic_schema_export":
+            raise ValueError(f"Invalid dynamic export format: {file_path}")
+
+        sources = payload.get("sources")
+        if not isinstance(sources, dict):
+            raise ValueError(f"Invalid dynamic export sources: {file_path}")
+
+        extracted_schemas: list[ExtractedSchema] = []
+
+        for source_name, src in sources.items():
+            if not isinstance(source_name, str) or not source_name:
+                continue
+            if not isinstance(src, dict):
+                continue
+
+            src_type = str(src.get("source_type") or "unknown")
+            src_meta = src.get("metadata") if isinstance(src.get("metadata"), dict) else {}
+
+            commands: list[CommandSchema] = []
+            for c in src.get("commands", []) or []:
+                if not isinstance(c, dict):
+                    continue
+
+                params: list[CommandParameter] = []
+                for p in c.get("parameters", []) or []:
+                    if not isinstance(p, dict):
+                        continue
+                    params.append(
+                        CommandParameter(
+                            name=str(p.get("name") or ""),
+                            type=str(p.get("type") or "string"),
+                            description=str(p.get("description") or ""),
+                            required=bool(p.get("required", False)),
+                            default=p.get("default"),
+                            choices=list(p.get("choices", []) or []),
+                            pattern=p.get("pattern"),
+                            example=p.get("example"),
+                            location=str(p.get("location") or "unknown"),
+                        )
+                    )
+
+                metadata = c.get("metadata") if isinstance(c.get("metadata"), dict) else {}
+                template = metadata.get("template") if isinstance(metadata.get("template"), str) else None
+
+                commands.append(
+                    CommandSchema(
+                        name=str(c.get("name") or "unknown"),
+                        description=str(c.get("description") or ""),
+                        category=str(c.get("category") or "general"),
+                        parameters=params,
+                        examples=list(c.get("examples", []) or []),
+                        patterns=list(c.get("patterns", []) or []),
+                        source_type=str(c.get("source_type") or src_type),
+                        metadata=dict(metadata),
+                        template=template,
+                    )
+                )
+
+            extracted = ExtractedSchema(
+                source=source_name,
+                source_type=src_type,
+                commands=commands,
+                metadata=dict(src_meta),
+            )
+
+            self.schemas[extracted.source] = extracted
+            extracted_schemas.append(extracted)
+
+        self._auto_save()
+        return extracted_schemas
     
     def register_appspec_export(self, file_path: Union[str, Path]) -> ExtractedSchema:
         """Register an app2schema.appspec export file and convert to ExtractedSchema."""
@@ -1757,9 +1840,55 @@ class DynamicSchemaRegistry:
         return [cmd for cmd in self.get_all_commands() if cmd.category == category]
     
     def export_schemas(self, format: str = "json") -> str:
-        raise NotImplementedError(
-            "dynamic_schema_export is deprecated; use app2schema.appspec instead"
-        )
+        fmt = (format or "json").lower()
+
+        if fmt in {"json_schema", "schema"}:
+            return json.dumps(self._export_registry_json_schema(), indent=2, ensure_ascii=False)
+
+        if fmt not in {"json", "dynamic", "dynamic_export"}:
+            raise ValueError(f"Unsupported export format: {format}")
+
+        sources: dict[str, Any] = {}
+        for source, schema in self.schemas.items():
+            sources[source] = {
+                "source_type": schema.source_type,
+                "commands": [
+                    {
+                        "name": cmd.name,
+                        "description": cmd.description,
+                        "category": cmd.category,
+                        "parameters": [
+                            {
+                                "name": p.name,
+                                "type": p.type,
+                                "description": p.description,
+                                "required": p.required,
+                                "default": p.default,
+                                "choices": p.choices,
+                                "pattern": p.pattern,
+                                "example": p.example,
+                                "location": p.location,
+                            }
+                            for p in cmd.parameters
+                        ],
+                        "examples": cmd.examples,
+                        "patterns": cmd.patterns,
+                        "source_type": cmd.source_type,
+                        "metadata": cmd.metadata,
+                    }
+                    for cmd in schema.commands
+                ],
+                "metadata": schema.metadata,
+            }
+
+        payload = {
+            "format": "nlp2cmd.dynamic_schema_export",
+            "version": 1,
+            "detected_type": "mixed",
+            "sources": sources,
+            "metadata": {"exported_at": datetime.now().isoformat()},
+        }
+        return json.dumps(payload, indent=2, ensure_ascii=False)
 
     def _export_registry_json_schema(self) -> dict[str, Any]:
         commands = self.get_all_commands()

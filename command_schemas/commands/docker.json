@@ -16,6 +16,6 @@
     "help_lines": 89
   },
   "template": "docker {subcommand} {options}",
-  "stored_at": "2026-01-23T16:10:41.421066",
+  "stored_at": "2026-01-23T16:35:15.680940",
   "version": "1.0"
 }

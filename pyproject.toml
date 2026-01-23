@@ -57,6 +57,7 @@ dependencies = [
     "python-dotenv>=1.0",
     "watchdog>=3.0",
     "numpy>=1.24.0",
+    "psutil>=5.9.0",
 ]
 
 [project.optional-dependencies]
@@ -75,6 +76,9 @@ thermodynamic = [
     "scipy>=1.10.0",
     "matplotlib>=3.7.0",
 ]
+browser = [
+    "playwright>=1.40.0",
+]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
@@ -88,7 +92,7 @@ dev = [
     "mkdocstrings[python]>=0.24",
 ]
 all = [
-    "nlp2cmd[nlp,llm,sql,thermodynamic,dev]",
+    "nlp2cmd[nlp,llm,sql,thermodynamic,browser,dev]",
 ]
 
 [project.scripts]

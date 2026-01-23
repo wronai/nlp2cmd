@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Optional
+import re
 
 
 @dataclass
@@ -264,6 +265,30 @@ class KeywordIntentDetector:
             DetectionResult with domain, intent, confidence
         """
         text_lower = text.lower()
+
+        # Fast-path: docker-like queries without explicit 'docker' keyword.
+        # Example: "run nginx on port 8080".
+        # Without this, generic shell 'development' keywords (e.g. 'run') can dominate.
+        common_images = {
+            "nginx",
+            "redis",
+            "postgres",
+            "postgresql",
+            "mysql",
+            "mongo",
+            "mongodb",
+            "rabbitmq",
+        }
+        has_run_word = bool(re.search(r"\b(run|start|launch)\b", text_lower))
+        has_port = bool(re.search(r"\bport\b\s*\d+|\bon\s+port\s+\d+|\bporcie\s+\d+", text_lower))
+        has_common_image = any(img in text_lower for img in common_images)
+        if has_run_word and has_port and has_common_image:
+            return DetectionResult(
+                domain="docker",
+                intent="run_detached",
+                confidence=0.9,
+                matched_keyword="run+port+image",
+            )
 
         # Fast-path: if the user explicitly uses the docker CLI, prefer docker intents
         # (prevents shell/process keywords like 'ps' from dominating).

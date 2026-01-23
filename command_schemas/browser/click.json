@@ -1,0 +1,28 @@
+{
+  "name": "click",
+  "description": "Click on an element in the browser",
+  "category": "browser",
+  "parameters": [
+    {
+      "name": "selector",
+      "type": "string",
+      "description": "CSS selector or text of the element to click",
+      "required": true,
+      "example": "#submit-button"
+    }
+  ],
+  "examples": [
+    "click submit button",
+    "kliknij przycisk zaloguj",
+    "click on login",
+    "naciśnij enter"
+  ],
+  "patterns": [
+    "click", "kliknij", "press", "naciśnij", "tap", "select", "wybierz"
+  ],
+  "source_type": "browser",
+  "metadata": {
+    "playwright_action": "page.click('{selector}')"
+  },
+  "template": "page.click('{selector}')"
+}

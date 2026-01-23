@@ -141,6 +141,7 @@ class RegexEntityExtractor:
         'image': [
             r'(?:obraz[u]?|image)\s+[`"\']?([\w\-/:\.]+)[`"\']?',
             r'(?:z|from)\s+[`"\']?([\w]+(?:/[\w\-]+)?(?::[\w\.\-]+)?)[`"\']?',
+            r'\b(?:run|start|launch)\s+([a-zA-Z0-9][\w\-./:]+)\b',
         ],
         'port': [
             r'(?:port[u]?|porcie)\s+(\d+)',

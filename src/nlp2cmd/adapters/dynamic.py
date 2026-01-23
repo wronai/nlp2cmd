@@ -110,9 +110,18 @@ class DynamicAdapter(BaseDSLAdapter):
         
         # Use auto_save_path from config if provided
         auto_save_path = None
+        use_per_command_storage = False
+        storage_dir = None
         if config and config.custom_options:
             auto_save_path = config.custom_options.get("auto_save_path")
-        self.registry = schema_registry or DynamicSchemaRegistry(auto_save_path=auto_save_path)
+            use_per_command_storage = bool(config.custom_options.get("use_per_command_storage", False))
+            storage_dir = config.custom_options.get("storage_dir")
+
+        self.registry = schema_registry or DynamicSchemaRegistry(
+            auto_save_path=auto_save_path,
+            use_per_command_storage=use_per_command_storage,
+            storage_dir=storage_dir,
+        )
         self._command_cache: Dict[str, CommandSchema] = {}
         
         # Initialize with some common shell commands
@@ -175,6 +184,10 @@ class DynamicAdapter(BaseDSLAdapter):
                             fmt = data.get("format")
                             if fmt == "app2schema.appspec":
                                 return self.registry.register_appspec_export(source)
+                            if fmt == "nlp2cmd.dynamic_schema_export":
+                                extracted = self.registry.register_dynamic_export(source)
+                                if extracted:
+                                    return extracted[0]
                     except Exception:
                         pass  # Fall back to OpenAPI
                 return self.registry.register_openapi_schema(source)

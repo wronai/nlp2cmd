@@ -1,0 +1,36 @@
+{
+  "name": "open_url",
+  "description": "Open a URL in the default web browser",
+  "category": "browser",
+  "parameters": [
+    {
+      "name": "url",
+      "type": "string",
+      "description": "URL to open (with or without protocol)",
+      "required": true,
+      "pattern": "^(https?://)?[\\w\\-]+(\\.[\\w\\-]+)+.*$",
+      "example": "https://google.com"
+    }
+  ],
+  "examples": [
+    "open google.com",
+    "otwórz przeglądarkę google.com",
+    "go to https://github.com",
+    "navigate to youtube.com",
+    "open browser and go to facebook.com"
+  ],
+  "patterns": [
+    "open", "otwórz", "navigate", "go to", "browse", "przeglądarka", "browser",
+    "url", "strona", "website", "site", "link"
+  ],
+  "source_type": "browser",
+  "metadata": {
+    "os_commands": {
+      "linux": "xdg-open {url}",
+      "darwin": "open {url}",
+      "windows": "start {url}"
+    },
+    "playwright_action": "page.goto('{url}')"
+  },
+  "template": "xdg-open {url}"
+}

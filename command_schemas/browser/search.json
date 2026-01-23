@@ -1,0 +1,41 @@
+{
+  "name": "search",
+  "description": "Search for something using a search engine",
+  "category": "browser",
+  "parameters": [
+    {
+      "name": "query",
+      "type": "string",
+      "description": "Search query",
+      "required": true,
+      "example": "python tutorial"
+    },
+    {
+      "name": "engine",
+      "type": "string",
+      "description": "Search engine to use",
+      "required": false,
+      "default": "google",
+      "choices": ["google", "duckduckgo", "bing", "yahoo"]
+    }
+  ],
+  "examples": [
+    "search for python tutorial",
+    "wyszukaj w google nlp2cmd",
+    "google search machine learning",
+    "find information about linux"
+  ],
+  "patterns": [
+    "search", "wyszukaj", "szukaj", "google", "find", "znajdź", "look up"
+  ],
+  "source_type": "browser",
+  "metadata": {
+    "search_urls": {
+      "google": "https://www.google.com/search?q={query}",
+      "duckduckgo": "https://duckduckgo.com/?q={query}",
+      "bing": "https://www.bing.com/search?q={query}",
+      "yahoo": "https://search.yahoo.com/search?p={query}"
+    }
+  },
+  "template": "xdg-open 'https://www.google.com/search?q={query}'"
+}

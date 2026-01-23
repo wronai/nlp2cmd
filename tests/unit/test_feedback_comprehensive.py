@@ -194,6 +194,42 @@ class TestFeedbackAnalyzer:
         # Should detect ambiguity
         assert result.type in [FeedbackType.AMBIGUOUS_INPUT, FeedbackType.SUCCESS]
 
+    def test_schema_mismatch_no_matching_command(self, analyzer):
+        result = analyzer.analyze(
+            original_input="Do something with containers",
+            generated_output="# No matching command found for: containers",
+            dsl_type="dynamic",
+            context={},
+        )
+
+        assert result.type == FeedbackType.SCHEMA_MISMATCH
+        assert result.requires_user_input
+        assert any("tool/domain" in q.lower() for q in result.clarification_questions)
+
+    def test_missing_tool_detection(self, analyzer):
+        result = analyzer.analyze(
+            original_input="Run kubectl get pods",
+            generated_output="kubectl get pods",
+            dsl_type="shell",
+            context={},
+        )
+
+        if result.type == FeedbackType.RUNTIME_ERROR:
+            assert result.metadata.get("missing_tool") == "kubectl"
+            assert result.requires_user_input
+
+    def test_placeholder_detection(self, analyzer):
+        result = analyzer.analyze(
+            original_input="Run nginx",
+            generated_output="docker run -p {port}:80 nginx",
+            dsl_type="docker",
+            context={},
+        )
+
+        assert result.type == FeedbackType.AMBIGUOUS_INPUT
+        assert result.requires_user_input
+        assert any("port" in q.lower() for q in result.clarification_questions)
+
     def test_check_syntax_valid(self, analyzer):
         """Test syntax check for valid content."""
         result = analyzer.check_syntax(

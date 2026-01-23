@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import logging
 import re
+import shlex
+import shutil
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Optional
@@ -160,11 +162,22 @@ class FeedbackAnalyzer:
         Returns:
             FeedbackResult with analysis
         """
-        errors = validation_errors or []
-        warnings = validation_warnings or []
+        errors = list(validation_errors or [])
+        warnings = list(validation_warnings or [])
         suggestions = []
         auto_corrections = {}
         clarification_questions = []
+
+        ctx = context or {}
+        last_plan = ctx.get("last_plan") if isinstance(ctx, dict) else None
+        plan_confidence: Optional[float] = None
+        if isinstance(last_plan, dict):
+            try:
+                plan_confidence = float(last_plan.get("confidence"))  # type: ignore[arg-type]
+            except (TypeError, ValueError):
+                plan_confidence = None
+
+        transform_status = ctx.get("transform_status") if isinstance(ctx, dict) else None
 
         # Determine feedback type
         if errors:
@@ -174,12 +187,67 @@ class FeedbackAnalyzer:
         else:
             feedback_type = FeedbackType.SUCCESS
 
+        output_str = str(generated_output or "")
+        output_strip = output_str.strip()
+
+        if not output_strip:
+            if feedback_type == FeedbackType.SUCCESS:
+                feedback_type = FeedbackType.AMBIGUOUS_INPUT
+            clarification_questions.append("I could not generate a command. What exactly should be done (and on which target)?")
+
+        if isinstance(transform_status, str) and transform_status.lower() == "blocked":
+            feedback_type = FeedbackType.SECURITY_VIOLATION
+            if not clarification_questions:
+                clarification_questions.append("This command was blocked by the safety policy. Do you want to proceed anyway?")
+            suggestions.append("Consider running in dry-run mode or narrowing the scope of the operation.")
+
         # Analyze errors and generate suggestions
         for error in errors:
             error_analysis = self._analyze_error(error, generated_output, dsl_type)
             suggestions.extend(error_analysis.get("suggestions", []))
             auto_corrections.update(error_analysis.get("auto_corrections", {}))
             clarification_questions.extend(error_analysis.get("questions", []))
+
+        if output_strip.startswith("#") and "no matching command found" in output_strip.lower():
+            feedback_type = FeedbackType.SCHEMA_MISMATCH
+            msg = output_strip.lstrip("#").strip()
+            if msg and msg not in errors:
+                errors.append(msg)
+            clarification_questions.extend(
+                [
+                    "Which tool/domain should be used (shell/docker/kubernetes/appspec)?",
+                    "If you expected a specific base command, what is it (e.g. docker, kubectl, nginx)?",
+                ]
+            )
+            suggestions.append("You can generate/extend schemas via app2schema and re-run.")
+
+        missing_tool: Optional[str] = None
+        if dsl_type in {"shell", "docker", "kubernetes", "dynamic", "appspec", "auto"}:
+            missing_tool = self._detect_missing_tool(output_strip, ctx)
+            if missing_tool:
+                feedback_type = FeedbackType.RUNTIME_ERROR
+                err = f"Required tool is not available: {missing_tool}"
+                if err not in errors:
+                    errors.append(err)
+                clarification_questions.append(
+                    f"Do you want installation instructions for '{missing_tool}'? If yes, which distro/package manager do you use?"
+                )
+                suggestions.append(f"Install '{missing_tool}' and try again.")
+
+        if dsl_type in {"shell", "docker", "kubernetes", "dynamic", "appspec", "auto"}:
+            placeholders = self._detect_placeholders(output_strip)
+            if placeholders:
+                if feedback_type == FeedbackType.SUCCESS:
+                    feedback_type = FeedbackType.AMBIGUOUS_INPUT
+                clarification_questions.append("I need a few details to fill the command template: " + ", ".join(placeholders))
+
+        if (
+            feedback_type == FeedbackType.SUCCESS
+            and plan_confidence is not None
+            and plan_confidence < 0.35
+        ):
+            feedback_type = FeedbackType.AMBIGUOUS_INPUT
+            clarification_questions.append("I am not confident about the intent. What exactly should the command do?")
 
         # Try to apply correction rules
         for rule in self.correction_rules:
@@ -210,6 +278,14 @@ class FeedbackAnalyzer:
             errors, warnings, len(auto_corrections), generated_output
         )
 
+        metadata: dict[str, Any] = {}
+        if plan_confidence is not None:
+            metadata["plan_confidence"] = plan_confidence
+        if isinstance(transform_status, str):
+            metadata["transform_status"] = transform_status
+        if missing_tool:
+            metadata["missing_tool"] = missing_tool
+
         return FeedbackResult(
             type=feedback_type,
             original_input=original_input,
@@ -221,7 +297,55 @@ class FeedbackAnalyzer:
             confidence=confidence,
             requires_user_input=len(clarification_questions) > 0,
             clarification_questions=clarification_questions,
+            metadata=metadata,
         )
+
+    def _detect_missing_tool(self, output: str, context: dict[str, Any]) -> Optional[str]:
+        if not output or output.startswith("#"):
+            return None
+
+        try:
+            parts = shlex.split(output)
+        except Exception:
+            parts = output.split()
+
+        if not parts:
+            return None
+
+        # Handle sudo wrapper.
+        tool = parts[0]
+        if tool == "sudo" and len(parts) >= 2:
+            tool = parts[1]
+
+        if shutil.which(tool) is None:
+            return tool
+
+        return None
+
+    def _detect_placeholders(self, output: str) -> list[str]:
+        if not output or output.startswith("#"):
+            return []
+
+        if "{" not in output or "}" not in output:
+            return []
+
+        try:
+            parts = shlex.split(output)
+        except Exception:
+            parts = output.split()
+
+        if not parts:
+            return []
+
+        tool = parts[0]
+        if tool == "sudo" and len(parts) >= 2:
+            tool = parts[1]
+
+        templated_tools = {"docker", "kubectl", "helm", "terraform", "git", "nginx"}
+        if tool not in templated_tools:
+            return []
+
+        return sorted(set(re.findall(r"\{([a-zA-Z_][a-zA-Z0-9_]*)\}", output)))
 
     def _analyze_error(
         self,

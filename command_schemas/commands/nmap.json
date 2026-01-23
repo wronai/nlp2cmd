@@ -72,6 +72,6 @@
     ]
   },
   "template": "nmap {options} {url}",
-  "stored_at": "2026-01-23T16:10:41.423859",
+  "stored_at": "2026-01-23T16:35:15.683585",
   "version": "1.0"
 }

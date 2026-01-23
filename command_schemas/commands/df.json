@@ -1,46 +1,92 @@
 {
   "command": "df",
-  "description": "Show information about the file system on which each FILE resides,",
-  "category": "file",
-  "parameters": [],
+  "description": "Show information about the file system on which each FILE resides, or all file systems by default.",
+  "category": "shell",
+  "parameters": [
+    {
+      "name": "k",
+      "type": "string",
+      "description": "like --block-size=1K",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "no_sync",
+      "type": "boolean",
+      "description": "do not invoke sync before getting usage info (default)",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "sync",
+      "type": "boolean",
+      "description": "invoke sync before getting usage info",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "total",
+      "type": "boolean",
+      "description": "elide all entries insignificant to available space,",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "v",
+      "type": "boolean",
+      "description": "(ignored)",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "help",
+      "type": "boolean",
+      "description": "display this help and exit",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "version",
+      "type": "boolean",
+      "description": "output version information and exit",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    }
+  ],
   "examples": [
-    "df ... ..."
+    "df [OPTION]... [FILE]..."
   ],
   "patterns": [
-    "df",
-    "df file",
-    "df directory"
+    "df [OPTION]... [FILE]...",
+    "show information about the file system on which each file resides, or all file systems by default."
   ],
-  "source_type": "intelligent_extraction",
+  "source_type": "shell_help",
   "metadata": {
-    "generated_at": "2026-01-23T15:53:23.251689",
-    "help_available": true,
-    "common_options": [
-      "--file",
-      "--verbose",
-      "-H",
-      "-h",
-      "-i",
-      "-t",
-      "-B",
-      "-o",
-      "-T",
-      "-k",
-      "-l",
-      "-x",
-      "--sync",
-      "-a",
-      "-f",
-      "--help",
-      "-v",
-      "--version",
-      "-P",
-      "--total",
-      "--no-sync",
-      "--output"
-    ]
+    "command": "df",
+    "help_lines": 44
   },
-  "template": "df {options} {file}",
-  "stored_at": "2026-01-23T16:10:41.417626",
+  "template": null,
+  "stored_at": "2026-01-23T16:35:15.677595",
   "version": "1.0"
 }

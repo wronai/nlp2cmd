@@ -1,0 +1,35 @@
+{
+  "name": "type_text",
+  "description": "Type text into an input field or the current focused element",
+  "category": "browser",
+  "parameters": [
+    {
+      "name": "text",
+      "type": "string",
+      "description": "Text to type",
+      "required": true,
+      "example": "hello world"
+    },
+    {
+      "name": "selector",
+      "type": "string",
+      "description": "CSS selector of the input element (optional)",
+      "required": false,
+      "example": "#search-input"
+    }
+  ],
+  "examples": [
+    "type hello world",
+    "wpisz tekst w pole wyszukiwania",
+    "type google.com in address bar",
+    "wpisz google.com"
+  ],
+  "patterns": [
+    "type", "wpisz", "enter text", "input", "write", "napisz", "fill"
+  ],
+  "source_type": "browser",
+  "metadata": {
+    "playwright_action": "page.type('{selector}', '{text}')"
+  },
+  "template": "page.type('{selector}', '{text}')"
+}

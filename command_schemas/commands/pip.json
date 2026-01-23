@@ -48,6 +48,6 @@
     ]
   },
   "template": "pip {options} {file}",
-  "stored_at": "2026-01-23T16:10:41.425797",
+  "stored_at": "2026-01-23T16:35:15.685569",
   "version": "1.0"
 }

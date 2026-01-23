@@ -36,8 +36,14 @@ class SchemaDrivenAppSpecAdapter(AppSpecAdapter):
     def _load_schemas(self):
         """Load schemas from various sources."""
         # Load from validated schemas if available
-        if Path('./validated_schemas.json').exists():
-            self.schema_registry.load_from_file('./validated_schemas.json')
+        validated_candidates = [
+            Path("./command_schemas/exports/validated_schemas.json"),
+            Path("./validated_schemas.json"),
+        ]
+        for p in validated_candidates:
+            if p.exists():
+                self.schema_registry.load_from_file(str(p))
+                break
         
         # Extract schemas from AppSpec actions
         if self._spec:

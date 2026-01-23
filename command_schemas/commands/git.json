@@ -1,30 +1,21 @@
 {
   "command": "git",
-  "description": "usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]",
-  "category": "version_control",
+  "description": "usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]",
+  "category": "shell",
   "parameters": [],
   "examples": [
-    "usage: git"
+    "git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]"
   ],
   "patterns": [
-    "git"
+    "git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]",
+    "usage: git [-v | --version] [-h | --help] [-c <path>] [-c <name>=<value>] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] [-p | --paginate | -p | --no-pager] [--no-replace-objects] [--no-lazy-fetch]"
   ],
-  "source_type": "intelligent_extraction",
+  "source_type": "shell_help",
   "metadata": {
-    "generated_at": "2026-01-23T15:53:23.404091",
-    "help_available": true,
-    "common_options": [
-      "--file",
-      "--verbose",
-      "-f",
-      "--help",
-      "-v",
-      "-h",
-      "--output",
-      "-o"
-    ]
+    "command": "git",
+    "help_lines": 47
   },
-  "template": "git {options}",
-  "stored_at": "2026-01-23T16:10:41.421848",
+  "template": null,
+  "stored_at": "2026-01-23T16:35:15.681556",
   "version": "1.0"
 }

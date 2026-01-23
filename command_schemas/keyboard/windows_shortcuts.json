@@ -1,0 +1,78 @@
+{
+  "name": "windows_keyboard_shortcuts",
+  "description": "Common keyboard shortcuts for Windows",
+  "category": "keyboard",
+  "source_type": "keyboard_shortcuts",
+  "shortcuts": {
+    "system": {
+      "start_menu": {"keys": "Win", "description": "Open Start menu"},
+      "search": {"keys": "Win+S", "description": "Open search"},
+      "run_dialog": {"keys": "Win+R", "description": "Open Run dialog"},
+      "file_explorer": {"keys": "Win+E", "description": "Open File Explorer"},
+      "settings": {"keys": "Win+I", "description": "Open Settings"},
+      "lock_screen": {"keys": "Win+L", "description": "Lock computer"},
+      "task_manager": {"keys": "Ctrl+Shift+Esc", "description": "Open Task Manager"},
+      "switch_window": {"keys": "Alt+Tab", "description": "Switch between windows"},
+      "task_view": {"keys": "Win+Tab", "description": "Open Task View"},
+      "close_window": {"keys": "Alt+F4", "description": "Close current window"},
+      "minimize_all": {"keys": "Win+M", "description": "Minimize all windows"},
+      "show_desktop": {"keys": "Win+D", "description": "Show desktop"},
+      "maximize_window": {"keys": "Win+Up", "description": "Maximize window"},
+      "minimize_window": {"keys": "Win+Down", "description": "Minimize window"},
+      "snap_left": {"keys": "Win+Left", "description": "Snap window to left"},
+      "snap_right": {"keys": "Win+Right", "description": "Snap window to right"},
+      "screenshot": {"keys": "Win+Shift+S", "description": "Screenshot snipping tool"},
+      "screenshot_full": {"keys": "Print", "description": "Full screenshot"},
+      "action_center": {"keys": "Win+A", "description": "Open Action Center"},
+      "clipboard_history": {"keys": "Win+V", "description": "Open clipboard history"},
+      "emoji_picker": {"keys": "Win+.", "description": "Open emoji picker"},
+      "virtual_desktop_new": {"keys": "Win+Ctrl+D", "description": "New virtual desktop"},
+      "virtual_desktop_close": {"keys": "Win+Ctrl+F4", "description": "Close virtual desktop"},
+      "virtual_desktop_left": {"keys": "Win+Ctrl+Left", "description": "Switch desktop left"},
+      "virtual_desktop_right": {"keys": "Win+Ctrl+Right", "description": "Switch desktop right"}
+    },
+    "text_editing": {
+      "copy": {"keys": "Ctrl+C", "description": "Copy"},
+      "paste": {"keys": "Ctrl+V", "description": "Paste"},
+      "cut": {"keys": "Ctrl+X", "description": "Cut"},
+      "undo": {"keys": "Ctrl+Z", "description": "Undo"},
+      "redo": {"keys": "Ctrl+Y", "description": "Redo"},
+      "select_all": {"keys": "Ctrl+A", "description": "Select all"},
+      "find": {"keys": "Ctrl+F", "description": "Find"},
+      "replace": {"keys": "Ctrl+H", "description": "Find and replace"},
+      "save": {"keys": "Ctrl+S", "description": "Save"},
+      "new": {"keys": "Ctrl+N", "description": "New"},
+      "open": {"keys": "Ctrl+O", "description": "Open"},
+      "print": {"keys": "Ctrl+P", "description": "Print"}
+    },
+    "browser": {
+      "new_tab": {"keys": "Ctrl+T", "description": "New tab"},
+      "close_tab": {"keys": "Ctrl+W", "description": "Close tab"},
+      "reopen_tab": {"keys": "Ctrl+Shift+T", "description": "Reopen closed tab"},
+      "next_tab": {"keys": "Ctrl+Tab", "description": "Next tab"},
+      "prev_tab": {"keys": "Ctrl+Shift+Tab", "description": "Previous tab"},
+      "address_bar": {"keys": "Ctrl+L", "description": "Focus address bar"},
+      "refresh": {"keys": "F5", "description": "Refresh"},
+      "hard_refresh": {"keys": "Ctrl+F5", "description": "Hard refresh"},
+      "back": {"keys": "Alt+Left", "description": "Go back"},
+      "forward": {"keys": "Alt+Right", "description": "Go forward"},
+      "fullscreen": {"keys": "F11", "description": "Toggle fullscreen"},
+      "dev_tools": {"keys": "F12", "description": "Developer tools"}
+    },
+    "cmd_powershell": {
+      "copy": {"keys": "Ctrl+C", "description": "Copy (or interrupt)"},
+      "paste": {"keys": "Ctrl+V", "description": "Paste"},
+      "select_all": {"keys": "Ctrl+A", "description": "Select all"},
+      "clear": {"keys": "cls", "description": "Clear screen (command)"},
+      "interrupt": {"keys": "Ctrl+C", "description": "Interrupt process"}
+    }
+  },
+  "patterns": [
+    "shortcut", "skrót", "windows", "win", "hotkey", "key",
+    "ctrl", "alt", "shift", "press"
+  ],
+  "metadata": {
+    "platform": "windows",
+    "versions": ["Windows 10", "Windows 11"]
+  }
+}

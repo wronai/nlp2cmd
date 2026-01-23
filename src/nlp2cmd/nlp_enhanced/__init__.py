@@ -34,7 +34,10 @@ class ShellGPTBackend(NLPBackend):
         """Initialize shell-gpt backend."""
         super().__init__(config)
         
-        self.registry = schema_registry or DynamicSchemaRegistry()
+        self.registry = schema_registry or DynamicSchemaRegistry(
+            use_per_command_storage=True,
+            storage_dir="./command_schemas",
+        )
         self.shell_gpt_path = shell_gpt_path or self._find_shell_gpt()
         self.fallback_enabled = config.get("fallback_enabled", True) if config else True
     
