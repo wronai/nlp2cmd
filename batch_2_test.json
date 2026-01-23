@@ -1,0 +1,268 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-23T15:22:06.211317",
+  "schemas": {
+    "top": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "top",
+          "description": "top command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "top --help"
+          ],
+          "patterns": [
+            "top"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "kill": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "kill",
+          "description": "kill command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "kill --help"
+          ],
+          "patterns": [
+            "kill"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "killall": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "killall",
+          "description": "killall command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "killall --help"
+          ],
+          "patterns": [
+            "killall"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "systemctl": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "systemctl",
+          "description": "systemctl command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "systemctl --help"
+          ],
+          "patterns": [
+            "systemctl"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "service": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "service",
+          "description": "service command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "service --help"
+          ],
+          "patterns": [
+            "service"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "docker": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "docker",
+          "description": "Docker is a platform for building, shipping, and running applications in containers.",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "docker run hello-world",
+            "docker ps -a",
+            "docker build -t myimage ."
+          ],
+          "patterns": [
+            "docker"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "docker {command} [options]"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "docker-compose": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "docker-compose",
+          "description": "Docker Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application's services, networks, and volumes. Then, with a single command, you create and start all the services from your configuration.",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "docker compose up -d",
+            "docker compose down",
+            "docker compose ps"
+          ],
+          "patterns": [
+            "docker-compose"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "docker compose {command} [options]"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "kubectl": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "kubectl",
+          "description": "kubectl command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "kubectl --help"
+          ],
+          "patterns": [
+            "kubectl"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "git": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "git",
+          "description": "Git is a distributed version control system that tracks changes in source code during software development. It allows multiple developers to work on the same project simultaneously and manage different versions of the codebase.",
+          "category": "system",
+          "parameters": [],
+          "examples": [
+            "git clone https://github.com/user/repo.git",
+            "git add .",
+            "git commit -m 'Initial commit'",
+            "git push origin master"
+          ],
+          "patterns": [
+            "git"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "git {command} {options}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "curl": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "curl",
+          "description": "The curl command is used to transfer data from or to a server, using one of the supported protocols (HTTP, HTTPS, FTP, etc.). It is a versatile tool for interacting with web services and APIs.",
+          "category": "network",
+          "parameters": [],
+          "examples": [
+            "curl https://api.example.com/data",
+            "curl -X POST -d 'name=John&age=30' https://example.com/api/user"
+          ],
+          "patterns": [
+            "curl"
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "curl {options} <url>"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    }
+  }
+}

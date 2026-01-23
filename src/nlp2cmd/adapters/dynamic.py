@@ -171,6 +171,8 @@ class DynamicAdapter(BaseDSLAdapter):
                             fmt = data.get("format")
                             if fmt == "app2schema.appspec":
                                 return self.registry.register_appspec_export(source)
+                            if fmt == "nlp2cmd.dynamic_schema_export":
+                                return self.registry.register_dynamic_export(source)
                     except Exception:
                         pass  # Fall back to OpenAPI
                 return self.registry.register_openapi_schema(source)

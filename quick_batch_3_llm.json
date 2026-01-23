@@ -1,0 +1,451 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-23T15:19:40.240262",
+  "schemas": {
+    "wget": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "wget",
+          "description": "A utility for non-interactive download of files from the web.",
+          "category": "network",
+          "parameters": [
+            {
+              "name": "URL",
+              "type": "string",
+              "description": "The URL of the file to be downloaded.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "-O, --output-document=FILE",
+              "type": "string",
+              "description": "Write output to FILE instead of stdout.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-q, --quiet",
+              "type": "boolean",
+              "description": "Work silently (background mode).",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "wget http://example.com/file.zip",
+            "wget -O myfile.txt http://example.com/textfile.txt",
+            "wget -q http://example.com/image.jpg"
+          ],
+          "patterns": [
+            "wget",
+            "a utility for non-interactive download of files from the web."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "wget {URL} [-O {output}] [-q]"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "ping": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "ping",
+          "description": "ping command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "ping --help"
+          ],
+          "patterns": [
+            "ping"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "netstat": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "netstat",
+          "description": "netstat is a command used to display network connections, routing tables, interface statistics, masquerade connections, and multicast memberships.",
+          "category": "network",
+          "parameters": [
+            {
+              "name": "-v",
+              "type": "boolean",
+              "description": "Provides verbose output.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-W",
+              "type": "boolean",
+              "description": "Displays the window size for each connection.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-e",
+              "type": "boolean",
+              "description": "Shows extended information about the connections.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-n",
+              "type": "boolean",
+              "description": "Displays addresses and port numbers in numerical form.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-N",
+              "type": "boolean",
+              "description": "Shows the PID and name of the program to which each socket belongs.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-c",
+              "type": "boolean",
+              "description": "Causes netstat to continuously update the display every second until interrupted by a signal.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-C",
+              "type": "boolean",
+              "description": "Shows the process name for each socket.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-F",
+              "type": "boolean",
+              "description": "Shows the file descriptor number for each socket.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "<Af>",
+              "type": "string",
+              "description": "Specifies the address family to display (e.g., inet, unix).",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "-r",
+              "type": "boolean",
+              "description": "Displays the routing table.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "netstat -an | grep ESTABLISHED",
+            "netstat -tuln",
+            "netstat -s"
+          ],
+          "patterns": [
+            "netstat",
+            "netstat is a command used to display network connections, routing tables, interface statistics, masquerade connections, and multicast memberships."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "netstat {options} {address_family}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "ss": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "ss",
+          "description": "ss is a utility to investigate sockets. It allows the user to dump socket statistics, filter and display only relevant connections.",
+          "category": "network",
+          "parameters": [
+            {
+              "name": "-t",
+              "type": "boolean",
+              "description": "Show TCP sockets.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-u",
+              "type": "boolean",
+              "description": "Show UDP sockets.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-x",
+              "type": "boolean",
+              "description": "Show Unix domain sockets.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-a",
+              "type": "boolean",
+              "description": "Show all sockets (default: listening).",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-l",
+              "type": "boolean",
+              "description": "Show only listening sockets.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "ss -tuln",
+            "ss -a -i",
+            "ss -x state established"
+          ],
+          "patterns": [
+            "ss",
+            "ss is a utility to investigate sockets. it allows the user to dump socket statistics, filter and display only relevant connections."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "ss {options}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "lsof": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "lsof",
+          "description": "lsof command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "lsof --help"
+          ],
+          "patterns": [
+            "lsof"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "df": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "df",
+          "description": "Report file system disk space usage.",
+          "category": "system",
+          "parameters": [
+            {
+              "name": "OPTION",
+              "type": "string",
+              "description": "Various options to customize the output, such as -h for human-readable sizes or -T for showing file system types.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "FILE",
+              "type": "array",
+              "description": "One or more files or directories to check. If not specified, df will report on all mounted file systems.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "df -h",
+            "df /home",
+            "df --total"
+          ],
+          "patterns": [
+            "df",
+            "report file system disk space usage."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "df {options} {path}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "du": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "du",
+          "description": "Estimates file space usage.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "OPTION",
+              "type": "string",
+              "description": "Various options to customize the output, such as -h for human-readable format or -s for a summary of each argument.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "FILE",
+              "type": "array",
+              "description": "One or more files or directories to check the disk usage for. If no file is specified, it defaults to the current directory.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "du -h /home/user",
+            "du -s /var/log",
+            "du --max-depth=1 /usr/local"
+          ],
+          "patterns": [
+            "du",
+            "estimates file space usage."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "du {option} {path}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "free": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "free",
+          "description": "free command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "free --help"
+          ],
+          "patterns": [
+            "free"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    }
+  }
+}

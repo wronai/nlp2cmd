@@ -1,0 +1,416 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-23T15:18:48.311128",
+  "schemas": {
+    "top": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "top",
+          "description": "top command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "top --help"
+          ],
+          "patterns": [
+            "top"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "kill": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "kill",
+          "description": "kill command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "kill --help"
+          ],
+          "patterns": [
+            "kill"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "killall": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "killall",
+          "description": "killall command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "killall --help"
+          ],
+          "patterns": [
+            "killall"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "systemctl": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "systemctl",
+          "description": "systemctl command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "systemctl --help"
+          ],
+          "patterns": [
+            "systemctl"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "service": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "service",
+          "description": "service command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "service --help"
+          ],
+          "patterns": [
+            "service"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "docker": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "docker",
+          "description": "Docker is a platform for building, shipping, and running applications in containers.",
+          "category": "system",
+          "parameters": [
+            {
+              "name": "OPTIONS",
+              "type": "string",
+              "description": "Additional options to modify the command behavior.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "COMMAND",
+              "type": "string",
+              "description": "The specific Docker command to execute.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "docker run hello-world",
+            "docker ps -a",
+            "docker images --filter \"dangling=true\""
+          ],
+          "patterns": [
+            "docker",
+            "docker is a platform for building, shipping, and running applications in containers."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "docker {COMMAND} {OPTIONS}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "docker-compose": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "docker-compose",
+          "description": "Docker Compose is a tool for defining and running multi-container Docker applications.",
+          "category": "system",
+          "parameters": [
+            {
+              "name": "OPTIONS",
+              "type": "string",
+              "description": "Additional options to pass to the command.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "COMMAND",
+              "type": "string",
+              "description": "The subcommand to run (e.g., up, down, build).",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "docker-compose up -d",
+            "docker-compose down --volumes",
+            "docker-compose ps"
+          ],
+          "patterns": [
+            "docker-compose",
+            "docker compose is a tool for defining and running multi-container docker applications."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "docker-compose {command} {options}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "kubectl": {
+      "source_type": "basic",
+      "commands": [
+        {
+          "name": "kubectl",
+          "description": "kubectl command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "kubectl --help"
+          ],
+          "patterns": [
+            "kubectl"
+          ],
+          "source_type": "basic",
+          "metadata": {
+            "no_help": true
+          },
+          "template": null
+        }
+      ],
+      "metadata": {
+        "no_help": true
+      }
+    },
+    "git": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "git",
+          "description": "Git is a distributed version control system that tracks changes in source code during software development.",
+          "category": "system",
+          "parameters": [
+            {
+              "name": "-v",
+              "type": "boolean",
+              "description": "Display the version of Git and exit.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "flag"
+            },
+            {
+              "name": "--version",
+              "type": "boolean",
+              "description": "Display the version of Git and exit.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "flag"
+            },
+            {
+              "name": "-h",
+              "type": "boolean",
+              "description": "Show a short usage summary and exit.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "flag"
+            },
+            {
+              "name": "--help",
+              "type": "boolean",
+              "description": "Show a short usage summary and exit.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "flag"
+            },
+            {
+              "name": "-C <path>",
+              "type": "string",
+              "description": "Run all following commands in the given directory.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-c <name>=<value>",
+              "type": "string",
+              "description": "Set config variables for the duration of the command.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "git clone https://github.com/user/repo.git",
+            "git commit -m 'Initial commit'",
+            "git push origin master"
+          ],
+          "patterns": [
+            "git",
+            "git is a distributed version control system that tracks changes in source code during software development."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "git {command} {options}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    },
+    "curl": {
+      "source_type": "llm_enhanced",
+      "commands": [
+        {
+          "name": "curl",
+          "description": "Transfer data with URLs, supports various protocols like HTTP, HTTPS, FTP, etc.",
+          "category": "network",
+          "parameters": [
+            {
+              "name": "<url>",
+              "type": "string",
+              "description": "The URL to transfer data from/to.",
+              "required": true,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "-X, --request <command>",
+              "type": "string",
+              "description": "Specify a custom request method (GET, POST, PUT, DELETE, etc.).",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-d, --data <data>",
+              "type": "string",
+              "description": "Send data in the body of an HTTP request.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "-H, --header <header/@file>",
+              "type": "string",
+              "description": "Specify custom headers to send with the request.",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "curl https://api.example.com/data",
+            "curl -X POST -d 'name=John&age=30' https://example.com/api/user",
+            "curl -H 'Content-Type: application/json' -d '{\"key\":\"value\"}' https://example.com/api"
+          ],
+          "patterns": [
+            "curl",
+            "transfer data with urls, supports various protocols like http, https, ftp, etc."
+          ],
+          "source_type": "llm_enhanced",
+          "metadata": {
+            "llm_model": "ollama/qwen2.5-coder:7b",
+            "enhanced": true
+          },
+          "template": "curl {url} -X {method} -d {data}"
+        }
+      ],
+      "metadata": {
+        "model": "ollama/qwen2.5-coder:7b"
+      }
+    }
+  }
+}

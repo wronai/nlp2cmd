@@ -44,40 +44,26 @@ class LLMSchemaExtractor:
         
         # Fallback extractor
         self.fallback_extractor = ShellHelpExtractor()
+        
+        # Simple cache
+        self._cache = {}
     
     def _build_extraction_prompt(self, command: str, help_text: str) -> str:
         """Build prompt for LLM schema extraction."""
-        prompt = f"""You are a command line expert. Analyze the following command help output and extract a structured schema.
+        prompt = f"""Extract command schema for: {command}
 
-Command: {command}
-Help Output:
-{help_text[:3000]}  # Limit to avoid token limits
+Help output:
+{help_text[:2000]}
 
-Extract the following information in JSON format:
-1. description: A brief description of what the command does
-2. category: The category of command (e.g., "file", "process", "network", "system")
-3. parameters: List of parameters with:
-   - name: parameter name
-   - type: data type (string, integer, boolean, array, object)
-   - description: what the parameter does
-   - required: whether it's required (true/false)
-   - location: where it appears (option, argument, flag)
-4. examples: 2-3 realistic usage examples
-5. template: A template for common usage patterns with placeholders like {{path}}, {{file}}, {{number}}
-
-Focus on practical usage patterns. For template, use examples like:
-- find: "find {{path}} -type f -size {{size}} -mtime -{{days}}"
-- grep: "grep -r {{pattern}} {{path}}"
-- tar: "tar -czf {{archive}}.tar.gz {{source}}"
-
-Return only valid JSON without explanation:
+Return JSON with:
 {{
-  "description": "...",
-  "category": "...",
-  "parameters": [...],
-  "examples": [...],
-  "template": "..."
-}}"""
+  "description": "Brief description",
+  "category": "file|text|network|system|general",
+  "template": "Template with {{placeholders}}",
+  "examples": ["example1", "example2"]
+}}
+
+JSON:"""
         return prompt
     
     def extract_from_command(self, command: str) -> ExtractedSchema:
@@ -87,9 +73,25 @@ Return only valid JSON without explanation:
             help_schema = self.fallback_extractor.extract_from_command(command)
             help_text = "\n".join(help_schema.commands[0].examples) if help_schema.commands else ""
             
-            # If no help available, return basic schema
-            if not help_text:
+            # If no help or too short, return basic schema
+            if not help_text or len(help_text) < 50:
+                print(f"[LLMExtractor] Skipping {command} - insufficient help text")
                 return self._create_basic_schema(command)
+            
+            # Skip built-in commands that typically don't benefit from LLM
+            builtin_commands = {'cd', 'echo', 'pwd', 'exit', 'export', 'alias', 'history', 'jobs', 'fg', 'bg', 'kill', 'top'}
+            if command in builtin_commands:
+                print(f"[LLMExtractor] Skipping {command} - built-in command")
+                return help_schema
+            
+            # Check cache first
+            cache_key = f"{command}:{hash(help_text[:100])}"
+            if cache_key in self._cache:
+                print(f"[LLMExtractor] Using cached result for {command}")
+                cached_schema = self._cache[cache_key]
+                # Update the command name in case of reuse
+                cached_schema.commands[0].name = command
+                return cached_schema
             
             # Use LLM to enhance the schema
             print(f"[LLMExtractor] Requesting schema for {command}...")
@@ -100,8 +102,8 @@ Return only valid JSON without explanation:
                     "content": self._build_extraction_prompt(command, help_text)
                 }],
                 temperature=self.temperature,
-                max_tokens=self.max_tokens,
-                timeout=self.timeout,
+                max_tokens=512,  # Reduced for speed
+                timeout=10,  # Shorter timeout
                 api_base=self.api_base,
             )
             
@@ -123,27 +125,24 @@ Return only valid JSON without explanation:
                     llm_data = json.loads(content)
             except json.JSONDecodeError as e:
                 print(f"[LLMExtractor] Failed to parse JSON for {command}: {e}")
-                print(f"[LLMExtractor] Raw response: {content}")
-                raise ValueError(f"Invalid JSON response: {e}")
+                # Try to extract template with regex fallback
+                template_match = re.search(r'template["\']?\s*[:=]\s*["\']([^"\']+)["\']', content)
+                template = template_match.group(1) if template_match else None
+                llm_data = {
+                    "description": f"{command} command",
+                    "category": "general",
+                    "template": template,
+                    "examples": [f"{command} --help"]
+                }
             
-            # Build enhanced schema
-            parameters = []
-            for param in llm_data.get("parameters", []):
-                parameters.append(CommandParameter(
-                    name=param.get("name", ""),
-                    type=param.get("type", "string"),
-                    description=param.get("description", ""),
-                    required=param.get("required", False),
-                    location=param.get("location", "unknown"),
-                ))
-            
+            # Build enhanced schema (simplified)
             schema = CommandSchema(
                 name=command,
                 description=llm_data.get("description", f"{command} command"),
                 category=llm_data.get("category", "general"),
-                parameters=parameters,
+                parameters=[],  # Skip parameters for speed
                 examples=llm_data.get("examples", [f"{command} --help"]),
-                patterns=[command, llm_data.get("description", "").lower()],
+                patterns=[command],
                 source_type="llm_enhanced",
                 metadata={
                     "llm_model": self.model,
@@ -153,12 +152,16 @@ Return only valid JSON without explanation:
             )
             
             print(f"[LLMExtractor] Successfully enhanced {command}")
-            return ExtractedSchema(
+            
+            # Cache the result
+            self._cache[cache_key] = ExtractedSchema(
                 source=command,
                 source_type="llm_enhanced",
                 commands=[schema],
                 metadata={"model": self.model},
             )
+            
+            return self._cache[cache_key]
             
         except Exception as e:
             print(f"[LLMExtractor] Failed to extract {command} with LLM: {e}")

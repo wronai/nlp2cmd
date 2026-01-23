@@ -1,0 +1,62 @@
+[
+  {
+    "command": "find",
+    "success": true,
+    "source_type": "llm_enhanced",
+    "template": "find {path} -name \"{pattern}\""
+  },
+  {
+    "command": "grep",
+    "success": true,
+    "source_type": "llm_enhanced",
+    "template": "grep {pattern} {path}"
+  },
+  {
+    "command": "sed",
+    "success": true,
+    "source_type": "llm_enhanced",
+    "template": "sed '{script}' {file}"
+  },
+  {
+    "command": "awk",
+    "success": true,
+    "source_type": "llm_enhanced",
+    "template": "awk -f {progfile} {file}"
+  },
+  {
+    "command": "ls",
+    "success": true,
+    "source_type": "llm_enhanced",
+    "template": "ls {options} {path}"
+  },
+  {
+    "command": "mkdir",
+    "success": true,
+    "source_type": "llm_enhanced",
+    "template": "mkdir {directory}"
+  },
+  {
+    "command": "rm",
+    "success": true,
+    "source_type": "llm_enhanced",
+    "template": "rm {file}"
+  },
+  {
+    "command": "cp",
+    "success": true,
+    "source_type": "llm_enhanced",
+    "template": "cp {source} {destination}"
+  },
+  {
+    "command": "mv",
+    "success": true,
+    "source_type": "llm_enhanced",
+    "template": "mv {source} {destination}"
+  },
+  {
+    "command": "ps",
+    "success": true,
+    "source_type": "basic",
+    "template": null
+  }
+]
