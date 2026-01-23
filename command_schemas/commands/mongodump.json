@@ -1,0 +1,22 @@
+{
+  "command": "mongodump",
+  "description": "mongodump command",
+  "category": "general",
+  "parameters": [],
+  "examples": [
+    "mongodump --help",
+    "man mongodump"
+  ],
+  "patterns": [
+    "mongodump"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:23.784126",
+    "help_available": false,
+    "common_options": []
+  },
+  "template": "mongodump",
+  "stored_at": "2026-01-23T15:53:25.212993",
+  "version": "1.0"
+}

@@ -1,0 +1,180 @@
+{
+  "command": "jq",
+  "description": "jq - commandline JSON processor [version 1.8.1]",
+  "category": "text",
+  "parameters": [
+    {
+      "name": "file",
+      "type": "file",
+      "description": "Option --file",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "tab",
+      "type": "boolean",
+      "description": "Option --tab",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "argjson",
+      "type": "boolean",
+      "description": "Option --argjson",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "ignore_case",
+      "type": "boolean",
+      "description": "Option --ignore-case",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "h",
+      "type": "boolean",
+      "description": "Option -h",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "c",
+      "type": "boolean",
+      "description": "Option -c",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "output",
+      "type": "file",
+      "description": "Option --output",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "i",
+      "type": "boolean",
+      "description": "Option -i",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "unbuffered",
+      "type": "boolean",
+      "description": "Option --unbuffered",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "s",
+      "type": "boolean",
+      "description": "Option -s",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "File to process",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "argument"
+    },
+    {
+      "name": "pattern",
+      "type": "string",
+      "description": "Search pattern",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "argument"
+    }
+  ],
+  "examples": [
+    "jq  <jq filter>"
+  ],
+  "patterns": [
+    "jq",
+    "jq pattern",
+    "jq text"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:23.530095",
+    "help_available": true,
+    "common_options": [
+      "--file",
+      "--tab",
+      "--argjson",
+      "--ignore-case",
+      "-h",
+      "-c",
+      "--output",
+      "-i",
+      "--unbuffered",
+      "-s",
+      "-n",
+      "--stream-errors",
+      "-o",
+      "--raw-output0",
+      "-r",
+      "--seq",
+      "--stream",
+      "-V",
+      "--jsonargs",
+      "-a",
+      "-f",
+      "--args",
+      "-M",
+      "-e",
+      "-L",
+      "-j",
+      "-R",
+      "--build-configuration",
+      "-C",
+      "--arg",
+      "-S",
+      "--rawfile",
+      "--slurpfile",
+      "--indent",
+      "--recursive"
+    ]
+  },
+  "template": "jq {options} {pattern}",
+  "stored_at": "2026-01-23T15:53:25.219203",
+  "version": "1.0"
+}

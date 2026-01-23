@@ -1,0 +1,22 @@
+{
+  "command": "mysqldump",
+  "description": "mysqldump command",
+  "category": "database",
+  "parameters": [],
+  "examples": [
+    "mysqldump --help",
+    "man mysqldump"
+  ],
+  "patterns": [
+    "mysqldump"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:23.864192",
+    "help_available": false,
+    "common_options": []
+  },
+  "template": "mysqldump",
+  "stored_at": "2026-01-23T15:53:25.220347",
+  "version": "1.0"
+}

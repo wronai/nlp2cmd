@@ -1,0 +1,79 @@
+{
+  "command": "ps",
+  "description": "ps [options]",
+  "category": "file",
+  "parameters": [
+    {
+      "name": "i",
+      "type": "boolean",
+      "description": "Option -i",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "r",
+      "type": "boolean",
+      "description": "Option -r",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "ignore_case",
+      "type": "boolean",
+      "description": "Option --ignore-case",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "recursive",
+      "type": "boolean",
+      "description": "Option --recursive",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "File to process",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "argument"
+    }
+  ],
+  "examples": [
+    ""
+  ],
+  "patterns": [
+    "ps",
+    "ps file",
+    "ps directory"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:24.469402",
+    "help_available": true,
+    "common_options": [
+      "-i",
+      "-r",
+      "--ignore-case",
+      "--recursive"
+    ]
+  },
+  "template": "ps {options} {file}",
+  "stored_at": "2026-01-23T15:53:25.198921",
+  "version": "1.0"
+}

@@ -1,0 +1,6405 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-01-23T15:53:10.028542",
+  "schemas": {
+    "kubectl": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "kubectl",
+          "description": "kubectl controls the Kubernetes cluster manager.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "o",
+              "type": "boolean",
+              "description": "Option -o",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "output",
+              "type": "file",
+              "description": "Option --output",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            ""
+          ],
+          "patterns": [
+            "kubectl",
+            "kubectl file",
+            "kubectl directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.706315",
+            "help_available": true,
+            "common_options": [
+              "--file",
+              "-f",
+              "-o",
+              "--output"
+            ]
+          },
+          "template": "kubectl {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "find": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "find",
+          "description": "Default path is the current directory; default expression is -print.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "Option --version",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "a",
+              "type": "boolean",
+              "description": "Option -a",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "d",
+              "type": "boolean",
+              "description": "Option -d",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "i",
+              "type": "boolean",
+              "description": "Option -i",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "u",
+              "type": "boolean",
+              "description": "Option -u",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "r",
+              "type": "boolean",
+              "description": "Option -r",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "output",
+              "type": "file",
+              "description": "Option --output",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "find"
+          ],
+          "patterns": [
+            "find",
+            "find file",
+            "find directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.493172",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "-f",
+              "--version",
+              "-c",
+              "-a",
+              "-d",
+              "-i",
+              "-u",
+              "-r",
+              "--output",
+              "-o",
+              "-l",
+              "--file",
+              "-w",
+              "-m",
+              "-e",
+              "-n",
+              "--ignore-case",
+              "--recursive"
+            ]
+          },
+          "template": "find {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "grep": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "grep",
+          "description": "Search for PATTERNS in each FILE.",
+          "category": "text",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "T",
+              "type": "boolean",
+              "description": "Option -T",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "z",
+              "type": "boolean",
+              "description": "Option -z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "H",
+              "type": "boolean",
+              "description": "Option -H",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "Z",
+              "type": "boolean",
+              "description": "Option -Z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "R",
+              "type": "boolean",
+              "description": "Option -R",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "b",
+              "type": "boolean",
+              "description": "Option -b",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "pattern",
+              "type": "string",
+              "description": "Search pattern",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "grep ... PATTERNS ..."
+          ],
+          "patterns": [
+            "grep",
+            "grep pattern",
+            "grep text"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.498147",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "-T",
+              "-z",
+              "-f",
+              "-H",
+              "-Z",
+              "-R",
+              "-v",
+              "-c",
+              "-b",
+              "-a",
+              "-P",
+              "-d",
+              "-D",
+              "-i",
+              "-B",
+              "-s",
+              "-r",
+              "-U",
+              "-E",
+              "--no-ignore-case",
+              "--line-buffered",
+              "-L",
+              "--output",
+              "-A",
+              "-o",
+              "-l",
+              "--file",
+              "-w",
+              "-m",
+              "-G",
+              "-F",
+              "-e",
+              "-n",
+              "-q",
+              "--ignore-case",
+              "-x",
+              "-V",
+              "-h",
+              "-I",
+              "-C",
+              "--no-group-separator",
+              "--recursive",
+              "-N"
+            ]
+          },
+          "template": "grep {options} {pattern}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "cp": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "cp",
+          "description": "or:  cp [OPTION]... SOURCE... DIRECTORY",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "parents",
+              "type": "boolean",
+              "description": "Option --parents",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "T",
+              "type": "boolean",
+              "description": "Option -T",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "H",
+              "type": "boolean",
+              "description": "Option -H",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "Z",
+              "type": "boolean",
+              "description": "Option -Z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "Option --version",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "remove_destination",
+              "type": "boolean",
+              "description": "Option --remove-destination",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "R",
+              "type": "boolean",
+              "description": "Option -R",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "cp ...  SOURCE DEST"
+          ],
+          "patterns": [
+            "cp",
+            "cp file",
+            "cp directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.501886",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "--parents",
+              "-T",
+              "-f",
+              "-t",
+              "-H",
+              "-Z",
+              "--version",
+              "--remove-destination",
+              "-R",
+              "-S",
+              "-v",
+              "-b",
+              "-a",
+              "-P",
+              "-d",
+              "--debug",
+              "-i",
+              "-p",
+              "--copy-contents",
+              "-s",
+              "-u",
+              "-r",
+              "--verbose",
+              "--recursive",
+              "--strip-trailing-slashes",
+              "-L",
+              "--output",
+              "-o",
+              "-l",
+              "--file",
+              "--keep-directory-symlink",
+              "-n",
+              "--ignore-case",
+              "-x",
+              "-h",
+              "--attributes-only"
+            ]
+          },
+          "template": "cp {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "mv": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "mv",
+          "description": "or:  mv [OPTION]... SOURCE... DIRECTORY",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "T",
+              "type": "boolean",
+              "description": "Option -T",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "Z",
+              "type": "boolean",
+              "description": "Option -Z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "Option --version",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "S",
+              "type": "boolean",
+              "description": "Option -S",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "b",
+              "type": "boolean",
+              "description": "Option -b",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "debug",
+              "type": "boolean",
+              "description": "Option --debug",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "mv ...  SOURCE DEST"
+          ],
+          "patterns": [
+            "mv",
+            "mv file",
+            "mv directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.505939",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "-T",
+              "-f",
+              "-t",
+              "-Z",
+              "--version",
+              "-S",
+              "-v",
+              "-b",
+              "--debug",
+              "-i",
+              "-u",
+              "-r",
+              "--strip-trailing-slashes",
+              "--output",
+              "-o",
+              "--no-copy",
+              "--file",
+              "--exchange",
+              "-n",
+              "--ignore-case",
+              "--recursive"
+            ]
+          },
+          "template": "mv {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "tar": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "tar",
+          "description": "GNU 'tar' saves many files together into a single tape or disk archive, and can",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "K",
+              "type": "boolean",
+              "description": "Option -K",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "hard_dereference",
+              "type": "boolean",
+              "description": "Option --hard-dereference",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "Option --version",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "restrict",
+              "type": "boolean",
+              "description": "Option --restrict",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exclude_vcs_ignores",
+              "type": "boolean",
+              "description": "Option --exclude-vcs-ignores",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_failed_read",
+              "type": "boolean",
+              "description": "Option --ignore-failed-read",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_recursion",
+              "type": "boolean",
+              "description": "Option --no-recursion",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "show_omitted_dirs",
+              "type": "boolean",
+              "description": "Option --show-omitted-dirs",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "wildcards",
+              "type": "boolean",
+              "description": "Option --wildcards",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "lzma",
+              "type": "boolean",
+              "description": "Option --lzma",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "tar -cf archive.tar foo bar  # Create archive.tar from files foo and bar.",
+            "tar -tvf archive.tar         # List all files in archive.tar verbosely.",
+            "tar -xf archive.tar          # Extract all files from archive.tar.",
+            "-A, --catenate, --concatenate   append tar files to an archive",
+            "starts with a dash)"
+          ],
+          "patterns": [
+            "tar",
+            "tar file",
+            "tar directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.510038",
+            "help_available": true,
+            "common_options": [
+              "-K",
+              "--hard-dereference",
+              "--version",
+              "--restrict",
+              "--exclude-vcs-ignores",
+              "--ignore-failed-read",
+              "--no-recursion",
+              "--show-omitted-dirs",
+              "--wildcards",
+              "--lzma",
+              "--lzip",
+              "--delay-directory-restore",
+              "--exclude-caches-under",
+              "--no-delay-directory-restore",
+              "-A",
+              "--overwrite",
+              "--same-owner",
+              "--no-auto-compress",
+              "--no-wildcards",
+              "--keep-directory-symlink",
+              "--no-overwrite-dir",
+              "--test-label",
+              "-M",
+              "--ignore-case",
+              "-C",
+              "-V",
+              "-I",
+              "--xattrs",
+              "--no-null",
+              "--recursive",
+              "-N",
+              "-J",
+              "--no-verbatim-files-from",
+              "--unquote",
+              "-t",
+              "-Z",
+              "--zstd",
+              "--null",
+              "--check-device",
+              "-b",
+              "--no-seek",
+              "--recursive-unlink",
+              "-P",
+              "-d",
+              "--full-time",
+              "-U",
+              "--no-same-owner",
+              "--acls",
+              "-L",
+              "--anchored",
+              "--no-wildcards-match-slash",
+              "--clamp-mtime",
+              "--usage",
+              "--wildcards-match-slash",
+              "--delete",
+              "--ignore-command-error",
+              "-k",
+              "--help",
+              "-W",
+              "--skip-old-files",
+              "-T",
+              "-j",
+              "--exclude-caches",
+              "--remove-files",
+              "--show-defaults",
+              "-S",
+              "--no-check-device",
+              "--no-acls",
+              "-v",
+              "-c",
+              "-g",
+              "-a",
+              "--exclude-backups",
+              "--no-same-permissions",
+              "-s",
+              "-O",
+              "-u",
+              "-r",
+              "--exclude-caches-all",
+              "--no-xattrs",
+              "--posix",
+              "--file",
+              "-m",
+              "--numeric-owner",
+              "-n",
+              "-X",
+              "-h",
+              "--selinux",
+              "--overwrite-dir",
+              "--exclude-vcs",
+              "--no-anchored",
+              "--utc",
+              "-z",
+              "-f",
+              "-H",
+              "--one-file-system",
+              "--no-selinux",
+              "--force-local",
+              "--verbatim-files-from",
+              "-R",
+              "-i",
+              "-p",
+              "--keep-newer-files",
+              "-B",
+              "--no-ignore-command-error",
+              "--verbose",
+              "--no-ignore-case",
+              "--output",
+              "--no-unquote",
+              "--lzop",
+              "-o",
+              "-l",
+              "-w",
+              "-G",
+              "-F",
+              "--show-snapshot-field-ranges",
+              "-x"
+            ]
+          },
+          "template": "tar {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "zip": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "zip",
+          "description": "Copyright (c) 1990-2008 Info-ZIP - Type 'zip \"-L\"' for software license.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "F",
+              "type": "boolean",
+              "description": "Option -F",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "e",
+              "type": "boolean",
+              "description": "Option -e",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "y",
+              "type": "boolean",
+              "description": "Option -y",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "q",
+              "type": "boolean",
+              "description": "Option -q",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "r",
+              "type": "boolean",
+              "description": "Option -r",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "T",
+              "type": "boolean",
+              "description": "Option -T",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "x",
+              "type": "boolean",
+              "description": "Option -x",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            ""
+          ],
+          "patterns": [
+            "zip",
+            "zip file",
+            "zip directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.513257",
+            "help_available": true,
+            "common_options": [
+              "--file",
+              "-F",
+              "-e",
+              "-y",
+              "-q",
+              "-r",
+              "-T",
+              "-c",
+              "-f",
+              "-x",
+              "-h",
+              "--output",
+              "-A",
+              "-o",
+              "-d"
+            ]
+          },
+          "template": "zip {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "ps": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "ps",
+          "description": "ps [options]",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "i",
+              "type": "boolean",
+              "description": "Option -i",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "recursive",
+              "type": "boolean",
+              "description": "Option --recursive",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_case",
+              "type": "boolean",
+              "description": "Option --ignore-case",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "r",
+              "type": "boolean",
+              "description": "Option -r",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            ""
+          ],
+          "patterns": [
+            "ps",
+            "ps file",
+            "ps directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.518876",
+            "help_available": true,
+            "common_options": [
+              "-i",
+              "--recursive",
+              "--ignore-case",
+              "-r"
+            ]
+          },
+          "template": "ps {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "free": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "free",
+          "description": "free [options]",
+          "category": "system",
+          "parameters": [
+            {
+              "name": "k",
+              "type": "boolean",
+              "description": "Option -k",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "kilo",
+              "type": "boolean",
+              "description": "Option --kilo",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tebi",
+              "type": "boolean",
+              "description": "Option --tebi",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "giga",
+              "type": "boolean",
+              "description": "Option --giga",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "mega",
+              "type": "boolean",
+              "description": "Option --mega",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "g",
+              "type": "boolean",
+              "description": "Option -g",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            ""
+          ],
+          "patterns": [
+            "free"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.524014",
+            "help_available": true,
+            "common_options": [
+              "-k",
+              "--help",
+              "--kilo",
+              "--tebi",
+              "--giga",
+              "-t",
+              "--mega",
+              "-v",
+              "-g",
+              "-c",
+              "-b",
+              "--peta",
+              "-s",
+              "--tera",
+              "-L",
+              "-l",
+              "-w",
+              "-m",
+              "--pebi",
+              "-h",
+              "-V",
+              "--si"
+            ]
+          },
+          "template": "free {options}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "df": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "df",
+          "description": "Show information about the file system on which each FILE resides,",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "k",
+              "type": "boolean",
+              "description": "Option -k",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "sync",
+              "type": "boolean",
+              "description": "Option --sync",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "T",
+              "type": "boolean",
+              "description": "Option -T",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "H",
+              "type": "boolean",
+              "description": "Option -H",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "Option --version",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "total",
+              "type": "boolean",
+              "description": "Option --total",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "df ... ..."
+          ],
+          "patterns": [
+            "df",
+            "df file",
+            "df directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.529384",
+            "help_available": true,
+            "common_options": [
+              "-k",
+              "--help",
+              "--sync",
+              "-T",
+              "-f",
+              "-t",
+              "-H",
+              "--version",
+              "--total",
+              "-v",
+              "-a",
+              "-P",
+              "-i",
+              "-B",
+              "--verbose",
+              "--output",
+              "-o",
+              "-l",
+              "--file",
+              "-x",
+              "-h",
+              "--no-sync"
+            ]
+          },
+          "template": "df {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "uptime": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "uptime",
+          "description": "uptime [options]",
+          "category": "system",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "p",
+              "type": "boolean",
+              "description": "Option -p",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "s",
+              "type": "boolean",
+              "description": "Option -s",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "verbose",
+              "type": "boolean",
+              "description": "Option --verbose",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "V",
+              "type": "boolean",
+              "description": "Option -V",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "h",
+              "type": "boolean",
+              "description": "Option -h",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            ""
+          ],
+          "patterns": [
+            "uptime"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.536928",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "-p",
+              "-s",
+              "--verbose",
+              "-v",
+              "-V",
+              "-h"
+            ]
+          },
+          "template": "uptime {options}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "netstat": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "netstat",
+          "description": "usage: netstat [-vWeenNcCF] [<Af>] -r         netstat {-V|--version|-h|--help}",
+          "category": "network",
+          "parameters": [
+            {
+              "name": "W",
+              "type": "boolean",
+              "description": "Option -W",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "Z",
+              "type": "boolean",
+              "description": "Option -Z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "numeric_ports",
+              "type": "integer",
+              "description": "Option --numeric-ports",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "g",
+              "type": "boolean",
+              "description": "Option -g",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "a",
+              "type": "boolean",
+              "description": "Option -a",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "i",
+              "type": "boolean",
+              "description": "Option -i",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "p",
+              "type": "boolean",
+              "description": "Option -p",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "usage: netstat   -r         netstat {-V|--version|-h|--help}"
+          ],
+          "patterns": [
+            "netstat",
+            "netstat url",
+            "netstat host"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.544572",
+            "help_available": true,
+            "common_options": [
+              "-W",
+              "-t",
+              "-Z",
+              "--numeric-ports",
+              "-v",
+              "-g",
+              "-c",
+              "-a",
+              "-i",
+              "-p",
+              "--numeric-hosts",
+              "-s",
+              "-r",
+              "--port",
+              "-o",
+              "-l",
+              "-F",
+              "-e",
+              "-n",
+              "--numeric-users",
+              "-M",
+              "--ignore-case",
+              "-C",
+              "--timeout",
+              "--recursive",
+              "-N"
+            ]
+          },
+          "template": "netstat {options} {url}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "lsof": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "lsof",
+          "description": "lsof 4.99.4",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "T",
+              "type": "boolean",
+              "description": "Option -T",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "Z",
+              "type": "boolean",
+              "description": "Option -Z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "R",
+              "type": "boolean",
+              "description": "Option -R",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "g",
+              "type": "boolean",
+              "description": "Option -g",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "d",
+              "type": "boolean",
+              "description": "Option -d",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "i",
+              "type": "boolean",
+              "description": "Option -i",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "usage:       ]"
+          ],
+          "patterns": [
+            "lsof",
+            "lsof file",
+            "lsof directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.554012",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "-T",
+              "-f",
+              "-Z",
+              "-R",
+              "-v",
+              "-c",
+              "-g",
+              "-d",
+              "-i",
+              "-p",
+              "-s",
+              "-O",
+              "-u",
+              "-r",
+              "--verbose",
+              "-E",
+              "--output",
+              "-o",
+              "--file",
+              "-F",
+              "-n",
+              "--ignore-case",
+              "-x",
+              "-V",
+              "-h",
+              "--recursive"
+            ]
+          },
+          "template": "lsof {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "sensors": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "sensors",
+          "description": "Usage: sensors [OPTION]... [CHIP]...",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "i",
+              "type": "boolean",
+              "description": "Option -i",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "s",
+              "type": "boolean",
+              "description": "Option -s",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "u",
+              "type": "boolean",
+              "description": "Option -u",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "n",
+              "type": "boolean",
+              "description": "Option -n",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "r",
+              "type": "boolean",
+              "description": "Option -r",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "bus_list",
+              "type": "boolean",
+              "description": "Option --bus-list",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_case",
+              "type": "boolean",
+              "description": "Option --ignore-case",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "sensors ... ..."
+          ],
+          "patterns": [
+            "sensors",
+            "sensors file",
+            "sensors directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.560313",
+            "help_available": true,
+            "common_options": [
+              "--file",
+              "-i",
+              "-s",
+              "-u",
+              "-n",
+              "-r",
+              "--bus-list",
+              "--ignore-case",
+              "-v",
+              "-f",
+              "-c",
+              "-h",
+              "-j",
+              "--output",
+              "--recursive",
+              "-A",
+              "-o"
+            ]
+          },
+          "template": "sensors {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "docker": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "docker",
+          "description": "A self-sufficient runtime for containers",
+          "category": "container",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "config",
+              "type": "boolean",
+              "description": "Option --config",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tls",
+              "type": "boolean",
+              "description": "Option --tls",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "H",
+              "type": "boolean",
+              "description": "Option -H",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tlskey",
+              "type": "boolean",
+              "description": "Option --tlskey",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "tlsverify",
+              "type": "boolean",
+              "description": "Option --tlsverify",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "docker  COMMAND"
+          ],
+          "patterns": [
+            "docker"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.597197",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "--config",
+              "-f",
+              "--tls",
+              "-H",
+              "-t",
+              "--tlskey",
+              "--tlsverify",
+              "-v",
+              "-c",
+              "-D",
+              "-i",
+              "-p",
+              "--tlscacert",
+              "--tlscert",
+              "-r",
+              "--verbose",
+              "--port",
+              "--output",
+              "-o",
+              "-l",
+              "--file",
+              "--ignore-case",
+              "-h",
+              "--timeout",
+              "--recursive"
+            ]
+          },
+          "template": "docker {options}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "git": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "git",
+          "description": "usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]",
+          "category": "version_control",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "verbose",
+              "type": "boolean",
+              "description": "Option --verbose",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "h",
+              "type": "boolean",
+              "description": "Option -h",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "output",
+              "type": "file",
+              "description": "Option --output",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "o",
+              "type": "boolean",
+              "description": "Option -o",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "usage: git"
+          ],
+          "patterns": [
+            "git"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.719619",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "--file",
+              "--verbose",
+              "-v",
+              "-f",
+              "-h",
+              "--output",
+              "-o"
+            ]
+          },
+          "template": "git {options}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "cat": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "cat",
+          "description": "Concatenate FILE(s), or standard input, to standard output",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "s",
+              "type": "boolean",
+              "description": "Option -s",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "e",
+              "type": "boolean",
+              "description": "Option -e",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "n",
+              "type": "boolean",
+              "description": "Option -n",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "u",
+              "type": "boolean",
+              "description": "Option -u",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "E",
+              "type": "boolean",
+              "description": "Option -E",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "T",
+              "type": "boolean",
+              "description": "Option -T",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "h",
+              "type": "boolean",
+              "description": "Option -h",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "cat ... ..."
+          ],
+          "patterns": [
+            "cat",
+            "cat file",
+            "cat directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.728978",
+            "help_available": true,
+            "common_options": [
+              "--file",
+              "-s",
+              "-e",
+              "-n",
+              "-u",
+              "-E",
+              "-T",
+              "-v",
+              "-t",
+              "-h",
+              "-b",
+              "-V",
+              "-f",
+              "--output",
+              "-A",
+              "-o"
+            ]
+          },
+          "template": "cat {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "traceroute": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "traceroute",
+          "description": "traceroute command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "traceroute --help",
+            "man traceroute"
+          ],
+          "patterns": [
+            "traceroute"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.736483",
+            "help_available": false,
+            "common_options": []
+          },
+          "template": "traceroute"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "nmap": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "nmap",
+          "description": "Nmap 7.95 ( https://nmap.org )",
+          "category": "network",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "min_rate",
+              "type": "boolean",
+              "description": "Option --min-rate",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "top_ports",
+              "type": "integer",
+              "description": "Option --top-ports",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "scanflags",
+              "type": "boolean",
+              "description": "Option --scanflags",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "data",
+              "type": "boolean",
+              "description": "Option --data",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "T",
+              "type": "boolean",
+              "description": "Option -T",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "max_rate",
+              "type": "boolean",
+              "description": "Option --max-rate",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "host_timeout",
+              "type": "string",
+              "description": "Option --host-timeout",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "nmap -v -A scanme.nmap.org",
+            "nmap -v -sn 192.168.0.0/16 10.0.0.0/8",
+            "nmap -v -iR 10000 -Pn -p 80",
+            "nmap   {target specification}"
+          ],
+          "patterns": [
+            "nmap",
+            "nmap url",
+            "nmap host"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.748169",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "--min-rate",
+              "--top-ports",
+              "--scanflags",
+              "--data",
+              "-T",
+              "-f",
+              "--max-rate",
+              "-t",
+              "--host-timeout",
+              "--proxies",
+              "--exclude-ports",
+              "--data-string",
+              "--spoof-mac",
+              "-S",
+              "-v",
+              "-g",
+              "--version-intensity",
+              "-b",
+              "-P",
+              "-d",
+              "-D",
+              "-i",
+              "-p",
+              "--exclude",
+              "--datadir",
+              "--ttl",
+              "-s",
+              "-O",
+              "-r",
+              "--verbose",
+              "--port",
+              "--ip-options",
+              "--output",
+              "--dns-servers",
+              "-A",
+              "-o",
+              "--max-retries",
+              "--resume",
+              "--stylesheet",
+              "--excludefile",
+              "--file",
+              "-F",
+              "-e",
+              "-n",
+              "--port-ratio",
+              "-V",
+              "-h",
+              "--data-length",
+              "--timeout"
+            ]
+          },
+          "template": "nmap {options} {url}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "nslookup": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "nslookup",
+          "description": "NSLOOKUP(1)                          BIND 9                         NSLOOKUP(1)",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "verbose",
+              "type": "boolean",
+              "description": "Option --verbose",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "h",
+              "type": "boolean",
+              "description": "Option -h",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "output",
+              "type": "file",
+              "description": "Option --output",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "o",
+              "type": "boolean",
+              "description": "Option -o",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "nslookup --help",
+            "man nslookup"
+          ],
+          "patterns": [
+            "nslookup",
+            "nslookup file",
+            "nslookup directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.809302",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "--file",
+              "--verbose",
+              "-v",
+              "-f",
+              "-h",
+              "--output",
+              "-o"
+            ]
+          },
+          "template": "nslookup {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "openssl": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "openssl",
+          "description": "help:",
+          "category": "security",
+          "parameters": [],
+          "examples": [
+            "openssl --help",
+            "man openssl"
+          ],
+          "patterns": [
+            "openssl"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:08.821034",
+            "help_available": true,
+            "common_options": []
+          },
+          "template": "openssl"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "pip": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "pip",
+          "description": "pip <command> [options]",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "exists_action",
+              "type": "boolean",
+              "description": "Option --exists-action",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_input",
+              "type": "file",
+              "description": "Option --no-input",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "use_feature",
+              "type": "boolean",
+              "description": "Option --use-feature",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "client_cert",
+              "type": "boolean",
+              "description": "Option --client-cert",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "cache_dir",
+              "type": "boolean",
+              "description": "Option --cache-dir",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "require_virtualenv",
+              "type": "boolean",
+              "description": "Option --require-virtualenv",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "trusted_host",
+              "type": "boolean",
+              "description": "Option --trusted-host",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "debug",
+              "type": "boolean",
+              "description": "Option --debug",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            ""
+          ],
+          "patterns": [
+            "pip",
+            "pip file",
+            "pip directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.020829",
+            "help_available": true,
+            "common_options": [
+              "--exists-action",
+              "--no-input",
+              "--use-feature",
+              "-f",
+              "--client-cert",
+              "--cache-dir",
+              "--require-virtualenv",
+              "-v",
+              "--trusted-host",
+              "--debug",
+              "--no-cache-dir",
+              "--log",
+              "--isolated",
+              "--resume-retries",
+              "--keyring-provider",
+              "--proxy",
+              "--output",
+              "--retries",
+              "--use-deprecated",
+              "-o",
+              "--file",
+              "--cert",
+              "--python",
+              "-q",
+              "--disable-pip-version-check",
+              "-V",
+              "-h",
+              "--timeout",
+              "--no-color"
+            ]
+          },
+          "template": "pip {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "python3": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "python3",
+          "description": "usage: python3 [option] ... [-c cmd | -m mod | file | -] [arg] ...",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "W",
+              "type": "boolean",
+              "description": "Option -W",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "S",
+              "type": "boolean",
+              "description": "Option -S",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "check_hash_based_pycs",
+              "type": "boolean",
+              "description": "Option --check-hash-based-pycs",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "b",
+              "type": "boolean",
+              "description": "Option -b",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "P",
+              "type": "boolean",
+              "description": "Option -P",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "d",
+              "type": "boolean",
+              "description": "Option -d",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "i",
+              "type": "boolean",
+              "description": "Option -i",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "usage: python3  ...   ..."
+          ],
+          "patterns": [
+            "python3",
+            "python3 file",
+            "python3 directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.033284",
+            "help_available": true,
+            "common_options": [
+              "-W",
+              "-f",
+              "-S",
+              "--check-hash-based-pycs",
+              "-v",
+              "-c",
+              "-b",
+              "-P",
+              "-d",
+              "-i",
+              "-B",
+              "-s",
+              "-O",
+              "-u",
+              "-E",
+              "--output",
+              "-o",
+              "--file",
+              "-m",
+              "-q",
+              "-X",
+              "-I",
+              "-h",
+              "-V",
+              "-x"
+            ]
+          },
+          "template": "python3 {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "make": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "make",
+          "description": "Options:",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "k",
+              "type": "boolean",
+              "description": "Option -k",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "W",
+              "type": "boolean",
+              "description": "Option -W",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_silent",
+              "type": "boolean",
+              "description": "Option --no-silent",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "j",
+              "type": "boolean",
+              "description": "Option -j",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "R",
+              "type": "boolean",
+              "description": "Option -R",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "S",
+              "type": "boolean",
+              "description": "Option -S",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "b",
+              "type": "boolean",
+              "description": "Option -b",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "make   ..."
+          ],
+          "patterns": [
+            "make",
+            "make file",
+            "make directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.045139",
+            "help_available": true,
+            "common_options": [
+              "-k",
+              "-W",
+              "--no-silent",
+              "-f",
+              "-j",
+              "-t",
+              "-R",
+              "-S",
+              "-v",
+              "-b",
+              "-d",
+              "-i",
+              "-p",
+              "-B",
+              "-s",
+              "-O",
+              "-r",
+              "-E",
+              "-L",
+              "--output",
+              "-o",
+              "-l",
+              "--file",
+              "-w",
+              "--trace",
+              "-e",
+              "-n",
+              "--warn-undefined-variables",
+              "-q",
+              "-C",
+              "-h",
+              "-I",
+              "--no-print-directory"
+            ]
+          },
+          "template": "make {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "pytest": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "pytest",
+          "description": "usage: pytest [options] [file_or_dir] [file_or_dir] [...]",
+          "category": "development",
+          "parameters": [
+            {
+              "name": "k",
+              "type": "boolean",
+              "description": "Option -k",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "trace_config",
+              "type": "boolean",
+              "description": "Option --trace-config",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "W",
+              "type": "boolean",
+              "description": "Option -W",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "strict",
+              "type": "boolean",
+              "description": "Option --strict",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "setup_only",
+              "type": "boolean",
+              "description": "Option --setup-only",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "doctest_continue_on_failure",
+              "type": "boolean",
+              "description": "Option --doctest-continue-on-failure",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "setup_show",
+              "type": "boolean",
+              "description": "Option --setup-show",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "cache_clear",
+              "type": "boolean",
+              "description": "Option --cache-clear",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "usage: pytest"
+          ],
+          "patterns": [
+            "pytest"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.249900",
+            "help_available": true,
+            "common_options": [
+              "-k",
+              "--trace-config",
+              "--help",
+              "-W",
+              "--strict",
+              "--setup-only",
+              "--doctest-continue-on-failure",
+              "-f",
+              "--setup-show",
+              "--cache-clear",
+              "-v",
+              "-c",
+              "--fixtures-per-test",
+              "--pdb",
+              "--strict-markers",
+              "--no-showlocals",
+              "--disable-plugin-autoload",
+              "--doctest-ignore-import-errors",
+              "--strict-config",
+              "--pyargs",
+              "-p",
+              "--keep-duplicates",
+              "-s",
+              "-r",
+              "--verbose",
+              "--no-fold-skipped",
+              "--noconftest",
+              "--output",
+              "--no-header",
+              "-o",
+              "--runxfail",
+              "--xfail-tb",
+              "-l",
+              "--file",
+              "--full-trace",
+              "-m",
+              "--trace",
+              "-q",
+              "--collect-in-virtualenv",
+              "-x",
+              "-V",
+              "-h",
+              "--no-summary",
+              "--force-short-summary",
+              "--markers",
+              "--doctest-modules",
+              "--continue-on-collection-errors",
+              "--setup-plan"
+            ]
+          },
+          "template": "pytest {options}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "black": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "black",
+          "description": "The uncompromising code formatter.",
+          "category": "text",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "W",
+              "type": "boolean",
+              "description": "Option -W",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ipynb",
+              "type": "boolean",
+              "description": "Option --ipynb",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "config",
+              "type": "boolean",
+              "description": "Option --config",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "Option --version",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "line_ranges",
+              "type": "boolean",
+              "description": "Option --line-ranges",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "stdin_filename",
+              "type": "file",
+              "description": "Option --stdin-filename",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "diff",
+              "type": "boolean",
+              "description": "Option --diff",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "pattern",
+              "type": "string",
+              "description": "Search pattern",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "black  SRC ..."
+          ],
+          "patterns": [
+            "black",
+            "black pattern",
+            "black text"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.388916",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "-W",
+              "--ipynb",
+              "--config",
+              "-f",
+              "-t",
+              "--version",
+              "--line-ranges",
+              "--stdin-filename",
+              "--diff",
+              "-S",
+              "-v",
+              "-c",
+              "--color",
+              "--fast",
+              "--include",
+              "-i",
+              "--exclude",
+              "-r",
+              "--verbose",
+              "--output",
+              "-o",
+              "--unstable",
+              "-l",
+              "--force-exclude",
+              "--file",
+              "--pyi",
+              "--enable-unstable-feature",
+              "--check",
+              "--preview",
+              "-q",
+              "--ignore-case",
+              "-x",
+              "-C",
+              "-h",
+              "--recursive",
+              "--python-cell-magics",
+              "--extend-exclude",
+              "--required-version"
+            ]
+          },
+          "template": "black {options} {pattern}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "eslint": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "eslint",
+          "description": "eslint command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "eslint --help",
+            "man eslint"
+          ],
+          "patterns": [
+            "eslint"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.409659",
+            "help_available": false,
+            "common_options": []
+          },
+          "template": "eslint"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "node": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "node",
+          "description": "node inspect [options] [ script.js | host:port ] [arguments]",
+          "category": "system",
+          "parameters": [
+            {
+              "name": "no_warnings",
+              "type": "boolean",
+              "description": "Option --no-warnings",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "experimental_test_coverage",
+              "type": "boolean",
+              "description": "Option --experimental-test-coverage",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "enable_etw_stack_walking",
+              "type": "boolean",
+              "description": "Option --enable-etw-stack-walking",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "watch",
+              "type": "boolean",
+              "description": "Option --watch",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "experimental_import_meta_resolve",
+              "type": "integer",
+              "description": "Option --experimental-import-meta-resolve",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "experimental_network_inspection",
+              "type": "boolean",
+              "description": "Option --experimental-network-inspection",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_deprecation",
+              "type": "boolean",
+              "description": "Option --no-deprecation",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "trace_uncaught",
+              "type": "boolean",
+              "description": "Option --trace-uncaught",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_global_search_paths",
+              "type": "boolean",
+              "description": "Option --no-global-search-paths",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "abort_on_uncaught_exception",
+              "type": "boolean",
+              "description": "Option --abort-on-uncaught-exception",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "node"
+          ],
+          "patterns": [
+            "node"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.542594",
+            "help_available": true,
+            "common_options": [
+              "--no-warnings",
+              "--experimental-test-coverage",
+              "--enable-etw-stack-walking",
+              "--watch",
+              "--experimental-import-meta-resolve",
+              "--experimental-network-inspection",
+              "--no-deprecation",
+              "--trace-uncaught",
+              "--no-global-search-paths",
+              "--abort-on-uncaught-exception",
+              "--experimental-vm-modules",
+              "--build-snapshot",
+              "--openssl-shared-config",
+              "--experimental-permission",
+              "--report-compact",
+              "--allow-wasi",
+              "--no-experimental-global-webcrypto",
+              "--interpreted-frames-native-stack",
+              "--track-heap-objects",
+              "--trace-sigint",
+              "--test-force-exit",
+              "--ignore-case",
+              "-C",
+              "--recursive",
+              "--report-on-signal",
+              "--no-experimental-repl-await",
+              "--huge-max-old-generation-size",
+              "--force-node-api-uncaught-exceptions-policy",
+              "--experimental-eventsource",
+              "--use-openssl-ca",
+              "--enable-fips",
+              "--trace-warnings",
+              "-t",
+              "--experimental-test-module-mocks",
+              "--preserve-symlinks-main",
+              "--report-uncaught-exception",
+              "--disallow-code-generation-from-strings",
+              "--experimental-print-required-tla",
+              "--force-fips",
+              "--v8-options",
+              "--experimental-wasm-modules",
+              "--no-force-async-hooks-checks",
+              "--trace-exit",
+              "--report-on-fatalerror",
+              "-e",
+              "--trace-sync-io",
+              "--frozen-intrinsics",
+              "--insecure-http-parser",
+              "--zero-fill-buffers",
+              "--test",
+              "--timeout",
+              "--experimental-network-imports",
+              "--help",
+              "--watch-preserve-output",
+              "--expose-gc",
+              "--trace-tls",
+              "--force-context-aware",
+              "--report-exclude-network",
+              "--preserve-symlinks",
+              "-v",
+              "-c",
+              "--cpu-prof",
+              "--no-addons",
+              "--use-bundled-ca",
+              "--jitless",
+              "--no-extra-info-on-fatal-exception",
+              "-r",
+              "--pending-deprecation",
+              "--node-memory-debug",
+              "--enable-source-maps",
+              "--trace-atomics-wait",
+              "--experimental-websocket",
+              "--openssl-legacy-provider",
+              "--file",
+              "--allow-child-process",
+              "--allow-worker",
+              "--completion-bash",
+              "-h",
+              "--experimental-require-module",
+              "--no-experimental-global-customevent",
+              "--trace-deprecation",
+              "--allow-addons",
+              "--trace-promises",
+              "-f",
+              "--test-only",
+              "--no-experimental-detect-module",
+              "--heap-prof",
+              "-i",
+              "-p",
+              "--no-experimental-require-module",
+              "--prof-process",
+              "--verbose",
+              "--port",
+              "--output",
+              "-o",
+              "--throw-deprecation",
+              "--disable-wasm-trap-handler",
+              "--prof",
+              "--no-experimental-fetch"
+            ]
+          },
+          "template": "node {options}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "npm": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "npm",
+          "description": "npm command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "npm --help",
+            "man npm"
+          ],
+          "patterns": [
+            "npm"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.557359",
+            "help_available": false,
+            "common_options": []
+          },
+          "template": "npm"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "psql": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "psql",
+          "description": "psql command",
+          "category": "database",
+          "parameters": [],
+          "examples": [
+            "psql --help",
+            "man psql"
+          ],
+          "patterns": [
+            "psql"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.570772",
+            "help_available": false,
+            "common_options": []
+          },
+          "template": "psql"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "mysql": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "mysql",
+          "description": "mysql command",
+          "category": "database",
+          "parameters": [],
+          "examples": [
+            "mysql --help",
+            "man mysql"
+          ],
+          "patterns": [
+            "mysql"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.584776",
+            "help_available": false,
+            "common_options": []
+          },
+          "template": "mysql"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "mongodump": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "mongodump",
+          "description": "mongodump command",
+          "category": "general",
+          "parameters": [],
+          "examples": [
+            "mongodump --help",
+            "man mongodump"
+          ],
+          "patterns": [
+            "mongodump"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.603800",
+            "help_available": false,
+            "common_options": []
+          },
+          "template": "mongodump"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "chmod": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "chmod",
+          "description": "or:  chmod [OPTION]... OCTAL-MODE FILE...",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "R",
+              "type": "boolean",
+              "description": "Option -R",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "dereference",
+              "type": "boolean",
+              "description": "Option --dereference",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "o",
+              "type": "boolean",
+              "description": "Option -o",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_preserve_root",
+              "type": "boolean",
+              "description": "Option --no-preserve-root",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "h",
+              "type": "boolean",
+              "description": "Option -h",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "chmod ... MODE... FILE..."
+          ],
+          "patterns": [
+            "chmod",
+            "chmod file",
+            "chmod directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.621181",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "--file",
+              "-R",
+              "--dereference",
+              "-o",
+              "--no-preserve-root",
+              "-v",
+              "-c",
+              "-h",
+              "-f",
+              "-H",
+              "-L",
+              "--preserve-root",
+              "--output",
+              "--version",
+              "-P"
+            ]
+          },
+          "template": "chmod {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "ssh-keygen": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "ssh-keygen",
+          "description": "SSH-KEYGEN(1)                General Commands Manual              SSH-KEYGEN(1)",
+          "category": "security",
+          "parameters": [
+            {
+              "name": "k",
+              "type": "boolean",
+              "description": "Option -k",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "K",
+              "type": "boolean",
+              "description": "Option -K",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "y",
+              "type": "boolean",
+              "description": "Option -y",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "z",
+              "type": "boolean",
+              "description": "Option -z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "H",
+              "type": "boolean",
+              "description": "Option -H",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "Z",
+              "type": "boolean",
+              "description": "Option -Z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "R",
+              "type": "boolean",
+              "description": "Option -R",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "ssh-keygen --help",
+            "man ssh-keygen"
+          ],
+          "patterns": [
+            "ssh-keygen"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.743741",
+            "help_available": true,
+            "common_options": [
+              "-k",
+              "--help",
+              "-K",
+              "-y",
+              "-z",
+              "-f",
+              "-t",
+              "-H",
+              "-Z",
+              "-R",
+              "-v",
+              "-c",
+              "-g",
+              "-b",
+              "-a",
+              "-P",
+              "-D",
+              "-i",
+              "-p",
+              "-B",
+              "-s",
+              "-O",
+              "-u",
+              "-r",
+              "-U",
+              "-E",
+              "--verbose",
+              "-L",
+              "--output",
+              "-A",
+              "-o",
+              "-l",
+              "--file",
+              "-w",
+              "-m",
+              "-F",
+              "-e",
+              "-n",
+              "-Y",
+              "-q",
+              "-M",
+              "-C",
+              "-h",
+              "-I",
+              "-Q",
+              "-V",
+              "-N"
+            ]
+          },
+          "template": "ssh-keygen {options}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "gpg": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "gpg",
+          "description": "gpg (GnuPG) 2.4.8",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "k",
+              "type": "boolean",
+              "description": "Option -k",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "print_md",
+              "type": "boolean",
+              "description": "Option --print-md",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "update_trustdb",
+              "type": "boolean",
+              "description": "Option --update-trustdb",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "full_generate_key",
+              "type": "boolean",
+              "description": "Option --full-generate-key",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "auto_key_import",
+              "type": "integer",
+              "description": "Option --auto-key-import",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "include_key_block",
+              "type": "boolean",
+              "description": "Option --include-key-block",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "K",
+              "type": "boolean",
+              "description": "Option -K",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "log_file",
+              "type": "file",
+              "description": "Option --log-file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "z",
+              "type": "boolean",
+              "description": "Option -z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "gpg --help",
+            "man gpg"
+          ],
+          "patterns": [
+            "gpg",
+            "gpg file",
+            "gpg directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.766109",
+            "help_available": true,
+            "common_options": [
+              "-k",
+              "--print-md",
+              "--update-trustdb",
+              "--full-generate-key",
+              "--auto-key-import",
+              "--include-key-block",
+              "-K",
+              "--log-file",
+              "-z",
+              "-f",
+              "--quick-sign-key",
+              "--verify",
+              "--import",
+              "--group",
+              "--edit-card",
+              "--encrypt-to",
+              "--auto-key-locate",
+              "--change-passphrase",
+              "--clear-sign",
+              "--quick-lsign-key",
+              "--quick-generate-key",
+              "--check-signatures",
+              "--edit-key",
+              "--search-keys",
+              "--detach-sign",
+              "-v",
+              "-c",
+              "--refresh-keys",
+              "-b",
+              "--card-status",
+              "--generate-key",
+              "--fingerprint",
+              "-a",
+              "-d",
+              "-i",
+              "--list-signatures",
+              "--generate-revocation",
+              "--quick-revoke-uid",
+              "--receive-keys",
+              "-s",
+              "--lsign-key",
+              "-u",
+              "-r",
+              "--default-key",
+              "--openpgp",
+              "--output",
+              "-o",
+              "--delete-keys",
+              "--list-keys",
+              "--send-keys",
+              "--file",
+              "--quick-set-expire",
+              "--disable-dirmngr",
+              "--change-pin",
+              "-e",
+              "-n",
+              "--server",
+              "-q",
+              "--delete-secret-keys",
+              "--ignore-case",
+              "--quick-revoke-sig",
+              "--tofu-policy",
+              "--options",
+              "--sign-key",
+              "--quick-add-uid",
+              "--recursive",
+              "--export"
+            ]
+          },
+          "template": "gpg {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "iptables": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "iptables",
+          "description": "iptables v1.8.11 (nf_tables)",
+          "category": "database",
+          "parameters": [
+            {
+              "name": "zero",
+              "type": "boolean",
+              "description": "Option --zero",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "set_counters",
+              "type": "integer",
+              "description": "Option --set-counters",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "numeric",
+              "type": "boolean",
+              "description": "Option --numeric",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ipv4",
+              "type": "boolean",
+              "description": "Option --ipv4",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "match",
+              "type": "boolean",
+              "description": "Option --match",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "list_rules",
+              "type": "boolean",
+              "description": "Option --list-rules",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "replace",
+              "type": "boolean",
+              "description": "Option --replace",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "table",
+              "type": "boolean",
+              "description": "Option --table",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "exact",
+              "type": "boolean",
+              "description": "Option --exact",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "iptables - chain rule-specification"
+          ],
+          "patterns": [
+            "iptables"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.784526",
+            "help_available": true,
+            "common_options": [
+              "--zero",
+              "--set-counters",
+              "-t",
+              "--numeric",
+              "--ipv4",
+              "--match",
+              "--list-rules",
+              "--replace",
+              "--table",
+              "--exact",
+              "--jump",
+              "--wait",
+              "--line-numbers",
+              "-p",
+              "--goto",
+              "--rename-chain",
+              "--delete-chain",
+              "--verbose",
+              "-E",
+              "--port",
+              "--flush",
+              "--list",
+              "--policy",
+              "--ipv6",
+              "--append",
+              "--insert",
+              "--check",
+              "-X",
+              "--timeout",
+              "--delete",
+              "--new"
+            ]
+          },
+          "template": "iptables {options}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "sed": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "sed",
+          "description": "suppress automatic printing of pattern space",
+          "category": "system",
+          "parameters": [
+            {
+              "name": "l",
+              "type": "boolean",
+              "description": "Option -l",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "i",
+              "type": "boolean",
+              "description": "Option -i",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "debug",
+              "type": "boolean",
+              "description": "Option --debug",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "follow_symlinks",
+              "type": "boolean",
+              "description": "Option --follow-symlinks",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "s",
+              "type": "boolean",
+              "description": "Option -s",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "e",
+              "type": "boolean",
+              "description": "Option -e",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "n",
+              "type": "boolean",
+              "description": "Option -n",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "u",
+              "type": "boolean",
+              "description": "Option -u",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "sed ... {script-only-if-no-other-script} ..."
+          ],
+          "patterns": [
+            "sed"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.804758",
+            "help_available": true,
+            "common_options": [
+              "-l",
+              "-i",
+              "--debug",
+              "--help",
+              "--follow-symlinks",
+              "--file",
+              "-s",
+              "-e",
+              "-n",
+              "-u",
+              "--sandbox",
+              "-E",
+              "-z",
+              "-f",
+              "--posix",
+              "--output",
+              "--version",
+              "-o"
+            ]
+          },
+          "template": "sed {options}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "sort": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "sort",
+          "description": "Display sorted concatenation of all FILE(s). With no FILE, or when FILE is -, read standard input.",
+          "category": "text",
+          "parameters": [
+            {
+              "name": "k",
+              "type": "boolean",
+              "description": "Option -k",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "T",
+              "type": "boolean",
+              "description": "Option -T",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "z",
+              "type": "boolean",
+              "description": "Option -z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "version",
+              "type": "boolean",
+              "description": "Option --version",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "batch_size",
+              "type": "integer",
+              "description": "Option --batch-size",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "R",
+              "type": "boolean",
+              "description": "Option -R",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "S",
+              "type": "boolean",
+              "description": "Option -S",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "pattern",
+              "type": "string",
+              "description": "Search pattern",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "sort ... ..."
+          ],
+          "patterns": [
+            "sort",
+            "sort pattern",
+            "sort text"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.826287",
+            "help_available": true,
+            "common_options": [
+              "-k",
+              "--help",
+              "-T",
+              "-z",
+              "-f",
+              "-t",
+              "--version",
+              "--batch-size",
+              "-R",
+              "-S",
+              "--compress-program",
+              "-g",
+              "-c",
+              "-b",
+              "--sort",
+              "-d",
+              "--debug",
+              "-i",
+              "--files0-from",
+              "-s",
+              "-u",
+              "-r",
+              "--output",
+              "-o",
+              "--file",
+              "-m",
+              "--parallel",
+              "-n",
+              "-M",
+              "-C",
+              "-V",
+              "-h"
+            ]
+          },
+          "template": "sort {options} {pattern}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "ls": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "ls",
+          "description": "List directory contents.",
+          "category": "text",
+          "parameters": [
+            {
+              "name": "k",
+              "type": "boolean",
+              "description": "Option -k",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "zero",
+              "type": "boolean",
+              "description": "Option --zero",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "T",
+              "type": "boolean",
+              "description": "Option -T",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "H",
+              "type": "boolean",
+              "description": "Option -H",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "Z",
+              "type": "boolean",
+              "description": "Option -Z",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file_type",
+              "type": "file",
+              "description": "Option --file-type",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "dereference_command_line_symlink_to_dir",
+              "type": "boolean",
+              "description": "Option --dereference-command-line-symlink-to-dir",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "pattern",
+              "type": "string",
+              "description": "Search pattern",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "ls ... ..."
+          ],
+          "patterns": [
+            "ls",
+            "ls pattern",
+            "ls text"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.851289",
+            "help_available": true,
+            "common_options": [
+              "-k",
+              "--help",
+              "--zero",
+              "-T",
+              "-f",
+              "-t",
+              "-H",
+              "-Z",
+              "--file-type",
+              "--dereference-command-line-symlink-to-dir",
+              "-R",
+              "--dereference-command-line",
+              "-S",
+              "-v",
+              "-g",
+              "-c",
+              "--si",
+              "-b",
+              "--ignore-case",
+              "-a",
+              "-d",
+              "-D",
+              "-i",
+              "-p",
+              "--indicator-style",
+              "-B",
+              "--group-directories-first",
+              "-s",
+              "-u",
+              "--full-time",
+              "-r",
+              "-U",
+              "--recursive",
+              "--verbose",
+              "-L",
+              "--output",
+              "-A",
+              "-o",
+              "-l",
+              "--file",
+              "-w",
+              "-m",
+              "-G",
+              "-F",
+              "--hide",
+              "--author",
+              "-n",
+              "-q",
+              "-X",
+              "--time-style",
+              "-C",
+              "-x",
+              "-I",
+              "-Q",
+              "-h",
+              "-V",
+              "--show-control-chars",
+              "-N",
+              "--quoting-style"
+            ]
+          },
+          "template": "ls {options} {pattern}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "iconv": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "iconv",
+          "description": "Convert encoding of given files from one encoding to another.",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "l",
+              "type": "boolean",
+              "description": "Option -l",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "i",
+              "type": "boolean",
+              "description": "Option -i",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "s",
+              "type": "boolean",
+              "description": "Option -s",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "verbose",
+              "type": "boolean",
+              "description": "Option --verbose",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "r",
+              "type": "boolean",
+              "description": "Option -r",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_case",
+              "type": "boolean",
+              "description": "Option --ignore-case",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "usage",
+              "type": "boolean",
+              "description": "Option --usage",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "iconv"
+          ],
+          "patterns": [
+            "iconv",
+            "iconv file",
+            "iconv directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.875115",
+            "help_available": true,
+            "common_options": [
+              "-l",
+              "--file",
+              "-i",
+              "-s",
+              "--verbose",
+              "-r",
+              "--ignore-case",
+              "--usage",
+              "-c",
+              "-f",
+              "-t",
+              "-V",
+              "--output",
+              "--recursive",
+              "-o"
+            ]
+          },
+          "template": "iconv {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "split": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "split",
+          "description": "Create output files containing consecutive or interleaved sections of input",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "l",
+              "type": "boolean",
+              "description": "Option -l",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "filter",
+              "type": "boolean",
+              "description": "Option --filter",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "e",
+              "type": "boolean",
+              "description": "Option -e",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "n",
+              "type": "boolean",
+              "description": "Option -n",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "verbose",
+              "type": "boolean",
+              "description": "Option --verbose",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "additional_suffix",
+              "type": "boolean",
+              "description": "Option --additional-suffix",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "C",
+              "type": "boolean",
+              "description": "Option -C",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "x",
+              "type": "boolean",
+              "description": "Option -x",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "t",
+              "type": "boolean",
+              "description": "Option -t",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "split ... ]"
+          ],
+          "patterns": [
+            "split",
+            "split file",
+            "split directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.901750",
+            "help_available": true,
+            "common_options": [
+              "-l",
+              "--file",
+              "--filter",
+              "-e",
+              "-n",
+              "--verbose",
+              "--additional-suffix",
+              "-C",
+              "-x",
+              "-t",
+              "-b",
+              "-h",
+              "-V",
+              "-f",
+              "--output",
+              "-a",
+              "-o",
+              "-d"
+            ]
+          },
+          "template": "split {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "jq": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "jq",
+          "description": "jq - commandline JSON processor [version 1.8.1]",
+          "category": "text",
+          "parameters": [
+            {
+              "name": "stream",
+              "type": "boolean",
+              "description": "Option --stream",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "args",
+              "type": "boolean",
+              "description": "Option --args",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "j",
+              "type": "boolean",
+              "description": "Option -j",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "seq",
+              "type": "boolean",
+              "description": "Option --seq",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "argjson",
+              "type": "boolean",
+              "description": "Option --argjson",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "R",
+              "type": "boolean",
+              "description": "Option -R",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "S",
+              "type": "boolean",
+              "description": "Option -S",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "c",
+              "type": "boolean",
+              "description": "Option -c",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "indent",
+              "type": "boolean",
+              "description": "Option --indent",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            },
+            {
+              "name": "pattern",
+              "type": "string",
+              "description": "Search pattern",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "jq  <jq filter>"
+          ],
+          "patterns": [
+            "jq",
+            "jq pattern",
+            "jq text"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.926936",
+            "help_available": true,
+            "common_options": [
+              "--stream",
+              "--args",
+              "-f",
+              "-j",
+              "--seq",
+              "--argjson",
+              "-R",
+              "-S",
+              "-c",
+              "--indent",
+              "--rawfile",
+              "-a",
+              "--unbuffered",
+              "-i",
+              "--raw-output0",
+              "-s",
+              "--arg",
+              "-r",
+              "--jsonargs",
+              "--slurpfile",
+              "-L",
+              "--output",
+              "--build-configuration",
+              "-o",
+              "--file",
+              "--tab",
+              "-e",
+              "-n",
+              "-M",
+              "--ignore-case",
+              "-C",
+              "-V",
+              "-h",
+              "--stream-errors",
+              "--recursive"
+            ]
+          },
+          "template": "jq {options} {pattern}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "rsync": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "rsync",
+          "description": "rsync  version 3.4.1  protocol version 32",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "delete_after",
+              "type": "boolean",
+              "description": "Option --delete-after",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "super",
+              "type": "boolean",
+              "description": "Option --super",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "copy_devices",
+              "type": "boolean",
+              "description": "Option --copy-devices",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "delete_before",
+              "type": "boolean",
+              "description": "Option --delete-before",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "ignore_missing_args",
+              "type": "boolean",
+              "description": "Option --ignore-missing-args",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "old_args",
+              "type": "boolean",
+              "description": "Option --old-args",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "safe_links",
+              "type": "boolean",
+              "description": "Option --safe-links",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "o",
+              "type": "boolean",
+              "description": "Option -o",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "partial",
+              "type": "boolean",
+              "description": "Option --partial",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "rsync ... SRC ... DEST"
+          ],
+          "patterns": [
+            "rsync",
+            "rsync file",
+            "rsync directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.953316",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "--delete-after",
+              "--super",
+              "--copy-devices",
+              "--delete-before",
+              "--ignore-missing-args",
+              "--old-args",
+              "--safe-links",
+              "-o",
+              "--partial",
+              "--devices",
+              "--progress",
+              "-f",
+              "--mkpath",
+              "--ignore-errors",
+              "--size-only",
+              "--specials",
+              "--force",
+              "--no-implied-dirs",
+              "--munge-links",
+              "--fsync",
+              "-v",
+              "--delete-excluded",
+              "--inplace",
+              "-P",
+              "--delay-updates",
+              "-D",
+              "--numeric-ids",
+              "--write-devices",
+              "--verbose",
+              "--delete-delay",
+              "--del",
+              "--output",
+              "--append-verify",
+              "--no-OPTION",
+              "--copy-unsafe-links",
+              "--no-motd",
+              "--fake-super",
+              "--append",
+              "--preallocate",
+              "--ignore-existing",
+              "--trust-sender",
+              "--open-noatime",
+              "--stats",
+              "--delete-during",
+              "--list-only",
+              "--file",
+              "-F",
+              "--existing",
+              "-h",
+              "--remove-source-files",
+              "--delete",
+              "--blocking-io",
+              "--delete-missing-args"
+            ]
+          },
+          "template": "rsync {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "mysqldump": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "mysqldump",
+          "description": "mysqldump command",
+          "category": "database",
+          "parameters": [],
+          "examples": [
+            "mysqldump --help",
+            "man mysqldump"
+          ],
+          "patterns": [
+            "mysqldump"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:09.977370",
+            "help_available": false,
+            "common_options": []
+          },
+          "template": "mysqldump"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    },
+    "rm": {
+      "source_type": "intelligent",
+      "commands": [
+        {
+          "name": "rm",
+          "description": "Remove (unlink) the FILE(s).",
+          "category": "file",
+          "parameters": [
+            {
+              "name": "help",
+              "type": "boolean",
+              "description": "Option --help",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "i",
+              "type": "boolean",
+              "description": "Option -i",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "Option --file",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "no_preserve_root",
+              "type": "boolean",
+              "description": "Option --no-preserve-root",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "r",
+              "type": "boolean",
+              "description": "Option -r",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "verbose",
+              "type": "boolean",
+              "description": "Option --verbose",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "v",
+              "type": "boolean",
+              "description": "Option -v",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "f",
+              "type": "boolean",
+              "description": "Option -f",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "I",
+              "type": "boolean",
+              "description": "Option -I",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "one_file_system",
+              "type": "file",
+              "description": "Option --one-file-system",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "option"
+            },
+            {
+              "name": "file",
+              "type": "file",
+              "description": "File to process",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "location": "argument"
+            }
+          ],
+          "examples": [
+            "rm ... ..."
+          ],
+          "patterns": [
+            "rm",
+            "rm file",
+            "rm directory"
+          ],
+          "source_type": "intelligent_extraction",
+          "metadata": {
+            "generated_at": "2026-01-23T15:53:10.003851",
+            "help_available": true,
+            "common_options": [
+              "--help",
+              "-i",
+              "--file",
+              "--no-preserve-root",
+              "-r",
+              "--verbose",
+              "-v",
+              "-f",
+              "-I",
+              "--one-file-system",
+              "--output",
+              "-h",
+              "--version",
+              "-o",
+              "-d"
+            ]
+          },
+          "template": "rm {options} {file}"
+        }
+      ],
+      "metadata": {
+        "extraction_method": "intelligent_analysis",
+        "llm_assisted": true
+      }
+    }
+  }
+}

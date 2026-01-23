@@ -1,0 +1,22 @@
+{
+  "command": "psql",
+  "description": "psql command",
+  "category": "database",
+  "parameters": [],
+  "examples": [
+    "psql --help",
+    "man psql"
+  ],
+  "patterns": [
+    "psql"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:24.496393",
+    "help_available": false,
+    "common_options": []
+  },
+  "template": "psql",
+  "stored_at": "2026-01-23T15:53:25.211501",
+  "version": "1.0"
+}

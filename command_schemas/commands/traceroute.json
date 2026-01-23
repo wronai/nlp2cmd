@@ -1,0 +1,22 @@
+{
+  "command": "traceroute",
+  "description": "traceroute command",
+  "category": "general",
+  "parameters": [],
+  "examples": [
+    "traceroute --help",
+    "man traceroute"
+  ],
+  "patterns": [
+    "traceroute"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:25.134243",
+    "help_available": false,
+    "common_options": []
+  },
+  "template": "traceroute",
+  "stored_at": "2026-01-23T15:53:25.204431",
+  "version": "1.0"
+}

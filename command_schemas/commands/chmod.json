@@ -1,0 +1,151 @@
+{
+  "command": "chmod",
+  "description": "or:  chmod [OPTION]... OCTAL-MODE FILE...",
+  "category": "file",
+  "parameters": [
+    {
+      "name": "R",
+      "type": "boolean",
+      "description": "Option -R",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "Option --file",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "o",
+      "type": "boolean",
+      "description": "Option -o",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "f",
+      "type": "boolean",
+      "description": "Option -f",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "help",
+      "type": "boolean",
+      "description": "Option --help",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "v",
+      "type": "boolean",
+      "description": "Option -v",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "P",
+      "type": "boolean",
+      "description": "Option -P",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "preserve_root",
+      "type": "boolean",
+      "description": "Option --preserve-root",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "no_preserve_root",
+      "type": "boolean",
+      "description": "Option --no-preserve-root",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "H",
+      "type": "boolean",
+      "description": "Option -H",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "File to process",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "argument"
+    }
+  ],
+  "examples": [
+    "chmod ... MODE... FILE..."
+  ],
+  "patterns": [
+    "chmod",
+    "chmod file",
+    "chmod directory"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:23.202075",
+    "help_available": true,
+    "common_options": [
+      "-R",
+      "--file",
+      "-o",
+      "-f",
+      "--help",
+      "-v",
+      "-P",
+      "--preserve-root",
+      "--no-preserve-root",
+      "-H",
+      "-h",
+      "-c",
+      "--dereference",
+      "--output",
+      "-L",
+      "--version"
+    ]
+  },
+  "template": "chmod {options} {file}",
+  "stored_at": "2026-01-23T15:53:25.213652",
+  "version": "1.0"
+}

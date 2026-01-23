@@ -1,0 +1,22 @@
+{
+  "command": "openssl",
+  "description": "help:",
+  "category": "security",
+  "parameters": [],
+  "examples": [
+    "openssl --help",
+    "man openssl"
+  ],
+  "patterns": [
+    "openssl"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:24.202439",
+    "help_available": true,
+    "common_options": []
+  },
+  "template": "openssl",
+  "stored_at": "2026-01-23T15:53:25.206204",
+  "version": "1.0"
+}

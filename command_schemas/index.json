@@ -1,0 +1,441 @@
+{
+  "version": "1.0",
+  "created": "2026-01-23T15:52:25.939044",
+  "last_updated": "2026-01-23T15:53:25.221077",
+  "commands": {
+    "kubectl": {
+      "file": "commands/kubectl.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.195023",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "find": {
+      "file": "commands/find.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.195679",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "grep": {
+      "file": "commands/grep.json",
+      "category": "text",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.196326",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "cp": {
+      "file": "commands/cp.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.196899",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "mv": {
+      "file": "commands/mv.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.197435",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "tar": {
+      "file": "commands/tar.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.198031",
+      "examples_count": 5,
+      "has_template": true
+    },
+    "zip": {
+      "file": "commands/zip.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.198557",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "ps": {
+      "file": "commands/ps.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.199082",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "free": {
+      "file": "commands/free.json",
+      "category": "system",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.199629",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "df": {
+      "file": "commands/df.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.200193",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "uptime": {
+      "file": "commands/uptime.json",
+      "category": "system",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.200754",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "netstat": {
+      "file": "commands/netstat.json",
+      "category": "network",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.201309",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "lsof": {
+      "file": "commands/lsof.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.201876",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "sensors": {
+      "file": "commands/sensors.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.202392",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "docker": {
+      "file": "commands/docker.json",
+      "category": "container",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.202934",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "git": {
+      "file": "commands/git.json",
+      "category": "version_control",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.203460",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "cat": {
+      "file": "commands/cat.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.204054",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "traceroute": {
+      "file": "commands/traceroute.json",
+      "category": "general",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.204554",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "nmap": {
+      "file": "commands/nmap.json",
+      "category": "network",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.205266",
+      "examples_count": 4,
+      "has_template": true
+    },
+    "nslookup": {
+      "file": "commands/nslookup.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.205851",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "openssl": {
+      "file": "commands/openssl.json",
+      "category": "security",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.206592",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "pip": {
+      "file": "commands/pip.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.207140",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "python3": {
+      "file": "commands/python3.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.207671",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "make": {
+      "file": "commands/make.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.208196",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "pytest": {
+      "file": "commands/pytest.json",
+      "category": "development",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.208739",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "black": {
+      "file": "commands/black.json",
+      "category": "text",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.209293",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "eslint": {
+      "file": "commands/eslint.json",
+      "category": "general",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.209863",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "node": {
+      "file": "commands/node.json",
+      "category": "system",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.210413",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "npm": {
+      "file": "commands/npm.json",
+      "category": "general",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.210952",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "psql": {
+      "file": "commands/psql.json",
+      "category": "database",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.211682",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "mysql": {
+      "file": "commands/mysql.json",
+      "category": "database",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.212439",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "mongodump": {
+      "file": "commands/mongodump.json",
+      "category": "general",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.213177",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "chmod": {
+      "file": "commands/chmod.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.213912",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "ssh-keygen": {
+      "file": "commands/ssh-keygen.json",
+      "category": "security",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.214515",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "gpg": {
+      "file": "commands/gpg.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.215082",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "iptables": {
+      "file": "commands/iptables.json",
+      "category": "database",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.215605",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "sed": {
+      "file": "commands/sed.json",
+      "category": "system",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.216241",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "sort": {
+      "file": "commands/sort.json",
+      "category": "text",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.217002",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "ls": {
+      "file": "commands/ls.json",
+      "category": "text",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.217662",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "iconv": {
+      "file": "commands/iconv.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.218254",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "split": {
+      "file": "commands/split.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.218837",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "jq": {
+      "file": "commands/jq.json",
+      "category": "text",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.219414",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "rsync": {
+      "file": "commands/rsync.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.220000",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "mysqldump": {
+      "file": "commands/mysqldump.json",
+      "category": "database",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.220472",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "rm": {
+      "file": "commands/rm.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:53:25.221071",
+      "examples_count": 1,
+      "has_template": true
+    }
+  },
+  "categories": {
+    "shell": [
+      "kubectl"
+    ],
+    "file": [
+      "find",
+      "cp",
+      "mv",
+      "tar",
+      "zip",
+      "ps",
+      "df",
+      "lsof",
+      "sensors",
+      "kubectl",
+      "cat",
+      "nslookup",
+      "pip",
+      "python3",
+      "make",
+      "chmod",
+      "gpg",
+      "iconv",
+      "split",
+      "rsync",
+      "rm"
+    ],
+    "text": [
+      "grep",
+      "black",
+      "sort",
+      "ls",
+      "jq"
+    ],
+    "system": [
+      "free",
+      "uptime",
+      "node",
+      "sed"
+    ],
+    "network": [
+      "netstat",
+      "nmap"
+    ],
+    "container": [
+      "docker"
+    ],
+    "version_control": [
+      "git"
+    ],
+    "general": [
+      "traceroute",
+      "eslint",
+      "npm",
+      "mongodump"
+    ],
+    "security": [
+      "openssl",
+      "ssh-keygen"
+    ],
+    "development": [
+      "pytest"
+    ],
+    "database": [
+      "psql",
+      "mysql",
+      "iptables",
+      "mysqldump"
+    ]
+  },
+  "stats": {
+    "total_commands": 45,
+    "total_categories": 11
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "command": "lsof",
+  "description": "lsof 4.99.4",
+  "category": "file",
+  "parameters": [
+    {
+      "name": "Z",
+      "type": "boolean",
+      "description": "Option -Z",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "Option --file",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "description": "Option --verbose",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "ignore_case",
+      "type": "boolean",
+      "description": "Option --ignore-case",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "h",
+      "type": "boolean",
+      "description": "Option -h",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "c",
+      "type": "boolean",
+      "description": "Option -c",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "i",
+      "type": "boolean",
+      "description": "Option -i",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "o",
+      "type": "boolean",
+      "description": "Option -o",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "s",
+      "type": "boolean",
+      "description": "Option -s",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "n",
+      "type": "boolean",
+      "description": "Option -n",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "File to process",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "argument"
+    }
+  ],
+  "examples": [
+    "usage:       ]"
+  ],
+  "patterns": [
+    "lsof",
+    "lsof file",
+    "lsof directory"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:23.729985",
+    "help_available": true,
+    "common_options": [
+      "-Z",
+      "--file",
+      "--verbose",
+      "--ignore-case",
+      "-h",
+      "-c",
+      "-i",
+      "-o",
+      "-s",
+      "-n",
+      "-T",
+      "-r",
+      "-u",
+      "-x",
+      "-g",
+      "-V",
+      "-F",
+      "-d",
+      "-f",
+      "--help",
+      "-v",
+      "-R",
+      "-E",
+      "-O",
+      "-p",
+      "--output",
+      "--recursive"
+    ]
+  },
+  "template": "lsof {options} {file}",
+  "stored_at": "2026-01-23T15:53:25.201680",
+  "version": "1.0"
+}

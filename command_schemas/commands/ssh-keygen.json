@@ -1,0 +1,171 @@
+{
+  "command": "ssh-keygen",
+  "description": "SSH-KEYGEN(1)                General Commands Manual              SSH-KEYGEN(1)",
+  "category": "security",
+  "parameters": [
+    {
+      "name": "Z",
+      "type": "boolean",
+      "description": "Option -Z",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "Option --file",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "description": "Option --verbose",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "A",
+      "type": "boolean",
+      "description": "Option -A",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "Q",
+      "type": "boolean",
+      "description": "Option -Q",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "y",
+      "type": "boolean",
+      "description": "Option -y",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "H",
+      "type": "boolean",
+      "description": "Option -H",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "h",
+      "type": "boolean",
+      "description": "Option -h",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "c",
+      "type": "boolean",
+      "description": "Option -c",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "i",
+      "type": "boolean",
+      "description": "Option -i",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    }
+  ],
+  "examples": [
+    "ssh-keygen --help",
+    "man ssh-keygen"
+  ],
+  "patterns": [
+    "ssh-keygen"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:25.071936",
+    "help_available": true,
+    "common_options": [
+      "-Z",
+      "--file",
+      "--verbose",
+      "-A",
+      "-Q",
+      "-y",
+      "-H",
+      "-h",
+      "-c",
+      "-i",
+      "-t",
+      "-B",
+      "-n",
+      "-s",
+      "-k",
+      "-q",
+      "-w",
+      "-o",
+      "-r",
+      "-l",
+      "-u",
+      "-g",
+      "-F",
+      "-V",
+      "-Y",
+      "-a",
+      "-f",
+      "--help",
+      "-M",
+      "-v",
+      "-D",
+      "-e",
+      "-I",
+      "-N",
+      "-m",
+      "-L",
+      "-R",
+      "-C",
+      "-P",
+      "-E",
+      "-O",
+      "-p",
+      "-b",
+      "-U",
+      "-z",
+      "--output",
+      "-K"
+    ]
+  },
+  "template": "ssh-keygen {options}",
+  "stored_at": "2026-01-23T15:53:25.214299",
+  "version": "1.0"
+}

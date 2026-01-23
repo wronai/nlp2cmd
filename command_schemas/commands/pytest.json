@@ -1,0 +1,171 @@
+{
+  "command": "pytest",
+  "description": "usage: pytest [options] [file_or_dir] [file_or_dir] [...]",
+  "category": "development",
+  "parameters": [
+    {
+      "name": "file",
+      "type": "file",
+      "description": "Option --file",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "description": "Option --verbose",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "h",
+      "type": "boolean",
+      "description": "Option -h",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "c",
+      "type": "boolean",
+      "description": "Option -c",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "output",
+      "type": "file",
+      "description": "Option --output",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "o",
+      "type": "boolean",
+      "description": "Option -o",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "fixtures_per_test",
+      "type": "boolean",
+      "description": "Option --fixtures-per-test",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "q",
+      "type": "boolean",
+      "description": "Option -q",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "s",
+      "type": "boolean",
+      "description": "Option -s",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "k",
+      "type": "boolean",
+      "description": "Option -k",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    }
+  ],
+  "examples": [
+    "usage: pytest"
+  ],
+  "patterns": [
+    "pytest"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:24.708141",
+    "help_available": true,
+    "common_options": [
+      "--file",
+      "--verbose",
+      "-h",
+      "-c",
+      "--output",
+      "-o",
+      "--fixtures-per-test",
+      "-q",
+      "-s",
+      "-k",
+      "--no-header",
+      "-r",
+      "-l",
+      "--no-showlocals",
+      "--cache-clear",
+      "--strict-config",
+      "--trace",
+      "--disable-plugin-autoload",
+      "--continue-on-collection-errors",
+      "-x",
+      "--full-trace",
+      "--collect-in-virtualenv",
+      "--pdb",
+      "-V",
+      "--strict-markers",
+      "-f",
+      "--noconftest",
+      "-v",
+      "--pyargs",
+      "--help",
+      "--xfail-tb",
+      "--strict",
+      "-m",
+      "-W",
+      "--no-summary",
+      "--no-fold-skipped",
+      "--doctest-ignore-import-errors",
+      "--trace-config",
+      "-p",
+      "--doctest-continue-on-failure",
+      "--keep-duplicates",
+      "--setup-plan",
+      "--setup-show",
+      "--setup-only",
+      "--force-short-summary",
+      "--doctest-modules",
+      "--markers",
+      "--runxfail"
+    ]
+  },
+  "template": "pytest {options}",
+  "stored_at": "2026-01-23T15:53:25.208532",
+  "version": "1.0"
+}

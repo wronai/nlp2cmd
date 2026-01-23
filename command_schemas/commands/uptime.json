@@ -1,0 +1,100 @@
+{
+  "command": "uptime",
+  "description": "uptime [options]",
+  "category": "system",
+  "parameters": [
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "description": "Option --verbose",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "help",
+      "type": "boolean",
+      "description": "Option --help",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "v",
+      "type": "boolean",
+      "description": "Option -v",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "V",
+      "type": "boolean",
+      "description": "Option -V",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "p",
+      "type": "boolean",
+      "description": "Option -p",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "h",
+      "type": "boolean",
+      "description": "Option -h",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "s",
+      "type": "boolean",
+      "description": "Option -s",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    }
+  ],
+  "examples": [
+    ""
+  ],
+  "patterns": [
+    "uptime"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:25.164359",
+    "help_available": true,
+    "common_options": [
+      "--verbose",
+      "--help",
+      "-v",
+      "-V",
+      "-p",
+      "-h",
+      "-s"
+    ]
+  },
+  "template": "uptime {options}",
+  "stored_at": "2026-01-23T15:53:25.200576",
+  "version": "1.0"
+}

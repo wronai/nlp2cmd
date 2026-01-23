@@ -1,0 +1,150 @@
+{
+  "command": "rm",
+  "description": "Remove (unlink) the FILE(s).",
+  "category": "file",
+  "parameters": [
+    {
+      "name": "file",
+      "type": "file",
+      "description": "Option --file",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "o",
+      "type": "boolean",
+      "description": "Option -o",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "description": "Option --verbose",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "f",
+      "type": "boolean",
+      "description": "Option -f",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "r",
+      "type": "boolean",
+      "description": "Option -r",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "v",
+      "type": "boolean",
+      "description": "Option -v",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "help",
+      "type": "boolean",
+      "description": "Option --help",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "no_preserve_root",
+      "type": "boolean",
+      "description": "Option --no-preserve-root",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "I",
+      "type": "boolean",
+      "description": "Option -I",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "h",
+      "type": "boolean",
+      "description": "Option -h",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "File to process",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "argument"
+    }
+  ],
+  "examples": [
+    "rm ... ..."
+  ],
+  "patterns": [
+    "rm",
+    "rm file",
+    "rm directory"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:24.779499",
+    "help_available": true,
+    "common_options": [
+      "--file",
+      "-o",
+      "--verbose",
+      "-f",
+      "-r",
+      "-v",
+      "--help",
+      "--no-preserve-root",
+      "-I",
+      "-h",
+      "-i",
+      "--one-file-system",
+      "--output",
+      "--version",
+      "-d"
+    ]
+  },
+  "template": "rm {options} {file}",
+  "stored_at": "2026-01-23T15:53:25.220875",
+  "version": "1.0"
+}

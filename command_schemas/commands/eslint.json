@@ -1,0 +1,22 @@
+{
+  "command": "eslint",
+  "description": "eslint command",
+  "category": "general",
+  "parameters": [],
+  "examples": [
+    "eslint --help",
+    "man eslint"
+  ],
+  "patterns": [
+    "eslint"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:23.327436",
+    "help_available": false,
+    "common_options": []
+  },
+  "template": "eslint",
+  "stored_at": "2026-01-23T15:53:25.209708",
+  "version": "1.0"
+}

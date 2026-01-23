@@ -1,0 +1,145 @@
+{
+  "command": "free",
+  "description": "free [options]",
+  "category": "system",
+  "parameters": [
+    {
+      "name": "h",
+      "type": "boolean",
+      "description": "Option -h",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "c",
+      "type": "boolean",
+      "description": "Option -c",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "giga",
+      "type": "boolean",
+      "description": "Option --giga",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "t",
+      "type": "boolean",
+      "description": "Option -t",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "s",
+      "type": "boolean",
+      "description": "Option -s",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "k",
+      "type": "boolean",
+      "description": "Option -k",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "w",
+      "type": "boolean",
+      "description": "Option -w",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "kilo",
+      "type": "boolean",
+      "description": "Option --kilo",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "l",
+      "type": "boolean",
+      "description": "Option -l",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "mega",
+      "type": "boolean",
+      "description": "Option --mega",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    }
+  ],
+  "examples": [
+    ""
+  ],
+  "patterns": [
+    "free"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:23.378862",
+    "help_available": true,
+    "common_options": [
+      "-h",
+      "-c",
+      "--giga",
+      "-t",
+      "-s",
+      "-k",
+      "-w",
+      "--kilo",
+      "-l",
+      "--mega",
+      "-g",
+      "-V",
+      "--help",
+      "-v",
+      "--tera",
+      "--pebi",
+      "--peta",
+      "--tebi",
+      "-m",
+      "-L",
+      "-b",
+      "--si"
+    ]
+  },
+  "template": "free {options}",
+  "stored_at": "2026-01-23T15:53:25.199455",
+  "version": "1.0"
+}

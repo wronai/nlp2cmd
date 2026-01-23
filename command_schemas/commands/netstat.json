@@ -1,0 +1,151 @@
+{
+  "command": "netstat",
+  "description": "usage: netstat [-vWeenNcCF] [<Af>] -r         netstat {-V|--version|-h|--help}",
+  "category": "network",
+  "parameters": [
+    {
+      "name": "Z",
+      "type": "boolean",
+      "description": "Option -Z",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "numeric_ports",
+      "type": "integer",
+      "description": "Option --numeric-ports",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "ignore_case",
+      "type": "boolean",
+      "description": "Option --ignore-case",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "c",
+      "type": "boolean",
+      "description": "Option -c",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "i",
+      "type": "boolean",
+      "description": "Option -i",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "numeric_users",
+      "type": "boolean",
+      "description": "Option --numeric-users",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "port",
+      "type": "integer",
+      "description": "Option --port",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "t",
+      "type": "boolean",
+      "description": "Option -t",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "o",
+      "type": "boolean",
+      "description": "Option -o",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "n",
+      "type": "boolean",
+      "description": "Option -n",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    }
+  ],
+  "examples": [
+    "usage: netstat   -r         netstat {-V|--version|-h|--help}"
+  ],
+  "patterns": [
+    "netstat",
+    "netstat url",
+    "netstat host"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:23.892041",
+    "help_available": true,
+    "common_options": [
+      "-Z",
+      "--numeric-ports",
+      "--ignore-case",
+      "-c",
+      "-i",
+      "--numeric-users",
+      "--port",
+      "-t",
+      "-o",
+      "-n",
+      "-s",
+      "-r",
+      "-l",
+      "-F",
+      "-g",
+      "-a",
+      "-M",
+      "-v",
+      "-e",
+      "-N",
+      "--timeout",
+      "-W",
+      "-C",
+      "--numeric-hosts",
+      "-p",
+      "--recursive"
+    ]
+  },
+  "template": "netstat {options} {url}",
+  "stored_at": "2026-01-23T15:53:25.201132",
+  "version": "1.0"
+}

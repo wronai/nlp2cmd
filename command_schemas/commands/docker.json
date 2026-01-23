@@ -1,0 +1,149 @@
+{
+  "command": "docker",
+  "description": "A self-sufficient runtime for containers",
+  "category": "container",
+  "parameters": [
+    {
+      "name": "file",
+      "type": "file",
+      "description": "Option --file",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "description": "Option --verbose",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "ignore_case",
+      "type": "boolean",
+      "description": "Option --ignore-case",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "H",
+      "type": "boolean",
+      "description": "Option -H",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "h",
+      "type": "boolean",
+      "description": "Option -h",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "c",
+      "type": "boolean",
+      "description": "Option -c",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "i",
+      "type": "boolean",
+      "description": "Option -i",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "port",
+      "type": "integer",
+      "description": "Option --port",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "config",
+      "type": "boolean",
+      "description": "Option --config",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "t",
+      "type": "boolean",
+      "description": "Option -t",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    }
+  ],
+  "examples": [
+    "docker  COMMAND"
+  ],
+  "patterns": [
+    "docker"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:23.304615",
+    "help_available": true,
+    "common_options": [
+      "--file",
+      "--verbose",
+      "--ignore-case",
+      "-H",
+      "-h",
+      "-c",
+      "-i",
+      "--port",
+      "--config",
+      "-t",
+      "-o",
+      "-r",
+      "-l",
+      "--tlsverify",
+      "--tlskey",
+      "-f",
+      "--help",
+      "-v",
+      "-D",
+      "--tls",
+      "--tlscert",
+      "--timeout",
+      "-p",
+      "--output",
+      "--recursive",
+      "--tlscacert"
+    ]
+  },
+  "template": "docker {options}",
+  "stored_at": "2026-01-23T15:53:25.202759",
+  "version": "1.0"
+}

@@ -1,0 +1,153 @@
+{
+  "command": "split",
+  "description": "Create output files containing consecutive or interleaved sections of input",
+  "category": "file",
+  "parameters": [
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "description": "Option --verbose",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "Option --file",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "o",
+      "type": "boolean",
+      "description": "Option -o",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "C",
+      "type": "boolean",
+      "description": "Option -C",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "f",
+      "type": "boolean",
+      "description": "Option -f",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "V",
+      "type": "boolean",
+      "description": "Option -V",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "l",
+      "type": "boolean",
+      "description": "Option -l",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "e",
+      "type": "boolean",
+      "description": "Option -e",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "additional_suffix",
+      "type": "boolean",
+      "description": "Option --additional-suffix",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "b",
+      "type": "boolean",
+      "description": "Option -b",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "File to process",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "argument"
+    }
+  ],
+  "examples": [
+    "split ... ]"
+  ],
+  "patterns": [
+    "split",
+    "split file",
+    "split directory"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:24.941775",
+    "help_available": true,
+    "common_options": [
+      "--verbose",
+      "--file",
+      "-o",
+      "-C",
+      "-f",
+      "-V",
+      "-l",
+      "-e",
+      "--additional-suffix",
+      "-b",
+      "-h",
+      "--filter",
+      "-x",
+      "--output",
+      "-t",
+      "-n",
+      "-a",
+      "-d"
+    ]
+  },
+  "template": "split {options} {file}",
+  "stored_at": "2026-01-23T15:53:25.218623",
+  "version": "1.0"
+}

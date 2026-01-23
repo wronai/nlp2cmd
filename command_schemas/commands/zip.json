@@ -1,0 +1,150 @@
+{
+  "command": "zip",
+  "description": "Copyright (c) 1990-2008 Info-ZIP - Type 'zip \"-L\"' for software license.",
+  "category": "file",
+  "parameters": [
+    {
+      "name": "file",
+      "type": "file",
+      "description": "Option --file",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "f",
+      "type": "boolean",
+      "description": "Option -f",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "r",
+      "type": "boolean",
+      "description": "Option -r",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "A",
+      "type": "boolean",
+      "description": "Option -A",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "y",
+      "type": "boolean",
+      "description": "Option -y",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "e",
+      "type": "boolean",
+      "description": "Option -e",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "h",
+      "type": "boolean",
+      "description": "Option -h",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "c",
+      "type": "boolean",
+      "description": "Option -c",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "x",
+      "type": "boolean",
+      "description": "Option -x",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "output",
+      "type": "file",
+      "description": "Option --output",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "option"
+    },
+    {
+      "name": "file",
+      "type": "file",
+      "description": "File to process",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "argument"
+    }
+  ],
+  "examples": [
+    ""
+  ],
+  "patterns": [
+    "zip",
+    "zip file",
+    "zip directory"
+  ],
+  "source_type": "intelligent_extraction",
+  "metadata": {
+    "generated_at": "2026-01-23T15:53:25.194777",
+    "help_available": true,
+    "common_options": [
+      "--file",
+      "-f",
+      "-r",
+      "-A",
+      "-y",
+      "-e",
+      "-h",
+      "-c",
+      "-x",
+      "--output",
+      "-F",
+      "-o",
+      "-T",
+      "-q",
+      "-d"
+    ]
+  },
+  "template": "zip {options} {file}",
+  "stored_at": "2026-01-23T15:53:25.198378",
+  "version": "1.0"
+}
