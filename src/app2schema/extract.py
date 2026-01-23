@@ -306,6 +306,10 @@ def _extract_web_dom_schema(
         if p.exists() and p.is_file():
             html = p.read_text(encoding="utf-8", errors="replace")
             source = str(p)
+            try:
+                base_url = p.resolve().as_uri()
+            except Exception:
+                base_url = None
         else:
             html = target
             source = "inline_html"
@@ -902,60 +906,5 @@ def extract_appspec_to_file(
 
     if validate:
         validate_appspec(payload)
-    out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    return out_path
-
-
-def extract_schema_to_file(
-    target: Union[str, Path],
-    out_path: Union[str, Path],
-    *,
-    source_type: SourceType = "auto",
-    discover_openapi: bool = True,
-    raw: bool = False,
-    validate: bool = True,
-    merge: bool = False,
-) -> Path:
-    result = extract_schema(
-        target,
-        source_type=source_type,
-        discover_openapi=discover_openapi,
-    )
-
-    out_path = Path(out_path)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-
-    payload = result.to_export_dict(raw=raw)
-
-    if merge and out_path.exists() and not raw:
-        try:
-            existing = json.loads(out_path.read_text(encoding="utf-8"))
-        except Exception:
-            existing = None
-
-        if isinstance(existing, dict) and existing.get("format") == "nlp2cmd.dynamic_schema_export":
-            existing_sources = existing.get("sources") if isinstance(existing.get("sources"), dict) else {}
-            new_sources = payload.get("sources") if isinstance(payload.get("sources"), dict) else {}
-            merged_sources = {**existing_sources, **new_sources}
-
-            existing_meta = existing.get("metadata") if isinstance(existing.get("metadata"), dict) else {}
-            new_meta = payload.get("metadata") if isinstance(payload.get("metadata"), dict) else {}
-            merged_meta = {**existing_meta, **new_meta, "merged": True}
-
-            detected_type = str(existing.get("detected_type") or payload.get("detected_type") or "mixed")
-            if str(payload.get("detected_type") or "") and detected_type != str(payload.get("detected_type")):
-                detected_type = "mixed"
-
-            payload = {
-                "format": "nlp2cmd.dynamic_schema_export",
-                "version": int(existing.get("version") or payload.get("version") or 1),
-                "detected_type": detected_type,
-                "sources": merged_sources,
-                "metadata": merged_meta,
-            }
-
-    if validate and not raw:
-        validate_app2schema_export(payload)
-
     out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return out_path

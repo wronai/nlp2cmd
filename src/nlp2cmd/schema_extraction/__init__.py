@@ -320,6 +320,7 @@ class ShellHelpExtractor:
             'tar': 'tar -czf {archive}.tar.gz {source}',
             'git': 'git {subcommand} {options}',
             'docker': 'docker {subcommand} {options}',
+            'kubectl': 'kubectl {subcommand} {options}',
             'ls': 'ls -{flags} {path}',
             'mkdir': 'mkdir {path}',
             'rm': 'rm -{flags} {path}',

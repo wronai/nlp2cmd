@@ -6,8 +6,12 @@ Demonstrates natural language to kubectl command transformation
 and manifest generation with safety policies.
 """
 
+from pathlib import Path
+
+from app2schema import extract_schema_to_file
 from nlp2cmd import NLP2CMD
-from nlp2cmd.adapters import KubernetesAdapter, KubernetesSafetyPolicy
+from nlp2cmd.adapters.dynamic import DynamicAdapter
+from nlp2cmd.adapters.kubernetes import KubernetesSafetyPolicy
 
 
 def main():
@@ -22,15 +26,15 @@ def main():
         require_resource_limits=True,
     )
 
-    # Create adapter
-    adapter = KubernetesAdapter(
-        cluster_context={
-            "context": "minikube",
-            "namespace": "default",
-        },
+    # app2schema -> build dynamic schema export for kubectl CLI
+    export_path = Path("./generated_kubectl_dynamic_schema.json")
+    extract_schema_to_file("kubectl", export_path, source_type="shell", merge=True)
+
+    adapter = DynamicAdapter(
+        config={"custom_options": {"load_common_commands": False}},
         safety_policy=safety_policy,
     )
-
+    adapter.register_schema_source(str(export_path), source_type="auto")
     nlp = NLP2CMD(adapter=adapter)
 
     # Example commands
@@ -64,60 +68,6 @@ def main():
             print(f"\n⚠️ Warnings:")
             for warning in result.warnings:
                 print(f"   - {warning}")
-
-    # Manifest generation
-    print("\n" + "=" * 60)
-    print("Manifest Generation")
-    print("=" * 60)
-
-    # Generate Deployment
-    deployment_spec = {
-        "kind": "Deployment",
-        "name": "web",
-        "namespace": "default",
-        "image": "nginx:alpine",
-        "replicas": 3,
-        "port": 80,
-        "labels": {"app": "web", "tier": "frontend"},
-        "resources": {
-            "requests": {"memory": "128Mi", "cpu": "100m"},
-            "limits": {"memory": "256Mi", "cpu": "200m"},
-        },
-    }
-
-    print("\nDeployment Manifest:")
-    print("-" * 40)
-    print(adapter.generate_manifest(deployment_spec))
-
-    # Generate Service
-    service_spec = {
-        "kind": "Service",
-        "name": "web",
-        "namespace": "default",
-        "port": 80,
-        "target_port": 80,
-        "type": "ClusterIP",
-        "selector": {"app": "web"},
-    }
-
-    print("\nService Manifest:")
-    print("-" * 40)
-    print(adapter.generate_manifest(service_spec))
-
-    # Generate Ingress
-    ingress_spec = {
-        "kind": "Ingress",
-        "name": "web-ingress",
-        "namespace": "default",
-        "host": "web.example.com",
-        "service_name": "web",
-        "service_port": 80,
-        "tls": True,
-    }
-
-    print("\nIngress Manifest:")
-    print("-" * 40)
-    print(adapter.generate_manifest(ingress_spec))
 
     # Safety policy demo
     print("\n" + "=" * 60)

@@ -1,0 +1,121 @@
+prompt,cmd,version
+Find all Python files in current directory,"find . -name ""*.py"" -type f",4.10.0
+Search for TODO comments in JavaScript files,"grep -r ""TODO"" . --include=""*.py"" --include=""*.js""",3.11
+List all files larger than 100MB,# Command for: List all files larger than 100MB,N/A
+Find files modified in the last 7 days,find . -mtime -7 -type f,4.10.0
+Count lines of code in all Python files,"find . -name ""*.py"" -exec wc -l {} + | tail -1",4.10.0
+Remove all temporary files,"find . -name ""*.tmp"" -delete",4.10.0
+Copy all .log files to backup directory,cp -r <source> <backup_dir>,9.5
+Move old files to archive folder,mv <source> <destination>,9.5
+Compress the logs directory into a tar.gz,tar -czf <archive>.tar.gz <directory>,1.35
+Extract zip archive to current directory,zip -r <archive>.zip <directory>,3.0
+Show all running processes,ps aux,4.0.4
+Display system memory usage,free -h,4.0.4
+Check disk space usage,df -h,9.5
+Show system uptime,uptime,4.0.4
+List all open network connections,netstat -tuln,2.10
+Monitor CPU usage in real time,cp -r <source> <destination>,9.5
+Check which process is using port 8080,lsof -i :<port>,N/A
+Show system load average,uptime,4.0.4
+Display temperature sensors,sensors,3.6.2
+List all mounted filesystems,df -h,9.5
+List all running containers,# Command for: List all running containers,N/A
+Show all Docker images,docker images,29.1.5
+Run nginx container on port 80,# Command for: Run nginx container on port 80,N/A
+Stop all running containers,# Command for: Stop all running containers,N/A
+Remove all unused Docker images,"docker rmi $(docker images -f ""dangling=true"" -q)",29.1.5
+Build Docker image from Dockerfile,docker build -t <image_name> .,29.1.5
+Execute command in running container,# Command for: Execute command in running container,N/A
+Show container logs,# Command for: Show container logs,N/A
+Create Docker network,docker network create <network_name>,29.1.5
+List Docker volumes,docker volume ls,29.1.5
+List all pods in all namespaces,df -h,9.5
+Show services in default namespace,df -h,9.5
+Deploy application to Kubernetes,kubectl apply -f <yaml_file>,N/A
+Check pod status and logs,# Command for: Check pod status and logs,N/A
+Scale deployment to 3 replicas,# Command for: Scale deployment to 3 replicas,N/A
+Delete all pods in namespace,# Command for: Delete all pods in namespace,N/A
+Get cluster information,# Command for: Get cluster information,N/A
+Apply YAML configuration,# Command for: Apply YAML configuration,N/A
+Port-forward to local pod,# Command for: Port-forward to local pod,N/A
+List all deployments,# Command for: List all deployments,N/A
+Check git repository status,git status,2.51.0
+Show commit history,# Command for: Show commit history,N/A
+Create new branch,# Command for: Create new branch,N/A
+Switch to different branch,# Command for: Switch to different branch,N/A
+Merge feature branch to main,cat <file1> <file2> > <merged>,0.2.2
+Push changes to remote repository,# Command for: Push changes to remote repository,N/A
+Pull latest changes from origin,# Command for: Pull latest changes from origin,N/A
+Show file changes in commit,# Command for: Show file changes in commit,N/A
+Create git tag for release,git tag <tag_name>,2.51.0
+Clone repository from GitHub,git clone <repository_url>,2.51.0
+Test connection to google.com,netstat -tuln,2.10
+Download file from URL,uptime,4.0.4
+Check HTTP headers of website,# Command for: Check HTTP headers of website,N/A
+Trace route to server,traceroute <host>,N/A
+Scan ports on remote host,nmap -sS <host>,7.95
+Check DNS resolution,nslookup <domain>,N/A
+Show network interface configuration,netstat -tuln,2.10
+Download entire website,uptime,4.0.4
+Test API endpoint,# Command for: Test API endpoint,N/A
+Check SSL certificate expiry,openssl s_client -connect <host>:443,3.5.3
+Install Python package with pip,pip install <package>,25.1.1
+Run Python script with arguments,python3 <script>.py,3.13.7
+Compile C program with gcc,free -h,4.0.4
+Build project with make,make,4.4.1
+Run tests with pytest,pytest <test_file>,9.0.2
+Format code with black,black <file>.py,25.1.0
+Lint JavaScript files,eslint <file>.js,N/A
+Run Node.js application,node <script>.js,20.19.4
+Install npm dependencies,npm install <package>,N/A
+Check TypeScript types,# Command for: Check TypeScript types,N/A
+Connect to PostgreSQL database,psql -U <user> -d <database>,N/A
+Run SQL query on MySQL,"mysql -u <user> -p -e ""<query>"" <database>",N/A
+Backup MongoDB database,mongodump --db <database>,N/A
+Restore database from backup,# Command for: Restore database from backup,N/A
+Create new database user,# Command for: Create new database user,N/A
+Show all tables in database,# Command for: Show all tables in database,N/A
+Export table to CSV,# Command for: Export table to CSV,N/A
+Import data from CSV,# Command for: Import data from CSV,N/A
+Check database size,# Command for: Check database size,N/A
+Optimize database tables,# Command for: Optimize database tables,N/A
+List S3 buckets,# Command for: List S3 buckets,N/A
+Upload file to S3 bucket,uptime,4.0.4
+Download file from S3,uptime,4.0.4
+List EC2 instances,# Command for: List EC2 instances,N/A
+Create AWS Lambda function,# Command for: Create AWS Lambda function,N/A
+Deploy to AWS Elastic Beanstalk,# Command for: Deploy to AWS Elastic Beanstalk,N/A
+Check CloudWatch logs,# Command for: Check CloudWatch logs,N/A
+Update Route53 record,# Command for: Update Route53 record,N/A
+Create IAM user,# Command for: Create IAM user,N/A
+List AWS resources,# Command for: List AWS resources,N/A
+Check file permissions,chmod <permissions> <file>,9.5
+Change file owner to user,# Command for: Change file owner to user,N/A
+Generate SSH key pair,ssh-keygen -t rsa -b 4096,N/A
+Check SSL certificate details,openssl s_client -connect <host>:443,3.5.3
+Scan files for viruses,nmap -sS <host>,7.95
+Encrypt file with GPG,gpg -c <file>,2.4.8
+Check password hash,# Command for: Check password hash,N/A
+Audit system security,# Command for: Audit system security,N/A
+Block IP address with iptables,iptables -A INPUT -s <ip> -j DROP,1.8.11
+Check login history,# Command for: Check login history,N/A
+Replace text in multiple files,"sed -i ""s/<old>/<new>/g"" <file>",4.9
+Extract URLs from text file,# Command for: Extract URLs from text file,N/A
+Sort lines in file alphabetically,sort <file>,0.2.2
+Remove duplicate lines,# Command for: Remove duplicate lines,N/A
+Count words in file,ls -1 | wc -l,0.2.2
+Convert file encoding,iconv -f <from_encoding> -t <to_encoding> <file>,2.42
+Split large file into chunks,split -l <lines> <file>,0.2.2
+Merge multiple text files,cat <file1> <file2> > <merged>,0.2.2
+Extract columns from CSV,# Command for: Extract columns from CSV,N/A
+Format JSON file,jq . <file>,1.8.1
+Create full system backup,"rsync -av --exclude={""/dev"",""/proc"",""/sys"",""/tmp""} / /backup/",3.4.1
+Backup MySQL database,mysqldump -u <user> -p <database> > backup.sql,N/A
+Restore from backup archive,# Command for: Restore from backup archive,N/A
+Schedule automatic backup,# Command for: Schedule automatic backup,N/A
+Check backup integrity,# Command for: Check backup integrity,N/A
+Compress old backups,# Command for: Compress old backups,N/A
+Sync directories with rsync,rsync -av <source>/ <destination>/,3.4.1
+Create incremental backup,# Command for: Create incremental backup,N/A
+Verify backup files,# Command for: Verify backup files,N/A
+Recover deleted files,rm <file>,9.5

@@ -1,0 +1,120 @@
+Find all Python files in current directory
+Search for TODO comments in JavaScript files
+List all files larger than 100MB
+Find files modified in the last 7 days
+Count lines of code in all Python files
+Remove all temporary files
+Copy all .log files to backup directory
+Move old files to archive folder
+Compress the logs directory into a tar.gz
+Extract zip archive to current directory
+Show all running processes
+Display system memory usage
+Check disk space usage
+Show system uptime
+List all open network connections
+Monitor CPU usage in real time
+Check which process is using port 8080
+Show system load average
+Display temperature sensors
+List all mounted filesystems
+List all running containers
+Show all Docker images
+Run nginx container on port 80
+Stop all running containers
+Remove all unused Docker images
+Build Docker image from Dockerfile
+Execute command in running container
+Show container logs
+Create Docker network
+List Docker volumes
+List all pods in all namespaces
+Show services in default namespace
+Deploy application to Kubernetes
+Check pod status and logs
+Scale deployment to 3 replicas
+Delete all pods in namespace
+Get cluster information
+Apply YAML configuration
+Port-forward to local pod
+List all deployments
+Check git repository status
+Show commit history
+Create new branch
+Switch to different branch
+Merge feature branch to main
+Push changes to remote repository
+Pull latest changes from origin
+Show file changes in commit
+Create git tag for release
+Clone repository from GitHub
+Test connection to google.com
+Download file from URL
+Check HTTP headers of website
+Trace route to server
+Scan ports on remote host
+Check DNS resolution
+Show network interface configuration
+Download entire website
+Test API endpoint
+Check SSL certificate expiry
+Install Python package with pip
+Run Python script with arguments
+Compile C program with gcc
+Build project with make
+Run tests with pytest
+Format code with black
+Lint JavaScript files
+Run Node.js application
+Install npm dependencies
+Check TypeScript types
+Connect to PostgreSQL database
+Run SQL query on MySQL
+Backup MongoDB database
+Restore database from backup
+Create new database user
+Show all tables in database
+Export table to CSV
+Import data from CSV
+Check database size
+Optimize database tables
+List S3 buckets
+Upload file to S3 bucket
+Download file from S3
+List EC2 instances
+Create AWS Lambda function
+Deploy to AWS Elastic Beanstalk
+Check CloudWatch logs
+Update Route53 record
+Create IAM user
+List AWS resources
+Check file permissions
+Change file owner to user
+Generate SSH key pair
+Check SSL certificate details
+Scan files for viruses
+Encrypt file with GPG
+Check password hash
+Audit system security
+Block IP address with iptables
+Check login history
+Replace text in multiple files
+Extract URLs from text file
+Sort lines in file alphabetically
+Remove duplicate lines
+Count words in file
+Convert file encoding
+Split large file into chunks
+Merge multiple text files
+Extract columns from CSV
+Format JSON file
+Create full system backup
+Backup MySQL database
+Restore from backup archive
+Schedule automatic backup
+Check backup integrity
+Compress old backups
+Sync directories with rsync
+Create incremental backup
+Verify backup files
+Recover deleted files
