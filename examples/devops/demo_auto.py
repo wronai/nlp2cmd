@@ -5,6 +5,7 @@ Demo with automatic deployment and testing.
 
 import asyncio
 import sys
+import argparse
 from pathlib import Path
 
 # Add the project root to Python path
@@ -13,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 from nlp2cmd_web_controller import NLP2CMDWebController
 
 
-async def run_demo_with_test():
+async def run_demo_with_test(interactive=False):
     """Run demo with automatic deployment and testing."""
     print("╔══════════════════════════════════════════════════════════════════════╗")
     print("║                                                                      ║")
@@ -24,7 +25,8 @@ async def run_demo_with_test():
     print("╚══════════════════════════════════════════════════════════════════════╝")
     
     print("\n" + "=" * 70)
-    print("🤖 NLP2CMD - Automatyczny Deployment i Testowanie")
+    mode = "Interaktywny" if interactive else "Automatyczny"
+    print(f"🤖 NLP2CMD - Tryb {mode}")
     print("=" * 70)
     
     # Clean up any existing files
@@ -95,8 +97,14 @@ async def run_demo_with_test():
         for file_info in files_info['files']:
             print(f"   📄 {file_info['name']} ({file_info['size']} bytes)")
     
-    # Interactive mode
-    await interactive_mode(controller)
+    # Interactive mode (only if requested)
+    if interactive:
+        await interactive_mode(controller)
+    else:
+        # Auto-stop services in non-interactive mode
+        if controller.docker_manager:
+            print("\n🛑 Automatyczne zatrzymywanie kontenerów...")
+            await controller.stop_containers()
     
     # Final cleanup
     print("\n🧹 Final cleanup...")
@@ -338,4 +346,9 @@ async def interactive_mode(controller):
 
 
 if __name__ == "__main__":
-    asyncio.run(run_demo_with_test())
+    parser = argparse.ArgumentParser(description="NLP2CMD Auto Demo & Test")
+    parser.add_argument("--interactive", "-i", action="store_true", 
+                       help="Run in interactive mode")
+    args = parser.parse_args()
+    
+    asyncio.run(run_demo_with_test(interactive=args.interactive))

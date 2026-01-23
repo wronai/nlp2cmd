@@ -1,0 +1,7 @@
+Uruchom serwis czatu na porcie 8080
+Skonfiguruj email dla jan@gmail.com
+Stwórz formularz kontaktowy
+Pokaż status usług
+Skaluj czat do 3 replik
+Uruchom Redis dla cache
+Deploy bazy PostgreSQL

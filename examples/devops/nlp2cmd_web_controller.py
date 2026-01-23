@@ -246,21 +246,37 @@ class DockerManager:
             
             if result.returncode == 0:
                 lines = result.stdout.strip().split('\n')
-                # Skip header line
+                # Skip header line (first line with column names)
                 container_lines = [line.strip() for line in lines[1:] if line.strip()]
                 
                 containers = []
                 for line in container_lines:
                     parts = line.split()
-                    if len(parts) >= 3:
+                    if len(parts) >= 6:
                         container_name = parts[0]
-                        status = parts[1] if len(parts) > 1 else "unknown"
-                        ports = parts[2] if len(parts) > 2 else ""
+                        image = parts[1]
+                        
+                        # Find status column (contains "Up" or other status)
+                        status = "unknown"
+                        ports = ""
+                        
+                        # Status is typically around column 5-6, look for "Up"
+                        for i, part in enumerate(parts):
+                            if part == "Up" and i > 0:
+                                # Status spans from this position to before ports
+                                status = " ".join(parts[i:i+3])  # Up + time info
+                                # Find ports (usually after status)
+                                if i + 3 < len(parts):
+                                    remaining = " ".join(parts[i+3:])
+                                    if "->" in remaining:
+                                        ports = remaining
+                                break
                         
                         containers.append({
                             "name": container_name,
                             "status": status,
-                            "ports": ports
+                            "ports": ports,
+                            "image": image
                         })
                 
                 return {
