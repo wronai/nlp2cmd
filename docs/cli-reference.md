@@ -227,6 +227,8 @@ nlp2cmd --query "monitor disk space and alert if below 10%"
 ```bash
 $ nlp2cmd --query "show users"
 SELECT * FROM users;
+
+📊 ⏱️  Time: 13.7ms | 💻 CPU: 0.0% | 🧠 RAM: 54.8MB (0.1%) | ⚡ Energy: 0.120mJ
 ```
 
 ### Explained Output
@@ -240,6 +242,8 @@ Confidence: 0.95
 Latency: 2.1ms
 
 SELECT * FROM users;
+
+📊 ⏱️  Time: 15.2ms | 💻 CPU: 0.0% | 🧠 RAM: 55.0MB (0.1%) | ⚡ Energy: 0.133mJ
 ```
 
 ### Interactive Output
@@ -251,7 +255,48 @@ SELECT * FROM users;
 ╭──────────────────────────────────────────────────────────────────────────────╮
 │ docker ps -a                                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+
+📊 ⏱️  Time: 2.2ms | 💻 CPU: 0.0% | 🧠 RAM: 55.2MB (0.1%) | ⚡ Energy: 0.019mJ
 ```
+
+## Resource Metrics
+
+Every command execution now displays comprehensive resource metrics:
+
+### Metrics Displayed
+
+| Metric | Description | Format |
+|--------|-------------|--------|
+| **Time** | Execution time in milliseconds | `⏱️ Time: 13.7ms` |
+| **CPU** | CPU usage percentage during execution | `💻 CPU: 0.0%` |
+| **RAM** | Memory usage in MB and percentage | `🧠 RAM: 54.8MB (0.1%)` |
+| **Energy** | Estimated energy consumption | `⚡ Energy: 0.120mJ` |
+
+### Energy Units
+
+- **mJ** (millijoules) for small consumption < 1J
+- **J** (joules) for larger consumption ≥ 1J
+
+### Example Outputs
+
+```bash
+# Fast DSL generation
+$ nlp2cmd --dsl sql --query "show users"
+SELECT * FROM users;
+📊 ⏱️  Time: 2.2ms | 💻 CPU: 0.0% | 🧠 RAM: 55.2MB (0.1%) | ⚡ Energy: 0.019mJ
+
+# Thermodynamic optimization
+$ nlp2cmd --query "optimize resource allocation"
+[Optimization solution...]
+📊 ⏱️  Time: 1125.7ms | 💻 CPU: 0.0% | 🧠 RAM: 59.3MB (0.1%) | ⚡ Energy: 0.011J
+```
+
+### Performance Characteristics
+
+- **DSL Generation**: Typically 2-20ms, low energy consumption
+- **Thermodynamic Optimization**: 100-2000ms, higher energy usage
+- **Memory**: Baseline ~55MB + small increases for complex operations
+- **CPU**: Usually minimal on modern systems
 
 ## Error Handling
 

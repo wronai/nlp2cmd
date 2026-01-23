@@ -97,6 +97,24 @@ $ nlp2cmd analyze-env
 └────────────────┴─────────┴────────┘
 ```
 
+## 📊 Resource Metrics
+
+Every command now shows resource consumption:
+
+### Metrics Displayed
+- **⏱️ Time**: Execution time in milliseconds
+- **💻 CPU**: CPU usage percentage during execution  
+- **🧠 RAM**: Memory usage in MB and percentage
+- **⚡ Energy**: Estimated energy consumption (mJ or J)
+
+### Example with Metrics
+```bash
+$ nlp2cmd --dsl docker --query "Pokaż wszystkie kontenery"
+docker ps -a
+
+📊 ⏱️  Time: 2.2ms | 💻 CPU: 0.0% | 🧠 RAM: 55.2MB (0.1%) | ⚡ Energy: 0.019mJ
+```
+
 ## Python API (Unchanged)
 ```python
 from nlp2cmd.generation import HybridThermodynamicGenerator

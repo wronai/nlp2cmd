@@ -9,6 +9,7 @@ jsonschema>=4.0
 python-dotenv>=1.0
 watchdog>=3.0
 numpy>=1.24.0
+psutil>=5.9.0
 
 # Optional dependencies
 # NLP support

@@ -145,11 +145,17 @@ nlp2cmd repair docker-compose.yml --backup
 $ nlp2cmd --query "Pokaż użytkowników"
 SELECT * FROM unknown_table;
 
+📊 ⏱️  Time: 13.7ms | 💻 CPU: 0.0% | 🧠 RAM: 54.8MB (0.1%) | ⚡ Energy: 0.120mJ
+
 $ nlp2cmd --dsl docker --query "Pokaż wszystkie kontenery"
 docker ps -a
 
+📊 ⏱️  Time: 2.2ms | 💻 CPU: 0.0% | 🧠 RAM: 55.2MB (0.1%) | ⚡ Energy: 0.019mJ
+
 $ nlp2cmd --dsl shell --query "Znajdź pliki .log większe niż 10MB"
 find . -type f -name "*.log" -size +10MB -exec ls -lh {} \;
+
+📊 ⏱️  Time: 3.1ms | 💻 CPU: 0.0% | 🧠 RAM: 55.1MB (0.1%) | ⚡ Energy: 0.028mJ
 
 $ nlp2cmd analyze-env
 ╭────── Environment Report ──────╮

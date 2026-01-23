@@ -30,6 +30,7 @@ from nlp2cmd.environment import EnvironmentAnalyzer
 from nlp2cmd.feedback import FeedbackAnalyzer, FeedbackResult, FeedbackType
 from nlp2cmd.schemas import SchemaRegistry
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
+from nlp2cmd.monitoring import measure_resources, format_last_metrics
 
 
 console = Console()
@@ -148,8 +149,9 @@ class InteractiveSession:
         adapter = get_adapter(self.dsl, self.context["environment"])
         nlp2cmd = NLP2CMD(adapter=adapter)
 
-        # Transform
-        result = nlp2cmd.transform(user_input, context=self.context)
+        # Transform with monitoring
+        with measure_resources():
+            result = nlp2cmd.transform(user_input, context=self.context)
 
         # Analyze feedback
         feedback = self.feedback_analyzer.analyze(
@@ -221,6 +223,11 @@ class InteractiveSession:
             console.print("\n[magenta]❓ Clarification needed:[/magenta]")
             for i, question in enumerate(feedback.clarification_questions, 1):
                 console.print(f"   {i}. {question}")
+        
+        # Always show resource metrics
+        metrics_str = format_last_metrics()
+        if metrics_str:
+            console.print(f"\n📊 {metrics_str}")
 
     def run(self):
         """Run interactive REPL."""
@@ -398,34 +405,40 @@ def main(
     if ctx.invoked_subcommand is None:
         if query:
             if dsl == "auto":
-                result = asyncio.run(HybridThermodynamicGenerator().generate(query, context={}))
-                if result["source"] == "thermodynamic":
-                    tr = result["result"]
-                    console.print(tr.decoded_output or "")
-                    if explain:
-                        if tr.solution_quality:
-                            console.print(f"\n✅ Feasible: {tr.solution_quality.is_feasible}")
-                            if tr.solution_quality.constraint_violations:
-                                console.print("\nViolations:")
-                                for v in tr.solution_quality.constraint_violations:
-                                    console.print(f"  - {v}")
-                            console.print(f"\nExplanation: {tr.solution_quality.explanation}")
-                            console.print(f"Optimality gap (heuristic): {tr.solution_quality.optimality_gap:.2f}")
-                        console.print(f"\nEnergy: {tr.energy:.4f}")
-                        console.print(f"Entropy production: {tr.entropy_production:.4f}")
-                        if tr.sampler_steps is not None:
-                            console.print(f"Sampler steps: {tr.sampler_steps}")
-                        console.print(f"Samples: {tr.n_samples}")
-                        console.print(f"Converged: {tr.converged}")
-                        console.print(f"Latency: {tr.latency_ms:.1f}ms")
-                else:
-                    hr = result["result"]
-                    console.print(hr.command)
-                    if explain:
-                        console.print(f"\nSource: {hr.source}")
-                        console.print(f"Domain: {hr.domain}")
-                        console.print(f"Confidence: {hr.confidence:.2f}")
-                        console.print(f"Latency: {hr.latency_ms:.1f}ms")
+                with measure_resources():
+                    result = asyncio.run(HybridThermodynamicGenerator().generate(query, context={}))
+                    if result["source"] == "thermodynamic":
+                        tr = result["result"]
+                        console.print(tr.decoded_output or "")
+                        if explain:
+                            if tr.solution_quality:
+                                console.print(f"\n✅ Feasible: {tr.solution_quality.is_feasible}")
+                                if tr.solution_quality.constraint_violations:
+                                    console.print("\nViolations:")
+                                    for v in tr.solution_quality.constraint_violations:
+                                        console.print(f"  - {v}")
+                                console.print(f"\nExplanation: {tr.solution_quality.explanation}")
+                                console.print(f"Optimality gap (heuristic): {tr.solution_quality.optimality_gap:.2f}")
+                            console.print(f"\nEnergy: {tr.energy:.4f}")
+                            console.print(f"Entropy production: {tr.entropy_production:.4f}")
+                            if tr.sampler_steps is not None:
+                                console.print(f"Sampler steps: {tr.sampler_steps}")
+                            console.print(f"Samples: {tr.n_samples}")
+                            console.print(f"Converged: {tr.converged}")
+                            console.print(f"Latency: {tr.latency_ms:.1f}ms")
+                    else:
+                        hr = result["result"]
+                        console.print(hr.command)
+                        if explain:
+                            console.print(f"\nSource: {hr.source}")
+                            console.print(f"Domain: {hr.domain}")
+                            console.print(f"Confidence: {hr.confidence:.2f}")
+                            console.print(f"Latency: {hr.latency_ms:.1f}ms")
+                
+                # Show resource metrics for auto mode
+                metrics_str = format_last_metrics()
+                if metrics_str:
+                    console.print(f"\n📊 {metrics_str}")
             else:
                 session = InteractiveSession(dsl=dsl, auto_repair=auto_repair)
                 feedback = session.process(query)
