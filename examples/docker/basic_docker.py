@@ -8,9 +8,9 @@ with safety policies and compose file generation.
 
 from pathlib import Path
 
-from app2schema import extract_schema_to_file
+from app2schema import extract_appspec_to_file
 from nlp2cmd import NLP2CMD
-from nlp2cmd.adapters.dynamic import DynamicAdapter
+from nlp2cmd.adapters import AppSpecAdapter
 from nlp2cmd.adapters.docker import DockerSafetyPolicy
 
 
@@ -26,15 +26,11 @@ def main():
         max_cpus=2.0,
     )
 
-    # app2schema -> build dynamic schema export for docker CLI
-    export_path = Path("./generated_docker_dynamic_schema.json")
-    extract_schema_to_file("docker", export_path, source_type="shell", merge=True)
+    # app2schema -> build appspec for docker CLI
+    appspec_path = Path("./generated_docker_appspec.json")
+    extract_appspec_to_file("docker", appspec_path, source_type="shell", merge=True)
 
-    adapter = DynamicAdapter(
-        config={"custom_options": {"load_common_commands": False}},
-        safety_policy=safety_policy,
-    )
-    adapter.register_schema_source(str(export_path), source_type="auto")
+    adapter = AppSpecAdapter(appspec_path=appspec_path, safety_policy=safety_policy)
     nlp = NLP2CMD(adapter=adapter)
 
     # Example commands
@@ -55,16 +51,15 @@ def main():
         print(f"\n📝 Request: {cmd}")
         print("-" * 40)
 
-        result = nlp.transform(cmd)
+        ir = nlp.transform_ir(cmd)
 
-        print(f"Status: {result.status.value}")
-        print(f"Confidence: {result.confidence:.0%}")
+        print(f"Action: {ir.action_id}")
         print(f"\nGenerated command:")
-        print(f"   {result.command}")
+        print(f"   {ir.dsl}")
 
-        if result.warnings:
+        if ir.warnings:
             print(f"\n⚠️ Warnings:")
-            for warning in result.warnings:
+            for warning in ir.warnings:
                 print(f"   - {warning}")
 
     # Safety policy demo
@@ -79,11 +74,11 @@ def main():
 
     for cmd in dangerous_commands:
         print(f"\n📝 Request: {cmd}")
-        result = nlp.transform(cmd)
-        print(f"Status: {result.status.value}")
-
-        if result.errors:
-            print(f"❌ Blocked: {result.errors[0]}")
+        try:
+            ir = nlp.transform_ir(cmd)
+            print(f"Generated: {ir.dsl}")
+        except Exception as e:
+            print(f"❌ Blocked: {e}")
 
 
 if __name__ == "__main__":

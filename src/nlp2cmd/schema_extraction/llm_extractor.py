@@ -305,21 +305,139 @@ JSON:"""
         return generator.generate_schema(command)
     
     def _create_basic_schema(self, command: str) -> ExtractedSchema:
-        """Create a basic schema when no help is available."""
+        """Create a basic schema using intelligent analysis."""
+        # Use intelligent analysis instead of hardcoded values
+        category = self._intelligent_category_detection(command)
+        description = self._intelligent_description_extraction(command)
+        template = self._intelligent_template_generation(command, category)
+        
         schema = CommandSchema(
             name=command,
-            description=f"{command} command",
-            category="general",
+            description=description,
+            category=category,
             parameters=[],
             examples=[f"{command} --help"],
             patterns=[command],
-            source_type="basic",
-            metadata={"no_help": True},
+            source_type="basic_intelligent",
+            metadata={"intelligent_generation": True},
+            template=template,
         )
         
         return ExtractedSchema(
             source=command,
-            source_type="basic",
+            source_type="basic_intelligent",
             commands=[schema],
-            metadata={"no_help": True},
+            metadata={"intelligent_generation": True},
         )
+    
+    def _intelligent_category_detection(self, command: str) -> str:
+        """Detect command category using intelligent analysis."""
+        # Category patterns based on command behavior
+        patterns = {
+            'file': {
+                'commands': ['find', 'ls', 'mkdir', 'rm', 'cp', 'mv', 'chmod', 'chown'],
+                'keywords': ['file', 'directory', 'copy', 'move', 'remove', 'list', 'permissions']
+            },
+            'text': {
+                'commands': ['grep', 'sed', 'awk', 'sort', 'uniq', 'wc', 'tr', 'cut'],
+                'keywords': ['text', 'search', 'replace', 'pattern', 'filter', 'count']
+            },
+            'network': {
+                'commands': ['curl', 'wget', 'ping', 'netstat', 'ssh', 'scp', 'rsync'],
+                'keywords': ['network', 'download', 'upload', 'connection', 'transfer', 'remote']
+            },
+            'system': {
+                'commands': ['ps', 'top', 'kill', 'free', 'df', 'du', 'uptime', 'uname'],
+                'keywords': ['process', 'memory', 'disk', 'system', 'load', 'usage']
+            },
+            'archive': {
+                'commands': ['tar', 'zip', 'unzip', 'gzip', 'gunzip'],
+                'keywords': ['archive', 'compress', 'extract', 'zip', 'tar']
+            },
+            'development': {
+                'commands': ['gcc', 'make', 'python', 'python3', 'node', 'npm', 'pip'],
+                'keywords': ['compile', 'build', 'run', 'install', 'package']
+            },
+            'container': {
+                'commands': ['docker', 'kubectl', 'podman'],
+                'keywords': ['container', 'image', 'pod', 'kubernetes', 'docker']
+            },
+            'version_control': {
+                'commands': ['git', 'svn', 'hg'],
+                'keywords': ['git', 'repository', 'commit', 'branch', 'merge', 'clone']
+            }
+        }
+        
+        command_lower = command.lower()
+        
+        # Direct command matching
+        for category, info in patterns.items():
+            if command in info['commands']:
+                return category
+        
+        # Keyword matching
+        for category, info in patterns.items():
+            for keyword in info['keywords']:
+                if keyword in command_lower:
+                    return category
+        
+        # Heuristic based detection
+        if any(x in command for x in ['find', 'locate', 'whereis', 'which']):
+            return 'file'
+        elif any(x in command for x in ['grep', 'search', 'filter']):
+            return 'text'
+        elif any(x in command for x in ['http', 'ftp', 'ssh']):
+            return 'network'
+        elif any(x in command for x in ['kill', 'ps', 'top']):
+            return 'system'
+        
+        return 'general'
+    
+    def _intelligent_description_extraction(self, command: str) -> str:
+        """Extract description using intelligent patterns."""
+        # Description templates based on category
+        templates = {
+            'file': f"{command} - File and directory manipulation utility",
+            'text': f"{command} - Text processing and pattern matching tool",
+            'network': f"{command} - Network communication and transfer utility",
+            'system': f"{command} - System monitoring and process management",
+            'archive': f"{command} - Archive and compression tool",
+            'development': f"{command} - Development and build tool",
+            'container': f"{command} - Container orchestration utility",
+            'version_control': f"{command} - Version control system tool",
+            'general': f"{command} - Command line utility"
+        }
+        
+        category = self._intelligent_category_detection(command)
+        return templates.get(category, f"{command} utility")
+    
+    def _intelligent_template_generation(self, command: str, category: str) -> str:
+        """Generate template based on command category and patterns."""
+        # Base templates by category
+        base_templates = {
+            'file': "{command} {options} {path}",
+            'text': "{command} {options} {pattern} {file}",
+            'network': "{command} {options} {url}",
+            'system': "{command} {options}",
+            'archive': "{command} {options} {archive}",
+            'development': "{command} {options} {input}",
+            'container': "{command} {subcommand} {options}",
+            'version_control': "{command} {action} {options}",
+            'general': "{command} {options}"
+        }
+        
+        template = base_templates.get(category, "{command} {options}")
+        
+        # Command-specific adjustments
+        if command == 'find':
+            template = "find {path} -name '{pattern}'"
+        elif command == 'grep':
+            template = "grep {options} '{pattern}' {file}"
+        elif command == 'docker':
+            template = "docker {subcommand} {options}"
+        elif command == 'kubectl':
+            template = "kubectl {resource} {action} {options}"
+        elif command == 'git':
+            template = "git {action} {options}"
+        
+        return template

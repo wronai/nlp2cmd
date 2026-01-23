@@ -1467,9 +1467,82 @@ class DynamicSchemaRegistry:
         return schema
 
     def register_dynamic_export(self, file_path: Union[str, Path]) -> list[ExtractedSchema]:
-        raise NotImplementedError(
-            "nlp2cmd.dynamic_schema_export is removed; use app2schema.appspec instead"
-        )
+        file_path = Path(file_path)
+        if not file_path.exists():
+            raise FileNotFoundError(f"Dynamic schema export file not found: {file_path}")
+
+        try:
+            payload = json.loads(file_path.read_text(encoding="utf-8"))
+        except Exception as e:
+            raise ValueError(f"Failed to parse dynamic schema export from {file_path}: {e}")
+
+        exported: Any = payload
+        if isinstance(payload, dict) and payload.get("format") == "nlp2cmd.dynamic_schema_export":
+            exported = payload.get("sources", {})
+
+        if not isinstance(exported, dict):
+            raise ValueError(f"Dynamic schema export has invalid structure: {file_path}")
+
+        imported: list[ExtractedSchema] = []
+        for source, schema_obj in exported.items():
+            if not isinstance(schema_obj, dict):
+                continue
+
+            commands: list[CommandSchema] = []
+            for cmd_obj in schema_obj.get("commands", []) or []:
+                if not isinstance(cmd_obj, dict):
+                    continue
+
+                params: list[CommandParameter] = []
+                for p_obj in cmd_obj.get("parameters", []) or []:
+                    if not isinstance(p_obj, dict):
+                        continue
+                    params.append(
+                        CommandParameter(
+                            name=str(p_obj.get("name", "")),
+                            type=str(p_obj.get("type", "string")),
+                            description=str(p_obj.get("description") or ""),
+                            required=bool(p_obj.get("required", False)),
+                            default=p_obj.get("default"),
+                            choices=list(p_obj.get("choices", []) or []),
+                            pattern=p_obj.get("pattern"),
+                            example=p_obj.get("example"),
+                            location=str(p_obj.get("location", "unknown")),
+                        )
+                    )
+
+                meta = cmd_obj.get("metadata", {}) or {}
+                commands.append(
+                    CommandSchema(
+                        name=str(cmd_obj.get("name", "")),
+                        description=str(cmd_obj.get("description") or ""),
+                        category=str(cmd_obj.get("category") or "general"),
+                        parameters=params,
+                        examples=list(cmd_obj.get("examples", []) or []),
+                        patterns=list(cmd_obj.get("patterns", []) or []),
+                        source_type=str(
+                            cmd_obj.get("source_type")
+                            or schema_obj.get("source_type")
+                            or "unknown"
+                        ),
+                        metadata=dict(meta),
+                        template=cmd_obj.get("template") or (meta.get("template") if isinstance(meta, dict) else None),
+                    )
+                )
+
+            extracted_schema = ExtractedSchema(
+                source=str(source),
+                source_type=str(schema_obj.get("source_type") or "dynamic_export"),
+                commands=commands,
+                metadata=dict(schema_obj.get("metadata", {}) or {}),
+            )
+            self.schemas[extracted_schema.source] = extracted_schema
+            imported.append(extracted_schema)
+
+        if imported:
+            self._auto_save()
+
+        return imported
     
     def register_appspec_export(self, file_path: Union[str, Path]) -> ExtractedSchema:
         """Register an app2schema.appspec export file and convert to ExtractedSchema."""
