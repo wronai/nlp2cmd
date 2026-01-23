@@ -1,7 +1,11 @@
 ![img.png](img.png)
 
-wypełnianie formularza   
+wypełnianie formularza:
+
+nlp2cmd -r "otwórz https://www.prototypowanie.pl/kontakt/ i wypelnij formularz i wyslij"
+
 ![img_1.png](img_1.png)
+
 
 ![img_2.png](img_2.png)
 # NLP2CMD
