@@ -120,11 +120,10 @@ class CommandDisambiguator:
         if not similar:
             return DisambiguationResult(selected_query=query)
         
-        # Check if there's an exact or very close match
+        # Do not auto-replace the user's query based on fuzzy similarity.
+        # Only auto-select when explicitly requested by the caller.
         best_match = similar[0]
-        if best_match[2] >= 0.95:
-            # Almost exact match - use previous command
-            self.console.print(f"\n[dim]Using previous command for similar query[/dim]")
+        if auto_select and best_match[2] >= 0.95:
             return DisambiguationResult(
                 selected_query=best_match[0],
                 selected_command=best_match[1],

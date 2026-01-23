@@ -20,6 +20,8 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
 import numpy as np
 import re
+import json
+from pathlib import Path
 
 from nlp2cmd.thermodynamic import (
     LangevinConfig,
@@ -771,6 +773,27 @@ class HybridThermodynamicGenerator:
         "assign", "plan", "minimize", "maximize",
     ]
 
+    @staticmethod
+    def _load_optimization_schema() -> dict[str, Any]:
+        def _candidate_paths() -> list[Path]:
+            yield Path("data") / "optimization_schema.json"
+            yield Path("./data") / "optimization_schema.json"
+            try:
+                repo_root = Path(__file__).resolve().parents[4]
+                yield repo_root / "data" / "optimization_schema.json"
+            except Exception:
+                return
+
+        for p in _candidate_paths():
+            try:
+                if p.exists() and p.is_file():
+                    raw = json.loads(p.read_text(encoding="utf-8"))
+                    if isinstance(raw, dict):
+                        return raw
+            except Exception:
+                continue
+        return {}
+
     def __init__(
         self,
         llm_client: Optional[LLMClient] = None,
@@ -793,7 +816,13 @@ class HybridThermodynamicGenerator:
         Uses comprehensive keyword matching with Polish support.
         """
         text_lower = text.lower()
-        return any(kw in text_lower for kw in self.OPTIMIZATION_KEYWORDS)
+        schema = self._load_optimization_schema()
+        kws = schema.get("optimization_keywords")
+        if isinstance(kws, list) and kws:
+            keywords = [k for k in kws if isinstance(k, str) and k.strip()]
+        else:
+            keywords = self.OPTIMIZATION_KEYWORDS
+        return any(kw in text_lower for kw in keywords)
 
     async def generate(
         self,
@@ -820,13 +849,25 @@ class HybridThermodynamicGenerator:
         text_lower = text.lower()
 
         # Strong signals for optimization problems
-        hard_optimization_keywords = ["przydziel", "allocate", "zasob", "zaplanuj", "schedule", "harmonogram", "zad"]
-        soft_optimization_keywords = ["optymalizuj", "optimize", "rozłóż", "balance", "assign", "route"]
+        schema = self._load_optimization_schema()
+        hard_optimization_keywords = schema.get("hard_optimization_keywords")
+        soft_optimization_keywords = schema.get("soft_optimization_keywords")
+        soft_threshold = schema.get("soft_complexity_threshold")
+
+        if not isinstance(hard_optimization_keywords, list):
+            hard_optimization_keywords = ["przydziel", "allocate", "zasob", "zaplanuj", "schedule", "harmonogram", "zad"]
+        if not isinstance(soft_optimization_keywords, list):
+            soft_optimization_keywords = ["optymalizuj", "optimize", "rozłóż", "balance", "assign", "route"]
+        if not isinstance(soft_threshold, (int, float)):
+            soft_threshold = 0.35
+
+        hard_optimization_keywords = [k for k in hard_optimization_keywords if isinstance(k, str) and k.strip()]
+        soft_optimization_keywords = [k for k in soft_optimization_keywords if isinstance(k, str) and k.strip()]
 
         is_hard_optimization = any(kw in text_lower for kw in hard_optimization_keywords)
         is_soft_optimization = any(kw in text_lower for kw in soft_optimization_keywords)
 
-        if is_hard_optimization or (is_soft_optimization and complexity > 0.35):
+        if is_hard_optimization or (is_soft_optimization and complexity > float(soft_threshold)):
             # Use thermodynamic generator
             result = await self.thermo_generator.generate(text)
             return {

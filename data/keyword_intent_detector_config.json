@@ -1,0 +1,23 @@
+{
+  "$schema": "keyword_intent_detector_config.v1",
+  "domain_boosters": {
+    "sql": ["tabela", "table", "kolumna", "column", "baza", "database", "sql", "where", "join", "tabeli", "z tabeli"],
+    "shell": ["plik", "file", "katalog", "directory", "folder", "ścieżka", "path", "bash", "terminal", "znajdź", "skopiuj", "usuń", "utwórz", "zmień", "sprawdź", "pokaż", "uruchom", "zatrzymaj", "proces", "dysk", "sieć", "port", "backup", "logi", "test", "build", "debug"],
+    "docker": ["docker", "kontener", "container", "obraz", "image", "compose", "dockerfile"],
+    "kubernetes": ["kubernetes", "k8s", "kubectl", "pod", "deployment", "namespace", "helm", "cluster", "node", "service"],
+    "git": ["git", "repo", "repository", "commit", "branch", "gałąź", "merge", "push", "pull", "clone"],
+    "dql": ["entity", "graph", "node", "edge", "relation"]
+  },
+  "priority_intents": {
+    "sql": ["delete", "update", "insert", "aggregate"],
+    "shell": ["open_url", "search_web", "file_operation", "archive", "process", "disk", "system_maintenance", "development", "security", "process_management"],
+    "docker": ["stop", "prune", "build", "run", "list", "logs", "exec", "start", "remove"],
+    "kubernetes": ["delete", "scale", "describe", "logs"],
+    "git": ["reset", "revert", "merge", "rebase", "push", "commit", "stash"]
+  },
+  "fast_path": {
+    "browser_keywords": ["przeglądark", "browser", "otwórz stronę", "open url", "open website", "go to", "navigate to"],
+    "search_keywords": ["szukaj w google", "wyszukaj w google", "google search", "search web", "szukaj w internecie", "search online", "look up online"],
+    "common_images": ["nginx", "redis", "postgres", "postgresql", "mysql", "mongo", "mongodb", "rabbitmq"]
+  }
+}

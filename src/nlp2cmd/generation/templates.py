@@ -8,6 +8,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Optional
+import getpass
+import json
+import os
+from pathlib import Path
 
 
 @dataclass
@@ -41,16 +45,67 @@ class TemplateGenerator:
     SQL_TEMPLATES: dict[str, str] = {
         'select': "SELECT {columns} FROM {table}{where}{order}{limit};",
         'select_all': "SELECT * FROM {table}{where}{order}{limit};",
+        'select_distinct': "SELECT DISTINCT {columns} FROM {table}{where}{order}{limit};",
         'insert': "INSERT INTO {table} ({columns}) VALUES ({values});",
+        'insert_multiple': "INSERT INTO {table} ({columns}) VALUES {values};",
         'update': "UPDATE {table} SET {set_clause}{where};",
         'delete': "DELETE FROM {table}{where};",
+        'truncate': "TRUNCATE TABLE {table};",
         'aggregate': "SELECT {aggregations} FROM {table}{where}{group}{order};",
         'count': "SELECT COUNT(*) FROM {table}{where};",
+        'count_distinct': "SELECT COUNT(DISTINCT {column}) FROM {table}{where};",
+        'sum': "SELECT SUM({column}) FROM {table}{where};",
+        'avg': "SELECT AVG({column}) FROM {table}{where};",
+        'min_max': "SELECT MIN({column}), MAX({column}) FROM {table}{where};",
+        # Joins
+        'join': "SELECT {columns} FROM {table1} {join_type} JOIN {table2} ON {condition}{where}{order}{limit};",
+        'inner_join': "SELECT {columns} FROM {table1} INNER JOIN {table2} ON {table1}.{key1} = {table2}.{key2}{where};",
+        'left_join': "SELECT {columns} FROM {table1} LEFT JOIN {table2} ON {table1}.{key1} = {table2}.{key2}{where};",
+        'right_join': "SELECT {columns} FROM {table1} RIGHT JOIN {table2} ON {table1}.{key1} = {table2}.{key2}{where};",
+        'full_join': "SELECT {columns} FROM {table1} FULL OUTER JOIN {table2} ON {table1}.{key1} = {table2}.{key2}{where};",
+        # Subqueries
+        'subquery_in': "SELECT {columns} FROM {table} WHERE {column} IN (SELECT {subcolumn} FROM {subtable}{subwhere});",
+        'subquery_exists': "SELECT {columns} FROM {table} WHERE EXISTS (SELECT 1 FROM {subtable} WHERE {condition});",
+        # DDL
+        'create_table': "CREATE TABLE {table} ({columns});",
+        'create_table_if_not_exists': "CREATE TABLE IF NOT EXISTS {table} ({columns});",
+        'drop_table': "DROP TABLE {table};",
+        'drop_table_if_exists': "DROP TABLE IF EXISTS {table};",
+        'alter_add_column': "ALTER TABLE {table} ADD COLUMN {column} {datatype};",
+        'alter_drop_column': "ALTER TABLE {table} DROP COLUMN {column};",
+        'alter_rename_column': "ALTER TABLE {table} RENAME COLUMN {old_name} TO {new_name};",
+        'alter_modify_column': "ALTER TABLE {table} MODIFY COLUMN {column} {datatype};",
+        # Indexes
+        'create_index': "CREATE INDEX {index_name} ON {table} ({columns});",
+        'create_unique_index': "CREATE UNIQUE INDEX {index_name} ON {table} ({columns});",
+        'drop_index': "DROP INDEX {index_name};",
+        # Views
+        'create_view': "CREATE VIEW {view_name} AS SELECT {columns} FROM {table}{where};",
+        'drop_view': "DROP VIEW {view_name};",
+        # Window functions
+        'window_row_number': "SELECT {columns}, ROW_NUMBER() OVER ({partition} ORDER BY {order_column}) AS row_num FROM {table};",
+        'window_rank': "SELECT {columns}, RANK() OVER ({partition} ORDER BY {order_column}) AS rank FROM {table};",
+        'window_lag': "SELECT {columns}, LAG({column}, {offset}) OVER ({partition} ORDER BY {order_column}) AS prev_val FROM {table};",
+        'window_lead': "SELECT {columns}, LEAD({column}, {offset}) OVER ({partition} ORDER BY {order_column}) AS next_val FROM {table};",
+        # CTEs
+        'cte': "WITH {cte_name} AS (SELECT {cte_columns} FROM {cte_table}{cte_where}) SELECT {columns} FROM {cte_name}{where};",
+        # Transactions
+        'begin': "BEGIN;",
+        'commit': "COMMIT;",
+        'rollback': "ROLLBACK;",
+        # Utility
+        'describe': "DESCRIBE {table};",
+        'show_tables': "SHOW TABLES;",
+        'show_databases': "SHOW DATABASES;",
+        'use_database': "USE {database};",
+        'explain': "EXPLAIN {query};",
     }
     
     SHELL_TEMPLATES: dict[str, str] = {
         'find': "find {path} {type_flag} {name_flag} {size_flag} {time_flag}",
         'find_simple': "find {path} -name '{pattern}'",
+        'count_files': "find '{path}' -maxdepth 1 -mindepth 1 -type f {name_flag_count} | wc -l",
+        'count_dirs': "find '{path}' -maxdepth 1 -mindepth 1 -type d {name_flag_count} | wc -l",
         'list': "ls -la {path}",
         'list_recursive': "ls -laR {path}",
         'grep': "grep -r '{pattern}' {path}",
@@ -92,11 +147,11 @@ class TemplateGenerator:
         'network_lsof': "lsof -i :{port}",
         'network_ip': "ip addr show",
         'network_config': "ifconfig -a",
-        'network_scan': "nmap -sn 192.168.1.0/24",
-        'network_speed': "curl -o /dev/null -s -w '%{time_total}' http://speedtest.net",
+        'network_scan': "nmap -sn {cidr}",
+        'network_speed': "curl -o /dev/null -s -w '%{time_total}' {url}",
         'network_connections': "ss -tulpn",
-        'disk_health': "fsck -n /dev/sda1",
-        'disk_defrag': "defrag /dev/sda1",
+        'disk_health': "fsck -n {device}",
+        'disk_defrag': "defrag {device}",
         'backup_create': "tar -czf backup.tar.gz {source}",
         'backup_copy': "rsync -av {source} {destination}",
         'backup_restore': "tar -xzf backup.tar.gz {file}",
@@ -107,7 +162,7 @@ class TemplateGenerator:
         'backup_schedule': "crontab -l",
         'system_update': "apt update && apt upgrade -y",
         'system_clean': "rm -rf /tmp/*",
-        'system_logs': "tail -n 50 /var/log/syslog",
+        'system_logs': "tail -n 50 {file}",
         'system_cron': "systemctl status cron",
         'dev_test': "pytest tests/",
         'dev_build_maven': "mvn clean install",
@@ -115,7 +170,7 @@ class TemplateGenerator:
         'dev_server': "python manage.py runserver",
         'dev_version_node': "node --version",
         'dev_lint': "pylint src/",
-        'dev_logs': "tail -f app.log",
+        'dev_logs': "tail -f {file}",
         'dev_debug': "python -m pdb script.py",
         'dev_clean': "rm -rf __pycache__",
         'dev_docs': "sphinx-build -b html docs/",
@@ -136,17 +191,107 @@ class TemplateGenerator:
         'service_restart': "systemctl restart {service}",
         'service_status': "systemctl status {service}",
         'text_search_errors': "grep -i error {file}",
+        'git_status': "git status",
+        'git_branch': "git branch --show-current",
         # Browser/URL opening (cross-platform)
         'open_url': "xdg-open '{url}'",
         'open_browser': "xdg-open '{url}'",
         'browse': "xdg-open '{url}'",
         'search_web': "xdg-open 'https://www.google.com/search?q={query}'",
+        # Text processing
+        'text_head': "head -n {lines} {file}",
+        'text_tail': "tail -n {lines} {file}",
+        'text_tail_follow': "tail -f {file}",
+        'text_wc': "wc {flags} {file}",
+        'text_wc_lines': "wc -l {file}",
+        'text_wc_words': "wc -w {file}",
+        'text_sort': "sort {flags} {file}",
+        'text_sort_reverse': "sort -r {file}",
+        'text_sort_numeric': "sort -n {file}",
+        'text_uniq': "sort {file} | uniq",
+        'text_uniq_count': "sort {file} | uniq -c",
+        'text_cut': "cut -d'{delimiter}' -f{field} {file}",
+        'text_awk': "awk '{print ${field}}' {file}",
+        'text_awk_pattern': "awk '/{pattern}/ {print}' {file}",
+        'text_sed': "sed 's/{pattern}/{replacement}/g' {file}",
+        'text_sed_inplace': "sed -i 's/{pattern}/{replacement}/g' {file}",
+        'text_tr': "tr '{from_chars}' '{to_chars}'",
+        'text_tr_lower': "tr '[:upper:]' '[:lower:]'",
+        'text_tr_upper': "tr '[:lower:]' '[:upper:]'",
+        'text_diff': "diff {file1} {file2}",
+        'text_diff_unified': "diff -u {file1} {file2}",
+        'text_cat': "cat {file}",
+        'text_cat_number': "cat -n {file}",
+        'text_less': "less {file}",
+        # Permissions
+        'perm_chmod': "chmod {mode} {path}",
+        'perm_chmod_recursive': "chmod -R {mode} {path}",
+        'perm_chmod_exec': "chmod +x {path}",
+        'perm_chown': "chown {owner}:{group} {path}",
+        'perm_chown_recursive': "chown -R {owner}:{group} {path}",
+        # Users
+        'user_whoami': "whoami",
+        'user_id': "id {user}",
+        'user_list': "cat /etc/passwd | cut -d: -f1",
+        'user_groups': "groups {user}",
+        # SSH/SCP
+        'ssh_connect': "ssh {user}@{host}",
+        'ssh_connect_port': "ssh -p {port} {user}@{host}",
+        'ssh_copy': "scp {source} {user}@{host}:{destination}",
+        'ssh_copy_recursive': "scp -r {source} {user}@{host}:{destination}",
+        'ssh_keygen': "ssh-keygen -t {type} -b {bits} -C '{comment}'",
+        'ssh_keygen_default': "ssh-keygen -t ed25519",
+        # Environment
+        'env_show': "printenv",
+        'env_show_var': "echo ${variable}",
+        'env_export': "export {variable}={value}",
+        'env_path': "echo $PATH",
+        # Cron
+        'cron_list': "crontab -l",
+        'cron_edit': "crontab -e",
+        'cron_remove': "crontab -r",
+        # System info
+        'sys_uname': "uname -a",
+        'sys_uptime': "uptime",
+        'sys_hostname': "hostname",
+        'sys_date': "date",
+        'sys_date_format': "date '+{format}'",
+        'sys_cal': "cal",
+        'sys_cal_year': "cal {year}",
+        'sys_free': "free -h",
+        'sys_lscpu': "lscpu",
+        'sys_lsblk': "lsblk",
+        'sys_mount': "mount | column -t",
+        'sys_dmesg': "dmesg | tail -n {lines}",
+        # History
+        'history': "history | tail -n {lines}",
+        'history_search': "history | grep '{pattern}'",
+        # Aliases
+        'alias_list': "alias",
+        'alias_set': "alias {name}='{command}'",
+        # Watch
+        'watch': "watch -n {interval} '{command}'",
+        'watch_default': "watch -n 2 '{command}'",
+        # Download
+        'download_wget': "wget {url}",
+        'download_wget_output': "wget -O {output} {url}",
+        'download_curl': "curl -O {url}",
+        'download_curl_output': "curl -o {output} {url}",
+        'download_curl_api': "curl -X {method} -H 'Content-Type: application/json' {url}",
+        # JSON
+        'json_jq': "jq '{filter}' {file}",
+        'json_jq_pretty': "cat {file} | jq .",
+        'json_jq_keys': "jq 'keys' {file}",
+        # Xargs
+        'xargs': "xargs -I {} {command}",
+        'xargs_parallel': "xargs -P {jobs} -I {} {command}",
     }
     
     DOCKER_TEMPLATES: dict[str, str] = {
         'list': "docker ps {flags}",
         'list_all': "docker ps -a",
         'images': "docker images {flags}",
+        'images_all': "docker images -a",
         'run': "docker run {flags} {image} {command}",
         'run_detached': "docker run -d {ports} {volumes} {env} --name {name} {image}",
         'stop': "docker stop {container}",
@@ -157,15 +302,43 @@ class TemplateGenerator:
         'exec': "docker exec -it {container} {command}",
         'exec_bash': "docker exec -it {container} /bin/bash",
         'build': "docker build -t {tag} {context}",
+        'build_no_cache': "docker build --no-cache -t {tag} {context}",
         'pull': "docker pull {image}",
         'push': "docker push {image}",
+        'tag': "docker tag {source} {target}",
         'rm': "docker rm {flags} {container}",
         'rmi': "docker rmi {flags} {image}",
         'prune': "docker system prune {flags}",
-        'compose_up': "docker-compose up {flags}",
-        'compose_down': "docker-compose down {flags}",
+        'prune_all': "docker system prune -a -f",
         'inspect': "docker inspect {target}",
+        'inspect_format': "docker inspect --format '{{{{json .{field}}}}}' {target}",
         'stats': "docker stats {container}",
+        'stats_all': "docker stats --no-stream",
+        'network_list': "docker network ls",
+        'network_create': "docker network create {name}",
+        'network_inspect': "docker network inspect {name}",
+        'network_rm': "docker network rm {name}",
+        'volume_list': "docker volume ls",
+        'volume_create': "docker volume create {name}",
+        'volume_inspect': "docker volume inspect {name}",
+        'volume_rm': "docker volume rm {name}",
+        'cp_to': "docker cp {source} {container}:{destination}",
+        'cp_from': "docker cp {container}:{source} {destination}",
+        'diff': "docker diff {container}",
+        'history': "docker history {image}",
+        'save': "docker save -o {output} {image}",
+        'load': "docker load -i {input}",
+        'compose_up': "docker-compose up -d",
+        'compose_up_build': "docker-compose up -d --build",
+        'compose_down': "docker-compose down",
+        'compose_down_volumes': "docker-compose down -v",
+        'compose_ps': "docker-compose ps",
+        'compose_logs': "docker-compose logs {flags} {service}",
+        'compose_build': "docker-compose build {service}",
+        'compose_restart': "docker-compose restart {service}",
+        'compose_exec': "docker-compose exec {service} {command}",
+        'compose_pull': "docker-compose pull",
+        'compose_config': "docker-compose config",
     }
     
     KUBERNETES_TEMPLATES: dict[str, str] = {
@@ -173,19 +346,138 @@ class TemplateGenerator:
         'get_all': "kubectl get {resource} -A {output}",
         'describe': "kubectl describe {resource} {name} {namespace}",
         'apply': "kubectl apply -f {file} {namespace}",
+        'apply_recursive': "kubectl apply -R -f {directory} {namespace}",
         'delete': "kubectl delete {resource} {name} {namespace} {selector}",
+        'delete_force': "kubectl delete {resource} {name} {namespace} --force --grace-period=0",
         'scale': "kubectl scale {resource}/{name} --replicas={replicas} {namespace}",
         'logs': "kubectl logs {pod} {container} {namespace} {follow} --tail={tail}",
         'logs_simple': "kubectl logs {pod} {namespace} --tail={tail}",
+        'logs_previous': "kubectl logs {pod} {namespace} --previous",
         'exec': "kubectl exec -it {pod} {container} {namespace} -- {command}",
         'exec_bash': "kubectl exec -it {pod} {namespace} -- /bin/bash",
         'port_forward': "kubectl port-forward {resource} {ports} {namespace}",
         'rollout_status': "kubectl rollout status {resource}/{name} {namespace}",
         'rollout_restart': "kubectl rollout restart {resource}/{name} {namespace}",
+        'rollout_history': "kubectl rollout history {resource}/{name} {namespace}",
+        'rollout_undo': "kubectl rollout undo {resource}/{name} {namespace}",
+        'rollout_pause': "kubectl rollout pause {resource}/{name} {namespace}",
+        'rollout_resume': "kubectl rollout resume {resource}/{name} {namespace}",
         'top_pods': "kubectl top pods {namespace}",
         'top_nodes': "kubectl top nodes",
         'config_view': "kubectl config view",
         'config_context': "kubectl config use-context {context}",
+        'config_current': "kubectl config current-context",
+        'events': "kubectl get events {namespace} --sort-by='.lastTimestamp'",
+        'events_watch': "kubectl get events {namespace} -w",
+        'configmap_get': "kubectl get configmap {name} {namespace} {output}",
+        'configmap_create': "kubectl create configmap {name} --from-file={file} {namespace}",
+        'configmap_create_literal': "kubectl create configmap {name} --from-literal={key}={value} {namespace}",
+        'configmap_delete': "kubectl delete configmap {name} {namespace}",
+        'secret_get': "kubectl get secret {name} {namespace} {output}",
+        'secret_decode': "kubectl get secret {name} {namespace} -o jsonpath='{{.data.{key}}}' | base64 -d",
+        'secret_create': "kubectl create secret generic {name} --from-literal={key}={value} {namespace}",
+        'secret_create_file': "kubectl create secret generic {name} --from-file={file} {namespace}",
+        'secret_delete': "kubectl delete secret {name} {namespace}",
+        'namespace_list': "kubectl get namespaces",
+        'namespace_create': "kubectl create namespace {name}",
+        'namespace_delete': "kubectl delete namespace {name}",
+        'cluster_info': "kubectl cluster-info",
+        'api_resources': "kubectl api-resources",
+        'explain': "kubectl explain {resource}",
+        'run_pod': "kubectl run {name} --image={image} {namespace} --restart=Never",
+        'create_deployment': "kubectl create deployment {name} --image={image} {namespace}",
+        'expose': "kubectl expose {resource} {name} --port={port} --target-port={target_port} {namespace}",
+        'annotate': "kubectl annotate {resource} {name} {annotation} {namespace}",
+        'label': "kubectl label {resource} {name} {label} {namespace}",
+        'cordon': "kubectl cordon {node}",
+        'uncordon': "kubectl uncordon {node}",
+        'drain': "kubectl drain {node} --ignore-daemonsets --delete-emptydir-data",
+        'taint': "kubectl taint nodes {node} {taint}",
+    }
+    
+    GIT_TEMPLATES: dict[str, str] = {
+        'status': "git status",
+        'status_short': "git status -s",
+        'log': "git log --oneline -n {limit}",
+        'log_graph': "git log --oneline --graph --all -n {limit}",
+        'log_author': "git log --author='{author}' --oneline -n {limit}",
+        'diff': "git diff {file}",
+        'diff_staged': "git diff --staged",
+        'diff_commit': "git diff {commit1} {commit2}",
+        'branch': "git branch",
+        'branch_all': "git branch -a",
+        'branch_create': "git branch {name}",
+        'branch_delete': "git branch -d {name}",
+        'branch_delete_force': "git branch -D {name}",
+        'checkout': "git checkout {branch}",
+        'checkout_create': "git checkout -b {branch}",
+        'checkout_file': "git checkout -- {file}",
+        'switch': "git switch {branch}",
+        'switch_create': "git switch -c {branch}",
+        'pull': "git pull {remote} {branch}",
+        'pull_rebase': "git pull --rebase {remote} {branch}",
+        'push': "git push {remote} {branch}",
+        'push_force': "git push --force-with-lease {remote} {branch}",
+        'push_tags': "git push --tags",
+        'push_set_upstream': "git push -u {remote} {branch}",
+        'commit': "git commit -m '{message}'",
+        'commit_amend': "git commit --amend",
+        'commit_all': "git commit -am '{message}'",
+        'add': "git add {file}",
+        'add_all': "git add -A",
+        'add_patch': "git add -p {file}",
+        'stash': "git stash",
+        'stash_message': "git stash push -m '{message}'",
+        'stash_list': "git stash list",
+        'stash_pop': "git stash pop",
+        'stash_apply': "git stash apply {stash}",
+        'stash_drop': "git stash drop {stash}",
+        'merge': "git merge {branch}",
+        'merge_no_ff': "git merge --no-ff {branch}",
+        'merge_abort': "git merge --abort",
+        'rebase': "git rebase {branch}",
+        'rebase_interactive': "git rebase -i {commit}",
+        'rebase_abort': "git rebase --abort",
+        'rebase_continue': "git rebase --continue",
+        'reset': "git reset {commit}",
+        'reset_soft': "git reset --soft {commit}",
+        'reset_hard': "git reset --hard {commit}",
+        'reset_file': "git reset HEAD {file}",
+        'revert': "git revert {commit}",
+        'clone': "git clone {url}",
+        'clone_shallow': "git clone --depth 1 {url}",
+        'clone_branch': "git clone -b {branch} {url}",
+        'remote': "git remote -v",
+        'remote_add': "git remote add {name} {url}",
+        'remote_remove': "git remote remove {name}",
+        'remote_set_url': "git remote set-url {name} {url}",
+        'fetch': "git fetch {remote}",
+        'fetch_all': "git fetch --all",
+        'fetch_prune': "git fetch --prune",
+        'tag': "git tag",
+        'tag_create': "git tag {name}",
+        'tag_annotated': "git tag -a {name} -m '{message}'",
+        'tag_delete': "git tag -d {name}",
+        'tag_push': "git push {remote} {name}",
+        'blame': "git blame {file}",
+        'show': "git show {commit}",
+        'show_file': "git show {commit}:{file}",
+        'cherry_pick': "git cherry-pick {commit}",
+        'cherry_pick_no_commit': "git cherry-pick -n {commit}",
+        'clean': "git clean -fd",
+        'clean_dry': "git clean -fdn",
+        'reflog': "git reflog -n {limit}",
+        'bisect_start': "git bisect start",
+        'bisect_good': "git bisect good {commit}",
+        'bisect_bad': "git bisect bad {commit}",
+        'bisect_reset': "git bisect reset",
+        'worktree_list': "git worktree list",
+        'worktree_add': "git worktree add {path} {branch}",
+        'submodule_init': "git submodule init",
+        'submodule_update': "git submodule update --init --recursive",
+        'config_list': "git config --list",
+        'config_get': "git config {key}",
+        'config_set': "git config {scope} {key} '{value}'",
     }
     
     def __init__(
@@ -203,13 +495,60 @@ class TemplateGenerator:
             'shell': self.SHELL_TEMPLATES.copy(),
             'docker': self.DOCKER_TEMPLATES.copy(),
             'kubernetes': self.KUBERNETES_TEMPLATES.copy(),
+            'git': self.GIT_TEMPLATES.copy(),
         }
+
+        self.defaults: dict[str, Any] = {}
+        self._load_defaults_from_json()
+        self._load_templates_from_json()
         
         if custom_templates:
             for domain, domain_templates in custom_templates.items():
                 if domain not in self.templates:
                     self.templates[domain] = {}
                 self.templates[domain].update(domain_templates)
+
+    def _load_defaults_from_json(self) -> None:
+        path = os.environ.get("NLP2CMD_DEFAULTS_FILE") or "./data/defaults.json"
+        p = Path(path)
+        if not p.exists():
+            return
+        try:
+            payload = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            return
+        if isinstance(payload, dict):
+            self.defaults.update(payload)
+
+    def _load_templates_from_json(self) -> None:
+        path = os.environ.get("NLP2CMD_TEMPLATES_FILE") or "./data/templates.json"
+        p = Path(path)
+        if not p.exists():
+            return
+        try:
+            payload = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            return
+        if not isinstance(payload, dict):
+            return
+
+        # Expected format: {"shell": {"intent": "template"}, "docker": {...}, ...}
+        for domain, templates in payload.items():
+            if not isinstance(domain, str) or not domain:
+                continue
+            if not isinstance(templates, dict):
+                continue
+
+            bucket = self.templates.setdefault(domain, {})
+            for intent, template in templates.items():
+                if isinstance(intent, str) and intent and isinstance(template, str) and template:
+                    bucket[intent] = template
+
+    def _get_default(self, key: str, fallback: Any) -> Any:
+        if key in self.defaults:
+            v = self.defaults.get(key)
+            return v if v is not None and v != "" else fallback
+        return fallback
     
     def generate(
         self,
@@ -447,6 +786,12 @@ class TemplateGenerator:
             result['pattern'] = pattern
         else:
             result['pattern'] = '*'
+
+        # Count templates can optionally filter by pattern
+        if result.get('pattern') and result.get('pattern') != '*':
+            result['name_flag_count'] = f"-name '{result['pattern']}'"
+        else:
+            result['name_flag_count'] = ''
         
         # Find flags
         result['type_flag'] = ''
@@ -540,31 +885,31 @@ class TemplateGenerator:
         elif intent == 'process_tree':
             pass  # Uses pstree
         elif intent == 'process_user':
-            result.setdefault('user', 'tom')
+            result.setdefault('user', self._get_default('shell.user', os.environ.get('USER') or getpass.getuser()))
         elif intent == 'process_zombie':
             pass  # Uses ps aux | awk command
         elif intent == 'system_monitor':
             pass  # Uses htop
         elif intent == 'network_ping':
-            result.setdefault('host', 'google.com')
+            result.setdefault('host', self._get_default('shell.ping_host', os.environ.get('NLP2CMD_DEFAULT_PING_HOST') or 'google.com'))
         elif intent == 'network_port':
             pass  # Uses netstat -tuln | grep LISTEN
         elif intent == 'network_lsof':
-            result.setdefault('port', '8080')
+            result.setdefault('port', self._get_default('shell.default_port', os.environ.get('NLP2CMD_DEFAULT_PORT') or '8080'))
         elif intent == 'network_ip':
             pass  # Uses ip addr show
         elif intent == 'network_config':
             pass  # Uses ifconfig -a
         elif intent == 'network_scan':
-            pass  # Uses nmap -sn 192.168.1.0/24
+            result.setdefault('cidr', self._get_default('shell.scan_cidr', os.environ.get('NLP2CMD_DEFAULT_SCAN_CIDR') or '192.168.1.0/24'))
         elif intent == 'network_speed':
-            pass  # Uses curl command
+            result.setdefault('url', self._get_default('shell.speedtest_url', os.environ.get('NLP2CMD_DEFAULT_SPEEDTEST_URL') or 'http://speedtest.net'))
         elif intent == 'network_connections':
             pass  # Uses ss -tulpn
         elif intent == 'disk_health':
-            pass  # Uses fsck -n /dev/sda1
+            result.setdefault('device', self._get_default('shell.disk_device', os.environ.get('NLP2CMD_DEFAULT_DISK_DEVICE') or '/dev/sda1'))
         elif intent == 'disk_defrag':
-            pass  # Uses defrag /dev/sda1
+            result.setdefault('device', self._get_default('shell.disk_device', os.environ.get('NLP2CMD_DEFAULT_DISK_DEVICE') or '/dev/sda1'))
         elif intent == 'backup_create':
             result.setdefault('source', entities.get('target', '.'))
         elif intent == 'backup_copy':
@@ -573,13 +918,25 @@ class TemplateGenerator:
         elif intent == 'backup_restore':
             result.setdefault('file', entities.get('target', ''))
         elif intent == 'backup_integrity':
-            result.setdefault('file', entities.get('target', 'backup.tar.gz'))
+            result.setdefault(
+                'file',
+                entities.get(
+                    'target',
+                    self._get_default('shell.backup_archive', os.environ.get('NLP2CMD_DEFAULT_BACKUP_ARCHIVE') or 'backup.tar.gz'),
+                ),
+            )
         elif intent == 'backup_status':
-            result.setdefault('path', entities.get('path', '/backup'))
+            result.setdefault('path', entities.get('path', self._get_default('shell.backup_path', os.environ.get('NLP2CMD_DEFAULT_BACKUP_PATH') or './backup')))
         elif intent == 'backup_cleanup':
-            result.setdefault('path', entities.get('path', '/backup'))
+            result.setdefault('path', entities.get('path', self._get_default('shell.backup_path', os.environ.get('NLP2CMD_DEFAULT_BACKUP_PATH') or './backup')))
         elif intent == 'backup_size':
-            result.setdefault('file', entities.get('target', 'backup.tar.gz'))
+            result.setdefault(
+                'file',
+                entities.get(
+                    'target',
+                    self._get_default('shell.backup_archive', os.environ.get('NLP2CMD_DEFAULT_BACKUP_ARCHIVE') or 'backup.tar.gz'),
+                ),
+            )
         elif intent == 'backup_schedule':
             pass  # Uses crontab -l
         elif intent == 'system_update':
@@ -587,7 +944,7 @@ class TemplateGenerator:
         elif intent == 'system_clean':
             pass  # Uses rm -rf /tmp/*
         elif intent == 'system_logs':
-            pass  # Uses tail -n 50 /var/log/syslog
+            result.setdefault('file', self._get_default('shell.system_log_file', os.environ.get('NLP2CMD_DEFAULT_SYSTEM_LOG_FILE') or '/var/log/syslog'))
         elif intent == 'system_cron':
             pass  # Uses systemctl status cron
         elif intent == 'dev_test':
@@ -603,9 +960,9 @@ class TemplateGenerator:
         elif intent == 'dev_lint':
             result.setdefault('path', 'src')
         elif intent == 'dev_logs':
-            result.setdefault('file', 'app.log')
+            result.setdefault('file', self._get_default('shell.dev_log_file', os.environ.get('NLP2CMD_DEFAULT_DEV_LOG_FILE') or 'app.log'))
         elif intent == 'dev_debug':
-            result.setdefault('script', 'script.py')
+            result.setdefault('script', self._get_default('shell.debug_script', os.environ.get('NLP2CMD_DEFAULT_DEBUG_SCRIPT') or 'script.py'))
         elif intent == 'dev_clean':
             pass  # Uses rm -rf __pycache__
         elif intent == 'dev_docs':
@@ -635,20 +992,20 @@ class TemplateGenerator:
         elif intent == 'process_script':
             result.setdefault('script', entities.get('target', 'script.sh'))
         elif intent == 'service_start':
-            result.setdefault('service', entities.get('service', 'nginx'))
+            result.setdefault('service', entities.get('service', self._get_default('shell.default_service', os.environ.get('NLP2CMD_DEFAULT_SERVICE') or 'nginx')))
         elif intent == 'service_stop':
-            result.setdefault('service', entities.get('service', 'nginx'))
+            result.setdefault('service', entities.get('service', self._get_default('shell.default_service', os.environ.get('NLP2CMD_DEFAULT_SERVICE') or 'nginx')))
         elif intent == 'service_restart':
-            result.setdefault('service', entities.get('service', 'apache2'))
+            result.setdefault('service', entities.get('service', self._get_default('shell.default_service', os.environ.get('NLP2CMD_DEFAULT_SERVICE') or 'nginx')))
         elif intent == 'service_status':
-            result.setdefault('service', entities.get('service', 'docker'))
+            result.setdefault('service', entities.get('service', self._get_default('shell.default_service', os.environ.get('NLP2CMD_DEFAULT_SERVICE') or 'nginx')))
         elif intent == 'text_search_errors':
-            result.setdefault('file', '/var/log/syslog')
+            result.setdefault('file', self._get_default('shell.system_log_file', os.environ.get('NLP2CMD_DEFAULT_SYSTEM_LOG_FILE') or '/var/log/syslog'))
         elif intent in ('open_url', 'open_browser', 'browse'):
             url = entities.get('url', '')
             if url and not url.startswith(('http://', 'https://')):
                 url = 'https://' + url
-            result['url'] = url or 'https://google.com'
+            result['url'] = url or self._get_default('shell.default_url', os.environ.get('NLP2CMD_DEFAULT_URL') or 'https://google.com')
         elif intent == 'search_web':
             query = entities.get('query', '')
             if not query:

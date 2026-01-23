@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgb(59 130 246); }
+            50% { border-color: rgb(147 197 253); }
+        }
+        .processing {
+            animation: pulse-border 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Nawigacja -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-terminal text-blue-600 text-2xl mr-3"></i>
+                    <h1 class="text-xl font-semibold text-gray-900">NLP2CMD</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-home mr-1"></i> Strona główna
+                    </a>
+                    <a href="/history" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-history mr-1"></i> Historia
+                    </a>
+                    <a href="/services" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-server mr-1"></i> Usługi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Główna zawartość -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <!-- Nagłówek -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">
+                    Przekształć język naturalny w komendy
+                </h2>
+                <p class="text-gray-600">
+                    Wpisz polecenie po polsku lub angielsku, a NLP2CMD wygeneruje odpowiednią komendę.
+                </p>
+            </div>
+
+            <!-- Formularz -->
+            <div class="bg-white shadow rounded-lg p-6 mb-6">
+                <form id="commandForm" class="space-y-4">
+                    <div>
+                        <label for="command" class="block text-sm font-medium text-gray-700 mb-2">
+                            Komenda w języku naturalnym
+                        </label>
+                        <div class="relative">
+                            <input
+                                type="text"
+                                id="command"
+                                name="command"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="np. Uruchom docker, Pokaż logi, Stwórz plik konfiguracyjny"
+                                required
+                            >
+                            <button
+                                type="submit"
+                                id="submitBtn"
+                                class="absolute right-2 top-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                <i class="fas fa-play mr-2"></i>Wykonaj
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <label for="dsl" class="text-sm font-medium text-gray-700">Typ DSL:</label>
+                        <select
+                            id="dsl"
+                            name="dsl"
+                            class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                            <option value="auto">Auto</option>
+                            <option value="shell">Shell</option>
+                            <option value="docker">Docker</option>
+                            <option value="kubernetes">Kubernetes</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Wynik -->
+            <div id="result" class="hidden">
+                <div class="bg-white shadow rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-terminal mr-2"></i>Wygenerowana komenda
+                    </h3>
+                    <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                        <pre id="generatedCommand"></pre>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <span class="text-sm text-gray-600">
+                                <i class="fas fa-cog mr-1"></i>
+                                DSL: <span id="resultDsl" class="font-mono"></span>
+                            </span>
+                            <span id="confidenceContainer" class="text-sm text-gray-600 hidden">
+                                <i class="fas fa-chart-line mr-1"></i>
+                                Pewność: <span id="resultConfidence"></span>%
+                            </span>
+                            <span id="llmContainer" class="text-sm text-purple-600 hidden">
+                                <i class="fas fa-robot mr-1"></i>
+                                Użyto LLM fallback
+                            </span>
+                        </div>
+                        <button
+                            onclick="copyCommand()"
+                            class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                        >
+                            <i class="fas fa-copy mr-1"></i>Kopiuj
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Szczegóły -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-blue-900 mb-2">
+                        <i class="fas fa-info-circle mr-2"></i>Szczegóły
+                    </h4>
+                    <p id="resultMessage" class="text-blue-800"></p>
+                </div>
+            </div>
+
+            <!-- Przykłady -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-lightbulb mr-2"></i>Przykładowe komendy
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="examples">
+                    <!-- Przykłady zostaną załadowane z API -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast notification -->
+    <div id="toast" class="fixed bottom-4 right-4 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-4 flex items-center space-x-3">
+            <div id="toastIcon"></div>
+            <p id="toastMessage" class="text-gray-900"></p>
+        </div>
+    </div>
+
+    <script>
+        // Globalne zmienne
+        let isProcessing = false;
+
+        // Inicjalizacja
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadExamples();
+            
+            // Focus na input
+            document.getElementById('command').focus();
+            
+            // Submit form na Enter
+            document.getElementById('command').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    document.getElementById('commandForm').dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+
+        // Załaduj przykłady
+        async function loadExamples() {
+            try {
+                const response = await fetch('/api/examples');
+                const data = await response.json();
+                const container = document.getElementById('examples');
+                
+                data.examples.forEach(example => {
+                    const div = document.createElement('div');
+                    div.className = 'bg-gray-50 p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors';
+                    div.innerHTML = `
+                        <div class="font-mono text-sm text-gray-900 mb-1">${example.command}</div>
+                        <div class="text-xs text-gray-600">${example.description}</div>
+                    `;
+                    div.addEventListener('click', () => {
+                        document.getElementById('command').value = example.command;
+                        document.getElementById('command').focus();
+                    });
+                    container.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Błąd ładowania przykładów:', error);
+            }
+        }
+
+        // Przetwarzanie formularza
+        document.getElementById('commandForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (isProcessing) return;
+            
+            const command = document.getElementById('command').value.trim();
+            const dsl = document.getElementById('dsl').value;
+            
+            if (!command) return;
+            
+            isProcessing = true;
+            const submitBtn = document.getElementById('submitBtn');
+            const commandInput = document.getElementById('command');
+            
+            // UI w trakcie przetwarzania
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Przetwarzam...';
+            commandInput.classList.add('processing');
+            document.getElementById('result').classList.add('hidden');
+            
+            try {
+                const response = await fetch('/api/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ command, dsl }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(data);
+                    showToast('success', 'Komenda wygenerowana pomyślnie!');
+                } else {
+                    showToast('error', data.detail || 'Wystąpił błąd');
+                }
+            } catch (error) {
+                console.error('Błąd:', error);
+                showToast('error', 'Wystąpił błąd połączenia');
+            } finally {
+                // Reset UI
+                isProcessing = false;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-play mr-2"></i>Wykonaj';
+                commandInput.classList.remove('processing');
+            }
+        });
+
+        // Pokaż wynik
+        function showResult(data) {
+            const resultDiv = document.getElementById('result');
+            const commandPre = document.getElementById('generatedCommand');
+            const messageP = document.getElementById('resultMessage');
+            const dslSpan = document.getElementById('resultDsl');
+            const confidenceSpan = document.getElementById('resultConfidence');
+            const confidenceContainer = document.getElementById('confidenceContainer');
+            const llmContainer = document.getElementById('llmContainer');
+            
+            commandPre.textContent = data.command || 'Brak komendy';
+            messageP.textContent = data.message || '';
+            dslSpan.textContent = data.dsl || 'unknown';
+            
+            // Pokaż/ukryj dodatkowe informacje
+            if (data.confidence !== undefined) {
+                confidenceSpan.textContent = Math.round(data.confidence * 100);
+                confidenceContainer.classList.remove('hidden');
+            } else {
+                confidenceContainer.classList.add('hidden');
+            }
+            
+            if (data.llm_used) {
+                llmContainer.classList.remove('hidden');
+            } else {
+                llmContainer.classList.add('hidden');
+            }
+            
+            resultDiv.classList.remove('hidden');
+        }
+
+        // Kopiuj komendę
+        function copyCommand() {
+            const command = document.getElementById('generatedCommand').textContent;
+            navigator.clipboard.writeText(command).then(() => {
+                showToast('success', 'Skopiowano do schowka!');
+            }).catch(() => {
+                showToast('error', 'Błąd kopiowania');
+            });
+        }
+
+        // Toast notification
+        function showToast(type, message) {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            if (type === 'success') {
+                toastIcon.innerHTML = '<i class="fas fa-check-circle text-green-500 text-xl"></i>';
+            } else {
+                toastIcon.innerHTML = '<i class="fas fa-exclamation-circle text-red-500 text-xl"></i>';
+            }
+            
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

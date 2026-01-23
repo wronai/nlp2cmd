@@ -9,6 +9,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any, Optional
+import json
+import os
+from pathlib import Path
+import re
 import time
 
 from nlp2cmd.generation.keywords import KeywordIntentDetector, DetectionResult
@@ -105,6 +109,20 @@ class RuleBasedPipeline:
         
         # Step 1: Detect domain and intent
         detection = self.detector.detect(text)
+
+        sentences = self._split_sentences(text)
+        if len(sentences) >= 2:
+            agg = self._aggregate_detection(sentences)
+            if agg is not None:
+                dominant = agg.get("detection")
+                if isinstance(dominant, DetectionResult):
+                    if (dominant.domain and dominant.domain != "unknown") and (
+                        detection.domain == "unknown" or dominant.confidence >= detection.confidence
+                    ):
+                        detection = dominant
+                        warnings.append(
+                            f"Multi-sentence aggregation: using {dominant.domain}/{dominant.intent} (confidence {dominant.confidence:.2f})"
+                        )
         
         if detection.domain == 'unknown':
             latency = (time.time() - start_time) * 1000
@@ -187,6 +205,414 @@ class RuleBasedPipeline:
             errors=errors,
             warnings=warnings,
         )
+
+    def process_steps(self, text: str) -> list[PipelineResult]:
+        sentences = self._split_sentences(text)
+        if len(sentences) <= 1:
+            return [self.process(text)]
+
+        results: list[PipelineResult] = []
+        prev_domain: Optional[str] = None
+        prev_intent: Optional[str] = None
+        prev_conf: float = 0.0
+
+        for sent in sentences:
+            d = self.detector.detect(sent)
+
+            sent_lower = sent.strip().lower()
+            begins_with_connector = bool(
+                re.match(r"^(nast[eę]pnie|potem|dalej|oraz|a potem|je[sś]li|je[sś]eli|gdy|wtedy|na koniec)\b", sent_lower)
+            )
+
+            if (d.domain == "unknown" or d.intent == "unknown") and prev_domain and begins_with_connector:
+                chosen = None
+                for c in self.detector.detect_all(sent)[:8]:
+                    if c.domain == prev_domain:
+                        chosen = c
+                        break
+                if chosen is not None:
+                    d = chosen
+                else:
+                    d = DetectionResult(
+                        domain=prev_domain,
+                        intent=prev_intent or "unknown",
+                        confidence=max(0.35, min(0.7, prev_conf * 0.6)),
+                        matched_keyword=None,
+                    )
+
+            step = self._process_with_detection(sent, d)
+            results.append(step)
+
+            if step.domain != "unknown":
+                prev_domain = step.domain
+                prev_intent = step.intent
+                prev_conf = float(step.detection_confidence)
+
+        return results
+
+    def _process_with_detection(self, text: str, detection: DetectionResult) -> PipelineResult:
+        start_time = time.time()
+        errors: list[str] = []
+        warnings: list[str] = []
+
+        if detection.domain == 'unknown':
+            latency = (time.time() - start_time) * 1000
+            return PipelineResult(
+                input_text=text,
+                domain='unknown',
+                intent='unknown',
+                detection_confidence=0.0,
+                entities={},
+                command=f"# Could not detect domain for: {text}",
+                template_used="",
+                success=False,
+                latency_ms=latency,
+                errors=["Could not detect domain from input text"],
+            )
+
+        if detection.confidence < self.confidence_threshold:
+            warnings.append(f"Low confidence detection: {detection.confidence:.2f}")
+
+        extraction = self.extractor.extract(text, detection.domain)
+        if not extraction.entities:
+            warnings.append("No entities extracted from text")
+
+        entities_with_text = extraction.entities.copy()
+        entities_with_text['text'] = text
+
+        template_result = self.generator.generate(
+            domain=detection.domain,
+            intent=detection.intent,
+            entities=entities_with_text,
+        )
+
+        if not template_result.success:
+            fallback_results: list[tuple[DetectionResult, ExtractionResult, TemplateResult]] = []
+            for cand in self.detector.detect_all(text)[:8]:
+                if cand.domain == detection.domain and cand.intent == detection.intent:
+                    continue
+
+                cand_extraction = self.extractor.extract(text, cand.domain)
+                cand_entities = cand_extraction.entities.copy()
+                cand_entities["text"] = text
+                cand_template = self.generator.generate(
+                    domain=cand.domain,
+                    intent=cand.intent,
+                    entities=cand_entities,
+                )
+                if cand_template.success:
+                    fallback_results.append((cand, cand_extraction, cand_template))
+                    break
+
+            if fallback_results:
+                chosen_detection, chosen_extraction, chosen_template = fallback_results[0]
+                detection = chosen_detection
+                extraction = chosen_extraction
+                template_result = chosen_template
+
+        if not template_result.success:
+            errors.append(f"Template generation failed: {template_result.command}")
+
+        if template_result.missing_entities:
+            warnings.append(f"Missing entities: {template_result.missing_entities}")
+
+        latency = (time.time() - start_time) * 1000
+        return PipelineResult(
+            input_text=text,
+            domain=detection.domain,
+            intent=detection.intent,
+            detection_confidence=detection.confidence,
+            entities=extraction.entities,
+            command=template_result.command,
+            template_used=template_result.template_used,
+            success=template_result.success and len(errors) == 0,
+            source="rules",
+            latency_ms=latency,
+            errors=errors,
+            warnings=warnings,
+        )
+
+    def _split_sentences(self, text: str) -> list[str]:
+        if not isinstance(text, str) or not text.strip():
+            return []
+
+        if "\n" in text:
+            lines = [ln for ln in text.splitlines() if ln.strip()]
+            if len(lines) >= 3:
+                score = 0
+                for ln in lines[:40]:
+                    ll = ln.lower()
+                    if "traceback (most recent call last)" in ll:
+                        score += 4
+                    if re.search(r"file \".+\", line \d+", ln):
+                        score += 3
+                    if re.search(r"\b(exception|error|fatal|stack trace)\b", ll):
+                        score += 1
+                    if re.search(r"^\d{4}-\d{2}-\d{2}[ t]\d{2}:\d{2}:\d{2}", ln):
+                        score += 1
+                    if re.search(r"^\[(info|warn|warning|error|debug|trace)\]", ll):
+                        score += 1
+                if score >= 4:
+                    return [text.strip()]
+
+        try:
+            import spacy
+
+            try:
+                nlp = spacy.blank("pl")
+            except Exception:
+                nlp = spacy.blank("en")
+            if "sentencizer" not in nlp.pipe_names:
+                nlp.add_pipe("sentencizer")
+            doc = nlp(text)
+            sents = [s.text.strip() for s in doc.sents if s.text and s.text.strip()]
+            if len(sents) >= 2:
+                return sents
+        except Exception:
+            pass
+
+        parts = re.split(r"(?<=[.!?])\s+", text.strip())
+        return [p.strip() for p in parts if p.strip()]
+
+    def _aggregate_detection(self, sentences: list[str]) -> Optional[dict[str, Any]]:
+        if not sentences:
+            return None
+
+        domain_scores: dict[str, float] = {}
+        intent_scores: dict[str, float] = {}
+        best: Optional[DetectionResult] = None
+
+        prev_domain: Optional[str] = None
+        prev_intent: Optional[str] = None
+        prev_conf: float = 0.0
+
+        for sent in sentences:
+            d = self.detector.detect(sent)
+
+            sent_lower = sent.strip().lower()
+            begins_with_connector = bool(
+                re.match(r"^(nast[eę]pnie|potem|dalej|oraz|a potem|je[sś]li|je[sś]eli|gdy|wtedy|na koniec)\b", sent_lower)
+            )
+
+            if d.domain == "unknown" and prev_domain and begins_with_connector:
+                cands = self.detector.detect_all(sent)
+                chosen = None
+                for c in cands[:8]:
+                    if c.domain == prev_domain:
+                        chosen = c
+                        break
+                if chosen is not None:
+                    d = chosen
+                else:
+                    d = DetectionResult(
+                        domain=prev_domain,
+                        intent=prev_intent or "unknown",
+                        confidence=max(0.35, min(0.7, prev_conf * 0.6)),
+                        matched_keyword=None,
+                    )
+
+            if isinstance(d.domain, str) and d.domain and d.domain != "unknown":
+                domain_scores[d.domain] = domain_scores.get(d.domain, 0.0) + float(d.confidence)
+
+            if isinstance(d.intent, str) and d.intent and d.intent != "unknown":
+                intent_scores[d.intent] = intent_scores.get(d.intent, 0.0) + float(d.confidence)
+
+            if best is None or d.confidence > best.confidence:
+                best = d
+
+            if d.domain != "unknown":
+                prev_domain = d.domain
+                prev_intent = d.intent
+                prev_conf = float(d.confidence)
+
+        if not domain_scores or not intent_scores:
+            return None
+
+        dominant_domain = max(domain_scores.items(), key=lambda x: x[1])[0]
+        dominant_intent = max(intent_scores.items(), key=lambda x: x[1])[0]
+
+        conf = 0.0
+        if best is not None:
+            conf = float(best.confidence)
+
+        return {
+            "domain_scores": domain_scores,
+            "intent_scores": intent_scores,
+            "detection": DetectionResult(
+                domain=dominant_domain,
+                intent=dominant_intent,
+                confidence=conf,
+                matched_keyword=None,
+            ),
+        }
+
+    def process_with_llm_repair(
+        self,
+        text: str,
+        *,
+        llm_client: "LLMClient",
+        persist: bool = False,
+        max_repairs: int = 1,
+    ) -> PipelineResult:
+        from nlp2cmd.generation.llm_simple import LLMClient
+
+        _ = llm_client
+        start = time.time()
+        last = self.process(text)
+        if last.success:
+            return last
+
+        for _attempt in range(max_repairs):
+            patch = self._suggest_schema_patch(text, last, llm_client=llm_client)
+            if not patch:
+                break
+
+            self._apply_schema_patch(patch)
+            if persist:
+                self._persist_schema_patch(patch)
+
+            last = self.process(text)
+            if last.success:
+                last.source = "llm"
+                last.latency_ms = (time.time() - start) * 1000
+                return last
+
+        last.latency_ms = (time.time() - start) * 1000
+        return last
+
+    def _suggest_schema_patch(
+        self,
+        text: str,
+        last_result: PipelineResult,
+        *,
+        llm_client: "LLMClient",
+    ) -> Optional[dict[str, Any]]:
+        import asyncio
+        from nlp2cmd.generation.llm_simple import LLMClient
+
+        _ = llm_client
+
+        system = (
+            "You are a code assistant that fixes a rule-based NL->command router. "
+            "Respond ONLY with valid JSON. No markdown.\n\n"
+            "Goal: propose minimal additions to keyword patterns and/or templates so the rule-based pipeline can handle the query.\n"
+            "Constraints:\n"
+            "- Only propose SAFE, read-only shell commands when domain is shell (no rm, mv, cp, sudo).\n"
+            "- Prefer using find/ls/grep/wc.\n"
+            "- Output JSON with keys: patterns, templates.\n"
+            "- patterns format: {domain: {intent: [keywords...]}}\n"
+            "- templates format: {domain: {intent: template_string}}\n"
+        )
+
+        user = {
+            "query": text,
+            "last_error": last_result.command,
+            "last_domain": last_result.domain,
+            "last_intent": last_result.intent,
+            "known_domains": self.detector.get_supported_domains(),
+            "shell_intents": self.detector.get_supported_intents("shell") if "shell" in self.detector.get_supported_domains() else [],
+        }
+        prompt = json.dumps(user, ensure_ascii=False)
+
+        async def _run() -> str:
+            return await llm_client.complete(user=prompt, system=system, max_tokens=700, temperature=0.0)
+
+        try:
+            raw = asyncio.run(_run())
+        except Exception:
+            return None
+
+        try:
+            payload = json.loads(raw)
+        except Exception:
+            return None
+
+        if not isinstance(payload, dict):
+            return None
+
+        patterns = payload.get("patterns")
+        templates = payload.get("templates")
+        if patterns is None and templates is None:
+            return None
+
+        out: dict[str, Any] = {}
+        if isinstance(patterns, dict):
+            out["patterns"] = patterns
+        if isinstance(templates, dict):
+            out["templates"] = templates
+        return out or None
+
+    def _apply_schema_patch(self, patch: dict[str, Any]) -> None:
+        patterns = patch.get("patterns")
+        if isinstance(patterns, dict):
+            for domain, intents in patterns.items():
+                if not isinstance(domain, str) or not isinstance(intents, dict):
+                    continue
+                for intent, keywords in intents.items():
+                    if not isinstance(intent, str) or not isinstance(keywords, list):
+                        continue
+                    clean = [kw.strip() for kw in keywords if isinstance(kw, str) and kw.strip()]
+                    if clean:
+                        self.detector.add_pattern(domain, intent, clean)
+
+        templates = patch.get("templates")
+        if isinstance(templates, dict):
+            for domain, intents in templates.items():
+                if not isinstance(domain, str) or not isinstance(intents, dict):
+                    continue
+                for intent, template in intents.items():
+                    if isinstance(intent, str) and intent and isinstance(template, str) and template:
+                        self.generator.add_template(domain, intent, template)
+
+    def _persist_schema_patch(self, patch: dict[str, Any]) -> None:
+        patterns_path = Path(os.environ.get("NLP2CMD_PATTERNS_FILE") or "./data/patterns.json")
+        templates_path = Path(os.environ.get("NLP2CMD_TEMPLATES_FILE") or "./data/templates.json")
+
+        patterns = patch.get("patterns")
+        if isinstance(patterns, dict):
+            self._merge_json_file(patterns_path, patterns)
+
+        templates = patch.get("templates")
+        if isinstance(templates, dict):
+            self._merge_json_file(templates_path, templates)
+
+    def _merge_json_file(self, path: Path, patch: dict[str, Any]) -> None:
+        try:
+            existing: dict[str, Any] = {}
+            if path.exists():
+                loaded = json.loads(path.read_text(encoding="utf-8"))
+                if isinstance(loaded, dict):
+                    existing = loaded
+
+            for domain, intents in patch.items():
+                if not isinstance(domain, str) or not isinstance(intents, dict):
+                    continue
+                bucket = existing.setdefault(domain, {})
+                if not isinstance(bucket, dict):
+                    continue
+                for intent, value in intents.items():
+                    if not isinstance(intent, str) or not intent:
+                        continue
+                    if isinstance(value, list):
+                        prev = bucket.get(intent)
+                        prev_list = prev if isinstance(prev, list) else []
+                        merged = prev_list + [v for v in value if isinstance(v, str) and v.strip()]
+                        deduped: list[str] = []
+                        seen: set[str] = set()
+                        for s in merged:
+                            key = s.strip().lower()
+                            if not key or key in seen:
+                                continue
+                            seen.add(key)
+                            deduped.append(s.strip())
+                        bucket[intent] = deduped
+                    elif isinstance(value, str) and value:
+                        bucket[intent] = value
+
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(existing, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        except Exception:
+            return
     
     def process_batch(self, texts: list[str]) -> list[PipelineResult]:
         """

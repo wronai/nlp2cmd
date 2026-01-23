@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+from urllib.parse import urlparse
 from typing import Any, Optional
 
 
@@ -21,10 +22,22 @@ class FormDataLoader:
     3. data/form_data.json (for default values)
     """
     
-    def __init__(self, data_dir: str = "./data", env_file: str = ".env", schema_file: str = "form_schema.json"):
+    def __init__(
+        self,
+        data_dir: str = "./data",
+        env_file: str = ".env",
+        schema_file: str = "form_schema.json",
+        site: Optional[str] = None,
+        site_domain: Optional[str] = None,
+    ):
         self.data_dir = Path(data_dir)
         self.env_file = Path(env_file)
         self.schema_file = self.data_dir / schema_file
+
+        # Backwards/forwards compatibility:
+        # - `site` can be a full URL or domain
+        # - `site_domain` can be provided directly
+        self.site_domain = site_domain or self._parse_domain(site)
         
         self._env_data: dict[str, str] = {}
         self._json_data: dict[str, Any] = {}
@@ -52,23 +65,287 @@ class FormDataLoader:
             seen.add(key)
             out.append(key)
         return out
+
+    @staticmethod
+    def dedupe_selectors(items: list[str]) -> list[str]:
+        return FormDataLoader._dedupe_preserve_order(items)
+
+    @staticmethod
+    def _parse_domain(site: Optional[str]) -> Optional[str]:
+        if not isinstance(site, str) or not site.strip():
+            return None
+        s = site.strip()
+
+        try:
+            if "://" in s:
+                parsed = urlparse(s)
+                domain = parsed.netloc
+                return domain or None
+        except Exception:
+            return None
+
+        if "/" in s:
+            s = s.split("/", 1)[0]
+        return s or None
+
+    @staticmethod
+    def _safe_domain_filename(domain: str) -> str:
+        return (
+            domain.strip()
+            .replace("/", "_")
+            .replace("\\", "_")
+            .replace(":", "_")
+        )
+
+    def _user_sites_dir(self) -> Path:
+        return Path.home() / ".nlp2cmd" / "sites"
+
+    def _project_sites_dir(self) -> Path:
+        return self.data_dir / "sites"
+
+    def _site_profile_paths(self, domain: str) -> list[Path]:
+        fname = f"{self._safe_domain_filename(domain)}.json"
+        return [self._user_sites_dir() / fname, self._project_sites_dir() / fname]
+
+    def get_site_profile_write_path(self, domain: str) -> Path:
+        candidates = self._site_profile_paths(domain)
+        last_err: Optional[Exception] = None
+
+        for path in candidates:
+            try:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with open(path, "a", encoding="utf-8"):
+                    pass
+                return path
+            except Exception as e:
+                last_err = e
+                continue
+
+        if last_err is not None:
+            raise last_err
+        return candidates[-1]
+
+    def _load_site_profile_payload(self, domain: Optional[str]) -> dict[str, Any]:
+        if not isinstance(domain, str) or not domain.strip():
+            return {}
+
+        for path in self._site_profile_paths(domain.strip()):
+            try:
+                if not path.exists():
+                    continue
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                if isinstance(payload, dict):
+                    return payload
+            except Exception:
+                continue
+
+        return {}
+
+    def _deep_merge(self, base: Any, override: Any) -> Any:
+        if isinstance(base, dict) and isinstance(override, dict):
+            out: dict[str, Any] = dict(base)
+            for k, v in override.items():
+                if k in out:
+                    out[k] = self._deep_merge(out[k], v)
+                else:
+                    out[k] = v
+            return out
+
+        if isinstance(base, list) and isinstance(override, list):
+            merged: list[Any] = [*override, *base]
+            str_items: list[str] = [x for x in merged if isinstance(x, str)]
+            if len(str_items) == len([x for x in merged if x is not None]):
+                return self._dedupe_preserve_order(str_items)
+            return merged
+
+        return override
     
     def _load_schema(self) -> None:
         """Load form configuration from schema file."""
+        base: dict[str, Any] = {}
         if self.schema_file.exists():
             try:
                 with open(self.schema_file) as f:
-                    self._schema = json.load(f)
-                    
-                # Build field mappings from schema
-                field_mappings = self._schema.get("field_mappings", {})
-                for field_type, config in field_mappings.items():
-                    env_var = config.get("env_var", "")
-                    patterns = config.get("patterns", [])
-                    for pattern in patterns:
-                        self._field_mappings[pattern.lower()] = env_var
+                    payload = json.load(f)
+                    if isinstance(payload, dict):
+                        base = payload
             except Exception:
-                pass
+                base = {}
+
+        site_payload = self._load_site_profile_payload(self.site_domain)
+        self._schema = self._deep_merge(base, site_payload) if site_payload else base
+
+        self._field_mappings = {}
+        field_mappings = self._schema.get("field_mappings", {})
+        if isinstance(field_mappings, dict):
+            for _, config in field_mappings.items():
+                if not isinstance(config, dict):
+                    continue
+                env_var = config.get("env_var", "")
+                patterns = config.get("patterns", [])
+                if isinstance(env_var, str) and env_var and isinstance(patterns, list):
+                    for pattern in patterns:
+                        if isinstance(pattern, str) and pattern.strip():
+                            self._field_mappings[pattern.lower()] = env_var
+
+    def _ensure_domain(self, domain: Optional[str]) -> Optional[str]:
+        if isinstance(domain, str) and domain.strip():
+            return domain.strip()
+        if isinstance(self.site_domain, str) and self.site_domain.strip():
+            return self.site_domain.strip()
+        return None
+
+    def _load_site_profile_payload_anywhere(self, domain: str) -> tuple[dict[str, Any], Optional[Path]]:
+        for path in self._site_profile_paths(domain):
+            try:
+                if not path.exists():
+                    continue
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                if isinstance(payload, dict):
+                    return payload, path
+            except Exception:
+                continue
+        return {}, None
+
+    def _save_site_profile_payload(self, domain: str, payload: dict[str, Any]) -> Optional[Path]:
+        if not isinstance(domain, str) or not domain.strip():
+            return None
+        if not isinstance(payload, dict):
+            return None
+
+        path = self.get_site_profile_write_path(domain.strip())
+        path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return path
+
+    def _add_selector_to_list(self, domain: Optional[str], *, key: str, selector: str, max_items: int = 50) -> bool:
+        d = self._ensure_domain(domain)
+        if not d:
+            return False
+        if not isinstance(selector, str) or not selector.strip():
+            return False
+
+        existing, _ = self._load_site_profile_payload_anywhere(d)
+        if not isinstance(existing, dict):
+            existing = {}
+
+        current = existing.get(key)
+        if not isinstance(current, list):
+            current = []
+
+        cleaned = [x for x in current if isinstance(x, str) and x.strip()]
+        sel = selector.strip()
+
+        if cleaned and cleaned[0] == sel:
+            return False
+
+        cleaned = [sel] + [x for x in cleaned if x != sel]
+        if max_items > 0:
+            cleaned = cleaned[:max_items]
+
+        existing[key] = cleaned
+        existing.setdefault("$schema", "form_schema.site.v1")
+        existing.setdefault("domain", d)
+
+        try:
+            self._save_site_profile_payload(d, existing)
+            return True
+        except Exception:
+            return False
+
+    def _add_selector_to_type_selectors(self, domain: Optional[str], *, selector_type: str, selector: str, max_items: int = 50) -> bool:
+        d = self._ensure_domain(domain)
+        if not d:
+            return False
+        if not isinstance(selector_type, str) or not selector_type.strip():
+            return False
+        if not isinstance(selector, str) or not selector.strip():
+            return False
+
+        existing, _ = self._load_site_profile_payload_anywhere(d)
+        if not isinstance(existing, dict):
+            existing = {}
+
+        ts = existing.get("type_selectors")
+        if not isinstance(ts, dict):
+            ts = {}
+
+        st = selector_type.strip()
+        current = ts.get(st)
+        if not isinstance(current, list):
+            current = []
+
+        cleaned = [x for x in current if isinstance(x, str) and x.strip()]
+        sel = selector.strip()
+
+        if cleaned and cleaned[0] == sel:
+            return False
+
+        cleaned = [sel] + [x for x in cleaned if x != sel]
+        if max_items > 0:
+            cleaned = cleaned[:max_items]
+
+        ts[st] = cleaned
+        existing["type_selectors"] = ts
+        existing.setdefault("$schema", "form_schema.site.v1")
+        existing.setdefault("domain", d)
+
+        try:
+            self._save_site_profile_payload(d, existing)
+            return True
+        except Exception:
+            return False
+
+    def add_dismiss_selector(self, selector: str, *, domain: Optional[str] = None) -> bool:
+        return self._add_selector_to_list(domain, key="dismiss_selectors", selector=selector)
+
+    def add_submit_selector(self, selector: str, *, domain: Optional[str] = None) -> bool:
+        return self._add_selector_to_list(domain, key="submit_selectors", selector=selector)
+
+    def add_type_selector(self, selector: str, *, selector_type: str = "generic", domain: Optional[str] = None) -> bool:
+        return self._add_selector_to_type_selectors(domain, selector_type=selector_type, selector=selector)
+
+    def get_site_approval(self, action: str, *, domain: Optional[str] = None) -> bool:
+        d = self._ensure_domain(domain)
+        if not d:
+            return False
+        if not isinstance(action, str) or not action.strip():
+            return False
+
+        payload = self._load_site_profile_payload(d)
+        if not isinstance(payload, dict):
+            return False
+
+        approvals = payload.get("approvals")
+        if not isinstance(approvals, dict):
+            return False
+
+        return bool(approvals.get(action.strip()))
+
+    def set_site_approval(self, action: str, value: bool, *, domain: Optional[str] = None) -> bool:
+        d = self._ensure_domain(domain)
+        if not d:
+            return False
+        if not isinstance(action, str) or not action.strip():
+            return False
+
+        existing, _ = self._load_site_profile_payload_anywhere(d)
+        if not isinstance(existing, dict):
+            existing = {}
+
+        approvals = existing.get("approvals")
+        if not isinstance(approvals, dict):
+            approvals = {}
+
+        approvals[action.strip()] = bool(value)
+        existing["approvals"] = approvals
+        existing.setdefault("$schema", "form_schema.site.v1")
+        existing.setdefault("domain", d)
+
+        try:
+            self._save_site_profile_payload(d, existing)
+            return True
+        except Exception:
+            return False
     
     def _load_env(self) -> None:
         """Load environment variables from .env file."""
@@ -210,8 +487,25 @@ class FormDataLoader:
     
     def get_skip_fields(self) -> set[str]:
         """Get set of field names to skip during form filling."""
-        skip_list = self._schema.get("skip_fields", [])
-        return set(s.lower() for s in skip_list)
+        configured = self._schema.get("skip_fields")
+        defaults = {
+            "sl",
+            "tl",
+            "query",
+            "gtrans",
+            "vote",
+            "honeypot",
+            "bot",
+            "captcha",
+            "hidden",
+        }
+
+        out = set(defaults)
+        if isinstance(configured, list):
+            for s in configured:
+                if isinstance(s, str) and s.strip():
+                    out.add(s.strip().lower())
+        return out
     
     def get_submit_selectors(self) -> list[str]:
         """Get list of submit button selectors from schema."""
@@ -233,6 +527,32 @@ class FormDataLoader:
         if isinstance(configured, list):
             return self._dedupe_preserve_order([*configured, *defaults])
         return defaults
+
+    def get_nlp_keywords(self, group: str) -> list[str]:
+        """Get schema-driven NLP keyword list (e.g. typing/clicking/form/submit/press_enter)."""
+        nlp_cfg = self._schema.get("nlp_keywords")
+        if not isinstance(nlp_cfg, dict):
+            return []
+
+        values = nlp_cfg.get(group)
+        if isinstance(values, list):
+            out: list[str] = []
+            for v in values:
+                if isinstance(v, str) and v.strip():
+                    out.append(v.strip())
+            return out
+        return []
+
+    def get_type_text_patterns(self) -> list[str]:
+        """Get regex patterns used to extract text-to-type from NL (schema-driven)."""
+        patterns = self._schema.get("type_text_patterns")
+        if isinstance(patterns, list):
+            out: list[str] = []
+            for p in patterns:
+                if isinstance(p, str) and p.strip():
+                    out.append(p)
+            return out
+        return []
     
     def get_dismiss_selectors(self) -> list[str]:
         """Get list of popup dismiss selectors from schema."""
@@ -254,35 +574,51 @@ class FormDataLoader:
         ]
 
         if isinstance(configured, list):
-            return self._dedupe_preserve_order([*configured, *defaults])
+            cleaned: list[str] = []
+            for s in configured:
+                if isinstance(s, str) and s.strip():
+                    cleaned.append(s.strip())
+            return self._dedupe_preserve_order([*cleaned, *defaults])
+
         return defaults
-    
+
     def get_type_selectors(self, selector_type: str = "search") -> list[str]:
         """Get list of input selectors for typing from schema."""
-        type_selectors = self._schema.get("type_selectors", {})
-        configured: list[str] = []
+        type_selectors = self._schema.get("type_selectors")
         if isinstance(type_selectors, dict):
-            c = type_selectors.get(selector_type)
-            if isinstance(c, list):
-                configured = c
+            configured = type_selectors.get(selector_type)
+            if isinstance(configured, list):
+                cleaned: list[str] = []
+                for s in configured:
+                    if isinstance(s, str) and s.strip():
+                        cleaned.append(s.strip())
+                if cleaned:
+                    return cleaned
 
-        defaults_map: dict[str, list[str]] = {
-            "search": [
-                "textarea[name='q']",
-                "input[name='q']",
-                "input[type='search']",
-                "textarea[aria-label*='Search'], textarea[aria-label*='Szukaj']",
-                "input[aria-label*='Search'], input[aria-label*='Szukaj']",
-            ],
-            "generic": [
-                "textarea",
-                "input[type='text']",
-                "input",
-            ],
-        }
+        # Minimal fallback (should be overridden by schema)
+        return ["textarea", "input[type='text']", "input"]
 
-        defaults = defaults_map.get(str(selector_type or "search"), defaults_map["search"])
-        return self._dedupe_preserve_order([*configured, *defaults])
+    def get_browser_context_options(self) -> dict[str, Any]:
+        ctx = self._schema.get("browser_context")
+
+        viewport: dict[str, Any] = {"width": 1280, "height": 720}
+        locale: str = "pl-PL"
+
+        if isinstance(ctx, dict):
+            v = ctx.get("viewport")
+            if isinstance(v, dict):
+                w = v.get("width")
+                h = v.get("height")
+                if isinstance(w, int) and w > 0:
+                    viewport["width"] = w
+                if isinstance(h, int) and h > 0:
+                    viewport["height"] = h
+
+            loc = ctx.get("locale")
+            if isinstance(loc, str) and loc.strip():
+                locale = loc.strip()
+
+        return {"viewport": viewport, "locale": locale}
 
 
 def create_example_env_file(path: str = ".env.example") -> None:

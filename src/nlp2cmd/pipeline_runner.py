@@ -42,6 +42,58 @@ class ShellExecutionPolicy:
     allow_sudo: bool = False
     allow_pipes: bool = False
 
+    def load_from_data(self, path: str = "./data/shell_execution_policy.json") -> None:
+        """Optionally load policy configuration from JSON in data/."""
+
+        def _candidate_paths() -> list[Path]:
+            yield Path(path)
+            yield Path("data") / "shell_execution_policy.json"
+            yield Path("./data") / "shell_execution_policy.json"
+            try:
+                repo_root = Path(__file__).resolve().parents[4]
+                yield repo_root / "data" / "shell_execution_policy.json"
+            except Exception:
+                return
+
+        cfg_path: Optional[Path] = None
+        for p in _candidate_paths():
+            try:
+                if p.exists() and p.is_file():
+                    cfg_path = p
+                    break
+            except Exception:
+                continue
+
+        if not cfg_path:
+            return
+
+        try:
+            raw = json.loads(cfg_path.read_text(encoding="utf-8"))
+        except Exception:
+            return
+        if not isinstance(raw, dict):
+            return
+
+        ar = raw.get("allowlist")
+        if isinstance(ar, list):
+            self.allowlist = {x.strip() for x in ar if isinstance(x, str) and x.strip()}
+
+        br = raw.get("blocked_regex")
+        if isinstance(br, list):
+            self.blocked_regex = [x for x in br if isinstance(x, str) and x.strip()]
+
+        rr = raw.get("require_confirm_regex")
+        if isinstance(rr, list):
+            self.require_confirm_regex = [x for x in rr if isinstance(x, str) and x.strip()]
+
+        asu = raw.get("allow_sudo")
+        if isinstance(asu, bool):
+            self.allow_sudo = asu
+
+        ap = raw.get("allow_pipes")
+        if isinstance(ap, bool):
+            self.allow_pipes = ap
+
 
 @dataclass
 class RunnerResult:
@@ -62,6 +114,10 @@ class PipelineRunner:
         enable_history: bool = True,
     ):
         self.shell_policy = shell_policy or ShellExecutionPolicy()
+        try:
+            self.shell_policy.load_from_data()
+        except Exception:
+            pass
         self.safety_policy = safety_policy
         self.headless = headless
         self.enable_history = enable_history
@@ -327,8 +383,23 @@ class PipelineRunner:
                             success=False,
                             kind="dom",
                             error="Action requires confirmation",
-                            data={"requires_confirmation": True},
+                            data={
+                                "requires_confirmation": True,
+                                "confirmation_reason": "press_enter",
+                                "url": url,
+                            },
                         )
+                if isinstance(a, dict) and str(a.get("action") or "") == "submit":
+                    return RunnerResult(
+                        success=False,
+                        kind="dom",
+                        error="Action requires confirmation",
+                        data={
+                            "requires_confirmation": True,
+                            "confirmation_reason": "submit",
+                            "url": url,
+                        },
+                    )
         
         if dry_run:
             return RunnerResult(
@@ -344,10 +415,12 @@ class PipelineRunner:
         
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=self.headless)
-            context = browser.new_context(
-                viewport={"width": 1280, "height": 720},
-                locale="pl-PL",
-            )
+            from nlp2cmd.web_schema.form_data_loader import FormDataLoader
+
+            schema_loader = FormDataLoader(site=str(url))
+            ctx_opts = schema_loader.get_browser_context_options()
+
+            context = browser.new_context(**ctx_opts)
             page = context.new_page()
             
             try:
@@ -360,18 +433,17 @@ class PipelineRunner:
                         page.wait_for_timeout(1000)
                         
                         # Try to dismiss common popups/cookie consents
-                        self._dismiss_popups(page)
+                        self._dismiss_popups(page, schema_loader)
 
                     elif action == "fill_form":
                         # Automatic form filling from .env and data/*.json
                         try:
                             from nlp2cmd.web_schema.form_handler import FormHandler
-                            from nlp2cmd.web_schema.form_data_loader import FormDataLoader
                             from rich.console import Console
                             
                             console = Console()
                             form_handler = FormHandler(console=console)
-                            data_loader = FormDataLoader()
+                            data_loader = schema_loader
                             
                             # Wait for page to be fully loaded
                             console.print("\n[cyan]⏳ Waiting for page to load...[/cyan]")
@@ -406,23 +478,25 @@ class PipelineRunner:
                             return RunnerResult(success=False, kind="dom", error=f"Action {i}: Form filling failed: {e}")
                     
                     elif action == "type":
-                        selector = action_spec.get("selector", "input[name='q'], input[type='search'], textarea")
+                        selector = action_spec.get("selector", "__auto__")
                         text = action_spec.get("text", "")
                         
                         if not text:
                             return RunnerResult(success=False, kind="dom", error=f"Action {i}: Missing text for type")
                         
-                        # Try multiple selector strategies
-                        selectors_to_try = [
-                            selector,
-                            "textarea[name='q']",
-                            "input[name='q']",
-                            "input[type='search']",
-                            "textarea[aria-label*='Search'], textarea[aria-label*='Szukaj']",
-                            "input[aria-label*='Search'], input[aria-label*='Szukaj']",
-                            "textarea",
-                            "input[type='text']",
-                        ]
+                        selectors_to_try: list[str] = []
+
+                        if isinstance(selector, str) and selector.strip() and selector.strip() != "__auto__":
+                            selectors_to_try.append(selector.strip())
+
+                        search_selectors = schema_loader.get_type_selectors("search")
+                        generic_selectors = schema_loader.get_type_selectors("generic")
+                        search_selector_set = set(search_selectors)
+                        generic_selector_set = set(generic_selectors)
+
+                        selectors_to_try.extend(search_selectors)
+                        selectors_to_try.extend(generic_selectors)
+                        selectors_to_try = FormDataLoader.dedupe_selectors(selectors_to_try)
                         
                         typed = False
                         last_error = None
@@ -441,6 +515,9 @@ class PipelineRunner:
                                 locator.fill("")
                                 locator.type(str(text), delay=50)
                                 page.wait_for_timeout(500)
+
+                                selector_group = "search" if sel in search_selector_set else "generic"
+                                schema_loader.add_type_selector(sel, selector_type=selector_group)
                                 
                                 # Record successful interaction
                                 if self._history:
@@ -497,12 +574,10 @@ class PipelineRunner:
                     
                     elif action == "submit":
                         # Submit form by clicking submit button
-                        from nlp2cmd.web_schema.form_data_loader import FormDataLoader
                         from rich.console import Console
                         console = Console()
                         
                         # Load submit selectors from schema
-                        schema_loader = FormDataLoader()
                         submit_selectors = schema_loader.get_submit_selectors()
                         
                         submitted = False
@@ -512,6 +587,7 @@ class PipelineRunner:
                                 page.click(sel)
                                 submitted = True
                                 console.print(f"[green]✓[/green] Form submitted via: {sel}")
+                                schema_loader.add_submit_selector(sel)
                                 break
                             except Exception:
                                 continue
@@ -536,95 +612,24 @@ class PipelineRunner:
                 return RunnerResult(success=False, kind="dom", error=f"Multi-action execution failed: {e}")
 
     @staticmethod
-    def _fill_form(page, *, values: Any = None) -> None:
-        """Heuristically fill a contact form.
-
-        This is best-effort. For reliable automation, prefer a site-specific schema.
-        """
-
-        def pick_value(meta: str, input_type: str) -> str:
-            meta_l = meta.lower()
-            if input_type == "email" or "mail" in meta_l:
-                return "test@example.com"
-            if "phone" in meta_l or "tel" in meta_l or "telefon" in meta_l:
-                return "123456789"
-            if "name" in meta_l or "imi" in meta_l or "nazw" in meta_l:
-                return "Test"
-            if "message" in meta_l or "wiadomo" in meta_l or "komentar" in meta_l:
-                return "Test message"
-            if "subject" in meta_l or "temat" in meta_l:
-                return "Test"
-            return "Test"
-
-        provided: dict[str, Any] = values if isinstance(values, dict) else {}
-
-        for el in page.query_selector_all("input, textarea, select"):
-            try:
-                tag = (el.evaluate("e => e.tagName") or "").lower()
-                itype = (el.get_attribute("type") or "").lower()
-
-                if tag == "input" and itype in {"hidden", "submit", "button", "image"}:
-                    continue
-
-                name = str(el.get_attribute("name") or "")
-                el_id = str(el.get_attribute("id") or "")
-                placeholder = str(el.get_attribute("placeholder") or "")
-                aria_label = str(el.get_attribute("aria-label") or "")
-                meta = " ".join([name, el_id, placeholder, aria_label]).strip()
-
-                # allow overriding by provided values
-                key = (name or el_id or "").strip()
-                if key and key in provided and provided[key] is not None:
-                    value = str(provided[key])
-                else:
-                    value = pick_value(meta, itype)
-
-                if tag == "select":
-                    try:
-                        # choose first non-empty option
-                        options = el.query_selector_all("option")
-                        chosen = None
-                        for opt in options:
-                            v = opt.get_attribute("value")
-                            if v is not None and str(v).strip():
-                                chosen = str(v)
-                                break
-                        if chosen is not None:
-                            el.select_option(chosen)
-                    except Exception:
-                        pass
-                    continue
-
-                if tag in {"input", "textarea"}:
-                    # skip checkboxes/radios; they often encode consent and should be explicit
-                    if itype in {"checkbox", "radio"}:
-                        continue
-                    el.fill(value)
-            except Exception:
-                continue
-
-    @staticmethod
-    def _dismiss_popups(page) -> None:
+    def _dismiss_popups(page, schema_loader=None) -> None:
         """Try to dismiss common popups and cookie consents."""
         from nlp2cmd.web_schema.form_data_loader import FormDataLoader
         
         # Load dismiss selectors from schema
-        schema_loader = FormDataLoader()
-        dismiss_selectors = schema_loader.get_dismiss_selectors()
-        
-        # Fallback to defaults if schema is empty
-        if not dismiss_selectors:
-            dismiss_selectors = [
-                "button:has-text('Accept all')",
-                "button:has-text('Accept')",
-                "button:has-text('OK')",
-            ]
+        loader = schema_loader if schema_loader is not None else FormDataLoader()
+        dismiss_selectors = loader.get_dismiss_selectors()
         
         for selector in dismiss_selectors:
             try:
                 page.wait_for_selector(selector, state="visible", timeout=1000)
                 page.click(selector, timeout=1000)
                 page.wait_for_timeout(500)
+
+                try:
+                    loader.add_dismiss_selector(selector)
+                except Exception:
+                    pass
                 break
             except:
                 continue

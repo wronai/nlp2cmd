@@ -1,0 +1,72 @@
+{
+  "$schema": "router_config.v1",
+  "simple_intents": [
+    "select",
+    "get",
+    "list",
+    "show",
+    "count",
+    "describe",
+    "status",
+    "version",
+    "help"
+  ],
+  "complex_intents": [
+    "analyze",
+    "compare",
+    "migrate",
+    "refactor",
+    "optimize",
+    "diagnose",
+    "report",
+    "audit"
+  ],
+  "entity_threshold": 5,
+  "confidence_threshold": 0.6,
+  "multi_step_keywords": [
+    "then",
+    "after",
+    "and then",
+    "followed by",
+    "for each",
+    "foreach",
+    "all",
+    "every",
+    "first",
+    "second",
+    "finally",
+    "next"
+  ],
+  "complex_keywords": [
+    "analyze",
+    "compare",
+    "correlate",
+    "trend",
+    "pattern",
+    "anomaly",
+    "summarize",
+    "aggregate",
+    "across",
+    "between",
+    "over time"
+  ],
+  "intent_action_map": {
+    "select": "sql_select",
+    "insert": "sql_insert",
+    "update": "sql_update",
+    "delete": "sql_delete",
+    "aggregate": "sql_aggregate",
+    "file_search": "shell_find",
+    "file_operation": "shell_file_op",
+    "process_monitoring": "shell_process",
+    "network": "shell_network",
+    "container_run": "docker_run",
+    "container_stop": "docker_stop",
+    "container_list": "docker_ps",
+    "image_build": "docker_build",
+    "get": "k8s_get",
+    "describe": "k8s_describe",
+    "scale": "k8s_scale",
+    "logs": "k8s_logs"
+  }
+}

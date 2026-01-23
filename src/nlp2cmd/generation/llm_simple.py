@@ -7,6 +7,7 @@ LLM-based SQL generation - start with one domain before expanding.
 from __future__ import annotations
 
 import re
+import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Optional, Protocol
@@ -25,6 +26,58 @@ class LLMClient(Protocol):
     ) -> str:
         """Generate completion from LLM."""
         ...
+
+
+class LiteLLMClient:
+    def __init__(
+        self,
+        model: Optional[str] = None,
+        api_base: Optional[str] = None,
+        api_key: Optional[str] = None,
+        timeout: Optional[float] = None,
+    ):
+        self.model = model or os.environ.get("NLP2CMD_LLM_MODEL") or "ollama/qwen2.5-coder:7b"
+        self.api_base = api_base or os.environ.get("NLP2CMD_LLM_API_BASE") or "http://localhost:11434"
+        self.api_key = api_key or os.environ.get("NLP2CMD_LLM_API_KEY") or ""
+        self.timeout = timeout or float(os.environ.get("NLP2CMD_LLM_TIMEOUT") or 30)
+
+    async def complete(
+        self,
+        user: str,
+        system: Optional[str] = None,
+        max_tokens: int = 500,
+        temperature: float = 0.1,
+        **kwargs: Any,
+    ) -> str:
+        try:
+            import litellm
+            from litellm import completion
+        except ImportError as e:
+            raise ImportError("litellm is required for LiteLLMClient. Install with: pip install litellm") from e
+
+        litellm.api_base = self.api_base
+        if self.api_key:
+            litellm.api_key = self.api_key
+        litellm.timeout = self.timeout
+
+        messages: list[dict[str, str]] = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": user})
+
+        import asyncio
+
+        def _call() -> str:
+            resp = completion(
+                model=self.model,
+                messages=messages,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                **kwargs,
+            )
+            return str(resp.choices[0].message["content"])
+
+        return await asyncio.to_thread(_call)
 
 
 @dataclass

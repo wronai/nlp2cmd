@@ -8,8 +8,10 @@ based on query complexity, intent type, and entity count.
 from __future__ import annotations
 
 import logging
+import json
 from dataclasses import dataclass, field
 from enum import Enum
+from pathlib import Path
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
@@ -93,6 +95,7 @@ class DecisionRouter:
         self.config = config or RouterConfig()
         self._intent_action_map: dict[str, str] = {}
         self._register_default_mappings()
+        self._load_config_from_data()
     
     def _register_default_mappings(self) -> None:
         """Register default intent to action mappings."""
@@ -122,6 +125,69 @@ class DecisionRouter:
             "scale": "k8s_scale",
             "logs": "k8s_logs",
         }
+
+    def _load_config_from_data(self) -> None:
+        """Load router configuration from data/router_config.json (optional)."""
+
+        def _candidate_paths() -> list[Path]:
+            # 1) CWD-based (common during dev)
+            yield Path("data") / "router_config.json"
+            yield Path("./data") / "router_config.json"
+
+            # 2) Repo-based (when imported as a module)
+            try:
+                repo_root = Path(__file__).resolve().parents[4]
+                yield repo_root / "data" / "router_config.json"
+            except Exception:
+                return
+
+        cfg_path: Optional[Path] = None
+        for p in _candidate_paths():
+            try:
+                if p.exists() and p.is_file():
+                    cfg_path = p
+                    break
+            except Exception:
+                continue
+
+        if not cfg_path:
+            return
+
+        try:
+            raw = json.loads(cfg_path.read_text(encoding="utf-8"))
+        except Exception:
+            return
+
+        if not isinstance(raw, dict):
+            return
+
+        # Update config lists/thresholds (keep defaults if invalid)
+        if isinstance(raw.get("simple_intents"), list):
+            self.config.simple_intents = [str(x) for x in raw["simple_intents"] if isinstance(x, str) and x.strip()]
+
+        if isinstance(raw.get("complex_intents"), list):
+            self.config.complex_intents = [str(x) for x in raw["complex_intents"] if isinstance(x, str) and x.strip()]
+
+        if isinstance(raw.get("multi_step_keywords"), list):
+            self.config.multi_step_keywords = [str(x) for x in raw["multi_step_keywords"] if isinstance(x, str) and x.strip()]
+
+        if isinstance(raw.get("complex_keywords"), list):
+            self.config.complex_keywords = [str(x) for x in raw["complex_keywords"] if isinstance(x, str) and x.strip()]
+
+        et = raw.get("entity_threshold")
+        if isinstance(et, int) and et > 0:
+            self.config.entity_threshold = et
+
+        ct = raw.get("confidence_threshold")
+        if isinstance(ct, (int, float)) and 0.0 <= float(ct) <= 1.0:
+            self.config.confidence_threshold = float(ct)
+
+        # Intent → action mapping
+        intent_map = raw.get("intent_action_map")
+        if isinstance(intent_map, dict):
+            for k, v in intent_map.items():
+                if isinstance(k, str) and k.strip() and isinstance(v, str) and v.strip():
+                    self._intent_action_map[k.strip()] = v.strip()
     
     def route(
         self,

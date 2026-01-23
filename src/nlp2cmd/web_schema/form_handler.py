@@ -186,15 +186,8 @@ class FormHandler:
     
     def detect_submit_button(self, page) -> Optional[str]:
         """Detect form submit button."""
-        submit_selectors = [
-            'button[type="submit"]',
-            'input[type="submit"]',
-            'button:has-text("Submit")',
-            'button:has-text("Wyślij")',
-            'button:has-text("Send")',
-            'button:has-text("Prześlij")',
-            'button:has-text("OK")',
-        ]
+        loader = FormDataLoader()
+        submit_selectors = loader.get_submit_selectors()
         
         for selector in submit_selectors:
             try:
@@ -224,8 +217,8 @@ class FormHandler:
         loader = data_loader or FormDataLoader()
         form_data = FormData()
         
-        # Skip internal/hidden-like fields (loaded from schema)
-        skip_fields = loader.get_skip_fields() or {'sl', 'tl', 'query', 'gtrans', 'vote', 'honeypot', 'bot'}
+        # Skip internal/hidden-like fields
+        skip_fields = loader.get_skip_fields()
         
         self.console.print("\n[cyan]📋 Auto-filling form fields:[/cyan]\n")
         

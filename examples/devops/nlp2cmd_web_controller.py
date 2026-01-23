@@ -27,6 +27,13 @@ from enum import Enum
 from pathlib import Path
 from datetime import datetime
 
+# Import NLP2CMD core components
+from nlp2cmd.core import NLP2CMD, LLMBackend
+from nlp2cmd.generation.llm_simple import LiteLLMClient
+from nlp2cmd.adapters.shell import ShellAdapter
+from nlp2cmd.adapters.docker import DockerAdapter
+from nlp2cmd.adapters.kubernetes import KubernetesAdapter
+
 
 class ServiceType(Enum):
     """Types of services that can be managed."""
@@ -569,15 +576,38 @@ class NLP2CMDWebController:
     Main controller for NLP2CMD-powered web infrastructure.
     
     This class orchestrates the deployment and management of web services
-    based on natural language commands.
+    based on natural language commands, with integrated LLM fallback.
     """
     
-    def __init__(self, output_dir: str = "./generated"):
+    def __init__(self, output_dir: str = "./generated", use_llm_fallback: bool = True, auto_install: bool = False):
         self.parser = NLCommandParser()
         self.services: dict[str, ServiceConfig] = {}
         self.deployment_history: list[dict[str, Any]] = []
         self.file_manager = OutputFileManager(output_dir)
         self.docker_manager: Optional[DockerManager] = None
+        self.use_llm_fallback = use_llm_fallback
+        self.auto_install = auto_install
+        
+        # Initialize NLP2CMD components
+        self.nlp2cmd_instances = {
+            "shell": NLP2CMD(adapter=ShellAdapter()),
+            "docker": NLP2CMD(adapter=DockerAdapter()),
+            "kubernetes": NLP2CMD(adapter=KubernetesAdapter()),
+        }
+        
+        # Initialize LLM fallback if enabled
+        if self.use_llm_fallback:
+            try:
+                self.llm_client = LiteLLMClient()
+            except ImportError:
+                if auto_install:
+                    import subprocess
+                    subprocess.run(["pip", "install", "litellm"], check=True, capture_output=True)
+                    self.llm_client = LiteLLMClient()
+                else:
+                    self.llm_client = None
+        else:
+            self.llm_client = None
         
         # Service templates
         self.templates = {
@@ -588,40 +618,47 @@ class NLP2CMDWebController:
             ServiceType.CACHE: self._create_cache_template,
         }
     
-    async def execute(self, command: str) -> dict[str, Any]:
+    async def execute(self, command: str, dsl: str = "auto") -> dict[str, Any]:
         """
         Execute a natural language command.
         
         Args:
             command: Natural language command in Polish or English
+            dsl: DSL type to use (auto, shell, docker, kubernetes)
             
         Returns:
             Result dictionary with status and generated configurations
         """
-        # Parse command
+        # First try the custom parser for DevOps-specific commands
         parsed = self.parser.parse(command)
         
-        # Route to handler
-        handlers = {
-            "deploy": self._handle_deploy,
-            "configure": self._handle_configure,
-            "scale": self._handle_scale,
-            "status": self._handle_status,
-            "logs": self._handle_logs,
-            "test": self._handle_test,
-            "monitor": self._handle_monitor,
-            "restart": self._handle_restart,
-            "stop": self._handle_stop,
-        }
-        
-        handler = handlers.get(parsed["intent"], self._handle_unknown)
-        result = await handler(parsed)
+        # If it's a DevOps command we understand, handle it
+        if parsed["intent"] != "unknown" and parsed["service_type"] is not None:
+            # Route to handler
+            handlers = {
+                "deploy": self._handle_deploy,
+                "configure": self._handle_configure,
+                "scale": self._handle_scale,
+                "status": self._handle_status,
+                "logs": self._handle_logs,
+                "test": self._handle_test,
+                "monitor": self._handle_monitor,
+                "restart": self._handle_restart,
+                "stop": self._handle_stop,
+            }
+            
+            handler = handlers.get(parsed["intent"], self._handle_unknown)
+            result = await handler(parsed)
+        else:
+            # Fall back to NLP2CMD core for general commands
+            result = await self._execute_with_nlp2cmd(command, dsl)
         
         # Record in history
         self.deployment_history.append({
             "command": command,
             "parsed": parsed,
             "result": result,
+            "timestamp": datetime.now().isoformat(),
         })
         
         return result
@@ -747,16 +784,109 @@ class NLP2CMDWebController:
         }
     
     async def _handle_unknown(self, parsed: dict) -> dict[str, Any]:
-        """Handle unknown intent."""
-        return {
-            "status": "clarification_needed",
-            "message": "Nie zrozumiałem polecenia. Przykłady:",
-            "examples": [
-                "Uruchom serwis czatu na porcie 8080",
-                "Skonfiguruj email dla jan@example.com",
-                "Pokaż status usług",
-            ]
-        }
+        """
+        Handle unknown intent by trying NLP2CMD core with LLM fallback.
+        """
+        command = parsed.get("original_text", "")
+        
+        # Try NLP2cmd core as fallback
+        result = await self._execute_with_nlp2cmd(command, "auto")
+        
+        if result.get("status") == "error":
+            return {
+                "status": "clarification_needed",
+                "message": "Nie zrozumiałem polecenia. Przykłady:",
+                "examples": [
+                    "Uruchom serwis czatu na porcie 8080",
+                    "Skonfiguruj email dla jan@example.com",
+                    "Pokaż status usług",
+                    "Uruchom docker",
+                    "Stwórz plik konfiguracyjny",
+                ],
+                "nlp2cmd_result": result,
+            }
+        
+        return result
+    
+    async def _execute_with_nlp2cmd(self, command: str, dsl: str) -> dict[str, Any]:
+        """
+        Execute command using NLP2CMD core with LLM fallback.
+        """
+        try:
+            # Use the appropriate NLP2CMD instance
+            nlp2cmd = self.nlp2cmd_instances.get(dsl, self.nlp2cmd_instances["shell"])
+            
+            # Transform the command
+            result = nlp2cmd.transform(command)
+            
+            if result.command and not result.command.startswith("#"):
+                return {
+                    "status": "success",
+                    "action": "command_generated",
+                    "command": result.command,
+                    "dsl": dsl,
+                    "confidence": getattr(result, "confidence", 0.0),
+                    "plan": result.plan.model_dump() if hasattr(result, "plan") else None,
+                    "message": f"Wygenerowano komendę: {result.command}",
+                }
+            else:
+                # Try LLM fallback if enabled
+                if self.use_llm_fallback and self.llm_client:
+                    return await self._try_llm_fallback(command)
+                else:
+                    return {
+                        "status": "error",
+                        "message": "Nie udało się wygenerować komendy",
+                        "suggestion": "Włącz --auto-install aby użyć LLM fallback",
+                    }
+        
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": f"Błąd podczas przetwarzania: {str(e)}",
+            }
+    
+    async def _try_llm_fallback(self, command: str) -> dict[str, Any]:
+        """
+        Try to generate command using LLM fallback.
+        """
+        try:
+            system_prompt = """Jesteś ekspertem linii komend. Konwertuj prośbę użytkownika na prawidłową komendę shell.
+
+Zasady:
+- Odpowiedz TYLKO komendą, bez wyjaśnień
+- Używaj standardowych komend shell/Dockera
+- Dla polskich słów kluczowych (uruchom, stwórz, pokaż) użyj odpowiedników angielskich
+- Trzymaj komendy proste i wykonywalne"""
+            
+            response = await self.llm_client.complete(
+                user=command,
+                system=system_prompt,
+                max_tokens=200,
+                temperature=0.1
+            )
+            
+            command = response.strip()
+            
+            if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
+                return {
+                    "status": "success",
+                    "action": "llm_fallback",
+                    "command": command,
+                    "dsl": "shell",
+                    "message": "Wygenerowano komendę za pomocą LLM fallback",
+                    "llm_used": True,
+                }
+            else:
+                return {
+                    "status": "error",
+                    "message": "LLM fallback nie udał się wygenerować prawidłowej komendy",
+                }
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": f"LLM fallback nieudany: {str(e)}",
+            }
     
     async def _handle_logs(self, parsed: dict) -> dict[str, Any]:
         """Handle logs intent."""
@@ -1175,7 +1305,165 @@ SMTP_PORT=587
 
 
 # Convenience function
-async def run_command(command: str) -> dict[str, Any]:
+async def run_command(command: str, dsl: str = "auto", use_llm: bool = True, auto_install: bool = False) -> dict[str, Any]:
     """Quick way to run a single NLP2CMD command."""
-    controller = NLP2CMDWebController()
-    return await controller.execute(command)
+    controller = NLP2CMDWebController(use_llm_fallback=use_llm, auto_install=auto_install)
+    return await controller.execute(command, dsl=dsl)
+
+
+# Flask/FastAPI integration example
+class NLP2CMDWebAPI:
+    """
+    Example web API integration for NLP2CMD.
+    
+    This class shows how to integrate NLP2CMD with web frameworks
+    like Flask or FastAPI.
+    """
+    
+    def __init__(self):
+        self.controller = NLP2CMDWebController(
+            output_dir="./web_generated",
+            use_llm_fallback=True,
+            auto_install=True
+        )
+    
+    async def process_command(self, command: str, dsl: str = "auto") -> dict[str, Any]:
+        """
+        Process command from web interface.
+        
+        Returns JSON-serializable result.
+        """
+        try:
+            result = await self.controller.execute(command, dsl)
+            
+            # Add web-specific metadata
+            result["web_api"] = {
+                "version": "1.0",
+                "timestamp": datetime.now().isoformat(),
+                "processed_by": "nlp2cmd-web-api",
+            }
+            
+            return result
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": f"Web API error: {str(e)}",
+                "web_api": {
+                    "version": "1.0",
+                    "timestamp": datetime.now().isoformat(),
+                    "error": True,
+                },
+            }
+    
+    def get_status(self) -> dict[str, Any]:
+        """Get API status and capabilities."""
+        return {
+            "status": "running",
+            "capabilities": {
+                "devops_commands": True,
+                "llm_fallback": True,
+                "auto_install": True,
+                "supported_dsls": ["shell", "docker", "kubernetes", "auto"],
+                "languages": ["pl", "en"],
+            },
+            "endpoints": {
+                "/process": "POST - Process natural language command",
+                "/status": "GET - Get API status",
+                "/history": "GET - Get command history",
+                "/services": "GET - List deployed services",
+            },
+        }
+    
+    def get_history(self, limit: int = 10) -> dict[str, Any]:
+        """Get command history."""
+        history = self.controller.deployment_history[-limit:]
+        return {
+            "status": "success",
+            "history": history,
+            "total": len(history),
+        }
+    
+    def get_services(self) -> dict[str, Any]:
+        """Get deployed services."""
+        services = {}
+        for name, config in self.controller.services.items():
+            services[name] = {
+                "type": config.service_type.value,
+                "port": config.port,
+                "image": config.image,
+                "status": "deployed",
+            }
+        
+        return {
+            "status": "success",
+            "services": services,
+            "total": len(services),
+        }
+
+
+# Example FastAPI endpoint definitions
+"""
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+class CommandRequest(BaseModel):
+    command: str
+    dsl: str = "auto"
+
+class CommandResponse(BaseModel):
+    status: str
+    message: str
+    command: Optional[str] = None
+    action: Optional[str] = None
+
+app = FastAPI(title="NLP2CMD Web API", version="1.0")
+nlp_api = NLP2CMDWebAPI()
+
+@app.post("/process", response_model=CommandResponse)
+async def process_command(request: CommandRequest):
+    result = await nlp_api.process_command(request.command, request.dsl)
+    if result["status"] == "error":
+        raise HTTPException(status_code=400, detail=result)
+    return result
+
+@app.get("/status")
+async def get_status():
+    return nlp_api.get_status()
+
+@app.get("/history")
+async def get_history(limit: int = 10):
+    return nlp_api.get_history(limit)
+
+@app.get("/services")
+async def get_services():
+    return nlp_api.get_services()
+"""
+
+# Example Flask endpoint definitions
+"""
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+nlp_api = NLP2CMDWebAPI()
+
+@app.route('/process', methods=['POST'])
+def process_command():
+    data = request.get_json()
+    if not data or 'command' not in data:
+        return jsonify({'error': 'Command required'}), 400
+    
+    command = data['command']
+    dsl = data.get('dsl', 'auto')
+    
+    # Run async function in Flask context
+    import asyncio
+    result = asyncio.run(nlp_api.process_command(command, dsl))
+    
+    if result['status'] == 'error':
+        return jsonify(result), 400
+    return jsonify(result)
+
+@app.route('/status')
+def get_status():
+    return jsonify(nlp_api.get_status())
+"""

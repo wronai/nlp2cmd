@@ -96,13 +96,16 @@ class RegexEntityExtractor:
     SHELL_PATTERNS: dict[str, list[str]] = {
         'path': [
             r'(?:w\s+)?(?:katalogu|folderze|ścieżce|directory|folder|path)?\s*[`"\']?([/~][\w\.\-/]+)[`"\']?',
+            r'(?:w\s+)?(?:katalogu|folderze|ścieżce|directory|folder|path)?\s*[`"\']?((?:\./|\.\./)[\w\.\-/]*|\.{1,2})[`"\']?',
             r'(?:do|from|to|z|in)\s+[`"\']?([/~][\w\.\-/]+)[`"\']?',
+            r'(?:do|from|to|z|in)\s+[`"\']?((?:\./|\.\./)[\w\.\-/]*|\.{1,2})[`"\']?',
             r'\s([/~][\w\.\-/]+)\s',
+            r'\s((?:\./|\.\./)[\w\.\-/]*|\.{1,2})\s',
         ],
         'file_pattern': [
             r'\*\.(\w+)',
             r'\.(\w+)\s+files?',
-            r'(?:pliki?|files?)\s+\.?(\w+)',
+            r'(?:pliki?|files?)\s+\.?((\w+))',
             r'(?:rozszerzenie|extension)\s+\.?(\w+)',
         ],
         'filename': [

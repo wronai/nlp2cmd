@@ -1,0 +1,17 @@
+{
+  "name": "chat-service",
+  "service_type": "chat_service",
+  "port": 8080,
+  "image": "nginx:alpine",
+  "env_vars": {
+    "PORT": "8080",
+    "REDIS_URL": "redis://redis:6379",
+    "WS_ENABLED": "true"
+  },
+  "volumes": [],
+  "depends_on": [
+    "redis"
+  ],
+  "healthcheck": null,
+  "replicas": 1
+}

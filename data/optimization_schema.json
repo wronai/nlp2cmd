@@ -1,0 +1,46 @@
+{
+  "$schema": "optimization_schema.v1",
+  "optimization_keywords": [
+    "zaplanuj",
+    "przydziel",
+    "optymalizuj",
+    "rozłóż",
+    "harmonogram",
+    "alokuj",
+    "rozdziel",
+    "zbalansuj",
+    "minimalizuj",
+    "maksymalizuj",
+    "zaplanu",
+    "optymali",
+    "rozloz",
+    "aloku",
+    "schedule",
+    "allocate",
+    "optimize",
+    "balance",
+    "distribute",
+    "assign",
+    "plan",
+    "minimize",
+    "maximize"
+  ],
+  "hard_optimization_keywords": [
+    "przydziel",
+    "allocate",
+    "zasob",
+    "zaplanuj",
+    "schedule",
+    "harmonogram",
+    "zad"
+  ],
+  "soft_optimization_keywords": [
+    "optymalizuj",
+    "optimize",
+    "rozłóż",
+    "balance",
+    "assign",
+    "route"
+  ],
+  "soft_complexity_threshold": 0.35
+}

@@ -7,6 +7,7 @@ from typing import Any, Optional
 
 from nlp2cmd.adapters.base import AdapterConfig, BaseDSLAdapter, SafetyPolicy
 from nlp2cmd.ir import ActionIR
+from nlp2cmd.web_schema.form_data_loader import FormDataLoader
 
 
 @dataclass
@@ -72,12 +73,8 @@ class BrowserAdapter(BaseDSLAdapter):
     @staticmethod
     def _extract_type_text(text: str) -> Optional[str]:
         """Extract text to type from patterns like 'wpisz w pole: nlp2cmd' or 'type: hello'."""
-        patterns = [
-            r'(?:wpisz|type|input|napisz)\s+(?:w\s+pole)?:?\s*(.+?)(?:\s*,?\s*(?:oraz|and|i)\s+(?:naciśnij|nacisnij|press|hit)\s+(?:enter|return)|$)',
-            r'(?:wpisz|type|input|napisz)\s+(?:tekst|text)?\s*["\'](.+?)["\']',
-            r'(?:wpisz|type)\s+(.+?)(?:\s+w\s+pole|\s+in\s+field|$)',
-        ]
-        
+        patterns = FormDataLoader().get_type_text_patterns()
+
         for pattern in patterns:
             m = re.search(pattern, text, flags=re.IGNORECASE)
             if m:
@@ -92,34 +89,35 @@ class BrowserAdapter(BaseDSLAdapter):
     @staticmethod
     def _has_type_action(text: str) -> bool:
         """Check if text contains typing action."""
-        type_keywords = ['wpisz', 'type', 'enter', 'input', 'napisz', 'wpisać']
-        return any(kw in text.lower() for kw in type_keywords)
+        type_keywords = FormDataLoader().get_nlp_keywords("typing")
+        tl = text.lower()
+        return any(kw in tl for kw in type_keywords)
     
     @staticmethod
     def _has_fill_form_action(text: str) -> bool:
         t = (text or "").lower()
-        return "wypełnij formularz" in t or "wypelnij formularz" in t or "fill form" in t
+        phrases = FormDataLoader().get_nlp_keywords("fill_form_phrases")
+        return any(p in t for p in phrases)
 
     @staticmethod
     def _has_press_enter(text: str) -> bool:
         t = (text or "").lower()
-        return "enter" in t or "naciśnij enter" in t or "nacisnij enter" in t or "wciśnij enter" in t or "wcisnij enter" in t
+        keywords = FormDataLoader().get_nlp_keywords("press_enter")
+        return any(k in t for k in keywords)
     
     @staticmethod
     def _has_form_action(text: str) -> bool:
         """Check if text contains form filling action."""
-        form_keywords = ['formularz', 'form', 'wypełnij', 'wypelnij', 'fill form', 'fill out']
-        return any(kw in text.lower() for kw in form_keywords)
+        form_keywords = FormDataLoader().get_nlp_keywords("form")
+        tl = text.lower()
+        return any(kw in tl for kw in form_keywords)
     
     @staticmethod
     def _has_submit_action(text: str) -> bool:
         """Check if text contains form submission intent."""
-        submit_keywords = [
-            'wyślij', 'wyslij', 'submit', 'send', 
-            'prześlij', 'przeslij', 'zatwierdź', 'zatwierdz',
-        ]
-        text_lower = text.lower()
-        return any(kw in text_lower for kw in submit_keywords)
+        submit_keywords = FormDataLoader().get_nlp_keywords("submit")
+        tl = text.lower()
+        return any(kw in tl for kw in submit_keywords)
     
     def generate(self, plan: dict[str, Any]) -> str:
         text = str(plan.get("text") or plan.get("query") or "")
@@ -148,7 +146,7 @@ class BrowserAdapter(BaseDSLAdapter):
 
         type_text = self._extract_type_text(text)
         if type_text and self._has_type_action(text):
-            actions.append({"action": "type", "selector": "input[name='q'], input[type='search'], textarea", "text": type_text})
+            actions.append({"action": "type", "selector": "__auto__", "text": type_text})
             params["type_text"] = type_text
             if action_id == "dom.goto":
                 action_id = "dom.goto_and_type"
@@ -219,6 +217,8 @@ class BrowserAdapter(BaseDSLAdapter):
                     continue
                 act = str(a.get("action") or "")
                 if act in {"goto", "navigate"}:
+                    continue
+                if act in {"fill_form", "submit"}:
                     continue
                 if act in {"type", "click", "press", "select"}:
                     if act in {"type", "click", "select"} and not str(a.get("selector") or ""):
