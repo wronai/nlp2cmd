@@ -1,0 +1,19 @@
+{
+  "command": "ps",
+  "description": "List running processes",
+  "category": "process",
+  "parameters": [],
+  "examples": [
+    "ps --help"
+  ],
+  "patterns": [
+    "ps"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": "ps aux",
+  "stored_at": "2026-01-23T15:43:09.948275",
+  "version": "1.0"
+}

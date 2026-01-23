@@ -1,0 +1,22 @@
+{
+  "command": "git",
+  "description": "Git is a distributed version control system that tracks changes in source code during software development. It allows multiple developers to work on the same project simultaneously, coordinating their efforts through shared repositories.",
+  "category": "development",
+  "parameters": [],
+  "examples": [
+    "git clone https://github.com/user/repo.git",
+    "git commit -m 'Add new feature'",
+    "git push origin main"
+  ],
+  "patterns": [
+    "git"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "git {{command}} {{options}}",
+  "stored_at": "2026-01-23T15:43:09.953243",
+  "version": "1.0"
+}

@@ -1,0 +1,22 @@
+{
+  "command": "docker-compose",
+  "description": "Docker Compose is a tool for defining and running multi-container Docker applications. It uses YAML files to configure services, networks, and volumes, then provides commands to create and start all the containers from your configuration.",
+  "category": "development",
+  "parameters": [],
+  "examples": [
+    "docker-compose up",
+    "docker-compose down",
+    "docker-compose build"
+  ],
+  "patterns": [
+    "docker-compose"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "docker-compose {{command}} {{file}}",
+  "stored_at": "2026-01-23T15:43:09.952220",
+  "version": "1.0"
+}

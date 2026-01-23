@@ -1,0 +1,21 @@
+{
+  "command": "node",
+  "description": "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. It allows developers to run JavaScript code outside of a web browser, enabling the development of server-side applications.",
+  "category": "development",
+  "parameters": [],
+  "examples": [
+    "node app.js",
+    "node script.js --option value"
+  ],
+  "patterns": [
+    "node"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "node {{script.js}} {{arguments}}",
+  "stored_at": "2026-01-23T15:43:10.005470",
+  "version": "1.0"
+}

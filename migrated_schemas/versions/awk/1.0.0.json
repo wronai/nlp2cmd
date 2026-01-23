@@ -1,0 +1,22 @@
+{
+  "command": "awk",
+  "version": "1.0.0",
+  "description": "The 'awk' command is a powerful text-processing tool that scans each input line, applying a pattern-action program to generate output. It is widely used for data extraction and reporting.",
+  "category": "text",
+  "parameters": [],
+  "examples": [
+    "awk '{print $1}' /etc/passwd",
+    "awk '$3 > 500 {print $1, $6}' /etc/passwd"
+  ],
+  "patterns": [
+    "awk"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.945428"
+  },
+  "template": "awk '{{print $1}}' {{file}}"
+}

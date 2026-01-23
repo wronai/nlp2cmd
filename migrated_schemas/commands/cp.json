@@ -1,0 +1,21 @@
+{
+  "command": "cp",
+  "description": "The cp command is used to copy files or directories from one location to another. It can also be used to duplicate files within the same directory.",
+  "category": "file",
+  "parameters": [],
+  "examples": [
+    "cp file.txt /home/user/documents",
+    "cp -r directory1 directory2"
+  ],
+  "patterns": [
+    "cp"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "cp {{source}} {{destination}}",
+  "stored_at": "2026-01-23T15:43:09.947389",
+  "version": "1.0"
+}

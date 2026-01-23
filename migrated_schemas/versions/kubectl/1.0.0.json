@@ -1,0 +1,20 @@
+{
+  "command": "kubectl",
+  "version": "1.0.0",
+  "description": "kubectl utility",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "kubectl --help"
+  ],
+  "patterns": [
+    "kubectl"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.952650"
+  },
+  "template": null
+}

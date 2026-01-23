@@ -1,0 +1,19 @@
+{
+  "command": "pkill",
+  "description": "pkill utility",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "pkill --help"
+  ],
+  "patterns": [
+    "pkill"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": null,
+  "stored_at": "2026-01-23T15:43:09.990722",
+  "version": "1.0"
+}

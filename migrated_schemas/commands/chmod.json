@@ -1,0 +1,21 @@
+{
+  "command": "chmod",
+  "description": "The chmod command is used to change the file mode bits of a specified file or directory. It allows you to set permissions for the owner, group, and others in terms of read, write, and execute access.",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "chmod 755 /path/to/file",
+    "chmod u+x script.sh"
+  ],
+  "patterns": [
+    "chmod"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "chmod {{permissions}} {{file}}",
+  "stored_at": "2026-01-23T15:43:09.962306",
+  "version": "1.0"
+}

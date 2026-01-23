@@ -1,0 +1,885 @@
+{
+  "version": "1.0",
+  "created": "2026-01-23T15:43:09.935991",
+  "last_updated": "2026-01-23T15:43:10.023412",
+  "commands": {
+    "find": {
+      "file": "commands/find.json",
+      "category": "file",
+      "source_type": "updated",
+      "last_updated": "2026-01-23T15:43:10.021392",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "grep": {
+      "file": "commands/grep.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.937591",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "sed": {
+      "file": "commands/sed.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.938087",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "awk": {
+      "file": "commands/awk.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.945609",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "ls": {
+      "file": "commands/ls.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.946051",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "mkdir": {
+      "file": "commands/mkdir.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.946465",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "rm": {
+      "file": "commands/rm.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.946994",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "cp": {
+      "file": "commands/cp.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.947476",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "mv": {
+      "file": "commands/mv.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.947936",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "ps": {
+      "file": "commands/ps.json",
+      "category": "process",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.948600",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "top": {
+      "file": "commands/top.json",
+      "category": "process",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.949106",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "kill": {
+      "file": "commands/kill.json",
+      "category": "process",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.949573",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "killall": {
+      "file": "commands/killall.json",
+      "category": "process",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.950170",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "systemctl": {
+      "file": "commands/systemctl.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.950836",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "service": {
+      "file": "commands/service.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.951319",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "docker": {
+      "file": "commands/docker.json",
+      "category": "development",
+      "source_type": "docker_v1",
+      "last_updated": "2026-01-23T15:43:10.023406",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "docker-compose": {
+      "file": "commands/docker-compose.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.952310",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "kubectl": {
+      "file": "commands/kubectl.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.952832",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "git": {
+      "file": "commands/git.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.953329",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "curl": {
+      "file": "commands/curl.json",
+      "category": "network",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.953839",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "wget": {
+      "file": "commands/wget.json",
+      "category": "network",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.954312",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "ping": {
+      "file": "commands/ping.json",
+      "category": "network",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.954875",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "netstat": {
+      "file": "commands/netstat.json",
+      "category": "network",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.955420",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "ss": {
+      "file": "commands/ss.json",
+      "category": "network",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.955970",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "lsof": {
+      "file": "commands/lsof.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.956658",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "df": {
+      "file": "commands/df.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.957218",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "du": {
+      "file": "commands/du.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.958257",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "free": {
+      "file": "commands/free.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.959039",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "uname": {
+      "file": "commands/uname.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.959888",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "whoami": {
+      "file": "commands/whoami.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.960790",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "id": {
+      "file": "commands/id.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.961609",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "chmod": {
+      "file": "commands/chmod.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.962442",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "chown": {
+      "file": "commands/chown.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.963193",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "chgrp": {
+      "file": "commands/chgrp.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.963835",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "tar": {
+      "file": "commands/tar.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.964434",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "zip": {
+      "file": "commands/zip.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.965019",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "unzip": {
+      "file": "commands/unzip.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.965632",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "gzip": {
+      "file": "commands/gzip.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.966253",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "gunzip": {
+      "file": "commands/gunzip.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.966911",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "ssh": {
+      "file": "commands/ssh.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.967524",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "scp": {
+      "file": "commands/scp.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.968181",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "rsync": {
+      "file": "commands/rsync.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.968908",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "history": {
+      "file": "commands/history.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.969502",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "echo": {
+      "file": "commands/echo.json",
+      "category": "shell",
+      "source_type": "shell_help",
+      "last_updated": "2026-01-23T15:43:09.970502",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "printf": {
+      "file": "commands/printf.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.971266",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "cat": {
+      "file": "commands/cat.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.971984",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "less": {
+      "file": "commands/less.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.972861",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "more": {
+      "file": "commands/more.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.973553",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "head": {
+      "file": "commands/head.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.974209",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "tail": {
+      "file": "commands/tail.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.974936",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "sort": {
+      "file": "commands/sort.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.975626",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "uniq": {
+      "file": "commands/uniq.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.976319",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "wc": {
+      "file": "commands/wc.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.977090",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "tr": {
+      "file": "commands/tr.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.977810",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "cut": {
+      "file": "commands/cut.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.978513",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "paste": {
+      "file": "commands/paste.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.979254",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "join": {
+      "file": "commands/join.json",
+      "category": "file|text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.979993",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "split": {
+      "file": "commands/split.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.980802",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "xargs": {
+      "file": "commands/xargs.json",
+      "category": "process",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.981550",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "which": {
+      "file": "commands/which.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.982284",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "whereis": {
+      "file": "commands/whereis.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.983411",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "man": {
+      "file": "commands/man.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.984190",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "info": {
+      "file": "commands/info.json",
+      "category": "file",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.984956",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "date": {
+      "file": "commands/date.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.985740",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "uptime": {
+      "file": "commands/uptime.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.986516",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "time": {
+      "file": "commands/time.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.987329",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "sleep": {
+      "file": "commands/sleep.json",
+      "category": "system",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.988109",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "watch": {
+      "file": "commands/watch.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.988929",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "nohup": {
+      "file": "commands/nohup.json",
+      "category": "process",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.989755",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "pkill": {
+      "file": "commands/pkill.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.990812",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "pgrep": {
+      "file": "commands/pgrep.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.991612",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "pidof": {
+      "file": "commands/pidof.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.992447",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "nice": {
+      "file": "commands/nice.json",
+      "category": "process",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.993298",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "renice": {
+      "file": "commands/renice.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.994105",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "ionice": {
+      "file": "commands/ionice.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.994965",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "timeout": {
+      "file": "commands/timeout.json",
+      "category": "process",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.995869",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "flock": {
+      "file": "commands/flock.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.996864",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "screen": {
+      "file": "commands/screen.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.998029",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "vim": {
+      "file": "commands/vim.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:09.998903",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "nano": {
+      "file": "commands/nano.json",
+      "category": "text",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:09.999871",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "code": {
+      "file": "commands/code.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:10.000767",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "python": {
+      "file": "commands/python.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:10.001621",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "python3": {
+      "file": "commands/python3.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:10.002710",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "pip": {
+      "file": "commands/pip.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:10.003623",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "pip3": {
+      "file": "commands/pip3.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:10.004608",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "node": {
+      "file": "commands/node.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:10.005588",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "gcc": {
+      "file": "commands/gcc.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:10.006946",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "make": {
+      "file": "commands/make.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:10.008514",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "cmake": {
+      "file": "commands/cmake.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:10.009922",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "cargo": {
+      "file": "commands/cargo.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:10.011116",
+      "examples_count": 4,
+      "has_template": true
+    },
+    "rustc": {
+      "file": "commands/rustc.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:10.012403",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "ruby": {
+      "file": "commands/ruby.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:10.013472",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "gem": {
+      "file": "commands/gem.json",
+      "category": "system",
+      "source_type": "predefined_template",
+      "last_updated": "2026-01-23T15:43:10.014497",
+      "examples_count": 1,
+      "has_template": false
+    },
+    "perl": {
+      "file": "commands/perl.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:10.015519",
+      "examples_count": 3,
+      "has_template": true
+    },
+    "php": {
+      "file": "commands/php.json",
+      "category": "development",
+      "source_type": "llm_enhanced",
+      "last_updated": "2026-01-23T15:43:10.016806",
+      "examples_count": 2,
+      "has_template": true
+    }
+  },
+  "categories": {
+    "file": [
+      "find",
+      "ls",
+      "rm",
+      "cp",
+      "mv",
+      "unzip",
+      "gzip",
+      "gunzip",
+      "rsync",
+      "cat",
+      "head",
+      "tail",
+      "split",
+      "info"
+    ],
+    "text": [
+      "grep",
+      "sed",
+      "awk",
+      "printf",
+      "sort",
+      "uniq",
+      "wc",
+      "tr",
+      "cut",
+      "paste",
+      "nano"
+    ],
+    "system": [
+      "mkdir",
+      "systemctl",
+      "service",
+      "docker",
+      "kubectl",
+      "lsof",
+      "df",
+      "du",
+      "free",
+      "uname",
+      "whoami",
+      "id",
+      "chmod",
+      "chown",
+      "chgrp",
+      "tar",
+      "zip",
+      "ssh",
+      "scp",
+      "history",
+      "less",
+      "more",
+      "which",
+      "whereis",
+      "man",
+      "date",
+      "uptime",
+      "time",
+      "sleep",
+      "watch",
+      "pkill",
+      "pgrep",
+      "pidof",
+      "renice",
+      "ionice",
+      "flock",
+      "screen",
+      "vim",
+      "python",
+      "pip",
+      "pip3",
+      "cmake",
+      "gem"
+    ],
+    "process": [
+      "ps",
+      "top",
+      "kill",
+      "killall",
+      "xargs",
+      "nohup",
+      "nice",
+      "timeout"
+    ],
+    "development": [
+      "docker-compose",
+      "git",
+      "code",
+      "python3",
+      "node",
+      "gcc",
+      "make",
+      "cargo",
+      "rustc",
+      "ruby",
+      "perl",
+      "php",
+      "docker"
+    ],
+    "network": [
+      "curl",
+      "wget",
+      "ping",
+      "netstat",
+      "ss"
+    ],
+    "shell": [
+      "echo"
+    ],
+    "file|text": [
+      "join"
+    ]
+  },
+  "stats": {
+    "total_commands": 95,
+    "total_categories": 8
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "command": "mv",
+  "version": "1.0.0",
+  "description": "The 'mv' command is used to move files or directories from one location to another, or to rename them. It can also be used to change the directory of a file without renaming it.",
+  "category": "file",
+  "parameters": [],
+  "examples": [
+    "mv /home/user/documents/report.txt /backup/",
+    "mv oldname.txt newname.txt"
+  ],
+  "patterns": [
+    "mv"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.947772"
+  },
+  "template": "mv {{source}} {{destination}}"
+}

@@ -1,0 +1,22 @@
+{
+  "command": "chown",
+  "version": "1.0.0",
+  "description": "The chown command is used to change the owner and group of files or directories. It allows system administrators to assign ownership and permissions, ensuring that only authorized users can access and modify critical system files.",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "chown user1:group1 /path/to/file",
+    "chown root:root /etc/passwd"
+  ],
+  "patterns": [
+    "chown"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.963017"
+  },
+  "template": "chown {{OWNER}}:{{GROUP}} {{FILE}}"
+}

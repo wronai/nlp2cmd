@@ -1,0 +1,21 @@
+{
+  "command": "wget",
+  "description": "Wget is a network utility to download files from the web. It supports HTTP, HTTPS, and FTP protocols, as well as retrieval through HTTP proxies.",
+  "category": "network",
+  "parameters": [],
+  "examples": [
+    "wget http://example.com/file.zip",
+    "wget https://example.com/data.json"
+  ],
+  "patterns": [
+    "wget"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "wget {{URL}}",
+  "stored_at": "2026-01-23T15:43:09.954230",
+  "version": "1.0"
+}

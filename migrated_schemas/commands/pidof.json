@@ -1,0 +1,19 @@
+{
+  "command": "pidof",
+  "description": "pidof utility",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "pidof --help"
+  ],
+  "patterns": [
+    "pidof"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": null,
+  "stored_at": "2026-01-23T15:43:09.992362",
+  "version": "1.0"
+}

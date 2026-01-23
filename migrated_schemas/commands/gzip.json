@@ -1,0 +1,21 @@
+{
+  "command": "gzip",
+  "description": "Compresses files using the GNU zip format to reduce their size.",
+  "category": "file",
+  "parameters": [],
+  "examples": [
+    "gzip report.txt",
+    "gzip -r project_folder"
+  ],
+  "patterns": [
+    "gzip"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "gzip {{FILE}}",
+  "stored_at": "2026-01-23T15:43:09.966168",
+  "version": "1.0"
+}

@@ -1,0 +1,23 @@
+{
+  "command": "cargo",
+  "description": "Cargo is a package manager, build system, and more for Rust. It helps manage dependencies, build projects, run tests, and publish packages to crates.io.",
+  "category": "development",
+  "parameters": [],
+  "examples": [
+    "cargo build",
+    "cargo test",
+    "cargo run",
+    "cargo new my_project"
+  ],
+  "patterns": [
+    "cargo"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "cargo {{command}} {{options}}",
+  "stored_at": "2026-01-23T15:43:10.011012",
+  "version": "1.0"
+}

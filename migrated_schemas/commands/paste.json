@@ -1,0 +1,21 @@
+{
+  "command": "paste",
+  "description": "The paste command is used to merge lines from multiple files or standard input into a single output line, separated by tabs.",
+  "category": "text",
+  "parameters": [],
+  "examples": [
+    "paste file1.txt file2.txt",
+    "paste -d ',' file1.txt file2.txt"
+  ],
+  "patterns": [
+    "paste"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "paste {{FILE}}...",
+  "stored_at": "2026-01-23T15:43:09.979166",
+  "version": "1.0"
+}

@@ -1,0 +1,19 @@
+{
+  "command": "top",
+  "description": "Display running processes dynamically",
+  "category": "process",
+  "parameters": [],
+  "examples": [
+    "top --help"
+  ],
+  "patterns": [
+    "top"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": "top",
+  "stored_at": "2026-01-23T15:43:09.949022",
+  "version": "1.0"
+}

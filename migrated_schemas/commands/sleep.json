@@ -1,0 +1,22 @@
+{
+  "command": "sleep",
+  "description": "The sleep command is used to pause the execution of a script or program for a specified amount of time. This can be useful for creating delays, waiting for processes to complete, or synchronizing actions.",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "sleep 5",
+    "sleep 1m",
+    "sleep 30s"
+  ],
+  "patterns": [
+    "sleep"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "sleep {{duration}} {{suffix}}",
+  "stored_at": "2026-01-23T15:43:09.988016",
+  "version": "1.0"
+}

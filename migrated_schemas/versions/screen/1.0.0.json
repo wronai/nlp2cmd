@@ -1,0 +1,20 @@
+{
+  "command": "screen",
+  "version": "1.0.0",
+  "description": "screen utility",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "screen --help"
+  ],
+  "patterns": [
+    "screen"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.997843"
+  },
+  "template": null
+}

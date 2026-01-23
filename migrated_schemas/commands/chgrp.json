@@ -1,0 +1,21 @@
+{
+  "command": "chgrp",
+  "description": "The chgrp command is used to change the group ownership of files or directories. It allows you to assign a new group to one or more files, which can affect file permissions and access control.",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "chgrp developers /path/to/project",
+    "chgrp staff /home/user/documents"
+  ],
+  "patterns": [
+    "chgrp"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "chgrp {{GROUP}} {{FILE}}",
+  "stored_at": "2026-01-23T15:43:09.963740",
+  "version": "1.0"
+}

@@ -1,0 +1,22 @@
+{
+  "command": "rustc",
+  "version": "1.0.0",
+  "description": "The rustc command is the Rust compiler, which compiles Rust source code into executable programs or libraries.",
+  "category": "development",
+  "parameters": [],
+  "examples": [
+    "rustc main.rs",
+    "rustc --crate-type lib mylib.rs"
+  ],
+  "patterns": [
+    "rustc"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:10.012196"
+  },
+  "template": "rustc {{input}}"
+}

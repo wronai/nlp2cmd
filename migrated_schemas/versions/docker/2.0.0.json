@@ -1,0 +1,57 @@
+{
+  "command": "docker",
+  "version": "2.0.0",
+  "description": "Docker container management with swarm (v2.x)",
+  "category": "development",
+  "parameters": [
+    {
+      "name": "action",
+      "type": "string",
+      "description": "Action to perform",
+      "required": true,
+      "default": null,
+      "choices": [
+        "run",
+        "ps",
+        "stop",
+        "rm",
+        "images",
+        "service",
+        "stack",
+        "swarm"
+      ],
+      "pattern": null,
+      "location": "unknown"
+    },
+    {
+      "name": "orchestration",
+      "type": "boolean",
+      "description": "Use swarm orchestration",
+      "required": false,
+      "default": false,
+      "choices": [],
+      "pattern": null,
+      "location": "unknown"
+    }
+  ],
+  "examples": [
+    "docker run ubuntu",
+    "docker service create nginx",
+    "docker stack deploy mystack",
+    "docker swarm init"
+  ],
+  "patterns": [
+    "docker"
+  ],
+  "source_type": "docker_v2",
+  "metadata": {
+    "docker_version": "2.x",
+    "api_version": "v1.41",
+    "features": [
+      "swarm"
+    ],
+    "version": "2.0.0",
+    "stored_at": "2026-01-23T15:43:10.024234"
+  },
+  "template": "docker {action} {orchestration_options} {options}"
+}

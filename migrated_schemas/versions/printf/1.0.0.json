@@ -1,0 +1,22 @@
+{
+  "command": "printf",
+  "version": "1.0.0",
+  "description": "The printf command is a utility in Unix-like operating systems that interprets and formats data according to a specified format string. It outputs the formatted data to the standard output (usually the terminal).",
+  "category": "text",
+  "parameters": [],
+  "examples": [
+    "printf \"Hello, %s!\\n\" \"World\"",
+    "printf \"%d is an integer.\\n\" 42"
+  ],
+  "patterns": [
+    "printf"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.971033"
+  },
+  "template": "printf \"{{format}}\" {{arguments}}"
+}

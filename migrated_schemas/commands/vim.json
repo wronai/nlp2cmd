@@ -1,0 +1,19 @@
+{
+  "command": "vim",
+  "description": "vim utility",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "vim --help"
+  ],
+  "patterns": [
+    "vim"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": null,
+  "stored_at": "2026-01-23T15:43:09.998818",
+  "version": "1.0"
+}

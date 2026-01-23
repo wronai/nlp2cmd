@@ -1,0 +1,23 @@
+{
+  "command": "date",
+  "version": "1.0.0",
+  "description": "The 'date' command is used to display or set the system date and time. It can also format the output according to a specified pattern.",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "date",
+    "date +%Y-%m-%d",
+    "date -s '2023-10-05'"
+  ],
+  "patterns": [
+    "date"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.985554"
+  },
+  "template": "date {{+FORMAT}}"
+}

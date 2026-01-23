@@ -1,0 +1,22 @@
+{
+  "command": "php",
+  "version": "1.0.0",
+  "description": "The PHP command is a widely-used scripting language interpreter that executes PHP code. It can run scripts from files, read from standard input, or interactively through a shell interface.",
+  "category": "development",
+  "parameters": [],
+  "examples": [
+    "php -f script.php",
+    "php -f script.php arg1 arg2"
+  ],
+  "patterns": [
+    "php"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:10.016597"
+  },
+  "template": "php -f {{file}} {{--}} {{args...}}"
+}

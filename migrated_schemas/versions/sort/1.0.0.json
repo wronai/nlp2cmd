@@ -1,0 +1,22 @@
+{
+  "command": "sort",
+  "version": "1.0.0",
+  "description": "Sorts lines of text files or standard input alphabetically or numerically.",
+  "category": "text",
+  "parameters": [],
+  "examples": [
+    "sort file.txt",
+    "sort -n numbers.txt"
+  ],
+  "patterns": [
+    "sort"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.975458"
+  },
+  "template": "sort {{FILE}}"
+}

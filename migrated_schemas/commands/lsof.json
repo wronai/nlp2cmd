@@ -1,0 +1,19 @@
+{
+  "command": "lsof",
+  "description": "List open files",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "lsof --help"
+  ],
+  "patterns": [
+    "lsof"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": "lsof -i :{port}",
+  "stored_at": "2026-01-23T15:43:09.956518",
+  "version": "1.0"
+}

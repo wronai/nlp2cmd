@@ -1,0 +1,22 @@
+{
+  "command": "gcc",
+  "version": "1.0.0",
+  "description": "GCC (GNU Compiler Collection) is a set of compilers and tools that are used to compile C, C++, Objective-C, Fortran, Ada, and Go programming languages into machine code.",
+  "category": "development",
+  "parameters": [],
+  "examples": [
+    "gcc -o myprogram mycode.c",
+    "gcc -Wall -O2 main.cpp"
+  ],
+  "patterns": [
+    "gcc"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:10.006687"
+  },
+  "template": "gcc {{options}} {{file...}}"
+}

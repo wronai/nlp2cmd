@@ -1,0 +1,43 @@
+{
+  "command": "find",
+  "version": "2.0.0",
+  "description": "Advanced file search with regex and exec capabilities",
+  "category": "file",
+  "parameters": [
+    {
+      "name": "regex",
+      "type": "boolean",
+      "description": "Use regex for pattern matching",
+      "required": false,
+      "default": false,
+      "choices": [],
+      "pattern": null,
+      "location": "unknown"
+    },
+    {
+      "name": "exec",
+      "type": "string",
+      "description": "Execute command on found files",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "unknown"
+    }
+  ],
+  "examples": [
+    "find . -regex '.*\\.py$'",
+    "find /tmp -type f -exec rm -f {} \\;",
+    "find . -name '*.log' -mtime +30 -exec gzip {} \\;"
+  ],
+  "patterns": [
+    "find"
+  ],
+  "source_type": "major_update",
+  "metadata": {
+    "version": "2.0.0",
+    "breaking_changes": true,
+    "stored_at": "2026-01-23T15:43:10.022406"
+  },
+  "template": "find {path} -{options} -{regex} -name '{pattern}' -exec {exec}"
+}

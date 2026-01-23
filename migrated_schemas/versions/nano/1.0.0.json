@@ -1,0 +1,22 @@
+{
+  "command": "nano",
+  "version": "1.0.0",
+  "description": "Nano is a small, friendly text editor written by Joe Travers. It is designed to be an easy-to-use alternative to other text editors like vi or emacs.",
+  "category": "text",
+  "parameters": [],
+  "examples": [
+    "nano README.md",
+    "nano config.txt"
+  ],
+  "patterns": [
+    "nano"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.999698"
+  },
+  "template": "nano {{FILE}}"
+}

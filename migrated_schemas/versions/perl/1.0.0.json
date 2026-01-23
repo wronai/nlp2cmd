@@ -1,0 +1,23 @@
+{
+  "command": "perl",
+  "version": "1.0.0",
+  "description": "Perl is a powerful, high-level programming language known for its simplicity and versatility. It is widely used for scripting, web development, system administration, network programming, and more.",
+  "category": "development",
+  "parameters": [],
+  "examples": [
+    "perl script.pl",
+    "perl -e 'print \"Hello, World!\\n\"'",
+    "perl -MCPAN -e shell"
+  ],
+  "patterns": [
+    "perl"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:10.015332"
+  },
+  "template": "perl {{programfile}} {{arguments}}"
+}

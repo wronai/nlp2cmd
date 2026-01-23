@@ -1,0 +1,22 @@
+{
+  "command": "nice",
+  "version": "1.0.0",
+  "description": "The nice command is used to run a program with an adjusted niceness value, which affects the priority of the process. Higher niceness values mean lower priority.",
+  "category": "process",
+  "parameters": [],
+  "examples": [
+    "nice -n 10 ls",
+    "nice -n 5 sleep 60"
+  ],
+  "patterns": [
+    "nice"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.993131"
+  },
+  "template": "nice -n {{niceness}} {{command}}"
+}

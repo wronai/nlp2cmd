@@ -1,0 +1,19 @@
+{
+  "command": "ssh",
+  "description": "ssh utility",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "ssh --help"
+  ],
+  "patterns": [
+    "ssh"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": null,
+  "stored_at": "2026-01-23T15:43:09.967441",
+  "version": "1.0"
+}

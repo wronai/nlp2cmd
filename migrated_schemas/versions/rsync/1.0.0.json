@@ -1,0 +1,22 @@
+{
+  "command": "rsync",
+  "version": "1.0.0",
+  "description": "rsync is a fast, versatile file-copying tool that can synchronize files and directories between two locations, either locally or over a network. It supports incremental updates, compression, and various options for controlling the transfer process.",
+  "category": "file",
+  "parameters": [],
+  "examples": [
+    "rsync -avz /home/user/documents/ user@remotehost:/backup/",
+    "rsync -P /var/log/ /mnt/backup/logs/"
+  ],
+  "patterns": [
+    "rsync"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.968737"
+  },
+  "template": "rsync {{options}} {{source}} {{destination}}"
+}

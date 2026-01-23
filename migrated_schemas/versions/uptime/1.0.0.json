@@ -1,0 +1,20 @@
+{
+  "command": "uptime",
+  "version": "1.0.0",
+  "description": "Tell how long the system has been running",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "uptime --help"
+  ],
+  "patterns": [
+    "uptime"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.986330"
+  },
+  "template": "uptime"
+}

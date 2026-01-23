@@ -1,0 +1,22 @@
+{
+  "command": "netstat",
+  "description": "The netstat command is a network statistics utility that displays network connections, routing tables, interface statistics, masquerade connections, and multicast memberships.",
+  "category": "network",
+  "parameters": [],
+  "examples": [
+    "netstat -an",
+    "netstat -tuln",
+    "netstat --version"
+  ],
+  "patterns": [
+    "netstat"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "netstat {{-vWeenNcCF}} {{<Af>}} -r         netstat {{-V|--version|-h|--help}}",
+  "stored_at": "2026-01-23T15:43:09.955314",
+  "version": "1.0"
+}

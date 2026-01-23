@@ -1,0 +1,19 @@
+{
+  "command": "killall",
+  "description": "Kill processes by name",
+  "category": "process",
+  "parameters": [],
+  "examples": [
+    "killall --help"
+  ],
+  "patterns": [
+    "killall"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": "killall {process}",
+  "stored_at": "2026-01-23T15:43:09.950053",
+  "version": "1.0"
+}

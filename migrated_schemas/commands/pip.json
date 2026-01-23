@@ -1,0 +1,19 @@
+{
+  "command": "pip",
+  "description": "pip utility",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "pip --help"
+  ],
+  "patterns": [
+    "pip"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": null,
+  "stored_at": "2026-01-23T15:43:10.003531",
+  "version": "1.0"
+}

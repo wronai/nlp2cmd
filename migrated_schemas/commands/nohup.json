@@ -1,0 +1,21 @@
+{
+  "command": "nohup",
+  "description": "The 'nohup' command is used to run a specified command immune to hangups, with output appended to a file, by default 'nohup.out'.",
+  "category": "process",
+  "parameters": [],
+  "examples": [
+    "nohup python myscript.py > output.log 2>&1 &",
+    "nohup ./myprogram.sh > program_output.txt 2>&1 &"
+  ],
+  "patterns": [
+    "nohup"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "nohup {{command}} > {{output_file}} 2>&1 &",
+  "stored_at": "2026-01-23T15:43:09.989629",
+  "version": "1.0"
+}

@@ -1,0 +1,19 @@
+{
+  "command": "ss",
+  "description": "Display socket statistics",
+  "category": "network",
+  "parameters": [],
+  "examples": [
+    "ss --help"
+  ],
+  "patterns": [
+    "ss"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": "ss -tuln",
+  "stored_at": "2026-01-23T15:43:09.955888",
+  "version": "1.0"
+}

@@ -1,0 +1,20 @@
+{
+  "command": "which",
+  "version": "1.0.0",
+  "description": "Locate a command in the PATH",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "which --help"
+  ],
+  "patterns": [
+    "which"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.982120"
+  },
+  "template": "which {command}"
+}

@@ -1,0 +1,20 @@
+{
+  "command": "whereis",
+  "version": "1.0.0",
+  "description": "Locate binary and manual files",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "whereis --help"
+  ],
+  "patterns": [
+    "whereis"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.983244"
+  },
+  "template": "whereis {command}"
+}

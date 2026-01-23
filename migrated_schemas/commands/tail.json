@@ -1,0 +1,21 @@
+{
+  "command": "tail",
+  "description": "The 'tail' command is used to display the last part of a file, typically the last 10 lines. It is useful for monitoring log files or following new entries in real-time.",
+  "category": "file",
+  "parameters": [],
+  "examples": [
+    "tail /var/log/syslog",
+    "tail -n 50 /path/to/file.txt"
+  ],
+  "patterns": [
+    "tail"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "tail -f {{FILE}}",
+  "stored_at": "2026-01-23T15:43:09.974847",
+  "version": "1.0"
+}

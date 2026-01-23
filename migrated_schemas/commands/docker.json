@@ -1,0 +1,39 @@
+{
+  "command": "docker",
+  "description": "Docker container management (v1.x)",
+  "category": "development",
+  "parameters": [
+    {
+      "name": "action",
+      "type": "string",
+      "description": "Action to perform",
+      "required": true,
+      "default": null,
+      "choices": [
+        "run",
+        "ps",
+        "stop",
+        "rm",
+        "images"
+      ],
+      "pattern": null,
+      "location": "unknown"
+    }
+  ],
+  "examples": [
+    "docker run ubuntu",
+    "docker ps",
+    "docker stop container_id"
+  ],
+  "patterns": [
+    "docker"
+  ],
+  "source_type": "docker_v1",
+  "metadata": {
+    "docker_version": "1.x",
+    "api_version": "v1.23"
+  },
+  "template": "docker {action} {options}",
+  "stored_at": "2026-01-23T15:43:10.023270",
+  "version": "1.0"
+}

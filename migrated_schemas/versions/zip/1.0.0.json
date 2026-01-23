@@ -1,0 +1,20 @@
+{
+  "command": "zip",
+  "version": "1.0.0",
+  "description": "zip utility",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "zip --help"
+  ],
+  "patterns": [
+    "zip"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.964858"
+  },
+  "template": null
+}

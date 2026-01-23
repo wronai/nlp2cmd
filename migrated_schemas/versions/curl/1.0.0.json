@@ -1,0 +1,22 @@
+{
+  "command": "curl",
+  "version": "1.0.0",
+  "description": "The curl command is a versatile tool for transferring data with URLs. It supports various protocols including HTTP, HTTPS, FTP, and more. It can be used to download files, upload data, or interact with web services.",
+  "category": "network",
+  "parameters": [],
+  "examples": [
+    "curl https://www.example.com",
+    "curl -X POST -d 'name=John&age=30' https://api.example.com/user"
+  ],
+  "patterns": [
+    "curl"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.953675"
+  },
+  "template": "curl {{url}}"
+}

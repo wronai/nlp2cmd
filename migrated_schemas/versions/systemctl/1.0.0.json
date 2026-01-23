@@ -1,0 +1,20 @@
+{
+  "command": "systemctl",
+  "version": "1.0.0",
+  "description": "Control systemd services",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "systemctl --help"
+  ],
+  "patterns": [
+    "systemctl"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.950601"
+  },
+  "template": "systemctl {action} {service}"
+}

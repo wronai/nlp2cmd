@@ -1,0 +1,21 @@
+{
+  "command": "make",
+  "description": "The 'make' command is a build automation tool that reads files called Makefiles which specify how to derive the target program. It automatically builds executable programs and libraries from source code by using rules in the Makefile.",
+  "category": "development",
+  "parameters": [],
+  "examples": [
+    "make all",
+    "make clean"
+  ],
+  "patterns": [
+    "make"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "make {{target}}",
+  "stored_at": "2026-01-23T15:43:10.008377",
+  "version": "1.0"
+}

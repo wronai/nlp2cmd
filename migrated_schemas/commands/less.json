@@ -1,0 +1,19 @@
+{
+  "command": "less",
+  "description": "less utility",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "less --help"
+  ],
+  "patterns": [
+    "less"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": null,
+  "stored_at": "2026-01-23T15:43:09.972742",
+  "version": "1.0"
+}

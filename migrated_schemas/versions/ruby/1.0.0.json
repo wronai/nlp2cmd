@@ -1,0 +1,23 @@
+{
+  "command": "ruby",
+  "version": "1.0.0",
+  "description": "Ruby is a dynamic, open-source programming language with a focus on simplicity and productivity. It has an elegant syntax that is natural to read and easy to write.",
+  "category": "development",
+  "parameters": [],
+  "examples": [
+    "ruby script.rb",
+    "ruby -e 'puts \"Hello, World!\"'",
+    "ruby --version"
+  ],
+  "patterns": [
+    "ruby"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:10.013281"
+  },
+  "template": "ruby {{programfile}} {{arguments}}"
+}

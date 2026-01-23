@@ -1,0 +1,19 @@
+{
+  "command": "service",
+  "description": "Run System V init scripts",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "service --help"
+  ],
+  "patterns": [
+    "service"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": "service {name} {action}",
+  "stored_at": "2026-01-23T15:43:09.951235",
+  "version": "1.0"
+}

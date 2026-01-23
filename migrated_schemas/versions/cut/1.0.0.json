@@ -1,0 +1,22 @@
+{
+  "command": "cut",
+  "version": "1.0.0",
+  "description": "The cut command is used to extract sections from each line of files. It can split lines into fields based on delimiters or character positions.",
+  "category": "text",
+  "parameters": [],
+  "examples": [
+    "cut -d ',' -f 1,3 input.csv",
+    "cut -c 1-5 input.txt"
+  ],
+  "patterns": [
+    "cut"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.978341"
+  },
+  "template": "cut -d {{delimiter}} -f {{fields}} {{file}}"
+}

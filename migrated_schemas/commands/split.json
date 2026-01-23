@@ -1,0 +1,21 @@
+{
+  "command": "split",
+  "description": "The split command is used to split a file into smaller files of a specified size or number of lines. This can be useful for distributing large files across multiple storage devices or for processing large files in chunks.",
+  "category": "file",
+  "parameters": [],
+  "examples": [
+    "split -b 100M largefile.txt",
+    "split -l 1000 largefile.txt"
+  ],
+  "patterns": [
+    "split"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "split -b {{size}}M {{input}}",
+  "stored_at": "2026-01-23T15:43:09.980708",
+  "version": "1.0"
+}

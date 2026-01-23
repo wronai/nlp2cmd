@@ -1,0 +1,20 @@
+{
+  "command": "history",
+  "version": "1.0.0",
+  "description": "Display command history",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "history --help"
+  ],
+  "patterns": [
+    "history"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true,
+    "version": "1.0.0",
+    "stored_at": "2026-01-23T15:43:09.969340"
+  },
+  "template": "history {count}"
+}

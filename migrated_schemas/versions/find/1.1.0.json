@@ -1,0 +1,46 @@
+{
+  "command": "find",
+  "version": "1.1.0",
+  "description": "Search for files with size and time constraints",
+  "category": "file",
+  "parameters": [
+    {
+      "name": "size",
+      "type": "string",
+      "description": "File size filter (e.g., '+100M', '-1K')",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "unknown"
+    },
+    {
+      "name": "mtime",
+      "type": "string",
+      "description": "Modification time filter (e.g., '-7', '+30')",
+      "required": false,
+      "default": null,
+      "choices": [],
+      "pattern": null,
+      "location": "unknown"
+    }
+  ],
+  "examples": [
+    "find . -name '*.py'",
+    "find /home -size +100M -mtime -7",
+    "find . -mtime -30 -name '*.log'"
+  ],
+  "patterns": [
+    "find"
+  ],
+  "source_type": "updated",
+  "metadata": {
+    "version": "1.1.0",
+    "features": [
+      "size_filter",
+      "time_filter"
+    ],
+    "stored_at": "2026-01-23T15:43:10.021124"
+  },
+  "template": "find {path} -name '{pattern}' -size {size} -mtime {mtime}"
+}

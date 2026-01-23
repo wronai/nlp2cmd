@@ -1,0 +1,19 @@
+{
+  "command": "kill",
+  "description": "Send a signal to a process",
+  "category": "process",
+  "parameters": [],
+  "examples": [
+    "kill --help"
+  ],
+  "patterns": [
+    "kill"
+  ],
+  "source_type": "predefined_template",
+  "metadata": {
+    "predefined": true
+  },
+  "template": "kill -{signal} {pid}",
+  "stored_at": "2026-01-23T15:43:09.949489",
+  "version": "1.0"
+}

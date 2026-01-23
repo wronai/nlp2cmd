@@ -1,0 +1,21 @@
+{
+  "command": "man",
+  "description": "The 'man' command is used to display manual pages, which provide detailed information on various commands, utilities, and system calls available in Unix-like operating systems.",
+  "category": "system",
+  "parameters": [],
+  "examples": [
+    "man 1 ls",
+    "man 8 shutdown"
+  ],
+  "patterns": [
+    "man"
+  ],
+  "source_type": "llm_enhanced",
+  "metadata": {
+    "llm_model": "ollama/qwen2.5-coder:7b",
+    "enhanced": true
+  },
+  "template": "man {{SECTION}} {{PAGE}}",
+  "stored_at": "2026-01-23T15:43:09.984100",
+  "version": "1.0"
+}
