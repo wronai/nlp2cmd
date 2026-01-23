@@ -1,5 +1,13 @@
 # 🔬 NLP2CMD v0.3.0+ - Architektura Termodynamiczna (Whitelam Framework)
 
+## 📚 Related Documentation
+
+- **[Thermodynamic Integration](THERMODYNAMIC_INTEGRATION.md)** - Implementation guide and examples
+- **[User Guide](docs/guides/user-guide.md)** - Complete usage tutorial
+- **[API Reference](docs/api/README.md)** - Thermodynamic API documentation
+- **[Installation Guide](INSTALLATION.md)** - Setup with thermodynamic features
+- **[Examples](examples/)** - Practical thermodynamic examples
+
 ## 📖 Kontekst: Framework Whitelama
 
 **Źródło:** "Generative thermodynamic computing" (arXiv:2506.15121, Whitelam 2025)

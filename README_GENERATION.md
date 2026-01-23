@@ -1,5 +1,13 @@
 # Text → Multi-DSL Generation Module
 
+## 📚 Related Documentation
+
+- **[Thermodynamic Integration](THERMODYNAMIC_INTEGRATION.md)** - Advanced optimization guide
+- **[Thermodynamic Architecture](THERMODYNAMIC_ARCHITECTURE.md)** - Deep technical architecture
+- **[User Guide](docs/guides/user-guide.md)** - Complete usage tutorial
+- **[API Reference](docs/api/README.md)** - Generation API documentation
+- **[Examples](examples/)** - Practical generation examples
+
 Complete iterative implementation of natural language to DSL generation with thermodynamic optimization.
 
 ## Architecture Overview

@@ -1,5 +1,13 @@
 # NLP2CMD API Reference
 
+## 📚 Related Documentation
+
+- **[User Guide](../guides/user-guide.md)** - Complete usage tutorial
+- **[Installation Guide](../../INSTALLATION.md)** - Setup instructions
+- **[Thermodynamic Integration](../../THERMODYNAMIC_INTEGRATION.md)** - Advanced optimization
+- **[Contributing Guide](../../CONTRIBUTING.md)** - Development guidelines
+- **[Examples](../../examples/)** - Practical code examples
+
 ## Core Module
 
 ### NLP2CMD

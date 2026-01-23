@@ -1,5 +1,13 @@
 # NLP2CMD User Guide
 
+## 📚 Related Documentation
+
+- **[Installation Guide](../../INSTALLATION.md)** - Setup instructions
+- **[API Reference](../api/README.md)** - Detailed API documentation
+- **[Thermodynamic Integration](../../THERMODYNAMIC_INTEGRATION.md)** - Advanced optimization
+- **[Contributing Guide](../../CONTRIBUTING.md)** - Development guidelines
+- **[Examples](../../examples/)** - Practical code examples
+
 ## Introduction
 
 NLP2CMD is a framework for transforming natural language into domain-specific commands. It supports multiple DSLs including SQL, Shell, Docker, Kubernetes, and more.

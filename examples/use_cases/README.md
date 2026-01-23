@@ -1,5 +1,13 @@
 # 🚀 NLP2CMD - Przykłady zastosowań w IT i nauce
 
+## 📚 Related Documentation
+
+- **[User Guide](../../docs/guides/user-guide.md)** - Complete usage tutorial
+- **[API Reference](../../docs/api/README.md)** - Detailed API documentation
+- **[Thermodynamic Integration](../../THERMODYNAMIC_INTEGRATION.md)** - Advanced optimization
+- **[Installation Guide](../../INSTALLATION.md)** - Setup instructions
+- **[Contributing Guide](../../CONTRIBUTING.md)** - Development guidelines
+
 Spis treści:
 - [IT & DevOps](#it--devops)
 - [Shell DSL Commands](#shell-dsl-commands)

@@ -11,6 +11,14 @@ This example demonstrates the complete architecture:
 6. Result Aggregator → formats output
 
 Key principle: LLM plans. Code executes. System controls.
+
+📚 Related Documentation:
+- https://github.com/wronai/nlp2cmd/blob/main/docs/guides/user-guide.md
+- https://github.com/wronai/nlp2cmd/blob/main/docs/api/README.md
+- https://github.com/wronai/nlp2cmd/blob/main/THERMODYNAMIC_INTEGRATION.md
+
+🚀 More Examples:
+- https://github.com/wronai/nlp2cmd/tree/main/examples/use_cases
 """
 
 from nlp2cmd import (

@@ -9,23 +9,23 @@
 ## 🏗️ Architecture v0.2.0: LLM as Planner + Typed Actions
 
 ```
-┌─────────────────┐
-│   User Query    │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│   NLP Layer     │ → Intent + Entities
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Decision Router │ → Direct OR LLM Planner?
-└────────┬────────┘
-         │
-┌────────┴────────┐
-│                 │
-▼                 ▼
+   ┌─────────────────┐
+   │   User Query    │
+   └────────┬────────┘
+            │
+            ▼
+   ┌─────────────────┐
+   │   NLP Layer     │ → Intent + Entities
+   └────────┬────────┘
+            │
+            ▼
+   ┌─────────────────┐
+   │ Decision Router │ → Direct OR LLM Planner?
+   └────────┬────────┘
+            │
+   ┌────────┴────────┐
+   │                 │
+   ▼                 ▼
 ┌──────────┐   ┌─────────────┐
 │  Direct  │   │ LLM Planner │ → JSON Plan
 └────┬─────┘   └──────┬──────┘
@@ -76,6 +76,18 @@
 - ✅ Allowlist of permitted actions
 - ✅ Full plan validation before execution
 - ✅ Traceable execution (trace_id per request)
+
+## 📚 Documentation
+
+| Document | Description |
+|----------|-------------|
+| **[Installation Guide](INSTALLATION.md)** | Setup instructions and installation options |
+| **[User Guide](docs/guides/user-guide.md)** | Complete usage tutorial and examples |
+| **[API Reference](docs/api/README.md)** | Detailed API documentation |
+| **[Thermodynamic Integration](THERMODYNAMIC_INTEGRATION.md)** | Advanced optimization with Langevin dynamics |
+| **[Thermodynamic Architecture](THERMODYNAMIC_ARCHITECTURE.md)** | Deep technical architecture overview |
+| **[Contributing Guide](CONTRIBUTING.md)** | Development guidelines and contribution process |
+| **[Generation Module](README_GENERATION.md)** | DSL generation implementation details |
 
 ## 🚀 Quick Start
 
@@ -323,6 +335,29 @@ print(result['result'].energy_estimate)
 - **Optimization**: General constrained optimization problems
 
 See [Thermodynamic Integration](THERMODYNAMIC_INTEGRATION.md) for detailed documentation.
+
+## 💡 Examples
+
+### Quick Examples
+- **[Basic SQL](examples/sql/basic_sql.py)** - Simple SQL queries
+- **[Shell Commands](examples/shell/basic_shell.py)** - Common shell operations  
+- **[Docker Management](examples/docker/basic_docker.py)** - Container operations
+- **[Kubernetes](examples/kubernetes/basic_kubernetes.py)** - K8s cluster management
+
+### Advanced Examples  
+- **[End-to-End Demo](examples/architecture/end_to_end_demo.py)** - Complete workflow
+- **[Log Analysis Pipeline](examples/pipelines/log_analysis.py)** - Data processing
+- **[Infrastructure Health](examples/pipelines/infrastructure_health.py)** - System monitoring
+- **[Configuration Validation](examples/validation/config_validation.py)** - File validation
+
+### Use Case Examples
+- **[DevOps Automation](examples/use_cases/devops_automation.py)** - IT operations
+- **[Data Science & ML](examples/use_cases/data_science_ml.py)** - Data workflows
+- **[Healthcare](examples/use_cases/healthcare.py)** - Medical applications
+- **[Finance & Trading](examples/use_cases/finance_trading.py)** - Financial operations
+- **[Smart Cities](examples/use_cases/smart_cities.py)** - Urban management
+
+See [Examples README](examples/use_cases/README.md) for all available examples.
 
 ## 📁 Project Structure
 

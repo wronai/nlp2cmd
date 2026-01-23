@@ -1,5 +1,13 @@
 # Thermodynamic Optimization Integration
 
+## 📚 Related Documentation
+
+- **[Thermodynamic Architecture](THERMODYNAMIC_ARCHITECTURE.md)** - Deep technical architecture
+- **[User Guide](docs/guides/user-guide.md)** - Complete usage tutorial
+- **[API Reference](docs/api/README.md)** - Thermodynamic API documentation
+- **[Installation Guide](INSTALLATION.md)** - Setup with thermodynamic features
+- **[Examples](examples/)** - Practical thermodynamic examples
+
 ## Overview
 
 The `nlp2cmd.generation.thermodynamic` module integrates Whitelam's generative thermodynamic computing framework for solving complex optimization problems that traditional DSL generation cannot handle.

@@ -1,5 +1,12 @@
 # Contributing to NLP2CMD
 
+## 📚 Related Documentation
+
+- **[Installation Guide](INSTALLATION.md)** - Setup instructions
+- **[User Guide](docs/guides/user-guide.md)** - Usage tutorial
+- **[API Reference](docs/api/README.md)** - API documentation
+- **[Examples](examples/)** - Code examples and use cases
+
 Thank you for your interest in contributing to NLP2CMD! This document provides guidelines and instructions for contributing.
 
 ## Code of Conduct

@@ -1,5 +1,12 @@
 # Installation Guide
 
+## 📚 Related Documentation
+
+- **[User Guide](docs/guides/user-guide.md)** - Complete usage tutorial
+- **[API Reference](docs/api/README.md)** - Detailed API documentation  
+- **[Contributing Guide](CONTRIBUTING.md)** - Development setup
+- **[Examples](examples/)** - Practical usage examples
+
 ## Quick Start
 
 ### Basic Installation
