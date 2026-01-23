@@ -1,0 +1,155 @@
+{
+  "total": 116,
+  "valid": 77,
+  "fixed": 20,
+  "failed": 19,
+  "issues_found": [
+    {
+      "command": "kubectl",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "zip",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "ssh",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "scp",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "echo",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "shell_help"
+    },
+    {
+      "command": "less",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "more",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "watch",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "pkill",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "pgrep",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "pidof",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "renice",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "ionice",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "flock",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "screen",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "vim",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "python",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "pip",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "pip3",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "cmake",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    },
+    {
+      "command": "gem",
+      "issues": [
+        "No template"
+      ],
+      "source_type": "predefined_template"
+    }
+  ]
+}
