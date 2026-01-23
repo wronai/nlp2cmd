@@ -163,10 +163,10 @@ class DynamicAdapter(BaseDSLAdapter):
                 return self.registry.register_python_code(source)
             elif source.endswith('.sh'):
                 return self.registry.register_shell_script(source)
-            elif source.endswith('.mk') or source.endswith('/Makefile') or source.endswith('Makefile'):
+            elif source.endswith(('.mk') or source.endswith('/Makefile') or source.endswith('Makefile')):
                 return self.registry.register_makefile(source)
             elif source.endswith(('.json', '.yaml', '.yml')):
-                # Try to detect format
+                # Try to detect AppSpec
                 if source.endswith('.json'):
                     try:
                         p = Path(source)
@@ -175,18 +175,6 @@ class DynamicAdapter(BaseDSLAdapter):
                             fmt = data.get("format")
                             if fmt == "app2schema.appspec":
                                 return self.registry.register_appspec_export(source)
-                            elif fmt == "nlp2cmd.dynamic_schema_export":
-                                imported = self.registry.register_dynamic_export(source)
-                                all_commands: list[CommandSchema] = []
-                                for s in imported:
-                                    all_commands.extend(s.commands)
-
-                                return ExtractedSchema(
-                                    source=str(source),
-                                    source_type="dynamic_export_bundle",
-                                    commands=all_commands,
-                                    metadata={"imported_sources": [s.source for s in imported]},
-                                )
                     except Exception:
                         pass  # Fall back to OpenAPI
                 return self.registry.register_openapi_schema(source)

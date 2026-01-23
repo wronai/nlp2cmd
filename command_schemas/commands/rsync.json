@@ -73,6 +73,6 @@
     ]
   },
   "template": "rsync {options} {file}",
-  "stored_at": "2026-01-23T15:57:22.543459",
+  "stored_at": "2026-01-23T15:59:27.833424",
   "version": "1.0"
 }

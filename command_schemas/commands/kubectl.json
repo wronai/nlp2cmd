@@ -23,6 +23,6 @@
     ]
   },
   "template": "kubectl {options} {file}",
-  "stored_at": "2026-01-23T15:57:22.516079",
+  "stored_at": "2026-01-23T15:59:27.805222",
   "version": "1.0"
 }

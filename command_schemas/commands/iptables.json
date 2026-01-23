@@ -48,6 +48,6 @@
     ]
   },
   "template": "iptables {options}",
-  "stored_at": "2026-01-23T15:57:22.540276",
+  "stored_at": "2026-01-23T15:59:27.829937",
   "version": "1.0"
 }

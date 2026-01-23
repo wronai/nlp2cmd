@@ -63,6 +63,6 @@
     ]
   },
   "template": "grep {options} {pattern}",
-  "stored_at": "2026-01-23T15:57:22.524272",
+  "stored_at": "2026-01-23T15:59:27.813394",
   "version": "1.0"
 }

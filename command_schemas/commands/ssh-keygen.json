@@ -65,6 +65,6 @@
     ]
   },
   "template": "ssh-keygen {options}",
-  "stored_at": "2026-01-23T15:57:22.539351",
+  "stored_at": "2026-01-23T15:59:27.828982",
   "version": "1.0"
 }

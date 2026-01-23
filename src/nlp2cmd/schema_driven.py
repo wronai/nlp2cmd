@@ -39,6 +39,7 @@ class SchemaDrivenNLP2CMD:
 
     def _select_action(self, text: str) -> MatchResult:
         text_lower = text.lower()
+        text_tokens = {w for w in re.split(r"\W+", text_lower) if w}
         best: Optional[MatchResult] = None
 
         for action in self.spec.actions:
@@ -57,6 +58,15 @@ class SchemaDrivenNLP2CMD:
                     if ex_words and any(w in text_lower for w in ex_words[:3]):
                         score += 0.2
                         break
+
+            # Fallback: token overlap with action id and description.
+            if score == 0.0:
+                aid = str(action.id or "").lower()
+                desc = str(action.description or "").lower()
+                a_tokens = {w for w in re.split(r"\W+", aid + " " + desc) if w}
+                overlap = len(text_tokens & a_tokens)
+                if overlap:
+                    score += min(overlap, 4) * 0.12
 
             if score > 0:
                 score += min(len(patterns), 5) * 0.02
@@ -121,7 +131,7 @@ class SchemaDrivenNLP2CMD:
             return self._render_http(action, params)
 
         if action.dsl_kind == "shell":
-            return self._render_shell(action, params)
+            return self._render_shell(action, params, text)
 
         if action.dsl_kind == "dom":
             return self._render_dom(action, params)
@@ -188,7 +198,7 @@ class SchemaDrivenNLP2CMD:
 
         return " ".join(parts)
 
-    def _render_shell(self, action: AppAction, params: dict[str, Any]) -> str:
+    def _render_shell(self, action: AppAction, params: dict[str, Any], text: str) -> str:
         schema = action.schema or {}
         cmd = str(schema.get("command") or "")
 
@@ -202,10 +212,7 @@ class SchemaDrivenNLP2CMD:
         parts = [cmd]
 
         if not params:
-            text_lower = (action.schema or {}).get("text")
-            if not isinstance(text_lower, str):
-                text_lower = ""
-            text_lower = text_lower.lower()
+            text_lower = (text or "").lower()
 
             if cmd == "git":
                 for sub in ["status", "log", "diff", "branch"]:

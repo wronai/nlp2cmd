@@ -1,2568 +1,442 @@
 {
   "version": "1.0",
-  "timestamp": "2026-01-23T15:28:45.808726",
-  "schemas": {
+  "created": "2026-01-23T15:52:25.939044",
+  "last_updated": "2026-01-23T15:57:22.544484",
+  "commands": {
+    "kubectl": {
+      "file": "commands/kubectl.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.516528",
+      "examples_count": 1,
+      "has_template": true
+    },
     "find": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "find",
-          "description": "The `find` command is a powerful utility used to search for files and directories within a directory hierarchy. It can search based on various criteria such as name, type, size, modification time, etc.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "find /home/user -name \"*.txt\"",
-            "find /var/log -type f -mtime +7"
-          ],
-          "patterns": [
-            "find"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "find {{path}} -name \"{{filename}}\""
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+      "file": "commands/find.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.517129",
+      "examples_count": 1,
+      "has_template": true
     },
     "grep": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "grep",
-          "description": "The grep command is a powerful text search tool that scans files for lines containing a match to a specified pattern. It is widely used for searching plain-text data sets for lines that match a regular expression.",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "grep 'hello' example.txt",
-            "grep -i 'error' log.txt"
-          ],
-          "patterns": [
-            "grep"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "grep {{pattern}} {{file}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "sed": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "sed",
-          "description": "The sed command is a stream editor that filters and transforms text, using a simple scripting language. It can perform basic text transformations on an input stream (a file or input from a pipeline).",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "sed -e 's/foo/bar/g' example.txt",
-            "sed -e '/pattern/d' example.txt"
-          ],
-          "patterns": [
-            "sed"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "sed -e 's/{{pattern}}/{{replacement}}/g' {{input-file}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "awk": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "awk",
-          "description": "The 'awk' command is a powerful text-processing tool that scans each input line, applying a pattern-action program to generate output. It is widely used for data extraction and reporting.",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "awk '{print $1}' /etc/passwd",
-            "awk '$3 > 500 {print $1, $6}' /etc/passwd"
-          ],
-          "patterns": [
-            "awk"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "awk '{{print $1}}' {{file}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "ls": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "ls",
-          "description": "The 'ls' command is used to list directory contents. It provides a quick overview of files and directories within a specified path, or the current directory if no path is provided.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "ls /home/user",
-            "ls -l",
-            "ls -a"
-          ],
-          "patterns": [
-            "ls"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "ls {{path}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "mkdir": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "mkdir",
-          "description": "The mkdir command is used to create new directories. It allows you to organize your files and folders by creating structured hierarchies.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "mkdir my_folder",
-            "mkdir project/src"
-          ],
-          "patterns": [
-            "mkdir"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "mkdir {{directory_name}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "rm": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "rm",
-          "description": "The 'rm' command is used to remove files or directories. It can also be used to delete multiple files at once.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "rm file.txt",
-            "rm -r directory"
-          ],
-          "patterns": [
-            "rm"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "rm {{file}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+      "file": "commands/grep.json",
+      "category": "text",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.524455",
+      "examples_count": 1,
+      "has_template": true
     },
     "cp": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "cp",
-          "description": "The cp command is used to copy files or directories from one location to another. It can also be used to duplicate files within the same directory.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "cp file.txt /home/user/documents",
-            "cp -r directory1 directory2"
-          ],
-          "patterns": [
-            "cp"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "cp {{source}} {{destination}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+      "file": "commands/cp.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.524972",
+      "examples_count": 1,
+      "has_template": true
     },
     "mv": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "mv",
-          "description": "The 'mv' command is used to move files or directories from one location to another, or to rename them. It can also be used to change the directory of a file without renaming it.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "mv /home/user/documents/report.txt /backup/",
-            "mv oldname.txt newname.txt"
-          ],
-          "patterns": [
-            "mv"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "mv {{source}} {{destination}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "ps": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "ps",
-          "description": "List running processes",
-          "category": "process",
-          "parameters": [],
-          "examples": [
-            "ps --help"
-          ],
-          "patterns": [
-            "ps"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "ps aux"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "top": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "top",
-          "description": "Display running processes dynamically",
-          "category": "process",
-          "parameters": [],
-          "examples": [
-            "top --help"
-          ],
-          "patterns": [
-            "top"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "top"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "kill": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "kill",
-          "description": "Send a signal to a process",
-          "category": "process",
-          "parameters": [],
-          "examples": [
-            "kill --help"
-          ],
-          "patterns": [
-            "kill"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "kill -{signal} {pid}"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "killall": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "killall",
-          "description": "Kill processes by name",
-          "category": "process",
-          "parameters": [],
-          "examples": [
-            "killall --help"
-          ],
-          "patterns": [
-            "killall"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "killall {process}"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "systemctl": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "systemctl",
-          "description": "Control systemd services",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "systemctl --help"
-          ],
-          "patterns": [
-            "systemctl"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "systemctl {action} {service}"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "service": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "service",
-          "description": "Run System V init scripts",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "service --help"
-          ],
-          "patterns": [
-            "service"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "service {name} {action}"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "docker": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "docker",
-          "description": "Docker is a platform that uses OS-level virtualization to package and run applications inside software containers.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "docker run -it ubuntu bash",
-            "docker ps -a"
-          ],
-          "patterns": [
-            "docker"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "docker {{command}} {{options}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "docker-compose": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "docker-compose",
-          "description": "Docker Compose is a tool for defining and running multi-container Docker applications. It uses YAML files to configure services, networks, and volumes, then provides commands to create and start all the containers from your configuration.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "docker-compose up",
-            "docker-compose down",
-            "docker-compose build"
-          ],
-          "patterns": [
-            "docker-compose"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "docker-compose {{command}} {{file}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "kubectl": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "kubectl",
-          "description": "kubectl utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "kubectl --help"
-          ],
-          "patterns": [
-            "kubectl"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "git": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "git",
-          "description": "Git is a distributed version control system that tracks changes in source code during software development. It allows multiple developers to work on the same project simultaneously, coordinating their efforts through shared repositories.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "git clone https://github.com/user/repo.git",
-            "git commit -m 'Add new feature'",
-            "git push origin main"
-          ],
-          "patterns": [
-            "git"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "git {{command}} {{options}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "curl": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "curl",
-          "description": "The curl command is a versatile tool for transferring data with URLs. It supports various protocols including HTTP, HTTPS, FTP, and more. It can be used to download files, upload data, or interact with web services.",
-          "category": "network",
-          "parameters": [],
-          "examples": [
-            "curl https://www.example.com",
-            "curl -X POST -d 'name=John&age=30' https://api.example.com/user"
-          ],
-          "patterns": [
-            "curl"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "curl {{url}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "wget": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "wget",
-          "description": "Wget is a network utility to download files from the web. It supports HTTP, HTTPS, and FTP protocols, as well as retrieval through HTTP proxies.",
-          "category": "network",
-          "parameters": [],
-          "examples": [
-            "wget http://example.com/file.zip",
-            "wget https://example.com/data.json"
-          ],
-          "patterns": [
-            "wget"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "wget {{URL}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "ping": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "ping",
-          "description": "Send ICMP echo requests to test connectivity",
-          "category": "network",
-          "parameters": [],
-          "examples": [
-            "ping --help"
-          ],
-          "patterns": [
-            "ping"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "ping -c {count} {host}"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "netstat": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "netstat",
-          "description": "The netstat command is a network statistics utility that displays network connections, routing tables, interface statistics, masquerade connections, and multicast memberships.",
-          "category": "network",
-          "parameters": [],
-          "examples": [
-            "netstat -an",
-            "netstat -tuln",
-            "netstat --version"
-          ],
-          "patterns": [
-            "netstat"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "netstat {{-vWeenNcCF}} {{<Af>}} -r         netstat {{-V|--version|-h|--help}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "ss": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "ss",
-          "description": "Display socket statistics",
-          "category": "network",
-          "parameters": [],
-          "examples": [
-            "ss --help"
-          ],
-          "patterns": [
-            "ss"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "ss -tuln"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "lsof": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "lsof",
-          "description": "List open files",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "lsof --help"
-          ],
-          "patterns": [
-            "lsof"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "lsof -i :{port}"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "df": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "df",
-          "description": "The `df` command is used to report file system disk space usage. It provides a summary of available disk space on each mounted filesystem.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "df -h",
-            "df -h /home"
-          ],
-          "patterns": [
-            "df"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "df -h {{path}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "du": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "du",
-          "description": "The 'du' command is used to estimate file space usage. It summarizes the disk space used by each argument, recursively for directories.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "du -sh /home",
-            "du -sh /var/log"
-          ],
-          "patterns": [
-            "du"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "du -sh {{directory}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "free": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "free",
-          "description": "Display amount of free and used memory",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "free --help"
-          ],
-          "patterns": [
-            "free"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "free -h"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "uname": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "uname",
-          "description": "Print system information",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "uname --help"
-          ],
-          "patterns": [
-            "uname"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "uname -a"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "whoami": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "whoami",
-          "description": "Print current user name",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "whoami --help"
-          ],
-          "patterns": [
-            "whoami"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "whoami"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "id": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "id",
-          "description": "The `id` command is used to display or change a user's real and effective user ID, group ID, and supplementary groups. It provides information about the identity of the current process.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "id",
-            "id username"
-          ],
-          "patterns": [
-            "id"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "id {{USER}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "chmod": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "chmod",
-          "description": "The chmod command is used to change the file mode bits of a specified file or directory. It allows you to set permissions for the owner, group, and others in terms of read, write, and execute access.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "chmod 755 /path/to/file",
-            "chmod u+x script.sh"
-          ],
-          "patterns": [
-            "chmod"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "chmod {{permissions}} {{file}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "chown": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "chown",
-          "description": "The chown command is used to change the owner and group of files or directories. It allows system administrators to assign ownership and permissions, ensuring that only authorized users can access and modify critical system files.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "chown user1:group1 /path/to/file",
-            "chown root:root /etc/passwd"
-          ],
-          "patterns": [
-            "chown"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "chown {{OWNER}}:{{GROUP}} {{FILE}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "chgrp": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "chgrp",
-          "description": "The chgrp command is used to change the group ownership of files or directories. It allows you to assign a new group to one or more files, which can affect file permissions and access control.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "chgrp developers /path/to/project",
-            "chgrp staff /home/user/documents"
-          ],
-          "patterns": [
-            "chgrp"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "chgrp {{GROUP}} {{FILE}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+      "file": "commands/mv.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.525440",
+      "examples_count": 1,
+      "has_template": true
     },
     "tar": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "tar",
-          "description": "The tar command is a utility in Unix-like operating systems that is used to create archive files, which are collections of multiple files and directories. It can also extract files from archives and list the contents of an archive.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "tar -cvf archive.tar file1 file2",
-            "tar -xvf archive.tar",
-            "tar -tvf archive.tar"
-          ],
-          "patterns": [
-            "tar"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "tar {{option}} {{file}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+      "file": "commands/tar.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.525932",
+      "examples_count": 5,
+      "has_template": true
     },
     "zip": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "zip",
-          "description": "zip utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "zip --help"
-          ],
-          "patterns": [
-            "zip"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
+      "file": "commands/zip.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.526416",
+      "examples_count": 1,
+      "has_template": true
     },
-    "unzip": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "unzip",
-          "description": "The unzip command is used to extract files from a ZIP archive. It can decompress and list the contents of a ZIP file without extracting it.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "unzip archive.zip",
-            "unzip archive.zip -d /path/to/extract"
-          ],
-          "patterns": [
-            "unzip"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "unzip {{archive}} -d {{destination}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "ps": {
+      "file": "commands/ps.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.526893",
+      "examples_count": 1,
+      "has_template": true
     },
-    "gzip": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "gzip",
-          "description": "Compresses files using the GNU zip format to reduce their size.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "gzip report.txt",
-            "gzip -r project_folder"
-          ],
-          "patterns": [
-            "gzip"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "gzip {{FILE}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "free": {
+      "file": "commands/free.json",
+      "category": "system",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.527348",
+      "examples_count": 1,
+      "has_template": true
     },
-    "gunzip": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "gunzip",
-          "description": "The gunzip command is used to decompress files that have been compressed using the gzip utility. It removes the .gz extension from the file and restores the original file.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "gunzip report.gz",
-            "gunzip archive.tar.gz"
-          ],
-          "patterns": [
-            "gunzip"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "gunzip {{filename}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "ssh": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "ssh",
-          "description": "ssh utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "ssh --help"
-          ],
-          "patterns": [
-            "ssh"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "scp": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "scp",
-          "description": "scp utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "scp --help"
-          ],
-          "patterns": [
-            "scp"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "rsync": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "rsync",
-          "description": "rsync is a fast, versatile file-copying tool that can synchronize files and directories between two locations, either locally or over a network. It supports incremental updates, compression, and various options for controlling the transfer process.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "rsync -avz /home/user/documents/ user@remotehost:/backup/",
-            "rsync -P /var/log/ /mnt/backup/logs/"
-          ],
-          "patterns": [
-            "rsync"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "rsync {{options}} {{source}} {{destination}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "history": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "history",
-          "description": "Display command history",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "history --help"
-          ],
-          "patterns": [
-            "history"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "history {count}"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "echo": {
-      "source_type": "shell_help",
-      "commands": [
-        {
-          "name": "echo",
-          "description": "Display a line of text",
-          "category": "shell",
-          "parameters": [
-            {
-              "name": "n",
-              "type": "boolean",
-              "description": "do not output the trailing newline",
-              "required": false,
-              "default": null,
-              "choices": [],
-              "pattern": null,
-              "location": "option"
-            },
-            {
-              "name": "e",
-              "type": "boolean",
-              "description": "enable interpretation of backslash escapes",
-              "required": false,
-              "default": null,
-              "choices": [],
-              "pattern": null,
-              "location": "option"
-            },
-            {
-              "name": "E",
-              "type": "boolean",
-              "description": "disable interpretation of backslash escapes (default)",
-              "required": false,
-              "default": null,
-              "choices": [],
-              "pattern": null,
-              "location": "option"
-            }
-          ],
-          "examples": [
-            "echo [OPTIONS]... [STRING]..."
-          ],
-          "patterns": [
-            "echo [OPTIONS]... [STRING]...",
-            "display a line of text"
-          ],
-          "source_type": "shell_help",
-          "metadata": {
-            "command": "echo",
-            "help_lines": 31
-          },
-          "template": null
-        }
-      ],
-      "metadata": {}
-    },
-    "printf": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "printf",
-          "description": "The printf command is a utility in Unix-like operating systems that interprets and formats data according to a specified format string. It outputs the formatted data to the standard output (usually the terminal).",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "printf \"Hello, %s!\\n\" \"World\"",
-            "printf \"%d is an integer.\\n\" 42"
-          ],
-          "patterns": [
-            "printf"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "printf \"{{format}}\" {{arguments}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "cat": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "cat",
-          "description": "Concatenate files and print on the standard output. It is often used to view the contents of a file or combine multiple files into one.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "cat /etc/passwd",
-            "cat file1.txt file2.txt"
-          ],
-          "patterns": [
-            "cat"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "cat {{FILE}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "less": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "less",
-          "description": "less utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "less --help"
-          ],
-          "patterns": [
-            "less"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "more": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "more",
-          "description": "more utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "more --help"
-          ],
-          "patterns": [
-            "more"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "head": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "head",
-          "description": "The `head` command is used to display the first part of a file, typically the first 10 lines. It is useful for quickly previewing the beginning content of a file.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "head 5 example.txt",
-            "head -n 20 /var/log/syslog"
-          ],
-          "patterns": [
-            "head"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "head {{number_of_lines}} {{file}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "tail": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "tail",
-          "description": "The 'tail' command is used to display the last part of a file, typically the last 10 lines. It is useful for monitoring log files or following new entries in real-time.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "tail /var/log/syslog",
-            "tail -n 50 /path/to/file.txt"
-          ],
-          "patterns": [
-            "tail"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "tail -f {{FILE}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "sort": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "sort",
-          "description": "Sorts lines of text files or standard input alphabetically or numerically.",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "sort file.txt",
-            "sort -n numbers.txt"
-          ],
-          "patterns": [
-            "sort"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "sort {{FILE}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "uniq": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "uniq",
-          "description": "The uniq command is a utility that removes duplicate lines from a sorted file or input stream, displaying only one copy of each line.",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "uniq input.txt > output.txt",
-            "uniq -c input.txt"
-          ],
-          "patterns": [
-            "uniq"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "uniq {{input_file}} > {{output_file}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "wc": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "wc",
-          "description": "Counts the number of lines, words, and bytes in files. If no file is specified, it reads from standard input.",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "wc -l example.txt",
-            "wc -w example.txt",
-            "wc -c example.txt"
-          ],
-          "patterns": [
-            "wc"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "wc {{--lines|-l}} {{--words|-w}} {{--bytes|-c}} {{FILE}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "tr": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "tr",
-          "description": "The tr command is used to translate or delete characters from standard input, using the character set specified by SET1 and optionally SET2. It can be used for simple text transformations such as converting uppercase to lowercase or removing specific characters.",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "tr '[:upper:]' '[:lower:]'",
-            "tr -d 'aeiou'"
-          ],
-          "patterns": [
-            "tr"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "tr {{SET1}} {{SET2}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "cut": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "cut",
-          "description": "The cut command is used to extract sections from each line of files. It can split lines into fields based on delimiters or character positions.",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "cut -d ',' -f 1,3 input.csv",
-            "cut -c 1-5 input.txt"
-          ],
-          "patterns": [
-            "cut"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "cut -d {{delimiter}} -f {{fields}} {{file}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "paste": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "paste",
-          "description": "The paste command is used to merge lines from multiple files or standard input into a single output line, separated by tabs.",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "paste file1.txt file2.txt",
-            "paste -d ',' file1.txt file2.txt"
-          ],
-          "patterns": [
-            "paste"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "paste {{FILE}}..."
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "join": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "join",
-          "description": "The join command is used to combine two files based on a common field, typically the first field. It outputs lines that have matching fields in both input files.",
-          "category": "file|text",
-          "parameters": [],
-          "examples": [
-            "join file1.txt file2.txt",
-            "join -1 2 file1.csv file2.csv"
-          ],
-          "patterns": [
-            "join"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "join {{FILE1}} {{FILE2}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "split": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "split",
-          "description": "The split command is used to split a file into smaller files of a specified size or number of lines. This can be useful for distributing large files across multiple storage devices or for processing large files in chunks.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "split -b 100M largefile.txt",
-            "split -l 1000 largefile.txt"
-          ],
-          "patterns": [
-            "split"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "split -b {{size}}M {{input}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "xargs": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "xargs",
-          "description": "xargs is a utility that builds and executes command lines from standard input. It reads items from standard input, forming command lines from them, and then executes those commands.",
-          "category": "process",
-          "parameters": [],
-          "examples": [
-            "xargs -I {} rm {}",
-            "xargs -I {} echo 'Processing {}'"
-          ],
-          "patterns": [
-            "xargs"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "xargs -I {{placeholder}} command {{initial_args}} < input.txt"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "which": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "which",
-          "description": "Locate a command in the PATH",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "which --help"
-          ],
-          "patterns": [
-            "which"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "which {command}"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "whereis": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "whereis",
-          "description": "Locate binary and manual files",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "whereis --help"
-          ],
-          "patterns": [
-            "whereis"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "whereis {command}"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "man": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "man",
-          "description": "The 'man' command is used to display manual pages, which provide detailed information on various commands, utilities, and system calls available in Unix-like operating systems.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "man 1 ls",
-            "man 8 shutdown"
-          ],
-          "patterns": [
-            "man"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "man {{SECTION}} {{PAGE}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "info": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "info",
-          "description": "Displays detailed information about files, directories, or system components.",
-          "category": "file",
-          "parameters": [],
-          "examples": [
-            "info /etc/passwd",
-            "info ~/Documents"
-          ],
-          "patterns": [
-            "info"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "info {{path}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "date": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "date",
-          "description": "The 'date' command is used to display or set the system date and time. It can also format the output according to a specified pattern.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "date",
-            "date +%Y-%m-%d",
-            "date -s '2023-10-05'"
-          ],
-          "patterns": [
-            "date"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "date {{+FORMAT}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "df": {
+      "file": "commands/df.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.527839",
+      "examples_count": 1,
+      "has_template": true
     },
     "uptime": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "uptime",
-          "description": "Tell how long the system has been running",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "uptime --help"
-          ],
-          "patterns": [
-            "uptime"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": "uptime"
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
+      "file": "commands/uptime.json",
+      "category": "system",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.528276",
+      "examples_count": 1,
+      "has_template": true
     },
-    "time": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "time",
-          "description": "The 'time' command is used to measure the execution time of a command or script. It provides detailed timing information including real, user, and system time.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "time ls -l",
-            "time sleep 5"
-          ],
-          "patterns": [
-            "time"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "time {{COMMAND}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "netstat": {
+      "file": "commands/netstat.json",
+      "category": "network",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.528795",
+      "examples_count": 1,
+      "has_template": true
     },
-    "sleep": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "sleep",
-          "description": "The sleep command is used to pause the execution of a script or program for a specified amount of time. This can be useful for creating delays, waiting for processes to complete, or synchronizing actions.",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "sleep 5",
-            "sleep 1m",
-            "sleep 30s"
-          ],
-          "patterns": [
-            "sleep"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "sleep {{duration}} {{suffix}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "lsof": {
+      "file": "commands/lsof.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.529260",
+      "examples_count": 1,
+      "has_template": true
     },
-    "watch": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "watch",
-          "description": "watch utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "watch --help"
-          ],
-          "patterns": [
-            "watch"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
+    "sensors": {
+      "file": "commands/sensors.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.529766",
+      "examples_count": 1,
+      "has_template": true
     },
-    "nohup": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "nohup",
-          "description": "The 'nohup' command is used to run a specified command immune to hangups, with output appended to a file, by default 'nohup.out'.",
-          "category": "process",
-          "parameters": [],
-          "examples": [
-            "nohup python myscript.py > output.log 2>&1 &",
-            "nohup ./myprogram.sh > program_output.txt 2>&1 &"
-          ],
-          "patterns": [
-            "nohup"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "nohup {{command}} > {{output_file}} 2>&1 &"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "docker": {
+      "file": "commands/docker.json",
+      "category": "shell",
+      "source_type": "shell_help",
+      "last_updated": "2026-01-23T15:57:22.530285",
+      "examples_count": 1,
+      "has_template": true
     },
-    "pkill": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "pkill",
-          "description": "pkill utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "pkill --help"
-          ],
-          "patterns": [
-            "pkill"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
+    "git": {
+      "file": "commands/git.json",
+      "category": "version_control",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.530761",
+      "examples_count": 1,
+      "has_template": true
     },
-    "pgrep": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "pgrep",
-          "description": "pgrep utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "pgrep --help"
-          ],
-          "patterns": [
-            "pgrep"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
+    "cat": {
+      "file": "commands/cat.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.531212",
+      "examples_count": 1,
+      "has_template": true
     },
-    "pidof": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "pidof",
-          "description": "pidof utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "pidof --help"
-          ],
-          "patterns": [
-            "pidof"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
+    "traceroute": {
+      "file": "commands/traceroute.json",
+      "category": "general",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.532026",
+      "examples_count": 2,
+      "has_template": true
     },
-    "nice": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "nice",
-          "description": "The nice command is used to run a program with an adjusted niceness value, which affects the priority of the process. Higher niceness values mean lower priority.",
-          "category": "process",
-          "parameters": [],
-          "examples": [
-            "nice -n 10 ls",
-            "nice -n 5 sleep 60"
-          ],
-          "patterns": [
-            "nice"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "nice -n {{niceness}} {{command}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "nmap": {
+      "file": "commands/nmap.json",
+      "category": "network",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.532539",
+      "examples_count": 4,
+      "has_template": true
     },
-    "renice": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "renice",
-          "description": "renice utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "renice --help"
-          ],
-          "patterns": [
-            "renice"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
+    "nslookup": {
+      "file": "commands/nslookup.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.533038",
+      "examples_count": 2,
+      "has_template": true
     },
-    "ionice": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "ionice",
-          "description": "ionice utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "ionice --help"
-          ],
-          "patterns": [
-            "ionice"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "timeout": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "timeout",
-          "description": "The timeout command allows you to specify a maximum time limit for the execution of a command. If the command does not complete within the specified duration, it will be terminated.",
-          "category": "process",
-          "parameters": [],
-          "examples": [
-            "timeout 10s ping example.com",
-            "timeout 5m ls -la"
-          ],
-          "patterns": [
-            "timeout"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "timeout {{duration}} {{command}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "flock": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "flock",
-          "description": "flock utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "flock --help"
-          ],
-          "patterns": [
-            "flock"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "screen": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "screen",
-          "description": "screen utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "screen --help"
-          ],
-          "patterns": [
-            "screen"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "vim": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "vim",
-          "description": "vim utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "vim --help"
-          ],
-          "patterns": [
-            "vim"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "nano": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "nano",
-          "description": "Nano is a small, friendly text editor written by Joe Travers. It is designed to be an easy-to-use alternative to other text editors like vi or emacs.",
-          "category": "text",
-          "parameters": [],
-          "examples": [
-            "nano README.md",
-            "nano config.txt"
-          ],
-          "patterns": [
-            "nano"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "nano {{FILE}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "code": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "code",
-          "description": "Generates code snippets or files based on specified options and paths",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "code python function my_function",
-            "code java class MyClass",
-            "code javascript file app.js"
-          ],
-          "patterns": [
-            "code"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "code {{language}} {{type}} {{name}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "python": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "python",
-          "description": "python utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "python --help"
-          ],
-          "patterns": [
-            "python"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "python3": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "python3",
-          "description": "Python3 is an interpreted, high-level, general-purpose programming language. It's widely used for web development, data analysis, artificial intelligence, scientific computing, and more.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "python3 hello.py",
-            "python3 script.py arg1 arg2"
-          ],
-          "patterns": [
-            "python3"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "python3 {{script.py}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "openssl": {
+      "file": "commands/openssl.json",
+      "category": "security",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.533487",
+      "examples_count": 2,
+      "has_template": true
     },
     "pip": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "pip",
-          "description": "pip utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "pip --help"
-          ],
-          "patterns": [
-            "pip"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
+      "file": "commands/pip.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.533974",
+      "examples_count": 1,
+      "has_template": true
     },
-    "pip3": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "pip3",
-          "description": "pip3 utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "pip3 --help"
-          ],
-          "patterns": [
-            "pip3"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
-    },
-    "node": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "node",
-          "description": "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. It allows developers to run JavaScript code outside of a web browser, enabling the development of server-side applications.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "node app.js",
-            "node script.js --option value"
-          ],
-          "patterns": [
-            "node"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "node {{script.js}} {{arguments}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "gcc": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "gcc",
-          "description": "GCC (GNU Compiler Collection) is a set of compilers and tools that are used to compile C, C++, Objective-C, Fortran, Ada, and Go programming languages into machine code.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "gcc -o myprogram mycode.c",
-            "gcc -Wall -O2 main.cpp"
-          ],
-          "patterns": [
-            "gcc"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "gcc {{options}} {{file...}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
-    },
-    "g++": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "g++",
-          "description": "The g++ command is a compiler that translates C++ source code into executable programs. It supports various options to control the compilation process, including optimization levels, debugging information, and target architecture.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "g++ -o myprogram main.cpp",
-            "g++ -Wall -O2 example.cpp"
-          ],
-          "patterns": [
-            "g++"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "g++ {{options}} {{file...}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "python3": {
+      "file": "commands/python3.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.534414",
+      "examples_count": 1,
+      "has_template": true
     },
     "make": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "make",
-          "description": "The 'make' command is a build automation tool that reads files called Makefiles which specify how to derive the target program. It automatically builds executable programs and libraries from source code by using rules in the Makefile.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "make all",
-            "make clean"
-          ],
-          "patterns": [
-            "make"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "make {{target}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+      "file": "commands/make.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.534901",
+      "examples_count": 1,
+      "has_template": true
     },
-    "cmake": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "cmake",
-          "description": "cmake utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "cmake --help"
-          ],
-          "patterns": [
-            "cmake"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
+    "pytest": {
+      "file": "commands/pytest.json",
+      "category": "development",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.535357",
+      "examples_count": 1,
+      "has_template": true
     },
-    "cargo": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "cargo",
-          "description": "Cargo is a package manager, build system, and more for Rust. It helps manage dependencies, build projects, run tests, and publish packages to crates.io.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "cargo build",
-            "cargo test",
-            "cargo run",
-            "cargo new my_project"
-          ],
-          "patterns": [
-            "cargo"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "cargo {{command}} {{options}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "black": {
+      "file": "commands/black.json",
+      "category": "text",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.535838",
+      "examples_count": 1,
+      "has_template": true
     },
-    "rustc": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "rustc",
-          "description": "The rustc command is the Rust compiler, which compiles Rust source code into executable programs or libraries.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "rustc main.rs",
-            "rustc --crate-type lib mylib.rs"
-          ],
-          "patterns": [
-            "rustc"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "rustc {{input}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "eslint": {
+      "file": "commands/eslint.json",
+      "category": "general",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.536277",
+      "examples_count": 2,
+      "has_template": true
     },
-    "ruby": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "ruby",
-          "description": "Ruby is a dynamic, open-source programming language with a focus on simplicity and productivity. It has an elegant syntax that is natural to read and easy to write.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "ruby script.rb",
-            "ruby -e 'puts \"Hello, World!\"'",
-            "ruby --version"
-          ],
-          "patterns": [
-            "ruby"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "ruby {{programfile}} {{arguments}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "node": {
+      "file": "commands/node.json",
+      "category": "system",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.536777",
+      "examples_count": 1,
+      "has_template": true
     },
-    "gem": {
-      "source_type": "predefined_template",
-      "commands": [
-        {
-          "name": "gem",
-          "description": "gem utility",
-          "category": "system",
-          "parameters": [],
-          "examples": [
-            "gem --help"
-          ],
-          "patterns": [
-            "gem"
-          ],
-          "source_type": "predefined_template",
-          "metadata": {
-            "predefined": true
-          },
-          "template": null
-        }
-      ],
-      "metadata": {
-        "predefined": true
-      }
+    "npm": {
+      "file": "commands/npm.json",
+      "category": "general",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.537244",
+      "examples_count": 2,
+      "has_template": true
     },
-    "perl": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "perl",
-          "description": "Perl is a powerful, high-level programming language known for its simplicity and versatility. It is widely used for scripting, web development, system administration, network programming, and more.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "perl script.pl",
-            "perl -e 'print \"Hello, World!\\n\"'",
-            "perl -MCPAN -e shell"
-          ],
-          "patterns": [
-            "perl"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "perl {{programfile}} {{arguments}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "psql": {
+      "file": "commands/psql.json",
+      "category": "database",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.537713",
+      "examples_count": 2,
+      "has_template": true
     },
-    "php": {
-      "source_type": "llm_enhanced",
-      "commands": [
-        {
-          "name": "php",
-          "description": "The PHP command is a widely-used scripting language interpreter that executes PHP code. It can run scripts from files, read from standard input, or interactively through a shell interface.",
-          "category": "development",
-          "parameters": [],
-          "examples": [
-            "php -f script.php",
-            "php -f script.php arg1 arg2"
-          ],
-          "patterns": [
-            "php"
-          ],
-          "source_type": "llm_enhanced",
-          "metadata": {
-            "llm_model": "ollama/qwen2.5-coder:7b",
-            "enhanced": true
-          },
-          "template": "php -f {{file}} {{--}} {{args...}}"
-        }
-      ],
-      "metadata": {
-        "model": "ollama/qwen2.5-coder:7b"
-      }
+    "mysql": {
+      "file": "commands/mysql.json",
+      "category": "database",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.538164",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "mongodump": {
+      "file": "commands/mongodump.json",
+      "category": "general",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.538585",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "chmod": {
+      "file": "commands/chmod.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.539030",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "ssh-keygen": {
+      "file": "commands/ssh-keygen.json",
+      "category": "security",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.539465",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "gpg": {
+      "file": "commands/gpg.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.539944",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "iptables": {
+      "file": "commands/iptables.json",
+      "category": "database",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.540392",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "sed": {
+      "file": "commands/sed.json",
+      "category": "system",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.540837",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "sort": {
+      "file": "commands/sort.json",
+      "category": "text",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.541282",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "ls": {
+      "file": "commands/ls.json",
+      "category": "text",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.541732",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "iconv": {
+      "file": "commands/iconv.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.542179",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "split": {
+      "file": "commands/split.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.542646",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "jq": {
+      "file": "commands/jq.json",
+      "category": "text",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.543113",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "rsync": {
+      "file": "commands/rsync.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.543584",
+      "examples_count": 1,
+      "has_template": true
+    },
+    "mysqldump": {
+      "file": "commands/mysqldump.json",
+      "category": "database",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.544025",
+      "examples_count": 2,
+      "has_template": true
+    },
+    "rm": {
+      "file": "commands/rm.json",
+      "category": "file",
+      "source_type": "intelligent_extraction",
+      "last_updated": "2026-01-23T15:57:22.544479",
+      "examples_count": 1,
+      "has_template": true
     }
+  },
+  "categories": {
+    "shell": [
+      "kubectl",
+      "docker"
+    ],
+    "file": [
+      "find",
+      "cp",
+      "mv",
+      "tar",
+      "zip",
+      "ps",
+      "df",
+      "lsof",
+      "sensors",
+      "kubectl",
+      "cat",
+      "nslookup",
+      "pip",
+      "python3",
+      "make",
+      "chmod",
+      "gpg",
+      "iconv",
+      "split",
+      "rsync",
+      "rm"
+    ],
+    "text": [
+      "grep",
+      "black",
+      "sort",
+      "ls",
+      "jq"
+    ],
+    "system": [
+      "free",
+      "uptime",
+      "node",
+      "sed"
+    ],
+    "network": [
+      "netstat",
+      "nmap"
+    ],
+    "container": [
+      "docker"
+    ],
+    "version_control": [
+      "git"
+    ],
+    "general": [
+      "traceroute",
+      "eslint",
+      "npm",
+      "mongodump"
+    ],
+    "security": [
+      "openssl",
+      "ssh-keygen"
+    ],
+    "development": [
+      "pytest"
+    ],
+    "database": [
+      "psql",
+      "mysql",
+      "iptables",
+      "mysqldump"
+    ]
+  },
+  "stats": {
+    "total_commands": 45,
+    "total_categories": 11
   }
 }

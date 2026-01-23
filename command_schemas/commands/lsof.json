@@ -46,6 +46,6 @@
     ]
   },
   "template": "lsof {options} {file}",
-  "stored_at": "2026-01-23T15:57:22.529139",
+  "stored_at": "2026-01-23T15:59:27.818434",
   "version": "1.0"
 }

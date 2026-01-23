@@ -45,6 +45,6 @@
     ]
   },
   "template": "netstat {options} {url}",
-  "stored_at": "2026-01-23T15:57:22.528672",
+  "stored_at": "2026-01-23T15:59:27.817906",
   "version": "1.0"
 }

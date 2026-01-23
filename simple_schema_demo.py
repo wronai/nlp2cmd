@@ -6,6 +6,7 @@ Simple demonstration: How schemas work in NLP2CMD
 import sys
 sys.path.insert(0, './src')
 
+from pathlib import Path
 from nlp2cmd.schema_extraction import DynamicSchemaRegistry
 from nlp2cmd.schema_based.adapter import SchemaDrivenAppSpecAdapter
 from nlp2cmd import NLP2CMD
@@ -45,7 +46,13 @@ def main():
     print("\n4. Using schemas to generate commands:")
     
     # Initialize NLP2CMD with schema-driven adapter
-    adapter = SchemaDrivenAppSpecAdapter(schema_registry=registry)
+    # Note: SchemaDrivenAppSpecAdapter loads schemas from validated_schemas.json
+    # Let's copy our schemas there first
+    import shutil
+    if Path('./command_schemas/index.json').exists():
+        shutil.copy('./command_schemas/index.json', './validated_schemas.json')
+    
+    adapter = SchemaDrivenAppSpecAdapter()
     nlp = NLP2CMD(adapter=adapter)
     
     # Test queries
