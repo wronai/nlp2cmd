@@ -442,13 +442,15 @@ class PipelineRunner:
                         page.wait_for_timeout(500)
                     
                     elif action == "fill_form":
-                        # Interactive form filling
+                        # Automatic form filling from .env and data/*.json
                         try:
                             from nlp2cmd.web_schema.form_handler import FormHandler
+                            from nlp2cmd.web_schema.form_data_loader import FormDataLoader
                             from rich.console import Console
                             
                             console = Console()
                             form_handler = FormHandler(console=console)
+                            data_loader = FormDataLoader()
                             
                             # Wait for page to be fully loaded
                             console.print("\n[cyan]⏳ Waiting for page to load...[/cyan]")
@@ -463,15 +465,24 @@ class PipelineRunner:
                                 console.print("[yellow]No form fields detected on this page[/yellow]")
                                 continue
                             
-                            # Interactive fill
-                            form_data = form_handler.interactive_fill(fields)
+                            # Automatic fill from .env and data/ files
+                            if data_loader.has_data():
+                                console.print("[cyan]📂 Loading form data from .env and data/...[/cyan]")
+                                form_data = form_handler.automatic_fill(fields, data_loader)
+                            else:
+                                # Fallback to interactive if no data configured
+                                console.print("[yellow]No form data in .env or data/ - using interactive mode[/yellow]")
+                                form_data = form_handler.interactive_fill(fields)
                             
                             # Detect submit button
                             form_data.submit_selector = form_handler.detect_submit_button(page)
                             
-                            # Fill the form
-                            console.print("\n[cyan]📝 Filling form...[/cyan]")
-                            form_handler.fill_form(page, form_data)
+                            # Fill the form if we have data
+                            if form_data.fields:
+                                console.print("\n[cyan]📝 Filling form...[/cyan]")
+                                form_handler.fill_form(page, form_data)
+                            else:
+                                console.print("[yellow]No data to fill - skipping[/yellow]")
                             
                             page.wait_for_timeout(500)
                             
