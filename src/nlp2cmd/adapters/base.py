@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any, Mapping, Optional
 
 
 @dataclass
@@ -58,9 +58,47 @@ class BaseDSLAdapter(ABC):
             config: Adapter configuration
             safety_policy: Safety policy for command generation
         """
-        self.config = config or AdapterConfig()
-        if safety_policy:
-            self.config.safety_policy = safety_policy
+        self.config = self._coerce_adapter_config(config)
+        if safety_policy is not None:
+            self.config.safety_policy = self._coerce_safety_policy(safety_policy)
+
+    @staticmethod
+    def _coerce_safety_policy(value: Any) -> SafetyPolicy:
+        if isinstance(value, SafetyPolicy):
+            return value
+        if isinstance(value, Mapping):
+            data = dict(value)
+            allowed = {
+                "enabled",
+                "blocked_patterns",
+                "require_confirmation_for",
+                "max_complexity",
+                "custom_rules",
+            }
+            filtered = {k: data[k] for k in allowed if k in data}
+            return SafetyPolicy(**filtered)
+        raise TypeError(f"Invalid safety_policy type: {type(value).__name__}")
+
+    @classmethod
+    def _coerce_adapter_config(cls, value: Any) -> AdapterConfig:
+        if value is None:
+            return AdapterConfig()
+        if isinstance(value, AdapterConfig):
+            return value
+        if isinstance(value, Mapping):
+            data = dict(value)
+            sp = data.get("safety_policy")
+            safety_policy = cls._coerce_safety_policy(sp) if sp is not None else SafetyPolicy()
+            strict_mode = bool(data.get("strict_mode", False))
+            debug = bool(data.get("debug", False))
+            custom_options = dict(data.get("custom_options") or {})
+            return AdapterConfig(
+                safety_policy=safety_policy,
+                strict_mode=strict_mode,
+                debug=debug,
+                custom_options=custom_options,
+            )
+        raise TypeError(f"Invalid config type: {type(value).__name__}")
 
     @abstractmethod
     def generate(self, plan: dict[str, Any]) -> str:

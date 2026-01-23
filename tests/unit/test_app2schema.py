@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from app2schema.extract import App2SchemaResult
+from app2schema.extract import extract_schema, extract_schema_to_file
 from nlp2cmd.adapters.dynamic import DynamicAdapter
 from nlp2cmd.schema_extraction import (
     CommandParameter,
@@ -87,3 +88,84 @@ def test_dynamic_adapter_auto_imports_app2schema_export(tmp_path: Path, monkeypa
     assert extracted.source_type == "dynamic_export_bundle"
     assert any(cmd.name == "demo_cmd" for cmd in extracted.commands)
     assert adapter.registry.get_command_by_name("demo_cmd") is not None
+
+
+def test_app2schema_extract_shell_script_auto(tmp_path: Path):
+    script_path = tmp_path / "demo.sh"
+    script_path.write_text(
+        """#!/usr/bin/env bash
+# Demo script
+# Usage: demo.sh [--name NAME] [-v]
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --name)
+      NAME="$2"; shift 2;;
+    -v)
+      VERBOSE=1; shift;;
+    *)
+      shift;;
+  esac
+done
+""",
+        encoding="utf-8",
+    )
+
+    result = extract_schema(script_path, source_type="auto")
+    assert result.detected_type == "shell_script"
+    assert len(result.schemas) == 1
+    schema = result.schemas[0]
+    assert schema.source_type == "shell_script"
+    assert len(schema.commands) == 1
+
+    cmd = schema.commands[0]
+    assert cmd.name == "demo"
+    param_names = {p.name for p in cmd.parameters}
+    # Heuristic-based parsing; ensure we picked up at least one short/long option.
+    assert "v" in param_names or "name" in param_names
+
+
+def test_app2schema_extract_makefile_auto(tmp_path: Path):
+    makefile_path = tmp_path / "Makefile"
+    makefile_path.write_text(
+        """# Build targets
+NAME = demo
+
+.PHONY: test
+test:
+\techo running tests for $(NAME)
+""",
+        encoding="utf-8",
+    )
+
+    result = extract_schema(makefile_path, source_type="auto")
+    assert result.detected_type == "makefile"
+    assert len(result.schemas) == 1
+    schema = result.schemas[0]
+    assert schema.source_type == "makefile"
+    assert any(c.name == "test" for c in schema.commands)
+
+    vars_meta = schema.metadata.get("variables")
+    if isinstance(vars_meta, dict):
+        assert "NAME" in vars_meta
+    elif isinstance(vars_meta, list):
+        assert "NAME" in vars_meta
+
+
+def test_app2schema_extract_schema_to_file_roundtrip_shell_script(tmp_path: Path):
+    script_path = tmp_path / "demo.sh"
+    script_path.write_text(
+        """#!/usr/bin/env bash
+# Usage: demo.sh [-v]
+getopts "v" opt
+""",
+        encoding="utf-8",
+    )
+
+    out_path = tmp_path / "export.json"
+    written = extract_schema_to_file(script_path, out_path, source_type="auto")
+    assert written.exists()
+
+    adapter = DynamicAdapter(schema_registry=DynamicSchemaRegistry())
+    extracted = adapter.register_schema_source(str(written), source_type="auto")
+    assert extracted.source_type == "dynamic_export_bundle"

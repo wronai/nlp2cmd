@@ -83,3 +83,55 @@ def test_dynamic_schema_export_import_roundtrip_preserves_location(tmp_path: Pat
         for cmd in all_cmds:
             for p in cmd.parameters:
                 assert hasattr(p, "location")
+
+
+def test_dynamic_registry_export_yaml_and_jsonschema(tmp_path: Path):
+    registry = DynamicSchemaRegistry()
+    # keep tests stable: avoid depending on external commands existing
+    spec = {
+        "openapi": "3.0.0",
+        "info": {"title": "Test API", "version": "1.0"},
+        "servers": [{"url": "https://example.test"}],
+        "paths": {"/ping": {"get": {"operationId": "ping", "summary": "Ping"}}},
+    }
+
+    spec_path = tmp_path / "openapi.json"
+    spec_path.write_text(json.dumps(spec), encoding="utf-8")
+    registry.register_openapi_schema(spec_path)
+
+    exported_yaml = registry.export_schemas("yaml")
+    assert isinstance(exported_yaml, str)
+    assert "nlp2cmd.dynamic_schema_export" in exported_yaml
+
+    exported_schema = registry.export_schemas("jsonschema")
+    schema_obj = json.loads(exported_schema)
+    assert schema_obj.get("$schema")
+    assert schema_obj.get("type") == "object"
+
+
+def test_dynamic_adapter_auto_detects_shell_script_and_makefile(tmp_path: Path):
+    sh_path = tmp_path / "demo.sh"
+    sh_path.write_text(
+        """#!/usr/bin/env bash
+# Usage: demo.sh [-v]
+getopts "v" opt
+""",
+        encoding="utf-8",
+    )
+
+    mk_path = tmp_path / "Makefile"
+    mk_path.write_text(
+        """test:\n\techo ok\n""",
+        encoding="utf-8",
+    )
+
+    registry = DynamicSchemaRegistry()
+    adapter = DynamicAdapter(schema_registry=registry)
+
+    extracted_sh = adapter.register_schema_source(str(sh_path), source_type="auto")
+    assert extracted_sh.source_type == "shell_script"
+    assert registry.get_all_commands()
+
+    extracted_mk = adapter.register_schema_source(str(mk_path), source_type="auto")
+    assert extracted_mk.source_type == "makefile"
+    assert any(c.name == "test" for c in registry.get_all_commands())
