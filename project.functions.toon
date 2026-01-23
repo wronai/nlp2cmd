@@ -1,10 +1,14 @@
 project: nlp2cmd
-generated: "2026-01-22T21:38:38.817687"
-modules[81]{path,lang,items}:
+generated: "2026-01-23T09:35:55.415712"
+modules[108]{path,lang,items}:
+  termo1.py,python,1
   termo.py,python,4
   termo_demo.py,python,5
+  bump_version.py,python,1
+  termo2.py,python,29
   tests/conftest.py,python,19
   tests/__init__.py,python,0
+  htmlcov/coverage_html_cb_dd2e7eb5.js,javascript,6
   tests/iterative/test_iter_2_regex.py,python,41
   tests/iterative/test_iter_6_7_structured.py,python,38
   tests/iterative/test_iter_9_hybrid.py,python,32
@@ -25,6 +29,7 @@ modules[81]{path,lang,items}:
   tests/unit/test_environment.py,python,24
   tests/unit/test_feedback_comprehensive.py,python,38
   tests/unit/test_planner_aggregator.py,python,35
+  tests/unit/test_sequential_dsl_generation.py,python,1
   tests/unit/test_registry.py,python,36
   tests/unit/test_schemas_feedback.py,python,23
   tests/unit/test_schemas_comprehensive.py,python,43
@@ -37,10 +42,12 @@ modules[81]{path,lang,items}:
   tests/integration/test_workflows.py,python,28
   src/nlp2cmd/__init__.py,python,0
   src/nlp2cmd/core.py,python,25
+  src/nlp2cmd/monitoring/resources.py,python,10
+  src/nlp2cmd/monitoring/__init__.py,python,0
   src/nlp2cmd/schemas/__init__.py,python,23
   src/nlp2cmd/generation/regex.py,python,10
   src/nlp2cmd/generation/keywords.py,python,7
-  src/nlp2cmd/generation/thermodynamic.py,python,24
+  src/nlp2cmd/generation/thermodynamic.py,python,25
   src/nlp2cmd/generation/__init__.py,python,0
   src/nlp2cmd/generation/templates.py,python,14
   src/nlp2cmd/generation/pipeline.py,python,16
@@ -52,7 +59,7 @@ modules[81]{path,lang,items}:
   src/nlp2cmd/validators/__init__.py,python,13
   src/nlp2cmd/planner/__init__.py,python,7
   src/nlp2cmd/cli/__init__.py,python,0
-  src/nlp2cmd/cli/main.py,python,13
+  src/nlp2cmd/cli/main.py,python,15
   src/nlp2cmd/aggregator/__init__.py,python,11
   src/nlp2cmd/registry/__init__.py,python,22
   src/nlp2cmd/thermodynamic/energy_models.py,python,18
@@ -64,10 +71,30 @@ modules[81]{path,lang,items}:
   src/nlp2cmd/adapters/__init__.py,python,0
   src/nlp2cmd/adapters/kubernetes.py,python,22
   src/nlp2cmd/adapters/sql.py,python,15
-  src/nlp2cmd/adapters/shell.py,python,18
+  src/nlp2cmd/adapters/shell.py,python,21
   src/nlp2cmd/environment/__init__.py,python,15
   src/nlp2cmd/feedback/__init__.py,python,19
   src/nlp2cmd/router/__init__.py,python,9
+  examples/use_cases/logistics_supply_chain.py,python,7
+  examples/use_cases/education.py,python,8
+  examples/use_cases/dsl_commands_demo.py,python,10
+  examples/use_cases/devops_automation.py,python,4
+  examples/use_cases/__init__.py,python,0
+  examples/use_cases/data_science_ml.py,python,5
+  examples/use_cases/debug_keywords.py,python,1
+  examples/use_cases/debug_generator.py,python,1
+  examples/use_cases/bioinformatics.py,python,6
+  examples/use_cases/finance_trading.py,python,7
+  examples/use_cases/healthcare.py,python,8
+  examples/use_cases/shell_validation.py,python,7
+  examples/use_cases/simple_demo_examples.py,python,7
+  examples/use_cases/physics_simulations.py,python,8
+  examples/use_cases/energy_utilities.py,python,8
+  examples/use_cases/test_shell_improvements.py,python,1
+  examples/use_cases/complete_python_shell_examples.py,python,7
+  examples/use_cases/debug_intents.py,python,1
+  examples/use_cases/smart_cities.py,python,8
+  examples/use_cases/run_all.py,python,2
   examples/docker/file_repair.py,python,4
   examples/docker/basic_docker.py,python,1
   examples/architecture/end_to_end_demo.py,python,7
@@ -84,6 +111,9 @@ modules[81]{path,lang,items}:
   examples/validation/config_validation.py,python,3
 
 function_details:
+  termo1.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      main,function,() -> None,4-22,true,19,3,main
   termo.py:
     functions[4]{name,kind,sig,loc,async,lines,cc,does}:
       demo_hybrid,function,() -> None,15-41,true,27,2,Demonstracja generatora hybrydowego.
@@ -97,6 +127,40 @@ function_details:
       demo_hybrid_thermodynamic_improved,function,() -> None,106-152,true,47,6,Demonstracja POPRAWIONEGO hybrydowego generatora.
       benchmark_latency,function,() -> None,155-198,true,44,3,Benchmark porównujący latencję przed/po poprawkach.
       main,function,() -> None,201-222,true,22,1,Główna funkcja demonstracyjna.
+  bump_version.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      bump_version,function,(version_type) -> None,11-55,false,45,6,Bump version in pyproject.toml
+  termo2.py:
+    functions[29]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_devops_automation,function,() -> None,18-43,true,26,2,Demonstracja automatyzacji DevOps.
+      demo_hyperparameter_optimization,function,() -> None,134-152,true,19,1,Demonstracja optymalizacji hiperparametrów.
+      demo_vehicle_routing,function,() -> None,282-318,true,37,4,Demonstracja optymalizacji tras dostaw.
+      demo_or_scheduling,function,() -> None,411-453,true,43,4,Demonstracja harmonogramowania sal operacyjnych.
+      demo_unit_commitment,function,() -> None,542-589,true,48,5,Demonstracja harmonogramowania elektrowni.
+      demo_genomic_pipeline,function,() -> None,667-714,true,48,6,Demonstracja harmonogramowania pipeline'u genomicznego.
+      main,function,() -> None,721-737,true,17,1,Uruchom wszystkie demonstracje.
+      HyperparameterOptimizer.__init__,method,"(space:HyperparameterSpace, n_samples:int=20) -> None",68-70,false,3,1,creates
+      HyperparameterOptimizer._decode_params,method,"(z:Any) -> dict",72-88,false,17,1,Dekoduj wektor z do hiperparametrów.
+      HyperparameterOptimizer._evaluate,method,"(params:dict) -> float",90-109,false,20,1,Symulacja ewaluacji modelu (w produkcji - prawdziwy trening).
+      HyperparameterOptimizer.optimize,method,"() -> tuple[dict, float]",111-131,false,21,3,Znajdź optymalne hiperparametry.
+      VRPSolver.__init__,method,"(points:list[DeliveryPoint], vehicle_capacity:int=100) -> None",177-181,false,5,1,creates
+      VRPSolver._distance,method,"(p1:DeliveryPoint, p2:DeliveryPoint) -> float",183-185,false,3,1,Odległość euklidesowa między punktami.
+      VRPSolver._route_distance,method,"(route:list[DeliveryPoint]) -> float",187-197,false,11,3,Całkowita długość trasy.
+      VRPSolver._route_demand,method,"(route:list[DeliveryPoint]) -> int",199-201,false,3,2,Całkowite zapotrzebowanie na trasie.
+      VRPSolver.solve,method,"(n_iterations:int=100) -> list[list[DeliveryPoint]]",203-227,false,25,9,Znajdź optymalne trasy.
+      VRPSolver._perturb,method,"(routes:list[list[DeliveryPoint]]) -> list[list[DeliveryPoint]]",229-248,false,20,8,Losowa modyfikacja tras.
+      VRPSolver._is_feasible,method,"(routes:list[list[DeliveryPoint]]) -> bool",250-255,false,6,3,Sprawdź czy rozwiązanie jest dopuszczalne.
+      VRPSolver._consolidate_routes,method,"(routes:list[list[DeliveryPoint]]) -> list[list[DeliveryPoint]]",257-279,false,23,5,Połącz małe trasy jeśli możliwe.
+      ORScheduler.__init__,method,"(rooms:list[OperatingRoom], surgeries:list[Surgery]) -> None",353-355,false,3,1,creates
+      ORScheduler._can_perform,method,"(room:OperatingRoom, surgery:Surgery) -> bool",357-359,false,3,2,Sprawdź czy sala ma wymagany sprzęt.
+      ORScheduler.schedule,method,"() -> dict[str, list[tuple[Surgery, int, int]]]",361-398,false,38,9,Zaplanuj operacje.
+      ORScheduler.print_schedule,method,"(schedule:dict) -> None",400-408,false,9,3,Wyświetl harmonogram.
+      UnitCommitmentSolver.__init__,method,"(plants:list[PowerPlant]) -> None",481-482,false,2,1,creates
+      UnitCommitmentSolver.solve,method,"(demand_profile:list[float]) -> list[dict[str, float]]",484-520,false,37,6,Znajdź optymalne przydziały mocy.
+      UnitCommitmentSolver.calculate_cost,method,"(schedule:list[dict[str,float]]) -> dict",522-539,false,18,5,Oblicz koszty i emisje.
+      GenomicPipelineScheduler.__init__,method,"(samples:list[GenomicSample], steps:list[PipelineStep], total_cores:int=64, total_memory_gb:int=256) -> None",619-627,false,9,1,creates
+      GenomicPipelineScheduler.estimate_time,method,"(sample:GenomicSample, step:PipelineStep) -> float",629-631,false,3,1,Szacowany czas wykonania kroku.
+      GenomicPipelineScheduler.schedule,method,() -> dict,633-664,false,32,5,Zaplanuj wykonanie pipeline'u.
   tests/conftest.py:
     functions[19]{name,kind,sig,loc,async,lines,cc,does}:
       sql_adapter,function,() -> None,25-36,false,12,1,Provide a configured SQL adapter.
@@ -118,6 +182,14 @@ function_details:
       sql_test_plans,function,() -> None,220-252,false,33,1,Provide sample SQL execution plans.
       shell_test_plans,function,() -> None,256-275,false,20,1,Provide sample Shell execution plans.
       pytest_configure,function,(config) -> None,279-289,false,11,1,Configure custom markers.
+  htmlcov/coverage_html_cb_dd2e7eb5.js:
+    functions[6]{name,kind,sig,loc,async,lines,cc,does}:
+      debounce,function,"(callback, wait) -> None",11-19,false,9,1,debounce
+      checkVisible,function,(element) -> None,21-26,false,6,1,checks visible
+      on_click,function,"(sel, fn) -> None",28-33,false,6,1,handles click
+      getCellValue,function,(row) -> None,36-48,false,13,1,retrieves cell value
+      rowComparator,function,"(rowA, rowB) -> None",50-57,false,8,1,row comparator
+      sortColumn,function,(th) -> None,59-110,false,52,1,sorts column
   tests/iterative/test_iter_2_regex.py:
     functions[41]{name,kind,sig,loc,async,lines,cc,does}:
       TestRegexEntityExtractor.extractor,method,() -> RegexEntityExtractor,16-17,false,2,1,extractor
@@ -770,6 +842,9 @@ function_details:
       TestResultAggregatorEdgeCases.test_aggregate_empty_list_result,method,(aggregator) -> None,474-486,false,13,2,Test aggregating empty list result.
       TestResultAggregatorEdgeCases.test_aggregate_mixed_step_status,method,(aggregator) -> None,488-505,false,18,1,Test aggregating with mixed step statuses.
       TestResultAggregatorEdgeCases.test_format_step_detail_with_large_result,method,(aggregator) -> None,507-522,false,16,3,Test step detail formatting with large result.
+  tests/unit/test_sequential_dsl_generation.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      test_transform_sequential_all_dsls,function,"(adapter, text, assert_contains) -> None",17-21,false,5,1,checks transform sequential all dsls
   tests/unit/test_registry.py:
     functions[36]{name,kind,sig,loc,async,lines,cc,does}:
       TestParamType.test_all_types_exist,method,() -> None,20-31,false,12,1,Test all parameter types are defined.
@@ -1021,31 +1096,43 @@ function_details:
       TestEndToEndWorkflow.test_docker_file_repair_flow,method,() -> None,455-474,false,20,1,Test Dockerfile repair end-to-end.
   src/nlp2cmd/core.py:
     functions[25]{name,kind,sig,loc,async,lines,cc,does}:
-      TransformResult.is_success,method,() -> bool,90-92,false,3,1,Check if transformation was successful.
-      TransformResult.is_blocked,method,() -> bool,95-97,false,3,1,Check if transformation was blocked by security policy.
-      TransformResult.to_dict,method,"() -> dict[str, Any]",99-112,false,14,1,Convert result to dictionary.
-      NLPBackend.__init__,method,"(config:Optional[dict[str,Any]]=None) -> None",118-119,false,2,2,creates
-      NLPBackend.extract_intent,method,"(text:str) -> tuple[str, float]",121-123,false,3,1,Extract intent from text.
-      NLPBackend.extract_entities,method,"(text:str) -> list[Entity]",125-127,false,3,1,Extract entities from text.
-      NLPBackend.generate_plan,method,"(text:str, context:Optional[dict]=None) -> ExecutionPlan",129-131,false,3,1,Generate execution plan from text.
-      SpaCyBackend.__init__,method,"(model:str='en_core_web_sm', config:Optional[dict]=None) -> None",137-140,false,4,1,creates
-      SpaCyBackend.nlp,method,() -> None,143-152,false,10,3,Lazy-load spaCy model.
-      SpaCyBackend.extract_entities,method,"(text:str) -> list[Entity]",154-168,false,15,2,Extract named entities using spaCy.
-      LLMBackend.__init__,method,"(model:str='claude-sonnet-4-20250514', api_key:Optional[str]=None, system_prompt:Optional[str]=None, config:Optional[dict]=None) -> None",174-185,false,12,2,creates
-      LLMBackend._default_system_prompt,method,() -> str,187-195,false,9,1,default system prompt
-      LLMBackend.client,method,() -> None,198-219,false,22,5,Lazy-load API client.
-      LLMBackend.generate_plan,method,"(text:str, context:Optional[dict]=None) -> ExecutionPlan",221-256,false,36,4,Generate execution plan using LLM.
-      RuleBasedBackend.__init__,method,"(rules:Optional[dict[str,list[str]]]=None, config:Optional[dict]=None) -> None",262-264,false,3,2,creates
-      RuleBasedBackend.extract_entities,method,"(text:str) -> list[Entity]",266-315,false,50,13,Extract entities using simple pattern matching.
-      RuleBasedBackend.extract_intent,method,"(text:str) -> tuple[str, float]",317-341,false,25,9,Extract intent using pattern matching.
-      NLP2CMD.__init__,method,"(adapter:BaseDSLAdapter, nlp_backend:Optional[NLPBackend]=None, validator:Optional[BaseValidator]=None, feedback_analyzer:Optional[FeedbackAnalyzer]=None, validation_mode:str='normal', auto_fix:bool=False) -> None",352-395,false,44,3,Initialize NLP2CMD instance.
-      NLP2CMD.dsl_name,method,() -> str,398-400,false,3,1,Get the name of the current DSL adapter.
-      NLP2CMD._normalize_entities,method,"(intent:str, entities:dict[str,Any], context:dict[str,Any]) -> dict[str, Any]",402-515,false,114,48,normalize entities
-      NLP2CMD.transform,method,"(text:str, context:Optional[dict[str,Any]]=None, dry_run:bool=False) -> TransformResult",517-623,false,107,11,Transform natural language text into a DSL command.
-      NLP2CMD.set_context,method,"(key:str, value:Any) -> None",625-627,false,3,1,Set a context value for subsequent transformations.
-      NLP2CMD.clear_context,method,() -> None,629-631,false,3,1,Clear all context.
-      NLP2CMD.get_history,method,"() -> list[TransformResult]",633-635,false,3,1,Get transformation history.
-      NLP2CMD.clear_history,method,() -> None,637-639,false,3,1,Clear transformation history.
+      TransformResult.is_success,method,() -> bool,91-93,false,3,1,Check if transformation was successful.
+      TransformResult.is_blocked,method,() -> bool,96-98,false,3,1,Check if transformation was blocked by security policy.
+      TransformResult.to_dict,method,"() -> dict[str, Any]",100-113,false,14,1,Convert result to dictionary.
+      NLPBackend.__init__,method,"(config:Optional[dict[str,Any]]=None) -> None",119-120,false,2,2,creates
+      NLPBackend.extract_intent,method,"(text:str) -> tuple[str, float]",122-124,false,3,1,Extract intent from text.
+      NLPBackend.extract_entities,method,"(text:str) -> list[Entity]",126-128,false,3,1,Extract entities from text.
+      NLPBackend.generate_plan,method,"(text:str, context:Optional[dict]=None) -> ExecutionPlan",130-132,false,3,1,Generate execution plan from text.
+      SpaCyBackend.__init__,method,"(model:str='en_core_web_sm', config:Optional[dict]=None) -> None",138-141,false,4,1,creates
+      SpaCyBackend.nlp,method,() -> None,144-153,false,10,3,Lazy-load spaCy model.
+      SpaCyBackend.extract_entities,method,"(text:str) -> list[Entity]",155-169,false,15,2,Extract named entities using spaCy.
+      LLMBackend.__init__,method,"(model:str='claude-sonnet-4-20250514', api_key:Optional[str]=None, system_prompt:Optional[str]=None, config:Optional[dict]=None) -> None",175-186,false,12,2,creates
+      LLMBackend._default_system_prompt,method,() -> str,188-196,false,9,1,default system prompt
+      LLMBackend.client,method,() -> None,199-220,false,22,5,Lazy-load API client.
+      LLMBackend.generate_plan,method,"(text:str, context:Optional[dict]=None) -> ExecutionPlan",222-257,false,36,4,Generate execution plan using LLM.
+      RuleBasedBackend.__init__,method,"(rules:Optional[dict[str,list[str]]]=None, config:Optional[dict]=None) -> None",263-265,false,3,2,creates
+      RuleBasedBackend.extract_entities,method,"(text:str) -> list[Entity]",267-316,false,50,13,Extract entities using simple pattern matching.
+      RuleBasedBackend.extract_intent,method,"(text:str) -> tuple[str, float]",318-342,false,25,9,Extract intent using pattern matching.
+      NLP2CMD.__init__,method,"(adapter:BaseDSLAdapter, nlp_backend:Optional[NLPBackend]=None, validator:Optional[BaseValidator]=None, feedback_analyzer:Optional[FeedbackAnalyzer]=None, validation_mode:str='normal', auto_fix:bool=False) -> None",353-396,false,44,3,Initialize NLP2CMD instance.
+      NLP2CMD.dsl_name,method,() -> str,399-401,false,3,1,Get the name of the current DSL adapter.
+      NLP2CMD._normalize_entities,method,"(intent:str, entities:dict[str,Any], context:dict[str,Any]) -> dict[str, Any]",403-516,false,114,48,normalize entities
+      NLP2CMD.transform,method,"(text:str, context:Optional[dict[str,Any]]=None, dry_run:bool=False) -> TransformResult",518-624,false,107,11,Transform natural language text into a DSL command.
+      NLP2CMD.set_context,method,"(key:str, value:Any) -> None",626-628,false,3,1,Set a context value for subsequent transformations.
+      NLP2CMD.clear_context,method,() -> None,630-632,false,3,1,Clear all context.
+      NLP2CMD.get_history,method,"() -> list[TransformResult]",634-636,false,3,1,Get transformation history.
+      NLP2CMD.clear_history,method,() -> None,638-640,false,3,1,Clear transformation history.
+  src/nlp2cmd/monitoring/resources.py:
+    functions[10]{name,kind,sig,loc,async,lines,cc,does}:
+      get_monitor,function,() -> ResourceMonitor,104-106,false,3,1,Get the global resource monitor instance.
+      measure_resources,function,() -> None,110-113,false,4,1,Convenient context manager for resource measurement.
+      get_last_metrics,function,"() -> Optional[ResourceMetrics]",116-118,false,3,1,Get metrics from last execution.
+      format_last_metrics,function,() -> str,121-126,false,6,2,Format metrics from last execution for display.
+      get_system_info,function,"() -> Dict[str, Any]",129-135,false,7,1,Get general system information.
+      ResourceMonitor.__init__,method,() -> None,27-28,false,2,1,creates
+      ResourceMonitor.get_current_metrics,method,() -> ResourceMetrics,30-37,false,8,1,Get current resource metrics.
+      ResourceMonitor.measure_execution,method,() -> None,40-74,false,35,1,Context manager to measure resource usage during execution.
+      ResourceMonitor.get_last_metrics,method,"() -> Optional[ResourceMetrics]",76-78,false,3,1,Get metrics from last execution.
+      ResourceMonitor.format_metrics,method,"(metrics:ResourceMetrics) -> str",80-97,false,18,4,Format metrics for display.
   src/nlp2cmd/schemas/__init__.py:
     functions[23]{name,kind,sig,loc,async,lines,cc,does}:
       SchemaRegistry.__init__,method,() -> None,34-36,false,3,1,creates
@@ -1085,73 +1172,74 @@ function_details:
       RegexEntityExtractor.add_pattern,method,"(domain:str, entity_type:str, patterns:list[str]) -> None",419-432,false,14,3,Add custom patterns.
   src/nlp2cmd/generation/keywords.py:
     functions[7]{name,kind,sig,loc,async,lines,cc,does}:
-      KeywordIntentDetector.__init__,method,"(patterns:Optional[dict[str,dict[str,list[str]]]]=None, confidence_threshold:float=0.5) -> None",180-193,false,14,2,Initialize keyword detector.
-      KeywordIntentDetector.detect,method,"(text:str) -> DetectionResult",203-315,false,113,26,Detect domain and intent from text.
-      KeywordIntentDetector._calculate_domain_boost,method,"(text:str, domain:str) -> float",317-321,false,5,3,Calculate confidence boost based on domain-specific keywords.
-      KeywordIntentDetector.detect_all,method,"(text:str) -> list[DetectionResult]",323-352,false,30,6,Detect all matching domains and intents.
-      KeywordIntentDetector.add_pattern,method,"(domain:str, intent:str, keywords:list[str]) -> None",354-367,false,14,3,Add custom patterns.
-      KeywordIntentDetector.get_supported_domains,method,"() -> list[str]",369-371,false,3,1,Get list of supported domains.
-      KeywordIntentDetector.get_supported_intents,method,"(domain:str) -> list[str]",373-375,false,3,1,Get list of supported intents for a domain.
+      KeywordIntentDetector.__init__,method,"(patterns:Optional[dict[str,dict[str,list[str]]]]=None, confidence_threshold:float=0.5) -> None",225-238,false,14,2,Initialize keyword detector.
+      KeywordIntentDetector.detect,method,"(text:str) -> DetectionResult",248-395,false,148,39,Detect domain and intent from text.
+      KeywordIntentDetector._calculate_domain_boost,method,"(text:str, domain:str) -> float",397-401,false,5,3,Calculate confidence boost based on domain-specific keywords.
+      KeywordIntentDetector.detect_all,method,"(text:str) -> list[DetectionResult]",403-432,false,30,6,Detect all matching domains and intents.
+      KeywordIntentDetector.add_pattern,method,"(domain:str, intent:str, keywords:list[str]) -> None",434-447,false,14,3,Add custom patterns.
+      KeywordIntentDetector.get_supported_domains,method,"() -> list[str]",449-451,false,3,1,Get list of supported domains.
+      KeywordIntentDetector.get_supported_intents,method,"(domain:str) -> list[str]",453-455,false,3,1,Get list of supported intents for a domain.
   src/nlp2cmd/generation/thermodynamic.py:
-    functions[24]{name,kind,sig,loc,async,lines,cc,does}:
-      create_thermodynamic_generator,function,"(llm_client:Optional[LLMClient]=None, n_samples:int=5, n_steps:int=500, adaptive_steps:bool=True) -> ThermodynamicGenerator",747-774,false,28,1,Factory function for thermodynamic generator.
+    functions[25]{name,kind,sig,loc,async,lines,cc,does}:
+      create_thermodynamic_generator,function,"(llm_client:Optional[LLMClient]=None, n_samples:int=5, n_steps:int=500, adaptive_steps:bool=True) -> ThermodynamicGenerator",847-874,false,28,1,Factory function for thermodynamic generator.
       OptimizationProblem.to_condition,method,"() -> dict[str, Any]",56-63,false,8,1,Convert to condition dict for Langevin sampler.
-      SchedulingEnergy.__init__,method,"(n_tasks:int, n_slots:int) -> None",101-103,false,3,1,creates
-      SchedulingEnergy.energy,method,"(z:Any, condition:dict[str,Any]) -> float",105-129,false,25,9,Compute scheduling energy.
-      SchedulingEnergy.gradient,method,"(z:Any, condition:dict[str,Any]) -> np.ndarray",131-142,false,12,2,Compute gradient numerically.
-      SchedulingEnergy._decode_assignments,method,"(z:Any) -> list[int]",144-159,false,16,3,Decode continuous z to discrete slot assignments.
-      SchedulingEnergy._softmax,method,"(x:Any) -> np.ndarray",161-164,false,4,1,Stable softmax.
-      AllocationEnergy.__init__,method,"(n_resources:int, n_consumers:int) -> None",181-183,false,3,1,creates
-      AllocationEnergy.energy,method,"(z:Any, condition:dict[str,Any]) -> float",185-218,false,34,10,Compute allocation energy.
-      AllocationEnergy.gradient,method,"(z:Any, condition:dict[str,Any]) -> np.ndarray",220-231,false,12,2,Compute gradient numerically.
-      AllocationEnergy._decode_allocation,method,"(z:Any) -> np.ndarray",233-242,false,10,2,Decode continuous z to allocation matrix.
-      ThermodynamicGenerator.__init__,method,"(llm_client:Optional[LLMClient]=None, langevin_config:Optional[LangevinConfig]=None, n_samples:int=5, voting_strategy:str='energy', adaptive_steps:bool=True) -> None",268-293,false,26,3,creates
-      ThermodynamicGenerator._get_adaptive_config,method,"(problem:OptimizationProblem) -> LangevinConfig",295-328,false,34,5,"IMPROVEMENT: Adjust Langevin steps based on problem complexity."
-      ThermodynamicGenerator._get_sampling_config,method,"(problem:OptimizationProblem) -> tuple[LangevinConfig, int]",330-342,false,13,3,"Return (LangevinConfig, n_samples) adapted to problem size."
-      ThermodynamicGenerator.generate,method,"(text:str, problem:Optional[OptimizationProblem]=None) -> ThermodynamicResult",344-425,true,82,5,Generate solution for optimization problem.
-      ThermodynamicGenerator._parse_problem,method,"(text:str) -> OptimizationProblem",427-436,true,10,4,Parse problem from natural language.
-      ThermodynamicGenerator._plan_to_problem,method,"(plan:StructuredPlan) -> OptimizationProblem",438-453,false,16,1,Convert structured plan to optimization problem.
-      ThermodynamicGenerator._rule_based_parse,method,"(text:str) -> OptimizationProblem",455-571,false,117,36,"IMPROVED: Rule-based problem parsing with better Polish support."
-      ThermodynamicGenerator._create_energy_model,method,"(problem:OptimizationProblem) -> EnergyModel",573-591,false,19,8,Create appropriate energy model for problem.
-      ThermodynamicGenerator._decode_solution,method,"(result:SamplerResult, problem:OptimizationProblem, energy_model:EnergyModel) -> dict[str, Any]",593-620,false,28,4,Decode sampler result to solution dict.
-      ThermodynamicGenerator._format_output,method,"(solution:dict[str,Any], problem:OptimizationProblem) -> str",622-645,false,24,8,Format solution as readable output.
-      HybridThermodynamicGenerator.__init__,method,"(llm_client:Optional[LLMClient]=None, langevin_config:Optional[LangevinConfig]=None) -> None",674-687,false,14,1,creates
-      HybridThermodynamicGenerator._is_optimization_query,method,"(text:str) -> bool",689-696,false,8,2,"IMPROVED: Check if query is an optimization problem."
-      HybridThermodynamicGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None) -> dict[str, Any]",698-744,true,47,7,Route and generate based on problem type.
+      SchedulingEnergy.__init__,method,"(n_tasks:int, n_slots:int) -> None",113-115,false,3,1,creates
+      SchedulingEnergy.energy,method,"(z:Any, condition:dict[str,Any]) -> float",117-141,false,25,9,Compute scheduling energy.
+      SchedulingEnergy.gradient,method,"(z:Any, condition:dict[str,Any]) -> np.ndarray",143-154,false,12,2,Compute gradient numerically.
+      SchedulingEnergy._decode_assignments,method,"(z:Any) -> list[int]",156-171,false,16,3,Decode continuous z to discrete slot assignments.
+      SchedulingEnergy._softmax,method,"(x:Any) -> np.ndarray",173-176,false,4,1,Stable softmax.
+      AllocationEnergy.__init__,method,"(n_resources:int, n_consumers:int) -> None",193-195,false,3,1,creates
+      AllocationEnergy.energy,method,"(z:Any, condition:dict[str,Any]) -> float",197-230,false,34,10,Compute allocation energy.
+      AllocationEnergy.gradient,method,"(z:Any, condition:dict[str,Any]) -> np.ndarray",232-243,false,12,2,Compute gradient numerically.
+      AllocationEnergy._decode_allocation,method,"(z:Any) -> np.ndarray",245-254,false,10,2,Decode continuous z to allocation matrix.
+      ThermodynamicGenerator.__init__,method,"(llm_client:Optional[LLMClient]=None, langevin_config:Optional[LangevinConfig]=None, n_samples:int=5, voting_strategy:str='energy', adaptive_steps:bool=True) -> None",280-305,false,26,3,creates
+      ThermodynamicGenerator._get_adaptive_config,method,"(problem:OptimizationProblem) -> LangevinConfig",307-340,false,34,5,"IMPROVEMENT: Adjust Langevin steps based on problem complexity."
+      ThermodynamicGenerator._get_sampling_config,method,"(problem:OptimizationProblem) -> tuple[LangevinConfig, int]",342-354,false,13,3,"Return (LangevinConfig, n_samples) adapted to problem size."
+      ThermodynamicGenerator.generate,method,"(text:str, problem:Optional[OptimizationProblem]=None) -> ThermodynamicResult",356-441,true,86,5,Generate solution for optimization problem.
+      ThermodynamicGenerator._parse_problem,method,"(text:str) -> OptimizationProblem",443-452,true,10,4,Parse problem from natural language.
+      ThermodynamicGenerator._plan_to_problem,method,"(plan:StructuredPlan) -> OptimizationProblem",454-469,false,16,1,Convert structured plan to optimization problem.
+      ThermodynamicGenerator._rule_based_parse,method,"(text:str) -> OptimizationProblem",471-587,false,117,36,"IMPROVED: Rule-based problem parsing with better Polish support."
+      ThermodynamicGenerator._create_energy_model,method,"(problem:OptimizationProblem) -> EnergyModel",589-607,false,19,8,Create appropriate energy model for problem.
+      ThermodynamicGenerator._decode_solution,method,"(result:SamplerResult, problem:OptimizationProblem, energy_model:EnergyModel) -> dict[str, Any]",609-636,false,28,4,Decode sampler result to solution dict.
+      ThermodynamicGenerator._format_output,method,"(solution:dict[str,Any], problem:OptimizationProblem) -> str",638-661,false,24,8,Format solution as readable output.
+      ThermodynamicGenerator.validate_solution,method,"(solution:dict[str,Any], problem:OptimizationProblem, best_energy:Optional[float]=None) -> SolutionQuality",663-745,false,83,31,validates solution
+      HybridThermodynamicGenerator.__init__,method,"(llm_client:Optional[LLMClient]=None, langevin_config:Optional[LangevinConfig]=None) -> None",774-787,false,14,1,creates
+      HybridThermodynamicGenerator._is_optimization_query,method,"(text:str) -> bool",789-796,false,8,2,"IMPROVED: Check if query is an optimization problem."
+      HybridThermodynamicGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None) -> dict[str, Any]",798-844,true,47,7,Route and generate based on problem type.
   src/nlp2cmd/generation/templates.py:
     functions[14]{name,kind,sig,loc,async,lines,cc,does}:
-      TemplateGenerator.__init__,method,"(custom_templates:Optional[dict[str,dict[str,str]]]=None) -> None",116-137,false,22,4,Initialize template generator.
-      TemplateGenerator.generate,method,"(domain:str, intent:str, entities:dict[str,Any]) -> TemplateResult",139-195,false,57,4,Generate DSL command from template.
-      TemplateGenerator._find_alternative_template,method,"(domain:str, intent:str, entities:dict[str,Any]) -> Optional[str]",197-238,false,42,2,Find alternative template based on intent mapping.
-      TemplateGenerator._prepare_entities,method,"(domain:str, intent:str, entities:dict[str,Any]) -> dict[str, Any]",240-258,false,19,5,Prepare entities with defaults and formatting.
-      TemplateGenerator._prepare_sql_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",260-339,false,80,16,Prepare SQL entities.
-      TemplateGenerator._prepare_shell_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",341-398,false,58,10,Prepare shell entities.
-      TemplateGenerator._prepare_docker_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",400-456,false,57,9,Prepare Docker entities.
-      TemplateGenerator._prepare_kubernetes_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",458-506,false,49,7,Prepare Kubernetes entities.
-      TemplateGenerator._fill_template,method,"(template:str, entities:dict[str,Any]) -> str",508-517,false,10,4,Fill template with entities.
-      TemplateGenerator._clean_command,method,"(command:str) -> str",519-534,false,16,1,Clean up generated command.
-      TemplateGenerator._find_missing,method,"(template:str, entities:dict[str,Any]) -> list[str]",536-540,false,5,4,Find missing entities in template.
-      TemplateGenerator.add_template,method,"(domain:str, intent:str, template:str) -> None",542-553,false,12,2,Add custom template.
-      TemplateGenerator.get_template,method,"(domain:str, intent:str) -> Optional[str]",555-557,false,3,1,Get template for domain/intent.
-      TemplateGenerator.list_templates,method,"(domain:str) -> list[str]",559-561,false,3,1,List available templates for domain.
+      TemplateGenerator.__init__,method,"(custom_templates:Optional[dict[str,dict[str,str]]]=None) -> None",185-206,false,22,4,Initialize template generator.
+      TemplateGenerator.generate,method,"(domain:str, intent:str, entities:dict[str,Any]) -> TemplateResult",208-266,false,59,5,Generate DSL command from template.
+      TemplateGenerator._find_alternative_template,method,"(domain:str, intent:str, entities:dict[str,Any]) -> Optional[str]",268-326,false,59,19,Find alternative template based on intent mapping and context.
+      TemplateGenerator._prepare_entities,method,"(domain:str, intent:str, entities:dict[str,Any]) -> dict[str, Any]",328-346,false,19,5,Prepare entities with defaults and formatting.
+      TemplateGenerator._prepare_sql_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",348-427,false,80,16,Prepare SQL entities.
+      TemplateGenerator._prepare_shell_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",429-642,false,214,91,Prepare shell entities.
+      TemplateGenerator._prepare_docker_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",644-700,false,57,9,Prepare Docker entities.
+      TemplateGenerator._prepare_kubernetes_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",702-750,false,49,7,Prepare Kubernetes entities.
+      TemplateGenerator._fill_template,method,"(template:str, entities:dict[str,Any]) -> str",752-761,false,10,4,Fill template with entities.
+      TemplateGenerator._clean_command,method,"(command:str) -> str",763-778,false,16,1,Clean up generated command.
+      TemplateGenerator._find_missing,method,"(template:str, entities:dict[str,Any]) -> list[str]",780-784,false,5,4,Find missing entities in template.
+      TemplateGenerator.add_template,method,"(domain:str, intent:str, template:str) -> None",786-797,false,12,2,Add custom template.
+      TemplateGenerator.get_template,method,"(domain:str, intent:str) -> Optional[str]",799-801,false,3,1,Get template for domain/intent.
+      TemplateGenerator.list_templates,method,"(domain:str) -> list[str]",803-805,false,3,1,List available templates for domain.
   src/nlp2cmd/generation/pipeline.py:
     functions[16]{name,kind,sig,loc,async,lines,cc,does}:
-      create_pipeline,function,"(confidence_threshold:float=0.5, custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None, custom_templates:Optional[dict[str,dict[str,str]]]=None) -> RuleBasedPipeline",293-324,false,32,4,Factory function to create a configured pipeline.
+      create_pipeline,function,"(confidence_threshold:float=0.5, custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None, custom_templates:Optional[dict[str,dict[str,str]]]=None) -> RuleBasedPipeline",297-328,false,32,4,Factory function to create a configured pipeline.
       PipelineResult.to_plan,method,"() -> dict[str, Any]",45-51,false,7,1,Convert to execution plan format for adapters.
       RuleBasedPipeline.__init__,method,"(detector:Optional[KeywordIntentDetector]=None, extractor:Optional[RegexEntityExtractor]=None, generator:Optional[TemplateGenerator]=None, confidence_threshold:float=0.5) -> None",71-90,false,20,4,Initialize pipeline.
-      RuleBasedPipeline.process,method,"(text:str) -> PipelineResult",92-161,false,70,7,Process natural language text through the pipeline.
-      RuleBasedPipeline.process_batch,method,"(texts:list[str]) -> list[PipelineResult]",163-173,false,11,2,Process multiple texts.
-      RuleBasedPipeline.detect_only,method,"(text:str) -> DetectionResult",175-185,false,11,1,Only detect domain and intent (skip extraction and generation).
-      RuleBasedPipeline.extract_only,method,"(text:str, domain:str) -> ExtractionResult",187-198,false,12,1,Only extract entities (skip detection and generation).
-      RuleBasedPipeline.generate_only,method,"(domain:str, intent:str, entities:dict[str,Any]) -> TemplateResult",200-217,false,18,1,Only generate command (skip detection and extraction).
-      RuleBasedPipeline.get_supported_domains,method,"() -> list[str]",219-221,false,3,1,Get list of supported domains.
-      RuleBasedPipeline.get_supported_intents,method,"(domain:str) -> list[str]",223-225,false,3,1,Get list of supported intents for a domain.
-      PipelineMetrics.__init__,method,() -> None,231-238,false,8,1,creates
-      PipelineMetrics.record,method,"(result:PipelineResult) -> None",240-256,false,17,3,Record a pipeline result.
-      PipelineMetrics.success_rate,method,() -> float,259-263,false,5,2,Calculate success rate.
-      PipelineMetrics.avg_latency_ms,method,() -> float,266-270,false,5,2,Calculate average latency.
-      PipelineMetrics.avg_confidence,method,() -> float,273-277,false,5,2,Calculate average confidence.
-      PipelineMetrics.report,method,"() -> dict[str, Any]",279-290,false,12,1,Generate metrics report.
+      RuleBasedPipeline.process,method,"(text:str) -> PipelineResult",92-165,false,74,7,Process natural language text through the pipeline.
+      RuleBasedPipeline.process_batch,method,"(texts:list[str]) -> list[PipelineResult]",167-177,false,11,2,Process multiple texts.
+      RuleBasedPipeline.detect_only,method,"(text:str) -> DetectionResult",179-189,false,11,1,Only detect domain and intent (skip extraction and generation).
+      RuleBasedPipeline.extract_only,method,"(text:str, domain:str) -> ExtractionResult",191-202,false,12,1,Only extract entities (skip detection and generation).
+      RuleBasedPipeline.generate_only,method,"(domain:str, intent:str, entities:dict[str,Any]) -> TemplateResult",204-221,false,18,1,Only generate command (skip detection and extraction).
+      RuleBasedPipeline.get_supported_domains,method,"() -> list[str]",223-225,false,3,1,Get list of supported domains.
+      RuleBasedPipeline.get_supported_intents,method,"(domain:str) -> list[str]",227-229,false,3,1,Get list of supported intents for a domain.
+      PipelineMetrics.__init__,method,() -> None,235-242,false,8,1,creates
+      PipelineMetrics.record,method,"(result:PipelineResult) -> None",244-260,false,17,3,Record a pipeline result.
+      PipelineMetrics.success_rate,method,() -> float,263-267,false,5,2,Calculate success rate.
+      PipelineMetrics.avg_latency_ms,method,() -> float,270-274,false,5,2,Calculate average latency.
+      PipelineMetrics.avg_confidence,method,() -> float,277-281,false,5,2,Calculate average confidence.
+      PipelineMetrics.report,method,"() -> dict[str, Any]",283-294,false,12,1,Generate metrics report.
   src/nlp2cmd/generation/llm_multi.py:
     functions[11]{name,kind,sig,loc,async,lines,cc,does}:
       LLMDomainRouter.__init__,method,"(llm_client:LLMClient, config:Optional[LLMConfig]=None) -> None",56-62,false,7,2,creates
@@ -1246,20 +1334,22 @@ function_details:
       LLMPlanner._rule_based_plan,method,"(intent:str, entities:dict[str,Any], domain:Optional[str]) -> str",367-408,false,42,3,Generate plan using rule-based logic (fallback).
       LLMPlanner.get_action_catalog,method,"(domain:Optional[str]=None) -> str",410-412,false,3,1,Get the action catalog for reference.
   src/nlp2cmd/cli/main.py:
-    functions[13]{name,kind,sig,loc,async,lines,cc,does}:
-      get_adapter,function,"(dsl:str, context:dict[str,Any]) -> None",36-54,false,19,3,Get the appropriate adapter for the DSL type.
-      main,function,"(ctx, interactive:bool, dsl:str, query:Optional[str], auto_repair:bool) -> None",335-349,false,15,5,NLP2CMD - Natural Language to Domain-Specific Commands.
-      repair,function,"(ctx, file:str, backup:bool) -> None",356-405,false,50,11,Repair a configuration file.
-      validate,function,"(ctx, file:str) -> None",411-437,false,27,7,Validate a configuration file.
-      analyze_env,function,"(ctx, output:Optional[str]) -> None",443-512,false,70,12,Analyze system environment.
-      InteractiveSession.__init__,method,"(dsl:str='auto', auto_repair:bool=False) -> None",60-78,false,19,1,creates
-      InteractiveSession._analyze_environment,method,() -> None,80-94,false,15,3,Analyze current environment.
-      InteractiveSession.process,method,"(user_input:str) -> FeedbackResult",96-122,false,27,1,Process user input and return feedback.
-      InteractiveSession.display_feedback,method,"(feedback:FeedbackResult) -> None",124-174,false,51,12,Display feedback result with formatting.
-      InteractiveSession.run,method,() -> None,176-224,false,49,10,Run interactive REPL.
-      InteractiveSession._show_help,method,() -> None,226-242,false,17,1,Display help information.
-      InteractiveSession._handle_command,method,"(cmd:str) -> None",244-299,false,56,14,Handle special commands.
-      InteractiveSession._correction_loop,method,"(feedback:FeedbackResult) -> None",301-321,false,21,8,Interactive correction loop.
+    functions[15]{name,kind,sig,loc,async,lines,cc,does}:
+      _shell_env_context,function,"(context:dict[str,Any]) -> dict[str, Any]",66-83,false,18,5,shell env context
+      get_adapter,function,"(dsl:str, context:dict[str,Any]) -> None",86-104,false,19,3,Get the appropriate adapter for the DSL type.
+      main,function,"(ctx, interactive:bool, dsl:str, query:Optional[str], auto_repair:bool, explain:bool) -> None",392-450,false,59,14,NLP2CMD - Natural Language to Domain-Specific Commands.
+      repair,function,"(ctx, file:str, backup:bool) -> None",457-506,false,50,11,Repair a configuration file.
+      validate,function,"(ctx, file:str) -> None",512-538,false,27,7,Validate a configuration file.
+      analyze_env,function,"(ctx, output:Optional[str]) -> None",544-613,false,70,12,Analyze system environment.
+      NLP2CMDGroup.parse_args,method,"(ctx:Any, args:list[str]) -> None",40-63,false,24,9,parses args
+      InteractiveSession.__init__,method,"(dsl:str='auto', auto_repair:bool=False) -> None",110-128,false,19,1,creates
+      InteractiveSession._analyze_environment,method,() -> None,130-144,false,15,3,Analyze current environment.
+      InteractiveSession.process,method,"(user_input:str) -> FeedbackResult",146-173,false,28,1,Process user input and return feedback.
+      InteractiveSession.display_feedback,method,"(feedback:FeedbackResult) -> None",175-230,false,56,13,Display feedback result with formatting.
+      InteractiveSession.run,method,() -> None,232-280,false,49,10,Run interactive REPL.
+      InteractiveSession._show_help,method,() -> None,282-298,false,17,1,Display help information.
+      InteractiveSession._handle_command,method,"(cmd:str) -> None",300-355,false,56,14,Handle special commands.
+      InteractiveSession._correction_loop,method,"(feedback:FeedbackResult) -> None",357-377,false,21,8,Interactive correction loop.
   src/nlp2cmd/aggregator/__init__.py:
     functions[11]{name,kind,sig,loc,async,lines,cc,does}:
       ResultAggregator.__init__,method,"(default_format:OutputFormat=OutputFormat.TEXT) -> None",55-62,false,8,1,Initialize aggregator.
@@ -1331,18 +1421,18 @@ function_details:
       ConstraintEnergy.gradient,method,"(z:Any, condition:Dict[str,Any]) -> np.ndarray",140-147,false,8,3,gradient
       LangevinSampler.__init__,method,"(energy_model:EnergyModel, config:Optional[LangevinConfig]=None) -> None",170-172,false,3,2,creates
       LangevinSampler.sample,method,"(condition:Dict[str,Any], n_samples:int=1, initial_state:Optional[Any]=None) -> Union[SamplerResult, List[SamplerResult]]",174-194,false,21,3,Generate samples via Langevin dynamics.
-      LangevinSampler._sample_single,method,"(condition:Dict[str,Any], initial_state:Optional[Any]=None) -> SamplerResult",196-252,false,57,7,Generate a single sample.
-      LangevinSampler.sample_parallel,method,"(condition:Dict[str,Any], n_samples:int, max_workers:int=4) -> List[SamplerResult]",254-267,false,14,3,Sample in parallel using thread pool.
-      EntropyProductionRegularizer.__init__,method,"(lambda_entropy:float=0.1, kT:float=1.0) -> None",284-286,false,3,1,creates
-      EntropyProductionRegularizer.compute_regularization,method,"(result:SamplerResult) -> float",288-294,false,7,1,Compute entropy production regularization term.
-      EntropyProductionRegularizer.estimate_heat_dissipation,method,"(result:SamplerResult) -> float",296-302,false,7,1,Estimate heat dissipation Q during sampling.
-      MajorityVoter.__init__,method,"(strategy:str='energy') -> None",319-320,false,2,1,creates
-      MajorityVoter.vote,method,"(results:List[SamplerResult]) -> SamplerResult",322-346,false,25,7,Select best result based on voting strategy.
-      MajorityVoter._cluster_vote,method,"(results:List[SamplerResult], threshold:float=0.1) -> SamplerResult",348-371,false,24,6,Cluster similar samples and select from largest cluster.
-      ThermodynamicRouter.__init__,method,"(complexity_threshold:float=0.5) -> None",407-408,false,2,1,creates
-      ThermodynamicRouter.route,method,"(intent:str, complexity:float=0.5) -> str",410-435,false,26,5,Decide solver type based on intent and complexity.
-      ThermodynamicRouter.estimate_complexity,method,"(problem_description:str, entities:Dict[str,Any]) -> float",437-462,false,26,5,Estimate problem complexity based on description and entities.
-      EnergyEstimator.estimate,method,"(llm_input_tokens:int, llm_output_tokens_classic:int, llm_output_tokens_hybrid:int, langevin_steps:int) -> Dict[str, float]",484-526,false,43,1,Estimate energy for different approaches.
+      LangevinSampler._sample_single,method,"(condition:Dict[str,Any], initial_state:Optional[Any]=None) -> SamplerResult",196-266,false,71,12,Generate a single sample.
+      LangevinSampler.sample_parallel,method,"(condition:Dict[str,Any], n_samples:int, max_workers:int=4) -> List[SamplerResult]",268-281,false,14,3,Sample in parallel using thread pool.
+      EntropyProductionRegularizer.__init__,method,"(lambda_entropy:float=0.1, kT:float=1.0) -> None",298-300,false,3,1,creates
+      EntropyProductionRegularizer.compute_regularization,method,"(result:SamplerResult) -> float",302-308,false,7,1,Compute entropy production regularization term.
+      EntropyProductionRegularizer.estimate_heat_dissipation,method,"(result:SamplerResult) -> float",310-316,false,7,1,Estimate heat dissipation Q during sampling.
+      MajorityVoter.__init__,method,"(strategy:str='energy') -> None",333-334,false,2,1,creates
+      MajorityVoter.vote,method,"(results:List[SamplerResult]) -> SamplerResult",336-360,false,25,7,Select best result based on voting strategy.
+      MajorityVoter._cluster_vote,method,"(results:List[SamplerResult], threshold:float=0.1) -> SamplerResult",362-385,false,24,6,Cluster similar samples and select from largest cluster.
+      ThermodynamicRouter.__init__,method,"(complexity_threshold:float=0.5) -> None",421-422,false,2,1,creates
+      ThermodynamicRouter.route,method,"(intent:str, complexity:float=0.5) -> str",424-449,false,26,5,Decide solver type based on intent and complexity.
+      ThermodynamicRouter.estimate_complexity,method,"(problem_description:str, entities:Dict[str,Any]) -> float",451-476,false,26,5,Estimate problem complexity based on description and entities.
+      EnergyEstimator.estimate,method,"(llm_input_tokens:int, llm_output_tokens_classic:int, llm_output_tokens_hybrid:int, langevin_steps:int) -> Dict[str, float]",498-540,false,43,1,Estimate energy for different approaches.
   src/nlp2cmd/executor/__init__.py:
     functions[18]{name,kind,sig,loc,async,lines,cc,does}:
       PlanStep.__post_init__,method,() -> None,50-53,false,4,2,creates init
@@ -1412,28 +1502,28 @@ function_details:
       DockerAdapter.check_safety,method,"(command:str) -> dict[str, Any]",542-584,false,43,11,Check Docker command against safety policy.
   src/nlp2cmd/adapters/kubernetes.py:
     functions[22]{name,kind,sig,loc,async,lines,cc,does}:
-      KubernetesAdapter.__init__,method,"(cluster_context:Optional[dict[str,Any]]=None, safety_policy:Optional[KubernetesSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",128-143,false,16,3,Initialize Kubernetes adapter.
-      KubernetesAdapter._parse_cluster_context,method,"(ctx:dict[str,Any]) -> ClusterContext",145-151,false,7,1,Parse cluster context.
-      KubernetesAdapter._normalize_resource,method,"(resource:str) -> str",153-155,false,3,1,Normalize resource type name.
-      KubernetesAdapter.generate,method,"(plan:dict[str,Any]) -> str",157-179,false,23,2,Generate kubectl command from execution plan.
-      KubernetesAdapter._generate_get,method,"(entities:dict[str,Any]) -> str",181-210,false,30,7,Generate kubectl get command.
-      KubernetesAdapter._generate_describe,method,"(entities:dict[str,Any]) -> str",212-223,false,12,2,Generate kubectl describe command.
-      KubernetesAdapter._generate_apply,method,"(entities:dict[str,Any]) -> str",225-243,false,19,4,Generate kubectl apply command.
-      KubernetesAdapter._generate_delete,method,"(entities:dict[str,Any]) -> str",245-271,false,27,6,Generate kubectl delete command.
-      KubernetesAdapter._generate_scale,method,"(entities:dict[str,Any]) -> str",273-288,false,16,3,Generate kubectl scale command.
-      KubernetesAdapter._generate_logs,method,"(entities:dict[str,Any]) -> str",290-320,false,31,7,Generate kubectl logs command.
-      KubernetesAdapter._generate_exec,method,"(entities:dict[str,Any]) -> str",322-346,false,25,4,Generate kubectl exec command.
-      KubernetesAdapter._generate_port_forward,method,"(entities:dict[str,Any]) -> str",348-363,false,16,3,Generate kubectl port-forward command.
-      KubernetesAdapter._generate_rollout,method,"(entities:dict[str,Any]) -> str",365-379,false,15,3,Generate kubectl rollout command.
-      KubernetesAdapter._generate_create,method,"(entities:dict[str,Any]) -> str",381-404,false,24,7,Generate kubectl create command.
-      KubernetesAdapter.generate_manifest,method,"(spec:dict[str,Any]) -> str",406-428,false,23,2,Generate Kubernetes YAML manifest.
-      KubernetesAdapter._generate_deployment_manifest,method,"(spec:dict[str,Any]) -> dict",430-477,false,48,3,Generate Deployment manifest.
-      KubernetesAdapter._generate_service_manifest,method,"(spec:dict[str,Any]) -> dict",479-506,false,28,1,Generate Service manifest.
-      KubernetesAdapter._generate_configmap_manifest,method,"(spec:dict[str,Any]) -> dict",508-522,false,15,1,Generate ConfigMap manifest.
-      KubernetesAdapter._generate_secret_manifest,method,"(spec:dict[str,Any]) -> dict",524-550,false,27,3,Generate Secret manifest.
-      KubernetesAdapter._generate_ingress_manifest,method,"(spec:dict[str,Any]) -> dict",552-599,false,48,2,Generate Ingress manifest.
-      KubernetesAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",601-637,false,37,10,Validate kubectl command syntax.
-      KubernetesAdapter.check_safety,method,"(command:str) -> dict[str, Any]",639-678,false,40,12,Check kubectl command against safety policy.
+      KubernetesAdapter.__init__,method,"(cluster_context:Optional[dict[str,Any]]=None, safety_policy:Optional[KubernetesSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",134-149,false,16,3,Initialize Kubernetes adapter.
+      KubernetesAdapter._parse_cluster_context,method,"(ctx:dict[str,Any]) -> ClusterContext",151-157,false,7,1,Parse cluster context.
+      KubernetesAdapter._normalize_resource,method,"(resource:str) -> str",159-161,false,3,1,Normalize resource type name.
+      KubernetesAdapter.generate,method,"(plan:dict[str,Any]) -> str",163-185,false,23,2,Generate kubectl command from execution plan.
+      KubernetesAdapter._generate_get,method,"(entities:dict[str,Any]) -> str",187-216,false,30,7,Generate kubectl get command.
+      KubernetesAdapter._generate_describe,method,"(entities:dict[str,Any]) -> str",218-229,false,12,2,Generate kubectl describe command.
+      KubernetesAdapter._generate_apply,method,"(entities:dict[str,Any]) -> str",231-249,false,19,4,Generate kubectl apply command.
+      KubernetesAdapter._generate_delete,method,"(entities:dict[str,Any]) -> str",251-277,false,27,6,Generate kubectl delete command.
+      KubernetesAdapter._generate_scale,method,"(entities:dict[str,Any]) -> str",279-294,false,16,3,Generate kubectl scale command.
+      KubernetesAdapter._generate_logs,method,"(entities:dict[str,Any]) -> str",296-326,false,31,7,Generate kubectl logs command.
+      KubernetesAdapter._generate_exec,method,"(entities:dict[str,Any]) -> str",328-352,false,25,4,Generate kubectl exec command.
+      KubernetesAdapter._generate_port_forward,method,"(entities:dict[str,Any]) -> str",354-369,false,16,3,Generate kubectl port-forward command.
+      KubernetesAdapter._generate_rollout,method,"(entities:dict[str,Any]) -> str",371-385,false,15,3,Generate kubectl rollout command.
+      KubernetesAdapter._generate_create,method,"(entities:dict[str,Any]) -> str",387-410,false,24,7,Generate kubectl create command.
+      KubernetesAdapter.generate_manifest,method,"(spec:dict[str,Any]) -> str",412-434,false,23,2,Generate Kubernetes YAML manifest.
+      KubernetesAdapter._generate_deployment_manifest,method,"(spec:dict[str,Any]) -> dict",436-483,false,48,3,Generate Deployment manifest.
+      KubernetesAdapter._generate_service_manifest,method,"(spec:dict[str,Any]) -> dict",485-512,false,28,1,Generate Service manifest.
+      KubernetesAdapter._generate_configmap_manifest,method,"(spec:dict[str,Any]) -> dict",514-528,false,15,1,Generate ConfigMap manifest.
+      KubernetesAdapter._generate_secret_manifest,method,"(spec:dict[str,Any]) -> dict",530-556,false,27,3,Generate Secret manifest.
+      KubernetesAdapter._generate_ingress_manifest,method,"(spec:dict[str,Any]) -> dict",558-605,false,48,2,Generate Ingress manifest.
+      KubernetesAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",607-643,false,37,10,Validate kubectl command syntax.
+      KubernetesAdapter.check_safety,method,"(command:str) -> dict[str, Any]",645-684,false,40,12,Check kubectl command against safety policy.
   src/nlp2cmd/adapters/sql.py:
     functions[15]{name,kind,sig,loc,async,lines,cc,does}:
       SQLAdapter.__init__,method,"(dialect:str='postgresql', schema_context:Optional[dict[str,Any]]=None, safety_policy:Optional[SQLSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",97-119,false,23,4,Initialize SQL adapter.
@@ -1452,25 +1542,28 @@ function_details:
       SQLAdapter._pretty_format,method,"(command:str) -> str",458-470,false,13,2,Pretty format SQL command.
       SQLAdapter.get_schema_context,method,"() -> dict[str, Any]",472-478,false,7,1,Get schema context.
   src/nlp2cmd/adapters/shell.py:
-    functions[18]{name,kind,sig,loc,async,lines,cc,does}:
-      ShellAdapter.__init__,method,"(shell_type:str='bash', environment_context:Optional[dict[str,Any]]=None, safety_policy:Optional[ShellSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",132-154,false,23,4,Initialize Shell adapter.
-      ShellAdapter._parse_environment_context,method,"(ctx:dict[str,Any]) -> EnvironmentContext",156-164,false,9,1,Parse environment context.
-      ShellAdapter.generate,method,"(plan:dict[str,Any]) -> str",166-190,false,25,2,Generate shell command from execution plan.
-      ShellAdapter._generate_file_search,method,"(entities:dict[str,Any]) -> str",192-226,false,35,12,Generate find command.
-      ShellAdapter._generate_file_operation,method,"(entities:dict[str,Any]) -> str",228-242,false,15,1,Generate file operation command.
-      ShellAdapter._generate_process_management,method,"(entities:dict[str,Any]) -> str",244-258,false,15,5,Generate process management command.
-      ShellAdapter._generate_process_monitoring,method,"(entities:dict[str,Any]) -> str",260-281,false,22,7,Generate process monitoring command.
-      ShellAdapter._generate_network,method,"(entities:dict[str,Any]) -> str",283-300,false,18,6,Generate network command.
-      ShellAdapter._generate_disk,method,"(entities:dict[str,Any]) -> str",302-314,false,13,4,Generate disk command.
-      ShellAdapter._generate_archive,method,"(entities:dict[str,Any]) -> str",316-334,false,19,7,Generate archive command.
-      ShellAdapter._generate_text_processing,method,"(entities:dict[str,Any]) -> str",336-350,false,15,6,Generate text processing command.
-      ShellAdapter._generate_git,method,"(entities:dict[str,Any]) -> str",352-372,false,21,5,Generate git command.
-      ShellAdapter._generate_docker,method,"(entities:dict[str,Any]) -> str",374-404,false,31,4,Generate docker command.
-      ShellAdapter._generate_docker_script,method,"(actions:list[str], entities:dict[str,Any]) -> str",406-447,false,42,5,Generate multi-step docker script.
-      ShellAdapter._generate_generic,method,"(entities:dict[str,Any]) -> str",449-457,false,9,2,Generate generic command from entities.
-      ShellAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",459-494,false,36,8,Validate shell command syntax.
-      ShellAdapter.check_safety,method,"(command:str) -> dict[str, Any]",496-547,false,52,15,Check shell command against safety policy.
-      ShellAdapter.check_tool_availability,method,"(command:str) -> dict[str, Any]",549-562,false,14,2,Check if required tools are available.
+    functions[21]{name,kind,sig,loc,async,lines,cc,does}:
+      ShellAdapter.__init__,method,"(shell_type:str='bash', environment_context:Optional[dict[str,Any]]=None, safety_policy:Optional[ShellSafetyPolicy]=None, config:Optional[AdapterConfig]=None) -> None",203-225,false,23,4,Initialize Shell adapter.
+      ShellAdapter._parse_environment_context,method,"(ctx:dict[str,Any]) -> EnvironmentContext",227-235,false,9,1,Parse environment context.
+      ShellAdapter.generate,method,"(plan:dict[str,Any]) -> str",237-293,false,57,18,Generate shell command from execution plan.
+      ShellAdapter._generate_file_search,method,"(entities:dict[str,Any]) -> str",295-350,false,56,24,Generate find command.
+      ShellAdapter._generate_file_operation,method,"(entities:dict[str,Any]) -> str",352-399,false,48,23,Generate file operation command.
+      ShellAdapter._generate_process_management,method,"(entities:dict[str,Any]) -> str",401-514,false,114,54,Generate process management command.
+      ShellAdapter._generate_process_monitoring,method,"(entities:dict[str,Any]) -> str",516-559,false,44,22,Generate process monitoring command.
+      ShellAdapter._generate_network,method,"(entities:dict[str,Any]) -> str",561-602,false,42,24,Generate network command.
+      ShellAdapter._generate_disk,method,"(entities:dict[str,Any]) -> str",604-624,false,21,11,Generate disk command.
+      ShellAdapter._generate_archive,method,"(entities:dict[str,Any]) -> str",626-670,false,45,30,Generate archive command.
+      ShellAdapter._generate_text_processing,method,"(entities:dict[str,Any]) -> str",672-686,false,15,6,Generate text processing command.
+      ShellAdapter._generate_git,method,"(entities:dict[str,Any]) -> str",688-708,false,21,5,Generate git command.
+      ShellAdapter._generate_system_maintenance,method,"(entities:dict[str,Any]) -> str",710-731,false,22,10,Generate system maintenance command.
+      ShellAdapter._generate_development,method,"(entities:dict[str,Any]) -> str",733-790,false,58,25,Generate development command.
+      ShellAdapter._generate_security,method,"(entities:dict[str,Any]) -> str",792-817,false,26,12,Generate security command.
+      ShellAdapter._generate_docker,method,"(entities:dict[str,Any]) -> str",819-849,false,31,4,Generate docker command.
+      ShellAdapter._generate_docker_script,method,"(actions:list[str], entities:dict[str,Any]) -> str",851-892,false,42,5,Generate multi-step docker script.
+      ShellAdapter._generate_generic,method,"(entities:dict[str,Any]) -> str",894-949,false,56,33,Generate generic command from entities.
+      ShellAdapter.validate_syntax,method,"(command:str) -> dict[str, Any]",951-986,false,36,8,Validate shell command syntax.
+      ShellAdapter.check_safety,method,"(command:str) -> dict[str, Any]",988-1054,false,67,18,Check shell command against safety policy.
+      ShellAdapter.check_tool_availability,method,"(command:str) -> dict[str, Any]",1056-1069,false,14,2,Check if required tools are available.
   src/nlp2cmd/environment/__init__.py:
     functions[15]{name,kind,sig,loc,async,lines,cc,does}:
       EnvironmentAnalyzer.__init__,method,() -> None,131-132,false,2,1,creates
@@ -1520,6 +1613,150 @@ function_details:
       DecisionRouter.register_intent_mapping,method,"(intent:str, action:str) -> None",264-272,false,9,1,Register a new intent to action mapping.
       DecisionRouter.add_simple_intent,method,"(intent:str) -> None",274-277,false,4,2,Add an intent to the simple intents list.
       DecisionRouter.add_complex_intent,method,"(intent:str) -> None",279-282,false,4,2,Add an intent to the complex intents list.
+  examples/use_cases/logistics_supply_chain.py:
+    functions[7]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_vehicle_routing,function,() -> None,13-35,true,23,1,demo vehicle routing
+      demo_warehouse_optimization,function,() -> None,38-60,true,23,1,demo warehouse optimization
+      demo_production_scheduling,function,() -> None,63-85,true,23,1,demo production scheduling
+      demo_inventory_optimization,function,() -> None,88-110,true,23,1,demo inventory optimization
+      demo_supply_chain_network,function,() -> None,113-136,true,24,1,demo supply chain network
+      demo_cross_docking,function,() -> None,139-162,true,24,1,demo cross docking
+      main,function,() -> None,165-176,true,12,1,Uruchom wszystkie demonstracje logistyczne.
+  examples/use_cases/education.py:
+    functions[8]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_course_timetabling,function,() -> None,13-42,true,30,1,demo course timetabling
+      demo_exam_scheduling,function,() -> None,45-67,true,23,1,demo exam scheduling
+      demo_learning_path,function,() -> None,70-92,true,23,1,demo learning path
+      demo_classroom_allocation,function,() -> None,95-116,true,22,1,demo classroom allocation
+      demo_student_grouping,function,() -> None,119-141,true,23,1,demo student grouping
+      demo_resource_optimization,function,() -> None,144-166,true,23,1,demo resource optimization
+      demo_curriculum_planning,function,() -> None,169-192,true,24,1,demo curriculum planning
+      main,function,() -> None,195-207,true,13,1,Uruchom wszystkie demonstracje edukacyjne.
+  examples/use_cases/dsl_commands_demo.py:
+    functions[10]{name,kind,sig,loc,async,lines,cc,does}:
+      print_result,function,"(query, result, elapsed) -> None",13-23,false,11,2,Helper function to print results for both DSL and Thermodynamic sources.
+      demo_file_operations,function,() -> None,26-54,true,29,2,Demonstracja operacji na plikach.
+      demo_system_monitoring,function,() -> None,57-85,true,29,2,Demonstracja monitoringu systemu.
+      demo_network_operations,function,() -> None,88-116,true,29,2,Demonstracja operacji sieciowych.
+      demo_process_management,function,() -> None,119-147,true,29,2,Demonstracja zarządzania procesami.
+      demo_development_tools,function,() -> None,150-178,true,29,2,Demonstracja narzędzi deweloperskich.
+      demo_security_operations,function,() -> None,181-209,true,29,2,Demonstracja operacji bezpieczeństwa.
+      demo_backup_operations,function,() -> None,212-240,true,29,2,Demonstracja operacji backup.
+      demo_system_maintenance,function,() -> None,243-271,true,29,2,Demonstracja konserwacji systemu.
+      main,function,() -> None,274-300,true,27,1,Uruchom wszystkie demonstracje komend DSL.
+  examples/use_cases/devops_automation.py:
+    functions[4]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_devops_commands,function,() -> None,13-35,true,23,2,Podstawowe komendy DevOps.
+      demo_ci_cd_optimization,function,() -> None,38-66,true,29,1,Optymalizacja CI/CD Pipeline.
+      demo_incident_response,function,() -> None,69-89,true,21,1,Automatyczna analiza i response na incydenty.
+      main,function,() -> None,92-101,true,10,1,main
+  examples/use_cases/data_science_ml.py:
+    functions[5]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_hyperparameter_optimization,function,() -> None,16-49,true,34,1,Optymalizacja hiperparametrów modelu ML.
+      demo_feature_selection,function,() -> None,52-73,true,22,1,Optymalizacja wyboru cech dla modelu ML.
+      demo_experiment_scheduling,function,() -> None,76-104,true,29,1,Planowanie eksperymentów ML na klastrze GPU.
+      demo_model_ensemble_optimization,function,() -> None,107-134,true,28,1,Optymalizacja ensemble modeli.
+      main,function,() -> None,137-146,true,10,1,Uruchom wszystkie demonstracje Data Science.
+  examples/use_cases/debug_keywords.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      debug_keywords,function,() -> None,15-49,false,35,3,Debug keyword patterns.
+  examples/use_cases/debug_generator.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      debug_generator,function,() -> None,17-79,true,63,6,Debug generator internals.
+  examples/use_cases/bioinformatics.py:
+    functions[6]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_genomic_pipeline,function,() -> None,13-41,true,29,1,demo genomic pipeline
+      demo_protein_folding,function,() -> None,44-69,true,26,1,demo protein folding
+      demo_crispr_optimization,function,() -> None,72-92,true,21,1,demo crispr optimization
+      demo_proteomics_analysis,function,() -> None,95-119,true,25,1,demo proteomics analysis
+      demo_drug_discovery,function,() -> None,122-145,true,24,1,demo drug discovery
+      main,function,() -> None,148-158,true,11,1,Uruchom wszystkie demonstracje bioinformatyki.
+  examples/use_cases/finance_trading.py:
+    functions[7]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_portfolio_optimization,function,() -> None,13-58,true,46,3,demo portfolio optimization
+      demo_trade_execution,function,() -> None,61-81,true,21,1,demo trade execution
+      demo_risk_allocation,function,() -> None,84-107,true,24,1,demo risk allocation
+      demo_arbitrage_detection,function,() -> None,110-132,true,23,1,demo arbitrage detection
+      demo_options_strategy,function,() -> None,135-157,true,23,1,demo options strategy
+      demo_credit_scoring,function,() -> None,160-183,true,24,1,demo credit scoring
+      main,function,() -> None,186-197,true,12,1,Uruchom wszystkie demonstracje finansowe.
+  examples/use_cases/healthcare.py:
+    functions[8]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_or_scheduling,function,() -> None,13-38,true,26,1,demo or scheduling
+      demo_nurse_scheduling,function,() -> None,41-64,true,24,1,demo nurse scheduling
+      demo_patient_allocation,function,() -> None,67-94,true,28,1,demo patient allocation
+      demo_emergency_department,function,() -> None,97-120,true,24,1,demo emergency department
+      demo_ambulance_dispatch,function,() -> None,123-145,true,23,1,demo ambulance dispatch
+      demo_icu_bed_management,function,() -> None,148-170,true,23,1,demo icu bed management
+      demo_pharmacy_inventory,function,() -> None,173-196,true,24,1,demo pharmacy inventory
+      main,function,() -> None,199-211,true,13,1,Uruchom wszystkie demonstracje healthcare.
+  examples/use_cases/shell_validation.py:
+    functions[7]{name,kind,sig,loc,async,lines,cc,does}:
+      main,function,() -> None,681-699,true,19,1,Uruchom walidację komend shell.
+      ShellCommandValidator.__init__,method,() -> None,27-29,false,3,1,creates
+      ShellCommandValidator.get_test_cases,method,"() -> List[CommandTest]",31-523,false,493,1,Zwróć listę przypadków testowych.
+      ShellCommandValidator.validate_command,method,"(test:CommandTest) -> Dict[str, any]",525-568,true,44,6,Waliduje pojedynczą komendę.
+      ShellCommandValidator._calculate_similarity,method,"(actual:str, expected:str) -> float",570-586,false,17,4,Oblicz podobieństwo między komendami.
+      ShellCommandValidator.validate_all,method,"() -> List[Dict[str, any]]",588-614,true,27,4,Waliduje wszystkie komendy.
+      ShellCommandValidator.generate_report,method,"(results:List[Dict[str,any]]) -> str",616-678,false,63,16,Generuj raport walidacji.
+  examples/use_cases/simple_demo_examples.py:
+    functions[7]{name,kind,sig,loc,async,lines,cc,does}:
+      print_separator,function,(title) -> None,13-17,false,5,1,Drukuj separator z tytułem.
+      demo_python_api_concept,function,() -> None,20-52,false,33,2,Demonstracja koncepcji Python API.
+      demo_shell_commands,function,() -> None,55-85,false,31,2,Demonstracja komend shell.
+      demo_mixed_workflow,function,() -> None,88-128,false,41,1,Demonstracja mieszanego workflow.
+      demo_advanced_patterns,function,() -> None,131-170,false,40,1,Demonstracja zaawansowanych wzorców.
+      demo_real_world_examples,function,() -> None,173-212,false,40,2,Demonstracja rzeczywistych przypadków użycia.
+      main,function,() -> None,215-235,false,21,1,Główna funkcja demonstracyjna.
+  examples/use_cases/physics_simulations.py:
+    functions[8]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_particle_collision,function,() -> None,13-37,true,25,1,demo particle collision
+      demo_molecular_dynamics,function,() -> None,40-62,true,23,1,demo molecular dynamics
+      demo_telescope_scheduling,function,() -> None,65-86,true,22,1,demo telescope scheduling
+      demo_quantum_computing,function,() -> None,89-111,true,23,1,demo quantum computing
+      demo_climate_modeling,function,() -> None,114-136,true,23,1,demo climate modeling
+      demo_particle_physics,function,() -> None,139-161,true,23,1,demo particle physics
+      demo_materials_science,function,() -> None,164-187,true,24,1,demo materials science
+      main,function,() -> None,190-202,true,13,1,Uruchom wszystkie demonstracje fizyki.
+  examples/use_cases/energy_utilities.py:
+    functions[8]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_unit_commitment,function,() -> None,13-38,true,26,1,demo unit commitment
+      demo_renewable_integration,function,() -> None,41-64,true,24,1,demo renewable integration
+      demo_water_distribution,function,() -> None,67-89,true,23,1,demo water distribution
+      demo_gas_network,function,() -> None,92-114,true,23,1,demo gas network
+      demo_electric_vehicle_charging,function,() -> None,117-139,true,23,1,demo electric vehicle charging
+      demo_demand_response,function,() -> None,142-164,true,23,1,demo demand response
+      demo_microgrid,function,() -> None,167-190,true,24,1,demo microgrid
+      main,function,() -> None,193-205,true,13,1,Uruchom wszystkie demonstracje energetyczne.
+  examples/use_cases/test_shell_improvements.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      test_shell_improvements,function,() -> None,16-160,true,145,18,Test kilka konkretnych przypadków shell.
+  examples/use_cases/complete_python_shell_examples.py:
+    functions[7]{name,kind,sig,loc,async,lines,cc,does}:
+      print_separator,function,"(title:str) -> None",20-24,false,5,1,Drukuj ładny separator z tytułem.
+      print_result,function,"(query:str, result:dict, elapsed:float, source:str='Python API') -> None",27-42,false,16,3,Wyświetl wynik w standardowym formacie.
+      demo_python_api,function,() -> None,45-83,true,39,3,Demonstracja użycia Python API.
+      demo_shell_commands,function,() -> None,86-141,false,56,2,Demonstracja komend shell.
+      demo_mixed_usage,function,() -> None,144-199,true,56,6,Demonstracja mieszanego użycia Python + shell.
+      demo_advanced_features,function,() -> None,202-237,false,36,1,Demonstracja zaawansowanych funkcji.
+      main,function,() -> None,240-264,true,25,1,Główna funkcja demonstracyjna.
+  examples/use_cases/debug_intents.py:
+    functions[1]{name,kind,sig,loc,async,lines,cc,does}:
+      debug_intents,function,() -> None,16-132,true,117,8,Debug intent detection.
+  examples/use_cases/smart_cities.py:
+    functions[8]{name,kind,sig,loc,async,lines,cc,does}:
+      demo_traffic_optimization,function,() -> None,13-37,true,25,1,demo traffic optimization
+      demo_smart_grid,function,() -> None,40-67,true,28,1,demo smart grid
+      demo_waste_management,function,() -> None,70-93,true,24,1,demo waste management
+      demo_public_transport,function,() -> None,96-118,true,23,1,demo public transport
+      demo_parking_management,function,() -> None,121-143,true,23,1,demo parking management
+      demo_air_quality,function,() -> None,146-168,true,23,1,demo air quality
+      demo_water_management,function,() -> None,171-194,true,24,1,demo water management
+      main,function,() -> None,197-209,true,13,1,Uruchom wszystkie demonstracje smart cities.
+  examples/use_cases/run_all.py:
+    functions[2]{name,kind,sig,loc,async,lines,cc,does}:
+      run_all_demos,function,() -> None,30-93,true,64,5,Uruchom wszystkie demonstracje.
+      print_summary_table,function,() -> None,96-118,false,23,2,Wyświetl tabelę podsumowującą zastosowania.
   examples/docker/file_repair.py:
     functions[4]{name,kind,sig,loc,async,lines,cc,does}:
       create_sample_files,function,"(tmpdir:Path) -> dict[str, Path]",19-97,false,79,1,Create sample files for testing.
@@ -1531,16 +1768,16 @@ function_details:
       main,function,() -> None,13-115,false,103,6,main
   examples/architecture/end_to_end_demo.py:
     functions[7]{name,kind,sig,loc,async,lines,cc,does}:
-      print_section,function,"(title:str) -> None",39-43,false,5,1,Print section header.
-      print_step,function,"(step:str) -> None",46-49,false,4,1,Print step indicator.
-      mock_sql_select,function,"(table:str, columns:list=None, filters:list=None) -> list",56-87,false,32,9,Mock SQL SELECT handler.
-      mock_shell_find,function,"(glob:str='*', path:str='.') -> list",90-96,false,7,3,Mock shell find handler.
-      mock_shell_count_pattern,function,"(file:str, pattern:str) -> int",99-108,false,10,1,Mock shell grep/count handler.
-      mock_k8s_get,function,"(resource:str, namespace:str='default') -> list",111-124,false,14,1,Mock kubectl get handler.
-      main,function,() -> None,131-384,false,254,12,main
+      print_section,function,"(title:str) -> None",47-51,false,5,1,Print section header.
+      print_step,function,"(step:str) -> None",54-57,false,4,1,Print step indicator.
+      mock_sql_select,function,"(table:str, columns:list=None, filters:list=None) -> list",64-95,false,32,9,Mock SQL SELECT handler.
+      mock_shell_find,function,"(glob:str='*', path:str='.') -> list",98-104,false,7,3,Mock shell find handler.
+      mock_shell_count_pattern,function,"(file:str, pattern:str) -> int",107-116,false,10,1,Mock shell grep/count handler.
+      mock_k8s_get,function,"(resource:str, namespace:str='default') -> list",119-132,false,14,1,Mock kubectl get handler.
+      main,function,() -> None,139-392,false,254,12,main
   examples/sql/basic_sql.py:
     functions[1]{name,kind,sig,loc,async,lines,cc,does}:
-      main,function,() -> None,12-106,false,95,10,main
+      main,function,() -> None,20-114,false,95,10,main
   examples/sql/advanced_sql.py:
     functions[1]{name,kind,sig,loc,async,lines,cc,does}:
       main,function,() -> None,16-327,false,312,2,main
@@ -1565,7 +1802,7 @@ function_details:
       simulate_interactive_session,function,() -> None,17-284,false,268,17,Simulate an interactive session with feedback loop.
   examples/shell/basic_shell.py:
     functions[1]{name,kind,sig,loc,async,lines,cc,does}:
-      main,function,() -> None,14-105,false,92,11,main
+      main,function,() -> None,22-113,false,92,11,main
   examples/kubernetes/basic_kubernetes.py:
     functions[1]{name,kind,sig,loc,async,lines,cc,does}:
       main,function,() -> None,13-139,false,127,7,main

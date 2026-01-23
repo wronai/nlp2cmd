@@ -103,7 +103,10 @@ class ShellAdapter(BaseDSLAdapter):
                 "proces", "uruchom", "zatrzymaj", "kill", "start", "stop", "process", "show processes", "top processes",
                 "zabij proces", "uruchom proces", "zatrzymaj proces", "restartuj proces", "uruchom ponownie",
                 "uruchom w tle", "uruchom skrypt", "zatrzymaj usługę", "uruchom usługę", "status usługi",
-                "sprawdź status", "monitor systemowy", "htop", "top"
+                "sprawdź status", "monitor systemowy", "htop", "top",
+                # Specific services
+                "apache", "apache2", "httpd", "nginx", "mysql", "mariadb", "postgresql", "postgres",
+                "docker", "redis", "mongodb", "mongod", "serwer apache", "serwer nginx", "serwer mysql"
             ],
             "required_entities": ["action"],
             "optional_entities": ["process_name", "pid"],
@@ -235,6 +238,32 @@ class ShellAdapter(BaseDSLAdapter):
         """Generate shell command from execution plan."""
         intent = plan.get("intent", "")
         entities = plan.get("entities", {})
+        
+        # Store full text for fallback processing
+        if "_full_text" not in entities:
+            # Try multiple sources for the full text
+            full_text = plan.get("text", "") or plan.get("query", "") or plan.get("input", "") or ""
+            entities["_full_text"] = full_text
+        
+        # Add fallback service detection
+        if not entities.get("process_name"):
+            full_text = str(entities.get("_full_text", ""))
+            for service in ["apache", "apache2", "httpd", "nginx", "mysql", "mariadb", "postgresql", "postgres", "docker", "redis", "mongodb"]:
+                if service in full_text.lower():
+                    entities["process_name"] = service
+                    break
+        
+        # Add fallback action detection
+        if not entities.get("action"):
+            full_text = str(entities.get("_full_text", "")).lower()
+            if "uruchom" in full_text or "start" in full_text:
+                entities["action"] = "uruchom"
+            elif "zatrzymaj" in full_text or "stop" in full_text:
+                entities["action"] = "zatrzymaj"
+            elif "zabij" in full_text or "kill" in full_text:
+                entities["action"] = "zabij"
+            elif "restartuj" in full_text or "restart" in full_text:
+                entities["action"] = "restartuj"
 
         generators = {
             "file_search": self._generate_file_search,
@@ -372,6 +401,49 @@ class ShellAdapter(BaseDSLAdapter):
         process_name = entities.get("process_name", "")
         pid = entities.get("pid", "")
         
+        # If no entities extracted, use full text parsing
+        if not action and not process_name:
+            full_text = str(entities.get("_full_text", "")).lower()
+            
+            # Detect action
+            if "uruchom" in full_text or "start" in full_text:
+                action = "uruchom"
+            elif "zatrzymaj" in full_text or "stop" in full_text:
+                action = "zatrzymaj"
+            elif "zabij" in full_text or "kill" in full_text:
+                action = "zabij"
+            elif "restartuj" in full_text or "restart" in full_text:
+                action = "restartuj"
+            
+            # Detect service name
+            for service in ["apache", "apache2", "httpd", "nginx", "mysql", "mariadb", "postgresql", "postgres", "docker", "redis", "mongodb"]:
+                if service in full_text:
+                    process_name = service
+                    break
+        
+        # Common service mappings
+        service_mappings = {
+            "apache": "apache2",
+            "apache2": "apache2", 
+            "httpd": "httpd",
+            "nginx": "nginx",
+            "mysql": "mysql",
+            "mariadb": "mariadb",
+            "postgresql": "postgresql",
+            "postgres": "postgresql",
+            "docker": "docker",
+            "redis": "redis",
+            "mongodb": "mongod"
+        }
+        
+        # Map common service names
+        if process_name.lower() in service_mappings:
+            service_name = service_mappings[process_name.lower()]
+            is_service = True
+        else:
+            service_name = process_name
+            is_service = False
+        
         # Handle specific Polish patterns
         if "zabij" in action or "kill" in action:
             if pid:
@@ -388,14 +460,18 @@ class ShellAdapter(BaseDSLAdapter):
                     return "nohup python script.py &"
             elif "skrypt" in str(process_name) or "script" in str(process_name):
                 return f"./{process_name}"
-            elif "usługę" in str(action) or "service" in str(action):
-                service_name = entities.get("service_name", process_name)
+            elif "usługę" in str(action) or "service" in str(action) or is_service or "serwer" in str(process_name):
                 return f"systemctl start {service_name}"
             else:
-                return f"{process_name}"
+                # Fallback: if no process_name but action suggests service start
+                if not process_name and ("serwer" in str(action) or "usługę" in str(action)):
+                    return "systemctl start"
+                elif process_name:
+                    return f"{process_name}"
+                else:
+                    return "# Process action"
         elif "zatrzymaj" in action or "stop" in action:
-            if "usługę" in str(action) or "service" in str(action):
-                service_name = entities.get("service_name", process_name)
+            if "usługę" in str(action) or "service" in str(action) or is_service or "serwer" in str(process_name):
                 return f"systemctl stop {service_name}"
             elif process_name:
                 return f"pkill -f {process_name}"
@@ -812,6 +888,49 @@ class ShellAdapter(BaseDSLAdapter):
 
         if command:
             return f"{command} {' '.join(args)}"
+        
+        # Fallback logic for process management when intent is not detected
+        full_text = str(entities.get("_full_text", "")).lower()
+        action = entities.get("action", "")
+        process_name = entities.get("process_name", "")
+        
+        # Detect action if not set
+        if not action:
+            if "uruchom" in full_text or "start" in full_text:
+                action = "uruchom"
+            elif "zatrzymaj" in full_text or "stop" in full_text:
+                action = "zatrzymaj"
+            elif "zabij" in full_text or "kill" in full_text:
+                action = "zabij"
+            elif "restartuj" in full_text or "restart" in full_text:
+                action = "restartuj"
+        
+        # Detect service name if not set
+        if not process_name:
+            for service in ["apache", "apache2", "httpd", "nginx", "mysql", "mariadb", "postgresql", "postgres", "docker", "redis", "mongodb"]:
+                if service in full_text:
+                    process_name = service
+                    break
+        
+        # Generate command if we have action and/or process_name
+        if action and process_name:
+            if "uruchom" in action or "start" in action:
+                return f"systemctl start {process_name}"
+            elif "zatrzymaj" in action or "stop" in action:
+                return f"systemctl stop {process_name}"
+            elif "restartuj" in action or "restart" in action:
+                return f"systemctl restart {process_name}"
+            elif "zabij" in action or "kill" in action:
+                return f"pkill -f {process_name}"
+        elif action:
+            if "uruchom" in action or "start" in action:
+                return "systemctl start"
+            elif "zatrzymaj" in action or "stop" in action:
+                return "systemctl stop"
+            elif "restartuj" in action or "restart" in action:
+                return "systemctl restart"
+            elif "zabij" in action or "kill" in action:
+                return "kill -9 PID"
 
         return "# Could not generate command"
 

@@ -69,6 +69,7 @@ class ExecutionPlan(BaseModel):
         default=False, description="Whether user confirmation is needed"
     )
     metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+    text: str = Field(default="", description="Original input text")
 
 
 @dataclass
@@ -547,6 +548,7 @@ class NLP2CMD:
                     intent=intent,
                     entities=entity_dict,
                     confidence=confidence,
+                    text=text,  # Add original text
                 )
         except Exception as e:
             logger.error(f"NLP processing failed: {e}")
