@@ -1,0 +1,101 @@
+{
+  "format": "nlp2cmd.dynamic_schema_export",
+  "version": 1,
+  "detected_type": "shell",
+  "sources": {
+    "docker": {
+      "source_type": "shell_help",
+      "commands": [
+        {
+          "name": "docker",
+          "description": "A self-sufficient runtime for containers",
+          "category": "shell",
+          "parameters": [
+            {
+              "name": "config",
+              "type": "boolean",
+              "description": "string      Location of client config files (default \"/home/tom/.docker\")",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "example": null,
+              "location": "option"
+            },
+            {
+              "name": "tls",
+              "type": "boolean",
+              "description": "Use TLS; implied by --tlsverify",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "example": null,
+              "location": "option"
+            },
+            {
+              "name": "tlscacert",
+              "type": "boolean",
+              "description": "string   Trust certs signed only by this CA (default \"/home/tom/.docker/ca.pem\")",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "example": null,
+              "location": "option"
+            },
+            {
+              "name": "tlscert",
+              "type": "boolean",
+              "description": "string     Path to TLS certificate file (default \"/home/tom/.docker/cert.pem\")",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "example": null,
+              "location": "option"
+            },
+            {
+              "name": "tlskey",
+              "type": "boolean",
+              "description": "string      Path to TLS key file (default \"/home/tom/.docker/key.pem\")",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "example": null,
+              "location": "option"
+            },
+            {
+              "name": "tlsverify",
+              "type": "boolean",
+              "description": "Use TLS and verify the remote",
+              "required": false,
+              "default": null,
+              "choices": [],
+              "pattern": null,
+              "example": null,
+              "location": "option"
+            }
+          ],
+          "examples": [
+            "docker [OPTIONS] COMMAND"
+          ],
+          "patterns": [
+            "docker [OPTIONS] COMMAND",
+            "a self-sufficient runtime for containers"
+          ],
+          "source_type": "shell_help",
+          "metadata": {
+            "command": "docker",
+            "help_lines": 82
+          }
+        }
+      ],
+      "metadata": {}
+    }
+  },
+  "metadata": {
+    "target": "docker"
+  }
+}

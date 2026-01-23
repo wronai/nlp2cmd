@@ -1,0 +1,10 @@
+{
+  "name": "docker",
+  "description": "Command: docker",
+  "category": "system",
+  "template": "docker {options}",
+  "examples": ["docker --help"],
+  "parameters": [],
+  "source_type": "generated",
+  "generated_at": "2026-01-23T16:09:56+01:00"
+}

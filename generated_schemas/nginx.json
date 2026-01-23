@@ -1,0 +1,11 @@
+{
+  "name": "nginx",
+  "description": "Command: nginx (not installed)",
+  "category": "unknown",
+  "template": "nginx {options}",
+  "examples": ["nginx --help"],
+  "parameters": [],
+  "source_type": "placeholder",
+  "generated_at": "2026-01-23T16:09:56+01:00",
+  "note": "Command is not installed on this system"
+}

@@ -39,7 +39,26 @@ class SchemaDrivenNLP2CMD:
 
     def _select_action(self, text: str) -> MatchResult:
         text_lower = text.lower()
-        text_tokens = {w for w in re.split(r"\W+", text_lower) if w}
+        stop = {
+            "a",
+            "an",
+            "and",
+            "check",
+            "dla",
+            "for",
+            "in",
+            "into",
+            "na",
+            "of",
+            "on",
+            "please",
+            "pokaż",
+            "show",
+            "the",
+            "to",
+            "usage",
+        }
+        text_tokens = {w for w in re.split(r"\W+", text_lower) if w and w not in stop}
         best: Optional[MatchResult] = None
 
         for action in self.spec.actions:
@@ -67,6 +86,15 @@ class SchemaDrivenNLP2CMD:
                 overlap = len(text_tokens & a_tokens)
                 if overlap:
                     score += min(overlap, 4) * 0.12
+
+            schema = action.schema or {}
+            cmd = str(schema.get("command") or "")
+            if cmd == "git" and "git" in text_tokens:
+                score += 0.2
+            if cmd in {"df", "du"} and any(k in text_tokens for k in {"disk", "space", "dysk", "miejsce"}):
+                score += 0.35
+            if cmd == "du" and any(k in text_tokens for k in {"directory", "dir", "katalog"}):
+                score += 0.2
 
             if score > 0:
                 score += min(len(patterns), 5) * 0.02
@@ -125,7 +153,7 @@ class SchemaDrivenNLP2CMD:
             try:
                 return template.format(**params, text=text)
             except Exception:
-                return template
+                pass
 
         if action.dsl_kind == "http":
             return self._render_http(action, params)

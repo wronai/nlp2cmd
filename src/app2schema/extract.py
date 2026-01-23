@@ -35,6 +35,42 @@ SourceType = Literal[
     "web_runtime",
 ]
 
+
+APP2SCHEMA_EXPORT_JSON_SCHEMA_V1: dict[str, Any] = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["format", "version", "detected_type", "sources"],
+    "properties": {
+        "format": {"type": "string", "const": "nlp2cmd.dynamic_schema_export"},
+        "version": {"type": "integer", "minimum": 1},
+        "detected_type": {"type": "string"},
+        "sources": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["source_type", "commands", "metadata"],
+                "properties": {
+                    "source_type": {"type": "string"},
+                    "commands": {"type": "array"},
+                    "metadata": {"type": "object"},
+                },
+            },
+        },
+        "metadata": {"type": "object"},
+    },
+}
+
+
+def validate_app2schema_export(payload: dict[str, Any]) -> None:
+    validator = Draft7Validator(APP2SCHEMA_EXPORT_JSON_SCHEMA_V1)
+    errors = sorted(validator.iter_errors(payload), key=lambda e: list(e.path))
+    if errors:
+        first = errors[0]
+        path = "/".join(str(p) for p in first.path)
+        raise ValueError(f"app2schema export validation failed at '{path}': {first.message}")
+
 APP2SCHEMA_APPSPEC_JSON_SCHEMA_V1: dict[str, Any] = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -131,21 +167,6 @@ APP2SCHEMA_APPSPEC_JSON_SCHEMA_V1: dict[str, Any] = {
 }
 
 
-APP2SCHEMA_EXPORT_JSON_SCHEMA_V1: dict[str, Any] = {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "required": ["format", "version", "sources"],
-    "properties": {
-        "format": {"type": "string", "const": "nlp2cmd.dynamic_schema_export"},
-        "version": {"type": "integer", "minimum": 1},
-        "detected_type": {"type": "string"},
-        "sources": {"type": "object"},
-        "metadata": {"type": "object"},
-    },
-    "additionalProperties": True,
-}
-
-
 def validate_appspec(payload: dict[str, Any]) -> None:
     validator = Draft7Validator(APP2SCHEMA_APPSPEC_JSON_SCHEMA_V1)
     errors = sorted(validator.iter_errors(payload), key=lambda e: list(e.path))
@@ -153,15 +174,6 @@ def validate_appspec(payload: dict[str, Any]) -> None:
         first = errors[0]
         path = "/".join(str(p) for p in first.path)
         raise ValueError(f"app2schema appspec validation failed at '{path}': {first.message}")
-
-
-def validate_app2schema_export(payload: dict[str, Any]) -> None:
-    validator = Draft7Validator(APP2SCHEMA_EXPORT_JSON_SCHEMA_V1)
-    errors = sorted(validator.iter_errors(payload), key=lambda e: list(e.path))
-    if errors:
-        first = errors[0]
-        path = "/".join(str(p) for p in first.path)
-        raise ValueError(f"app2schema export validation failed at '{path}': {first.message}")
 
 
 def _slugify(value: str) -> str:
@@ -396,7 +408,6 @@ class App2SchemaResult:
 
     def to_export_dict(self, raw: bool = False) -> dict[str, Any]:
         sources: dict[str, Any] = {}
-
         for schema in self.schemas:
             sources[schema.source] = {
                 "source_type": schema.source_type,
@@ -405,7 +416,6 @@ class App2SchemaResult:
                         "name": cmd.name,
                         "description": cmd.description,
                         "category": cmd.category,
-                        "template": cmd.template,
                         "parameters": [
                             {
                                 "name": p.name,
@@ -863,7 +873,6 @@ def extract_schema_to_file(
 
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-
     payload = result.to_export_dict(raw=raw)
 
     if merge and out_path.exists() and not raw:
@@ -875,25 +884,17 @@ def extract_schema_to_file(
         if isinstance(existing, dict) and existing.get("format") == "nlp2cmd.dynamic_schema_export":
             existing_sources = existing.get("sources") if isinstance(existing.get("sources"), dict) else {}
             new_sources = payload.get("sources") if isinstance(payload.get("sources"), dict) else {}
-            merged_sources = {**existing_sources, **new_sources}
-
-            existing_meta = existing.get("metadata") if isinstance(existing.get("metadata"), dict) else {}
-            new_meta = payload.get("metadata") if isinstance(payload.get("metadata"), dict) else {}
-            merged_meta = {**existing_meta, **new_meta, "merged": True}
-
-            detected_type = str(existing.get("detected_type") or payload.get("detected_type") or "mixed")
-            if str(payload.get("detected_type") or "") and detected_type != str(payload.get("detected_type")):
-                detected_type = "mixed"
-
             payload = {
                 "format": "nlp2cmd.dynamic_schema_export",
-                "version": int(existing.get("version") or payload.get("version") or 1),
-                "detected_type": detected_type,
-                "sources": merged_sources,
-                "metadata": merged_meta,
+                "version": int(existing.get("version") or 1),
+                "detected_type": str(existing.get("detected_type") or payload.get("detected_type") or "mixed"),
+                "sources": {**existing_sources, **new_sources},
+                "metadata": dict(existing.get("metadata") or {}),
             }
+            payload["metadata"]["merged"] = True
 
     if validate and not raw:
         validate_app2schema_export(payload)
+
     out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return out_path

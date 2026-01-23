@@ -1,0 +1,104 @@
+{
+  "format": "app2schema.appspec",
+  "version": 1,
+  "app": {
+    "name": "app",
+    "kind": "shell",
+    "source": "docker",
+    "metadata": {
+      "target": "docker"
+    }
+  },
+  "actions": [
+    {
+      "id": "shell.docker",
+      "type": "shell",
+      "description": "A self-sufficient runtime for containers",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": "docker {subcommand} {options}"
+      },
+      "params": {
+        "config": {
+          "type": "boolean",
+          "required": false,
+          "description": "string      Location of client config files (default \"/home/tom/.docker\")",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tls": {
+          "type": "boolean",
+          "required": false,
+          "description": "Use TLS; implied by --tlsverify",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlscacert": {
+          "type": "boolean",
+          "required": false,
+          "description": "string   Trust certs signed only by this CA (default \"/home/tom/.docker/ca.pem\")",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlscert": {
+          "type": "boolean",
+          "required": false,
+          "description": "string     Path to TLS certificate file (default \"/home/tom/.docker/cert.pem\")",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlskey": {
+          "type": "boolean",
+          "required": false,
+          "description": "string      Path to TLS key file (default \"/home/tom/.docker/key.pem\")",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlsverify": {
+          "type": "boolean",
+          "required": false,
+          "description": "Use TLS and verify the remote",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        }
+      },
+      "schema": {
+        "command": "docker",
+        "help_lines": 82,
+        "text": "docker"
+      },
+      "match": {
+        "patterns": [
+          "docker [OPTIONS] COMMAND",
+          "a self-sufficient runtime for containers"
+        ],
+        "examples": [
+          "docker [OPTIONS] COMMAND"
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "docker",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    }
+  ],
+  "metadata": {}
+}

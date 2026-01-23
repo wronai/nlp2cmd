@@ -163,7 +163,7 @@ class DynamicAdapter(BaseDSLAdapter):
                 return self.registry.register_python_code(source)
             elif source.endswith('.sh'):
                 return self.registry.register_shell_script(source)
-            elif source.endswith(('.mk') or source.endswith('/Makefile') or source.endswith('Makefile')):
+            elif source.endswith('.mk') or source.endswith('/Makefile') or source.endswith('Makefile'):
                 return self.registry.register_makefile(source)
             elif source.endswith(('.json', '.yaml', '.yml')):
                 # Try to detect AppSpec

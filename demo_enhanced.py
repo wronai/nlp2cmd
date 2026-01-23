@@ -17,6 +17,7 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
+from nlp2cmd.pipeline_runner import PipelineRunner, ShellExecutionPolicy
 from nlp2cmd.enhanced import EnhancedNLP2CMD
 from app2schema import extract_appspec_to_file
 
@@ -72,6 +73,16 @@ def main():
     print("\n🔍 Processing Natural Language Queries:")
     print("-" * 40)
 
+    execute_shell = "--execute-shell" in sys.argv
+    execute_web = "--execute-web" in sys.argv
+
+    runner = PipelineRunner(
+        shell_policy=ShellExecutionPolicy(
+            allowlist={"git", "df", "du"},
+        ),
+        headless=True,
+    )
+
     for i, query in enumerate(demo_queries, 1):
         print(f"\n{i}. Query: \"{query}\"")
 
@@ -80,6 +91,23 @@ def main():
             print(f"   🎯 Action: {ir.action_id}")
             print(f"   ⚡ DSL: {ir.dsl}")
             print(f"   💡 Explanation: {ir.explanation}")
+
+            dry_run = True
+            if ir.dsl_kind == "shell" and execute_shell:
+                dry_run = False
+            if ir.dsl_kind == "dom" and execute_web:
+                dry_run = False
+
+            if not dry_run:
+                result = runner.run(ir, dry_run=False, confirm=True)
+                if result.success:
+                    print(f"   ✅ Executed ({result.kind}) in {result.duration_ms:.1f}ms")
+                    if result.data:
+                        stdout = result.data.get("stdout")
+                        if isinstance(stdout, str) and stdout.strip():
+                            print(stdout.strip())
+                else:
+                    print(f"   ❌ Execution failed ({result.kind}): {result.error}")
 
         except Exception as e:
             print(f"   ⚠️  Error: {e}")

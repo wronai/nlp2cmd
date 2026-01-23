@@ -2,68 +2,7 @@
   "command": "docker",
   "description": "A self-sufficient runtime for containers",
   "category": "shell",
-  "parameters": [
-    {
-      "name": "config",
-      "type": "boolean",
-      "description": "string      Location of client config files (default",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "tls",
-      "type": "boolean",
-      "description": "Use TLS; implied by --tlsverify",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "tlscacert",
-      "type": "boolean",
-      "description": "string   Trust certs signed only by this CA (default",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "tlscert",
-      "type": "boolean",
-      "description": "string     Path to TLS certificate file (default",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "tlskey",
-      "type": "boolean",
-      "description": "string      Path to TLS key file (default",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    },
-    {
-      "name": "tlsverify",
-      "type": "boolean",
-      "description": "Use TLS and verify the remote",
-      "required": false,
-      "default": null,
-      "choices": [],
-      "pattern": null,
-      "location": "option"
-    }
-  ],
+  "parameters": [],
   "examples": [
     "docker [OPTIONS] COMMAND"
   ],
@@ -77,6 +16,6 @@
     "help_lines": 89
   },
   "template": "docker {subcommand} {options}",
-  "stored_at": "2026-01-23T15:59:27.819422",
+  "stored_at": "2026-01-23T16:10:41.421066",
   "version": "1.0"
 }
