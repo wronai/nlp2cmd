@@ -93,6 +93,7 @@ all = [
 
 [project.scripts]
 nlp2cmd = "nlp2cmd.cli.main:main"
+app2schema = "app2schema.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/example/nlp2cmd"
@@ -102,7 +103,7 @@ Issues = "https://github.com/example/nlp2cmd/issues"
 Changelog = "https://github.com/example/nlp2cmd/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/nlp2cmd"]
+packages = ["src/nlp2cmd", "src/app2schema"]
 
 [tool.hatch.build.targets.sdist]
 include = [

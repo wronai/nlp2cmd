@@ -1,0 +1,54 @@
+# Enhanced NLP2CMD Requirements
+
+# Core dependencies (from original)
+pyyaml>=6.0
+pydantic>=2.0
+rich>=13.0
+click>=8.0
+httpx>=0.25.0
+jinja2>=3.0
+jsonschema>=4.0
+python-dotenv>=1.0
+watchdog>=3.0
+numpy>=1.24.0
+psutil>=5.9.0
+
+# Enhanced schema extraction dependencies
+prance>=0.22.0  # OpenAPI validation and resolution
+openapi-pydantic>=0.4.0  # OpenAPI to Pydantic models
+ast-tools>=0.1.0  # Enhanced AST parsing
+
+# Shell integration and command analysis
+shell-gpt>=0.9.0  # shell-gpt for intelligent command generation
+click>=8.0  # Click application introspection
+argparse  # Standard library CLI introspection
+
+# Optional dependencies
+# NLP support
+spacy>=3.7
+
+# LLM integrations
+anthropic>=0.18
+openai>=1.0
+
+# SQL support
+sqlparse>=0.4
+sqlalchemy>=2.0
+
+# Thermodynamic optimization
+scipy>=1.10.0
+matplotlib>=3.7.0
+
+# Development
+pytest>=7.0
+pytest-cov>=4.0
+pytest-asyncio>=0.21
+black>=23.0
+ruff>=0.1
+mypy>=1.0
+pre-commit>=3.0
+
+# Documentation
+mkdocs>=1.5
+mkdocs-material>=9.0
+mkdocstrings[python]>=0.24
