@@ -155,19 +155,19 @@ class FormDataLoader:
             if candidate_lower in self._field_values:
                 return self._field_values[candidate_lower]
             
-            # Check env mappings
-            if candidate_lower in self.FIELD_ENV_MAPPINGS:
-                env_key = self.FIELD_ENV_MAPPINGS[candidate_lower]
+            # Check env mappings from schema
+            if candidate_lower in self._field_mappings:
+                env_key = self._field_mappings[candidate_lower]
                 if env_key in self._env_data:
                     return self._env_data[env_key]
         
-        # Try partial matching
+        # Try partial matching using schema mappings
         for candidate in candidates:
             if not candidate:
                 continue
             candidate_lower = candidate.lower().strip()
             
-            for mapping_key, env_key in self.FIELD_ENV_MAPPINGS.items():
+            for mapping_key, env_key in self._field_mappings.items():
                 if mapping_key in candidate_lower or candidate_lower in mapping_key:
                     if env_key in self._env_data:
                         return self._env_data[env_key]
@@ -191,6 +191,27 @@ class FormDataLoader:
     def has_data(self) -> bool:
         """Check if any form data is available."""
         return bool(self._env_data) or bool(self._field_values)
+    
+    def get_skip_fields(self) -> set[str]:
+        """Get set of field names to skip during form filling."""
+        skip_list = self._schema.get("skip_fields", [])
+        return set(s.lower() for s in skip_list)
+    
+    def get_submit_selectors(self) -> list[str]:
+        """Get list of submit button selectors from schema."""
+        return self._schema.get("submit_selectors", [
+            'button[type="submit"]',
+            'input[type="submit"]',
+        ])
+    
+    def get_dismiss_selectors(self) -> list[str]:
+        """Get list of popup dismiss selectors from schema."""
+        return self._schema.get("dismiss_selectors", [])
+    
+    def get_type_selectors(self, selector_type: str = "search") -> list[str]:
+        """Get list of input selectors for typing from schema."""
+        type_selectors = self._schema.get("type_selectors", {})
+        return type_selectors.get(selector_type, [])
 
 
 def create_example_env_file(path: str = ".env.example") -> None:

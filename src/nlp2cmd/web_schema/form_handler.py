@@ -224,8 +224,8 @@ class FormHandler:
         loader = data_loader or FormDataLoader()
         form_data = FormData()
         
-        # Skip internal/hidden-like fields
-        skip_fields = {'sl', 'tl', 'query', 'gtrans', 'vote', 'honeypot', 'bot'}
+        # Skip internal/hidden-like fields (loaded from schema)
+        skip_fields = loader.get_skip_fields() or {'sl', 'tl', 'query', 'gtrans', 'vote', 'honeypot', 'bot'}
         
         self.console.print("\n[cyan]📋 Auto-filling form fields:[/cyan]\n")
         

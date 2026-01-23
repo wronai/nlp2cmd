@@ -497,18 +497,13 @@ class PipelineRunner:
                     
                     elif action == "submit":
                         # Submit form by clicking submit button
+                        from nlp2cmd.web_schema.form_data_loader import FormDataLoader
                         from rich.console import Console
                         console = Console()
                         
-                        submit_selectors = [
-                            'button[type="submit"]',
-                            'input[type="submit"]',
-                            'button:has-text("Wyślij")',
-                            'button:has-text("Submit")',
-                            'button:has-text("Send")',
-                            'button:has-text("Prześlij")',
-                            '.submit-button',
-                        ]
+                        # Load submit selectors from schema
+                        schema_loader = FormDataLoader()
+                        submit_selectors = schema_loader.get_submit_selectors()
                         
                         submitted = False
                         for sel in submit_selectors:
@@ -611,21 +606,19 @@ class PipelineRunner:
     @staticmethod
     def _dismiss_popups(page) -> None:
         """Try to dismiss common popups and cookie consents."""
-        # Common selectors for cookie/consent popups
-        dismiss_selectors = [
-            "button:has-text('Accept all')",
-            "button:has-text('Akceptuj wszystko')",
-            "button:has-text('Zaakceptuj')",
-            "button:has-text('Accept')",
-            "button:has-text('Zgadzam się')",
-            "button:has-text('I agree')",
-            "button:has-text('OK')",
-            "button[aria-label*='Accept']",
-            "button[aria-label*='Akceptuj']",
-            "button[id*='accept']",
-            "button[id*='consent']",
-            "#L2AGLb",  # Google's "Accept all" button
-        ]
+        from nlp2cmd.web_schema.form_data_loader import FormDataLoader
+        
+        # Load dismiss selectors from schema
+        schema_loader = FormDataLoader()
+        dismiss_selectors = schema_loader.get_dismiss_selectors()
+        
+        # Fallback to defaults if schema is empty
+        if not dismiss_selectors:
+            dismiss_selectors = [
+                "button:has-text('Accept all')",
+                "button:has-text('Accept')",
+                "button:has-text('OK')",
+            ]
         
         for selector in dismiss_selectors:
             try:
