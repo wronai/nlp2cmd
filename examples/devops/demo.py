@@ -61,6 +61,54 @@ async def demo_nlp_commands():
                 print("\n📋 Przykładowe polecenia:")
                 for i, ex in enumerate(examples, 1):
                     print(f"   {i}. {ex}")
+                print("\n🔧 Zarządzanie kontenerami:")
+                print("   status - pokaż status kontenerów")
+                print("   logs - pokaż logi kontenerów")
+                print("   logs follow - śledź logi na żywo")
+                print("   stop - zatrzymaj wszystkie kontenery")
+                continue
+            
+            # Handle container management commands
+            if command.lower() == 'status':
+                print(f"\n⚙️ Sprawdzanie statusu kontenerów...")
+                print("-" * 50)
+                
+                status_result = await controller.get_container_status()
+                if status_result.get('status') == 'success':
+                    containers = status_result.get('containers', [])
+                    if containers:
+                        print(f"📦 Kontenery ({len(containers)}):")
+                        for container in containers:
+                            status_emoji = "✅" if "Up" in container.get('status', '') else "❌"
+                            print(f"   {status_emoji} {container['name']}: {container['status']}")
+                            if container.get('ports'):
+                                print(f"      🌐 Porty: {container['ports']}")
+                    else:
+                        print("📦 Brak działających kontenerów")
+                else:
+                    print(f"❌ Błąd: {status_result.get('message')}")
+                continue
+            
+            if command.lower() == 'logs':
+                print(f"\n📋 Pobieranie logów kontenerów...")
+                print("-" * 50)
+                await controller.show_container_logs(follow=False, lines=20)
+                continue
+            
+            if command.lower() == 'logs follow':
+                print(f"\n📋 Śledzenie logów kontenerów (Ctrl+C aby przerwać)...")
+                print("-" * 50)
+                await controller.show_container_logs(follow=True)
+                continue
+            
+            if command.lower() == 'stop':
+                print(f"\n🛑 Zatrzymywanie kontenerów...")
+                print("-" * 50)
+                stop_result = await controller.stop_containers()
+                if stop_result.get('status') == 'success':
+                    print("✅ Kontenery zatrzymane pomyślnie")
+                else:
+                    print(f"❌ Błąd: {stop_result.get('message')}")
                 continue
             
             # Execute command
@@ -88,6 +136,27 @@ async def demo_nlp_commands():
                 print("\n💾 Zapisane pliki:")
                 for file_type, file_path in result['files_saved'].items():
                     print(f"   📄 {file_type}: {file_path}")
+            
+            # Show Docker execution results
+            if result.get('docker_execution'):
+                docker_result = result['docker_execution']
+                print(f"\n🐳 Docker: {docker_result.get('message', 'Unknown')}")
+                
+                if docker_result.get('status') == 'success':
+                    # Show container status
+                    if result.get('containers'):
+                        print(f"\n📦 Kontenery ({result.get('container_count', 0)}):")
+                        for container in result['containers']:
+                            status_emoji = "✅" if "Up" in container.get('status', '') else "❌"
+                            print(f"   {status_emoji} {container['name']}: {container['status']}")
+                            if container.get('ports'):
+                                print(f"      🌐 Porty: {container['ports']}")
+                    
+                    # Show recent logs
+                    print(f"\n📋 Ostatnie logi kontenerów:")
+                    await controller.show_container_logs(follow=False, lines=5)
+                else:
+                    print(f"   ❌ Błąd: {docker_result.get('message', 'Unknown error')}")
             
             if result.get('note'):
                 print(f"\n📝 {result['note']}")

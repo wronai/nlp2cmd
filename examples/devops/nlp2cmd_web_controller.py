@@ -19,6 +19,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import subprocess
 import yaml
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
@@ -98,7 +99,6 @@ class DeploymentPlan:
         services.update(dependency_services)
         
         return {
-            "version": self.compose_version,
             "services": services,
             "networks": {
                 self.network: {"driver": "bridge"}
@@ -170,6 +170,202 @@ class OutputFileManager:
             json.dump(plan, f, indent=2, ensure_ascii=False)
         
         return str(filepath)
+
+
+class DockerManager:
+    """Manages Docker Compose operations and container lifecycle."""
+    
+    def __init__(self, compose_file_path: str, output_dir: str = "./generated"):
+        self.compose_file = Path(output_dir) / compose_file_path
+        self.compose_dir = Path(output_dir)
+        self.running_containers = set()
+    
+    async def start_services(self, show_logs: bool = True) -> dict[str, Any]:
+        """Start Docker Compose services and optionally show logs."""
+        if not self.compose_file.exists():
+            return {
+                "status": "error",
+                "message": f"Plik Docker Compose nie istnieje: {self.compose_file}"
+            }
+        
+        try:
+            # Start services in detached mode
+            print(f"\n🚀 Uruchamianie usług z: {self.compose_file}")
+            print("-" * 50)
+            
+            result = subprocess.run(
+                ["docker-compose", "-f", self.compose_file.name, "up", "-d"],
+                cwd=self.compose_dir,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            
+            if result.returncode != 0:
+                return {
+                    "status": "error",
+                    "message": f"Błąd uruchamiania: {result.stderr}"
+                }
+            
+            print("✅ Usługi uruchomione pomyślnie")
+            
+            # Get container status
+            status_result = await self.get_container_status()
+            
+            # Show logs if requested
+            if show_logs:
+                await self.show_logs(follow=False, lines=10)
+            
+            return {
+                "status": "success",
+                "message": "Usługi uruchomione pomyślnie",
+                "container_status": status_result
+            }
+            
+        except subprocess.TimeoutExpired:
+            return {
+                "status": "error",
+                "message": "Timeout podczas uruchamiania usług"
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": f"Błąd: {str(e)}"
+            }
+    
+    async def get_container_status(self) -> dict[str, Any]:
+        """Get status of all containers."""
+        try:
+            result = subprocess.run(
+                ["docker-compose", "-f", self.compose_file.name, "ps"],
+                cwd=self.compose_dir,
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            
+            if result.returncode == 0:
+                lines = result.stdout.strip().split('\n')
+                # Skip header line
+                container_lines = [line.strip() for line in lines[1:] if line.strip()]
+                
+                containers = []
+                for line in container_lines:
+                    parts = line.split()
+                    if len(parts) >= 3:
+                        container_name = parts[0]
+                        status = parts[1] if len(parts) > 1 else "unknown"
+                        ports = parts[2] if len(parts) > 2 else ""
+                        
+                        containers.append({
+                            "name": container_name,
+                            "status": status,
+                            "ports": ports
+                        })
+                
+                return {
+                    "status": "success",
+                    "containers": containers,
+                    "total": len(containers)
+                }
+            else:
+                return {
+                    "status": "error",
+                    "message": f"Błąd sprawdzania statusu: {result.stderr}"
+                }
+                
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": f"Błąd sprawdzania statusu: {str(e)}"
+            }
+    
+    async def show_logs(self, follow: bool = False, lines: int = 20, service: Optional[str] = None) -> None:
+        """Show logs from containers."""
+        try:
+            cmd = ["docker-compose", "-f", self.compose_file.name, "logs"]
+            
+            if follow:
+                cmd.append("--follow")
+            if lines:
+                cmd.extend(["--tail", str(lines)])
+            if service:
+                cmd.append(service)
+            
+            print(f"\n📋 Logi kontenerów{' (follow)' if follow else ''}:")
+            print("-" * 50)
+            
+            if follow:
+                # For follow mode, we need to stream the output
+                process = subprocess.Popen(
+                    cmd,
+                    cwd=self.compose_dir,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1
+                )
+                
+                try:
+                    for line in iter(process.stdout.readline, ''):
+                        if line:
+                            print(line.rstrip())
+                        else:
+                            break
+                except KeyboardInterrupt:
+                    print("\n👋 Przerywam pokazywanie logów...")
+                    process.terminate()
+                    process.wait()
+            else:
+                # For non-follow mode, just capture and show
+                result = subprocess.run(
+                    cmd,
+                    cwd=self.compose_dir,
+                    capture_output=True,
+                    text=True,
+                    timeout=15
+                )
+                
+                if result.stdout:
+                    print(result.stdout)
+                if result.stderr:
+                    print(f"⚠️ Błędy: {result.stderr}")
+                    
+        except subprocess.TimeoutExpired:
+            print("⏰ Timeout podczas pobierania logów")
+        except Exception as e:
+            print(f"❌ Błąd pokazywania logów: {str(e)}")
+    
+    async def stop_services(self) -> dict[str, Any]:
+        """Stop and remove containers."""
+        try:
+            print(f"\n🛑 Zatrzymywanie usług...")
+            
+            result = subprocess.run(
+                ["docker-compose", "-f", self.compose_file.name, "down"],
+                cwd=self.compose_dir,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            
+            if result.returncode == 0:
+                print("✅ Usługi zatrzymane pomyślnie")
+                return {
+                    "status": "success",
+                    "message": "Usługi zatrzymane i usunięte"
+                }
+            else:
+                return {
+                    "status": "error",
+                    "message": f"Błąd zatrzymywania: {result.stderr}"
+                }
+                
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": f"Błąd zatrzymywania: {str(e)}"
+            }
 
 
 class NLCommandParser:
@@ -322,6 +518,7 @@ class NLP2CMDWebController:
         self.services: dict[str, ServiceConfig] = {}
         self.deployment_history: list[dict[str, Any]] = []
         self.file_manager = OutputFileManager(output_dir)
+        self.docker_manager: Optional[DockerManager] = None
         
         # Service templates
         self.templates = {
@@ -394,7 +591,12 @@ class NLP2CMDWebController:
                 "replicas": config.replicas,
             }, config.name)
             
-            return {
+            # Initialize Docker manager and start services
+            compose_filename = f"{config.name}-docker-compose.yml"
+            self.docker_manager = DockerManager(compose_filename, self.file_manager.output_dir)
+            docker_result = await self.docker_manager.start_services(show_logs=False)
+            
+            result = {
                 "status": "success",
                 "action": "deploy",
                 "service": config.name,
@@ -408,9 +610,19 @@ class NLP2CMDWebController:
                     "docker_compose": compose_file,
                     "service_config": service_file,
                 },
+                "docker_execution": docker_result,
                 "message": f"Przygotowano deployment dla {config.name} na porcie {config.port}",
                 "note": f"Pliki zapisane w: {self.file_manager.output_dir}"
             }
+            
+            # Show container status if Docker started successfully
+            if docker_result.get("status") == "success":
+                container_status = docker_result.get("container_status", {})
+                if container_status.get("containers"):
+                    result["containers"] = container_status["containers"]
+                    result["container_count"] = container_status["total"]
+            
+            return result
         
         return {
             "status": "error",
@@ -589,6 +801,47 @@ class NLP2CMDWebController:
             "total_files": len(files)
         }
     
+    async def show_container_logs(self, follow: bool = False, lines: int = 20, service: Optional[str] = None) -> dict[str, Any]:
+        """Show logs from running containers."""
+        if not self.docker_manager:
+            return {
+                "status": "error",
+                "message": "Brak aktywnego menedżera Docker. Najpierw uruchom usługę."
+            }
+        
+        await self.docker_manager.show_logs(follow=follow, lines=lines, service=service)
+        
+        return {
+            "status": "success",
+            "message": "Logi wyświetlone"
+        }
+    
+    async def get_container_status(self) -> dict[str, Any]:
+        """Get current status of all containers."""
+        if not self.docker_manager:
+            return {
+                "status": "error",
+                "message": "Brak aktywnego menedżera Docker. Najpierw uruchom usługę."
+            }
+        
+        return await self.docker_manager.get_container_status()
+    
+    async def stop_containers(self) -> dict[str, Any]:
+        """Stop all running containers."""
+        if not self.docker_manager:
+            return {
+                "status": "error",
+                "message": "Brak aktywnego menedżera Docker. Najpierw uruchom usługę."
+            }
+        
+        result = await self.docker_manager.stop_services()
+        
+        # Reset docker manager after stopping
+        if result.get("status") == "success":
+            self.docker_manager = None
+        
+        return result
+    
     # Service templates
     def _create_chat_template(self, entities: dict) -> ServiceConfig:
         """Create chat service configuration."""
@@ -597,7 +850,7 @@ class NLP2CMDWebController:
             name="chat-service",
             service_type=ServiceType.CHAT_SERVICE,
             port=port,
-            image="nlp2cmd/chat-service:latest",
+            image="nginx:alpine",  # Use nginx for testing
             env_vars={
                 "PORT": str(port),
                 "REDIS_URL": "redis://redis:6379",
