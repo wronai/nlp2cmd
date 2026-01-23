@@ -17,7 +17,7 @@
       "dsl": {
         "kind": "shell",
         "output_format": "raw",
-        "template": null
+        "template": "docker {subcommand} {options}"
       },
       "params": {
         "config": {
@@ -77,7 +77,8 @@
       },
       "schema": {
         "command": "docker",
-        "help_lines": 82
+        "help_lines": 82,
+        "text": "docker"
       },
       "match": {
         "patterns": [
@@ -99,5 +100,7 @@
       "tags": []
     }
   ],
-  "metadata": {}
+  "metadata": {
+    "merged": true
+  }
 }

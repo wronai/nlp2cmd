@@ -1,0 +1,49 @@
+{
+  "format": "app2schema.appspec",
+  "version": 1,
+  "app": {
+    "name": "app",
+    "kind": "shell",
+    "source": "kubectl",
+    "metadata": {
+      "target": "kubectl"
+    }
+  },
+  "actions": [
+    {
+      "id": "shell.kubectl",
+      "type": "shell",
+      "description": "kubectl controls the Kubernetes cluster manager.",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": "kubectl {subcommand} {options}"
+      },
+      "params": {},
+      "schema": {
+        "command": "kubectl",
+        "help_lines": 70,
+        "text": "kubectl"
+      },
+      "match": {
+        "patterns": [
+          "",
+          "kubectl controls the kubernetes cluster manager."
+        ],
+        "examples": [
+          ""
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "kubectl",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    }
+  ],
+  "metadata": {}
+}

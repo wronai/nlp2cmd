@@ -1,0 +1,98 @@
+[
+  {
+    "query": "Find files larger than 100MB",
+    "command": "find /home/user -name \"*.txt\"",
+    "detected": "find",
+    "confidence": 1.0
+  },
+  {
+    "query": "Search for TODO in Python files",
+    "command": "find /home/user -name \"*.txt\"",
+    "detected": "find",
+    "confidence": 1.0
+  },
+  {
+    "query": "Compress logs directory",
+    "command": "tar -cvf archive.tar /path/to/directory",
+    "detected": "tar",
+    "confidence": 1.0
+  },
+  {
+    "query": "Copy file to backup",
+    "command": "cp file.txt /home/user/documents",
+    "detected": "cp",
+    "confidence": 1.0
+  },
+  {
+    "query": "Move old files to archive",
+    "command": "tar -cvf archive.tar /path/to/directory",
+    "detected": "mv",
+    "confidence": 1.0
+  },
+  {
+    "query": "Remove temporary files",
+    "command": "rm file.txt",
+    "detected": "rm",
+    "confidence": 1.0
+  },
+  {
+    "query": "Show running processes",
+    "command": "",
+    "detected": "ps",
+    "confidence": 1.0
+  },
+  {
+    "query": "Check disk usage",
+    "command": "",
+    "detected": "df",
+    "confidence": 1.0
+  },
+  {
+    "query": "Check memory usage",
+    "command": "",
+    "detected": "free",
+    "confidence": 1.0
+  },
+  {
+    "query": "Show system uptime",
+    "command": "",
+    "detected": "uptime",
+    "confidence": 1.0
+  },
+  {
+    "query": "Test connection to google.com",
+    "command": "",
+    "detected": "ping",
+    "confidence": 1.0
+  },
+  {
+    "query": "Download file from URL",
+    "command": "",
+    "detected": "curl",
+    "confidence": 1.0
+  },
+  {
+    "query": "Check network connections",
+    "command": "",
+    "detected": "netstat",
+    "confidence": 1.0
+  },
+  {
+    "query": "Check git status",
+    "command": "",
+    "detected": "git",
+    "confidence": 1.0
+  },
+  {
+    "query": "List Docker containers",
+    "command": "",
+    "detected": "ls",
+    "confidence": 1.0
+  },
+  {
+    "query": "Check Kubernetes pods",
+    "command": "",
+    "detected": "kubectl",
+    "confidence": 1.0
+  }
+]
