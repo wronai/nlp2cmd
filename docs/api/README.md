@@ -339,6 +339,84 @@ report = analyzer.full_report()
 
 ---
 
+## Thermodynamic Optimization API
+
+### HybridThermodynamicGenerator
+
+Routes between DSL generation and thermodynamic optimization based on problem complexity.
+
+```python
+from nlp2cmd.generation import create_hybrid_generator
+
+# Create hybrid generator
+hybrid = create_hybrid_generator()
+
+# Generate solution
+result = await hybrid.generate("Zaplanuj 5 zadań w 10 slotach")
+print(result['source'])  # 'dsl' or 'thermodynamic'
+```
+
+### ThermodynamicGenerator
+
+Direct thermodynamic optimization using Langevin dynamics.
+
+```python
+from nlp2cmd.generation import create_thermodynamic_generator
+
+# Create generator
+thermo = create_thermodynamic_generator(
+    n_samples=5,      # Multiple solutions
+    n_steps=500,      # Langevin steps
+)
+
+# Generate solution
+result = await thermo.generate("Zaplanuj 5 zadań w 10 slotach")
+print(result.decoded_output)
+print(result.energy_estimate)
+```
+
+### Energy Models
+
+Domain-specific energy functions for constraint satisfaction.
+
+```python
+from nlp2cmd.generation.thermodynamic import (
+    SchedulingEnergy,
+    AllocationEnergy,
+    ConstraintEnergy,
+)
+
+# Scheduling energy model
+energy = SchedulingEnergy()
+
+# Add custom constraint
+energy.add_penalty(
+    "custom_constraint",
+    lambda z, c: violation_function(z, c),
+    lambda z, c: gradient_function(z, c),
+    weight=10.0
+)
+```
+
+### Langevin Configuration
+
+Configure Langevin dynamics sampling parameters.
+
+```python
+from nlp2cmd.generation.thermodynamic import LangevinConfig
+
+config = LangevinConfig(
+    mu=1.0,              # Mobility coefficient
+    kT=0.5,              # Thermal energy
+    dt=0.01,             # Time step
+    n_steps=1000,        # Integration steps
+    dim=64,              # Latent dimension
+    record_trajectory=True,
+)
+```
+
+---
+
 ## CLI Reference
 
 ```bash

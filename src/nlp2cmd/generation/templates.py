@@ -503,6 +503,28 @@ class TemplateGenerator:
             result.setdefault('directory', entities.get('target', ''))
         elif intent == 'remove_all':
             result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
+        elif intent == 'file_operation':
+            # Handle file_operation context-aware
+            text_lower = str(entities.get('text', '')).lower()
+            if 'wszystkie' in text_lower or 'all' in text_lower:
+                result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
+            elif 'katalog' in text_lower or 'directory' in text_lower or 'utwórz' in text_lower:
+                result.setdefault('directory', entities.get('target', ''))
+            elif 'zmień nazwę' in text_lower or 'rename' in text_lower:
+                result.setdefault('old_name', entities.get('old_name', ''))
+                result.setdefault('new_name', entities.get('new_name', ''))
+            elif 'rozmiar' in text_lower or 'size' in text_lower:
+                result.setdefault('file_path', entities.get('target', ''))
+            elif 'skopiuj' in text_lower or 'copy' in text_lower:
+                result.setdefault('source', entities.get('source', '.'))
+                result.setdefault('destination', entities.get('destination', '.'))
+            elif 'przenieś' in text_lower or 'move' in text_lower:
+                result.setdefault('source', entities.get('source', '.'))
+                result.setdefault('destination', entities.get('destination', '.'))
+            elif 'usuń' in text_lower or 'delete' in text_lower or 'remove' in text_lower:
+                result.setdefault('target', entities.get('target', ''))
+            else:
+                result.setdefault('target', entities.get('target', ''))
         elif intent == 'process_monitor':
             pass  # Uses top -n 1
         elif intent == 'process_memory':
