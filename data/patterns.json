@@ -119,12 +119,25 @@
     ]
   },
   "shell": {
-    "find": [
+    "list": [
       "pokaż pliki użytkownika", "pokaż pliki usera", "pokaż plik usera", "pokaz plik user", "show user files",
       "znajdź pliki użytkownika", "znajdź pliki usera", "find user files",
       "szukaj plików użytkownika", "szukaj plików usera", "search user files",
       "znajdź pliki w folderze użytkownika", "znajdź pliki w folderze usera",
       "szukaj pliki w folderze użytkownika", "szukaj pliki w folderze usera",
+      "lista plików", "listę plików", "lista folderów", "listę folderów", "lista katalogów", "listę katalogów",
+      "pokaż katalog", "pokaż katalogi", "pokaż folder", "pokaż foldery", "ls", "dir", "wylistuj",
+      "zawartość katalogu", "zawartość folderu", "directory contents", "folder contents",
+      "pokaż listę folderów użytkownika", "pokaż foldery użytkownika", "pokaż katalogi użytkownika",
+      "lista folderów użytkownika", "listę folderów użytkownika", "pokaż katalog domowy użytkownika",
+      "listuj pliki", "wypisz pliki", "listuj pliki w katalogu", "listuj pliki w folderze",
+      "listuj pliki w katalogu domowym", "listuj pliki w folderze użytkownika", "wypisz pliki w katalogu domowym",
+      "pokaż zawartość katalogu domowego", "pokaż zawartość folderu użytkownika",
+      "listować plik", "listować pliki w katalogu", "listować pliki w folderze", "wypisać plik",
+      "listować pliki w katalogu domowym", "listować pliki w folderze użytkownika", "wypisać pliki w katalogu domowym",
+      "listować plik w katalog domowy", "wypisać plik w katalog domowy", "listować pliki w folder użytkownika",
+      "wypisać pliki w folderze użytkownika", "katalog domowy", "folder użytkownika", "zawartość katalog domowy", "zawartość folder użytkownika",
+      "wypić plik w folder uzytkownik", "wypisać pliki w folderze uzytkownik", "wypić plik w katalogu domowym", "folder uzytkownik",
       "znajdź plik", "szukaj plik", "find files", "search files",
       "locate", "wyszukaj", "gdzie jest", "where is",
       "find python", "find log", "znajdź pliki z rozszerzeniem"
