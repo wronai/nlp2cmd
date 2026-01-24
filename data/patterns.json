@@ -293,7 +293,9 @@
       "search on page", "znajdź na stronie", "find on page", "interakcja ze stroną", "website interaction",
       "wyszukaj w google", "google search", "szukaj w google", "search google",
       "znajdź repozytorium na github", "wyszukaj na github", "github search",
-      "szukaj na amazon", "amazon search", "wyszukaj na amazon", "search amazon"
+      "szukaj na amazon", "amazon search", "wyszukaj na amazon", "search amazon",
+      "szukać na amazon", "szukać w google", "szukać na github",
+      "znajdź na amazon", "znajdź w google", "znajdź na github"
     ],
     "navigate": [
       "przejdź do", "go to", "otwórz stronę", "open website", "wejdź na stronę", "enter website",

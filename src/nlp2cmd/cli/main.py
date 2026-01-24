@@ -820,6 +820,19 @@ Rules:
 
                 response = asyncio.run(get_llm_response())
                 command = response.strip()
+                
+                # Strip markdown code blocks if present
+                if command.startswith('```'):
+                    lines = command.split('\n')
+                    # Remove first line (```sh or ```) and last line (```)
+                    if len(lines) > 2:
+                        command = '\n'.join(lines[1:-1]).strip()
+                    else:
+                        # Fallback: remove ``` from start and end
+                        command = command.strip('`').strip()
+                    # Remove language identifier if present
+                    if command.startswith('sh') or command.startswith('bash'):
+                        command = command[2:].strip()
 
                 if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
                     detected_domain = "shell"
@@ -863,6 +876,19 @@ Rules:
                             
                             response = asyncio.run(get_llm_response())
                             command = response.strip()
+                            
+                            # Strip markdown code blocks if present
+                            if command.startswith('```'):
+                                lines = command.split('\n')
+                                # Remove first line (```sh or ```) and last line (```)
+                                if len(lines) > 2:
+                                    command = '\n'.join(lines[1:-1]).strip()
+                                else:
+                                    # Fallback: remove ``` from start and end
+                                    command = command.strip('`').strip()
+                                # Remove language identifier if present
+                                if command.startswith('sh') or command.startswith('bash'):
+                                    command = command[2:].strip()
                             
                             if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
                                 detected_domain = "shell"
@@ -913,6 +939,19 @@ Rules:
                             
                             response = asyncio.run(get_llm_response())
                             command = response.strip()
+                            
+                            # Strip markdown code blocks if present
+                            if command.startswith('```'):
+                                lines = command.split('\n')
+                                # Remove first line (```sh or ```) and last line (```)
+                                if len(lines) > 2:
+                                    command = '\n'.join(lines[1:-1]).strip()
+                                else:
+                                    # Fallback: remove ``` from start and end
+                                    command = command.strip('`').strip()
+                                # Remove language identifier if present
+                                if command.startswith('sh') or command.startswith('bash'):
+                                    command = command[2:].strip()
                             
                             if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
                                 detected_domain = "shell"

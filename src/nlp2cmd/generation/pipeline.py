@@ -138,7 +138,7 @@ class RuleBasedPipeline:
             self.enhanced_detector and 
             (detection.domain == 'unknown' or 
              detection.confidence < 0.7 or
-             detection.intent in ['user_id', 'user_groups', 'user_whoami'])):  # Also check for user-related intents
+             detection.intent in ['user_id', 'user_groups', 'user_whoami', 'list', 'find', 'copy', 'delete', 'create'])):  # Also check for user-related and file-related intents
             
             try:
                 enhanced_match = self.enhanced_detector.get_best_match(text)

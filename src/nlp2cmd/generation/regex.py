@@ -160,6 +160,11 @@ class RegexEntityExtractor:
             r'(?:zainstaluj|install|apt install|apt-get install)\s+pakiet\s+([a-zA-Z0-9][\w\-\+\.]*)',
             r'(?:dodaj|pobierz|wget|curl)\s+([a-zA-Z0-9][\w\-\+\.]*)',
         ],
+        'search_query': [
+            r'(?:szukaj|wyszukaj|znajdź|szukać|wyszukać|znaleźć)\s+(?:na\s+)?(?:amazon|google|github)\s+(.+?)(?:\s+|$)',
+            r'(?:amazon|google|github)\s+(?:search|szukaj|wyszukaj)\s+(.+?)(?:\s+|$)',
+            r'(?:szukaj|wyszukaj|znajdź|szukać|wyszukać|znaleźć)\s+(.+?)(?:\s+na\s+(?:amazon|google|github)|\s+w\s+(?:amazon|google|github))',
+        ],
     }
     
     DOCKER_PATTERNS: dict[str, list[str]] = {
@@ -240,6 +245,27 @@ class RegexEntityExtractor:
             'shell': self.SHELL_PATTERNS.copy(),
             'docker': self.DOCKER_PATTERNS.copy(),
             'kubernetes': self.KUBERNETES_PATTERNS.copy(),
+            'browser': {
+                'url': [
+                    r'(https?://[^\s\'"]+)',
+                    r'(www\.[^\s\'"]+)',
+                    r'(?:otwórz|open|go to|navigate to|wejdź na|idź do)\s+[`"\']?([a-zA-Z0-9][a-zA-Z0-9\-]*\.[a-zA-Z]{2,}(?:/[^\s\'"]*)?)[`"\']?',
+                    r'\b([a-zA-Z0-9][a-zA-Z0-9\-]*\.(?:com|org|net|io|dev|pl|de|uk|eu|gov|edu)(?:/[^\s\'"]*)?)\b',
+                ],
+                'search_query': [
+                    r'(?:szukaj|wyszukaj|znajdź|szukać|wyszukać|znaleźć)\s+(?:na\s+)?(?:amazon|google|github)\s+(.+?)(?:\s+|$)',
+                    r'(?:amazon|google|github)\s+(?:search|szukaj|wyszukaj)\s+(.+?)(?:\s+|$)',
+                    r'(?:szukaj|wyszukaj|znajdź|szukać|wyszukać|znaleźć)\s+(.+?)(?:\s+na\s+(?:amazon|google|github)|\s+w\s+(?:amazon|google|github))',
+                ],
+                'element': [
+                    r'(?:kliknij|click|naciśnij|press|wybierz|select)\s+(?:przycisk|button|link|element)\s+[`"\']?(.+?)[`"\']?',
+                    r'(?:przycisk|button|link|element)\s+[`"\']?(.+?)[`"\']?',
+                ],
+                'form_data': [
+                    r'(?:wpisz|type|wypełnij|fill|enter)\s+(?:tekst|text|dane|data|informacje)\s+[`"\']?(.+?)[`"\']?',
+                    r'(?:wypełnij|fill)\s+(?:formularz|form)\s+(?:danymi|with)\s+[`"\']?(.+?)[`"\']?',
+                ],
+            },
         }
 
         self._custom_patterns_provided = custom_patterns is not None
