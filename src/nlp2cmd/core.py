@@ -529,7 +529,19 @@ class NLP2CMD:
                     print(f"[NLP2CMD] Failed to import HybridNLPBackend: {e}", file=sys.stderr)
                     self.nlp_backend = RuleBasedBackend(rules={}, config={"dsl": adapter.DSL_NAME})
             else:
-                if adapter.DSL_NAME == "shell" and _truthy_env("NLP2CMD_SEMANTIC_NLP"):
+                if adapter.DSL_NAME == "shell":
+                    # Try SemanticShellBackend first (intelligent NLP)
+                    try:
+                        from nlp2cmd.nlp_light import SemanticShellBackend
+                        self.nlp_backend = SemanticShellBackend(config={"dsl": adapter.DSL_NAME})
+                        print("[NLP2CMD] Using SemanticShellBackend for intelligent NLP processing", file=sys.stderr)
+                    except Exception as e:
+                        print(f"[NLP2CMD] Failed to import SemanticShellBackend: {e}, falling back to RuleBasedBackend", file=sys.stderr)
+                        self.nlp_backend = RuleBasedBackend(
+                            rules={k: list(v.get("patterns", [])) for k, v in adapter.INTENTS.items()},
+                            config={"dsl": adapter.DSL_NAME},
+                        )
+                elif adapter.DSL_NAME == "shell" and _truthy_env("NLP2CMD_SEMANTIC_NLP"):
                     try:
                         from nlp2cmd.nlp_light import SemanticShellBackend
 

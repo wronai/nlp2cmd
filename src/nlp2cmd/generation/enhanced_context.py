@@ -323,6 +323,22 @@ class EnhancedContextDetector:
             except Exception as e:
                 print(f"TextBlob analysis failed: {e}")
         
+        # Add regex entities (NEW)
+        try:
+            from ..generation.regex import RegexEntityExtractor
+            regex_extractor = RegexEntityExtractor()
+            regex_entities = regex_extractor.extract(text, 'shell')
+            
+            # Merge regex entities with existing entities
+            for key, value in regex_entities.entities.items():
+                if key not in entities:
+                    entities[key] = value
+                elif key == 'path' and entities.get('path') == '.':
+                    # Prefer regex path over NLTK path
+                    entities[key] = value
+        except Exception as e:
+            print(f"Regex entity extraction failed: {e}")
+        
         return entities
     
     def _calculate_keyword_similarity(self, query: str, pattern: str) -> float:

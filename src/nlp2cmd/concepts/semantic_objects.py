@@ -48,6 +48,23 @@ class SemanticObjectFactory:
                 property_mappings={'is_current_user': True}
             ),
             
+            # Directory/Folder patterns
+            SemanticPattern(
+                pattern=r"(?:foldery|pliki|katalogi|files?)\s+(?:użytkownika|usera|user|użytkownik)\s+(.+)",
+                object_type=ObjectType.DIRECTORY,
+                property_mappings={'username': 'group(1)', 'path': lambda m: f'~{m.group(1)}'}
+            ),
+            SemanticPattern(
+                pattern=r"(?:użytkownika|usera|user|użytkownik)\s+(?:foldery|pliki|katalogi|files?)\s+(.+)",
+                object_type=ObjectType.DIRECTORY,
+                property_mappings={'username': 'group(1)', 'path': lambda m: f'~{m.group(1)}'}
+            ),
+            SemanticPattern(
+                pattern=r"(?:foldery|pliki|katalogi|files?)\s+(?:użytkownika|usera|user|użytkownik)(?:\s|$)",
+                object_type=ObjectType.DIRECTORY,
+                property_mappings={'username': 'usera', 'path': '~'}
+            ),
+            
             # File-related patterns
             SemanticPattern(
                 pattern=r"(?:plik|file|pliki|files)\s+(?:użytkownika|usera|user)",

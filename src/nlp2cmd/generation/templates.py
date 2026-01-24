@@ -112,6 +112,7 @@ class TemplateGenerator:
         'count_dirs': "find '{path}' -maxdepth 1 -mindepth 1 -type d {name_flag_count} | wc -l",
         'list': "ls -la {path}",
         'list_recursive': "ls -laR {path}",
+        'list_user_directories': "ls -la {path}",
         'grep': "grep -r '{pattern}' {path}",
         'search': "grep -r '{pattern}' {path}",
         'grep_file': "grep '{pattern}' {file}",
@@ -856,7 +857,15 @@ class TemplateGenerator:
             else:
                 result['path'] = f'~{username}'  # Specific user home
         else:
-            result.setdefault('path', '.')  # Current directory
+            # Check if query suggests user context without explicit username
+            text_lower = str(entities.get('text') or '').lower()
+            if any(word in text_lower for word in ['usera', 'użytkownika', 'user', 'użytkownik']):
+                if intent == 'list':
+                    result['path'] = '~'  # Default to current user home for list operations
+                else:
+                    result.setdefault('path', '.')  # Current directory
+            else:
+                result.setdefault('path', '.')  # Current directory
         
         # Pattern
         pattern = entities.get('pattern', entities.get('file_pattern'))
