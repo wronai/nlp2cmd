@@ -180,6 +180,21 @@ class ExecutionRunner:
                                 if line:
                                     stderr_lines.append(line)
                                     self.console.print(f"  [red]{line.rstrip()}[/red]")
+                    
+                    # Read any remaining output after process exits
+                    while True:
+                        line = process.stdout.readline()
+                        if not line:
+                            break
+                        stdout_lines.append(line)
+                        self.console.print(f"  {line.rstrip()}")
+                    
+                    while True:
+                        line = process.stderr.readline()
+                        if not line:
+                            break
+                        stderr_lines.append(line)
+                        self.console.print(f"  [red]{line.rstrip()}[/red]")
                 else:
                     stdout, stderr = process.communicate(timeout=timeout)
                     stdout_lines = stdout.splitlines(keepends=True)

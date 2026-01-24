@@ -729,9 +729,31 @@ class ShellAdapter(BaseDSLAdapter):
         """Generate system maintenance command."""
         action = entities.get("action", "")
         target = entities.get("target", "")
+        full_text = str(entities.get("_full_text", "")).lower()
         
-        if "aktualizuj" in action or "update" in action:
-            return "apt update && apt upgrade -y"
+        # Fallback: extract action from full text if not in entities
+        if not action and full_text:
+            if "aktualizuj" in full_text or "update" in full_text or "aktualizacja" in full_text:
+                action = "aktualizuj"
+            elif "czyść" in full_text or "clean" in full_text:
+                action = "czyść"
+            elif "sprawdź" in full_text:
+                action = "sprawdź"
+        
+        # Fallback: extract target from full text if not in entities
+        if not target and full_text:
+            if "system" in full_text or "systemu" in full_text:
+                target = "system"
+            elif "cache" in full_text:
+                target = "cache"
+            elif "logi" in full_text:
+                target = "logi"
+            elif "cron" in full_text:
+                target = "cron"
+        
+        if "aktualizuj" in action or "update" in action or "aktualizacja" in full_text:
+            # Try non-sudo check first, fall back to sudo if needed
+            return "apt list --upgradable 2>/dev/null | grep -v 'WARNING:' || sudo apt update && sudo apt upgrade -y"
         elif "czyść" in action or "clean" in action:
             if "cache" in target:
                 return "apt clean && apt autoclean"

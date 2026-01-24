@@ -17,7 +17,7 @@
     ],
     "update": [
       "zmień", "zaktualizuj", "update", "modify", "ustaw",
-      "set", "edit", "zmiana", "aktualizacja"
+      "set", "edit", "zmiana"
     ],
     "delete": [
       "usuń", "skasuj", "delete", "remove", "wymaż",
@@ -140,9 +140,10 @@
       "count folders", "how many folders", "number of folders"
     ],
     "list": [
-      "lista plików", "pokaż katalog", "ls", "dir", "wylistuj",
-      "zawartość katalogu", "directory contents", "folder contents",
-      "pokaż pliki", "listuj pliki", "wypisz pliki"
+      "lista plików", "listę plików", "lista folderów", "listę folderów", "lista katalogów", "listę katalogów",
+      "pokaż katalog", "pokaż katalogi", "pokaż folder", "pokaż foldery", "ls", "dir", "wylistuj",
+      "zawartość katalogu", "zawartość folderu", "directory contents", "folder contents",
+      "pokaż pliki", "listuj pliki", "wypisz pliki", "lista do kerów", "listę do kerów"
     ],
     "process": [
       "procesy", "ps", "uruchomione procesy", "running processes",

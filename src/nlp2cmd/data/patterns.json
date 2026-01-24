@@ -143,7 +143,7 @@
       "lista plików", "listę plików", "lista folderów", "listę folderów", "lista katalogów", "listę katalogów",
       "pokaż katalog", "pokaż katalogi", "pokaż folder", "pokaż foldery", "ls", "dir", "wylistuj",
       "zawartość katalogu", "zawartość folderu", "directory contents", "folder contents",
-      "pokaż pliki", "listuj pliki", "wypisz pliki"
+      "pokaż pliki", "listuj pliki", "wypisz pliki", "lista do kerów", "listę do kerów", "lista do kórów"
     ],
     "process": [
       "procesy", "ps", "uruchomione procesy", "running processes",
