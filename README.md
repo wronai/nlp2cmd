@@ -168,21 +168,30 @@ LLM plans. Code executes. System controls.
 | **[Generation Module](README_GENERATION.md)** | DSL generation implementation details |
 | **[Quick Fix Reference](docs/quick-fix-reference.md)** | Common issues and solutions |
 | **[Keyword Detection Flow](docs/KEYWORD_DETECTION_FLOW.md)** | Detailed keyword intent detection pipeline and fallback mechanisms |
+| **[Web Schema Guide](docs/WEB_SCHEMA_GUIDE.md)** | Browser automation and form filling |
+| **[Cache Management Guide](docs/CACHE_MANAGEMENT.md)** | External dependencies caching |
 
 ## 🚀 Quick Start
 
 ### Installation
 
 ```bash
-pip install nlp2cmd
+# Install with all dependencies
+pip install nlp2cmd[all]
+
+# Or install specific components
+pip install nlp2cmd[browser,nlp]  # Web automation + Polish NLP
+pip install nlp2cmd[sql,shell]   # Database + system commands
 ```
 
-Or from source:
+### Setup External Dependencies
 
 ```bash
-git clone https://github.com/wronai/nlp2cmd.git
-cd nlp2cmd
-pip install -e ".[dev]"
+# Auto-setup Playwright browsers and cache
+nlp2cmd cache auto-setup
+
+# Manual setup
+nlp2cmd cache install --package playwright
 ```
 
 ### CLI Usage
@@ -199,12 +208,21 @@ nlp2cmd --dsl shell --query "Znajdź pliki .log większe niż 10MB"
 nlp2cmd --dsl docker --query "Pokaż wszystkie kontenery"
 nlp2cmd --dsl kubernetes --query "Skaluj deployment nginx do 3 replik"
 
+# Web automation
+nlp2cmd --dsl browser --query "otwórz https://example.com i wypełnij formularz"
+nlp2cmd web-schema extract https://example.com
+nlp2cmd web-schema history --stats
+
 # With options
 nlp2cmd --explain --query "Sprawdź status systemu"
 nlp2cmd --auto-repair --query "Napraw konfigurację nginx"
 
 # Interactive mode
 nlp2cmd --interactive
+
+# Cache management
+nlp2cmd cache info
+nlp2cmd cache auto-setup
 
 # Environment analysis
 nlp2cmd analyze-env
@@ -233,10 +251,14 @@ find . -type f -name "*.log" -size +10MB -exec ls -lh {} \;
 
 📊 ⏱️  Time: 3.1ms | 💻 CPU: 0.0% | 🧠 RAM: 55.1MB (0.1%) | ⚡ Energy: 0.028mJ
 
-$ nlp2cmd analyze-env
-╭────── Environment Report ──────╮
-│ System: Linux 6.17.0-8-generic │
-╰────────────────────────────────╯
+$ nlp2cmd web-schema extract https://httpbin.org/forms/post
+✓ Schema extracted successfully
+📊 Extracted Elements: 12 inputs, 1 button, 1 form
+
+$ nlp2cmd cache info
+📁 Cache Directory: ~/.cache/external
+💾 Total Size: 3105.4 MB
+📦 Cached Packages: 1 (playwright)
                 Tools                
 ┏━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
 ┃ Tool           ┃ Version ┃ Status ┃

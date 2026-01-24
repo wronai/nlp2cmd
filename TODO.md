@@ -1,0 +1,131 @@
+# TODO - NLP2CMD Project
+
+## 🚀 High Priority
+
+### Web Schema Engine
+- [ ] **Form Auto-filling**: Complete natural language to form field mapping
+- [ ] **Multi-step Workflows**: Support for complex multi-page forms
+- [ ] **CAPTCHA Handling**: Integration with CAPTCHA solving services
+- [ ] **Session Management**: Cookie and session persistence across interactions
+- [ ] **Error Recovery**: Smart retry mechanisms for failed interactions
+
+### Polish NLP Enhancement
+- [ ] **Context-aware Disambiguation**: Handle ambiguous Polish phrases better
+- [ ] **Domain-specific Vocabulary**: Industry-specific Polish terminology
+- [ ] **Semantic Similarity**: Advanced semantic matching beyond keywords
+- [ ] **Polish spaCy Model**: Optimize Polish model loading and caching
+
+### Performance & Optimization
+- [ ] **Parallel Processing**: Multi-threaded intent detection for batch queries
+- [ ] **Memory Optimization**: Reduce memory footprint for large-scale processing
+- [ ] **Cache Warming**: Pre-warm caches for common domains and patterns
+- [ ] **Lazy Loading**: On-demand loading of NLP models and dependencies
+
+## 🎯 Medium Priority
+
+### CLI & User Experience
+- [ ] **Interactive Mode Enhancement**: Rich interactive mode with auto-completion
+- [ ] **Progress Indicators**: Better progress bars for long-running operations
+- [ ] **Configuration Wizard**: Guided setup for new users
+- [ ] **Plugin System**: Support for third-party plugins and extensions
+
+### Integration & Ecosystem
+- [ ] **API Server**: REST API for programmatic access
+- [ ] **Web Interface**: Web-based UI for nlp2cmd functionality
+- [ ] **IDE Extensions**: VS Code, JetBrains IDE extensions
+- [ ] **CI/CD Integration**: GitHub Actions, GitLab CI templates
+
+### Testing & Quality
+- [ ] **E2E Test Suite**: Comprehensive end-to-end testing
+- [ ] **Performance Benchmarks**: Automated performance regression testing
+- [ ] **Security Audit**: Security assessment and hardening
+- [ ] **Accessibility**: Screen reader and keyboard navigation support
+
+## 🔧 Low Priority
+
+### Advanced Features
+- [ ] **Voice Input**: Speech-to-text integration for voice commands
+- [ ] **Multi-language Support**: Beyond Polish (English, German, French)
+- [ ] **Custom DSL Creation**: Tools for creating new domain-specific languages
+- [ ] **Template Marketplace**: Community-driven template sharing
+
+### Documentation & Examples
+- [ ] **Video Tutorials**: Screen-cast tutorials for common workflows
+- [ ] **Community Examples**: User-contributed examples and use cases
+- [ ] **API Documentation**: Comprehensive API reference with examples
+- [ ] **Troubleshooting Guide**: Advanced troubleshooting and debugging
+
+### Infrastructure & DevOps
+- [ ] **Docker Images**: Official Docker images for easy deployment
+- [ ] **Kubernetes Charts**: Helm charts for production deployment
+- [ ] **Monitoring Integration**: Prometheus/Grafana metrics
+- [ ] **Log Aggregation**: ELK stack integration for centralized logging
+
+## 🐛 Known Issues
+
+### Polish NLP
+- [ ] **Issue**: Some Polish diacritics not properly normalized in edge cases
+- [ ] **Impact**: Medium - affects accuracy for some Polish inputs
+- [ ] **Workaround**: Use fuzzy matching as fallback
+
+### Web Schema
+- [ ] **Issue**: Dynamic content (JavaScript-heavy sites) may not be fully captured
+- [ ] **Impact**: Medium - affects some modern web applications
+- [ ] **Workaround**: Use explicit waits and retry mechanisms
+
+### Cache Management
+- [ ] **Issue**: Cache size calculation may be inaccurate on some systems
+- [ **Impact**: Low - cosmetic issue in cache reporting
+- [ ] **Workaround**: Manual cache size verification
+
+## 🔄 Backlog
+
+### Research & Experimentation
+- [ ] **LLM Integration**: Research GPT-4/Claude integration for complex queries
+- [ ] **Graph-based Planning**: Knowledge graph for complex multi-step planning
+- [ ] **Reinforcement Learning**: Self-improvement through user feedback
+- [ ] **Federated Learning**: Privacy-preserving model improvements
+
+### Legacy Support
+- [ ] **Python 3.9 Support**: Extend support to Python 3.9
+- [ ] **Windows Compatibility**: Full Windows support including PowerShell
+- [ ] **ARM64 Support**: Apple Silicon and ARM64 optimization
+- [ ] **Mobile Support**: iOS/Android app development
+
+---
+
+## 📊 Progress Tracking
+
+### Completed in v1.0.20
+- ✅ Web Schema Engine - Basic implementation
+- ✅ Smart Cache Manager - External dependencies caching
+- ✅ Polish NLP Enhancement - Lemmatization and fuzzy matching
+- ✅ CLI Cache Commands - Full cache management suite
+
+### In Progress
+- 🔄 Form Auto-filling - Natural language to form mapping
+- 🔄 Performance Optimization - Memory and speed improvements
+- 🔄 Testing Suite - Comprehensive test coverage
+
+### Next Release (v1.0.21)
+- 🎯 Target: Enhanced web automation with form filling
+- 🎯 Target: Performance improvements and memory optimization
+- 🎯 Target: Expanded Polish language support
+
+---
+
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
+
+### How to Claim a Task
+1. Open an issue describing the task you want to work on
+2. Wait for maintainer approval
+3. Create a feature branch from `main`
+4. Implement the changes with tests
+5. Submit a pull request with detailed description
+
+### Task Priority Guidelines
+- **High Priority**: Core functionality, security, performance
+- **Medium Priority**: User experience, integrations, quality
+- **Low Priority**: Nice-to-have features, documentation, infrastructure

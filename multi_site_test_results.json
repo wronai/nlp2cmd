@@ -1,0 +1,270 @@
+{
+  "summary": {
+    "total": 18,
+    "domain_passed": 7,
+    "intent_passed": 1,
+    "overall_passed": 1,
+    "domain_success_rate": 38.88888888888889,
+    "intent_success_rate": 5.555555555555555,
+    "overall_success_rate": 5.555555555555555,
+    "avg_confidence": 0.8833333333333333,
+    "site_stats": {
+      "github": {
+        "total": 4,
+        "passed": 0,
+        "domain_passed": 1
+      },
+      "google": {
+        "total": 5,
+        "passed": 0,
+        "domain_passed": 1
+      },
+      "amazon": {
+        "total": 5,
+        "passed": 0,
+        "domain_passed": 1
+      },
+      "general": {
+        "total": 4,
+        "passed": 1,
+        "domain_passed": 4
+      }
+    }
+  },
+  "results": [
+    {
+      "query": "znajd\u017a repozytorium na github",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "github",
+      "actual_domain": "shell",
+      "actual_intent": "find",
+      "command": "find .",
+      "confidence": 0.85,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "wyszukaj u\u017cytkownika github",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "github",
+      "actual_domain": "shell",
+      "actual_intent": "find",
+      "command": "find .",
+      "confidence": 0.9,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "kliknij sign in na github",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "github",
+      "actual_domain": "browser",
+      "actual_intent": "click",
+      "command": "# Unknown: browser/click",
+      "confidence": 0.9,
+      "domain_success": true,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "wpisz co\u015b w google search",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "google",
+      "actual_domain": "shell",
+      "actual_intent": "list_processes",
+      "command": "xdg-open 'https://www.google.com/search?q=s'",
+      "confidence": 0.9,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "wyszukaj w google",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "google",
+      "actual_domain": "shell",
+      "actual_intent": "list_processes",
+      "command": "xdg-open 'https://www.google.com/search?q=w google'",
+      "confidence": 0.9,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "kliknij aplikacje google",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "google",
+      "actual_domain": "browser",
+      "actual_intent": "click",
+      "command": "# Unknown: browser/click",
+      "confidence": 0.9,
+      "domain_success": true,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "wyczy\u015b\u0107 wyszukiwark\u0119 google",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "google",
+      "actual_domain": "sql",
+      "actual_intent": "unknown",
+      "command": "TRUNCATE TABLE unknown_table;",
+      "confidence": 0.85,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "szukaj na amazon",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "amazon",
+      "actual_domain": "shell",
+      "actual_intent": "unknown",
+      "command": "df -h .",
+      "confidence": 0.85,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "znajd\u017a produkt na amazon",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "amazon",
+      "actual_domain": "shell",
+      "actual_intent": "find",
+      "command": "find .",
+      "confidence": 0.85,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "wyszukaj ksi\u0105\u017cki amazon",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "amazon",
+      "actual_domain": "shell",
+      "actual_intent": "find",
+      "command": "find .",
+      "confidence": 0.9,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "kliknij koszyk amazon",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "amazon",
+      "actual_domain": "browser",
+      "actual_intent": "click",
+      "command": "# Unknown: browser/click",
+      "confidence": 0.9,
+      "domain_success": true,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "przejd\u017a do strony",
+      "expected_domain": "browser",
+      "expected_intent": "navigate",
+      "expected_site": "general",
+      "actual_domain": "browser",
+      "actual_intent": "web_action",
+      "command": "# Unknown: browser/web_action",
+      "confidence": 0.9,
+      "domain_success": true,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "wype\u0142nij formularz",
+      "expected_domain": "browser",
+      "expected_intent": "fill_form",
+      "expected_site": "general",
+      "actual_domain": "browser",
+      "actual_intent": "web_action",
+      "command": "# Unknown: browser/web_action",
+      "confidence": 0.9,
+      "domain_success": true,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "kliknij przycisk",
+      "expected_domain": "browser",
+      "expected_intent": "click",
+      "expected_site": "general",
+      "actual_domain": "browser",
+      "actual_intent": "web_action",
+      "command": "# Unknown: browser/web_action",
+      "confidence": 0.9,
+      "domain_success": true,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "wpisz tekst w wyszukiwarce",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "general",
+      "actual_domain": "browser",
+      "actual_intent": "web_action",
+      "command": "# Unknown: browser/web_action",
+      "confidence": 0.9,
+      "domain_success": true,
+      "intent_success": true,
+      "overall_success": true
+    },
+    {
+      "query": "wyszukaj python tutorial w google",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "google",
+      "actual_domain": "shell",
+      "actual_intent": "find",
+      "command": "find .",
+      "confidence": 0.9,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "znajd\u017a ksi\u0105\u017ck\u0119 o nlp na amazon",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "amazon",
+      "actual_domain": "shell",
+      "actual_intent": "find",
+      "command": "find .",
+      "confidence": 0.85,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    },
+    {
+      "query": "sprawd\u017a repozytorium nlp2cmd na github",
+      "expected_domain": "browser",
+      "expected_intent": "web_action",
+      "expected_site": "github",
+      "actual_domain": "shell",
+      "actual_intent": "list_processes",
+      "command": "ps aux",
+      "confidence": 0.85,
+      "domain_success": false,
+      "intent_success": false,
+      "overall_success": false
+    }
+  ]
+}

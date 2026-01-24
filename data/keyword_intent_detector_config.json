@@ -6,18 +6,20 @@
     "docker": ["docker", "doker", "dokcer", "kontener", "container", "obraz", "image", "compose", "dockerfile", "kerów", "kórów", "dkerów", "dkorów"],
     "kubernetes": ["kubernetes", "k8s", "kubectl", "pod", "deployment", "namespace", "helm", "cluster", "node", "service"],
     "git": ["git", "repo", "repository", "commit", "branch", "gałąź", "merge", "push", "pull", "clone"],
-    "dql": ["entity", "graph", "node", "edge", "relation"]
+    "dql": ["entity", "graph", "node", "edge", "relation"],
+    "browser": ["przeglądark", "browser", "strona", "website", "kliknij", "click", "formularz", "form", "przycisk", "button", "link", "url", "google", "github", "amazon", "szukaj", "wyszukaj", "wpisz", "type"]
   },
   "priority_intents": {
     "sql": ["delete", "update", "insert", "show_tables", "aggregate"],
-    "shell": ["service_start", "service_restart", "service_stop", "service_status", "open_url", "search_web", "file_operation", "archive", "process", "disk", "system_maintenance", "development", "security", "process_management"],
+    "shell": ["service_start", "service_restart", "service_stop", "service_status", "open_url", "file_operation", "archive", "process", "disk", "system_maintenance", "development", "security", "process_management"],
     "docker": ["stop", "prune", "build", "run", "list", "logs", "exec", "start", "remove"],
     "kubernetes": ["delete", "scale", "describe", "logs"],
-    "git": ["reset", "revert", "merge", "rebase", "push", "commit", "stash"]
+    "git": ["reset", "revert", "merge", "rebase", "push", "commit", "stash"],
+    "browser": ["web_action", "navigate", "click", "fill_form"]
   },
   "fast_path": {
     "browser_keywords": ["przeglądark", "browser", "otwórz stronę", "open url", "open website", "go to", "navigate to"],
-    "search_keywords": ["szukaj w google", "wyszukaj w google", "google search", "search web", "szukaj w internecie", "search online", "look up online"],
+    "search_keywords": ["szukaj w internecie", "szukaj online", "znajdź w internecie", "look up online"],
     "common_images": ["nginx", "redis", "postgres", "postgresql", "mysql", "mongo", "mongodb", "rabbitmq"]
   }
 }

@@ -2,23 +2,25 @@
 # NLP2CMD Makefile
 # =============================================================================
 # Usage:
-#   make help          - Show this help
-#   make install       - Install dependencies
-#   make test          - Run all tests
-#   make test-examples - Run all examples
-#   make test-e2e      - Run E2E tests
-#   make docker-build  - Build Docker images
-#   make docker-up     - Start services
-#   make docker-test   - Run tests in Docker
-#   make docker-push   - Push Docker image to registry
-#   make push          - Complete release (bump version + build + push Docker + PyPI)
-#   make bump-patch    - Bump patch version (X.Y.Z -> X.Y.Z+1)
-#   make bump-minor    - Bump minor version (X.Y.Z -> X.Y+1.0)
-#   make bump-major    - Bump major version (X.Y.Z -> X+1.0.0)
-#   make publish       - Publish to PyPI (with automatic patch bump)
+#   make help              - Show this help
+#   make install           - Install dependencies
+#   make setup-cache       - Setup external dependencies cache
+#   make test              - Run all tests
+#   make test-examples     - Run all examples
+#   make test-e2e          - Run E2E tests
+#   make test-web-schema   - Test web schema functionality
+#   make docker-build      - Build Docker images
+#   make docker-up         - Start services
+#   make docker-test       - Run tests in Docker
+#   make docker-push       - Push Docker image to registry
+#   make push              - Complete release (bump version + build + push Docker + PyPI)
+#   make bump-patch        - Bump patch version (X.Y.Z -> X.Y.Z+1)
+#   make bump-minor        - Bump minor version (X.Y.Z -> X.Y+1.0)
+#   make bump-major        - Bump major version (X.Y.Z -> X+1.0.0)
+#   make publish           - Publish to PyPI (with automatic patch bump)
 # =============================================================================
 
-.PHONY: help install test test-unit test-e2e lint format clean \
+.PHONY: help install setup-cache test test-unit test-e2e test-web-schema lint format clean \
         docker-build docker-up docker-down docker-test docker-e2e docker-push \
         dev demo test-examples bump-patch bump-minor bump-major publish publish-test push
 
@@ -63,11 +65,25 @@ help: ## Show this help message
 install: ## Install package in development mode
 	$(PIP) install -e ".[dev]" --break-system-packages
 
+install-all: ## Install package with all dependencies
+	$(PIP) install -e ".[all]" --break-system-packages
+
 install-ci: ## Install for CI (no editable)
 	$(PIP) install ".[dev]" --break-system-packages
 
 deps: ## Install dependencies only
 	$(PIP) install -r requirements.txt --break-system-packages
+
+setup-cache: ## Setup external dependencies cache (Playwright browsers)
+	@echo "$(BLUE)Setting up external dependencies cache...$(NC)"
+	$(PYTHON) -m $(PROJECT_NAME) cache auto-setup
+	@echo "$(GREEN)✓ Cache setup complete!$(NC)"
+
+setup-dev: ## Complete development setup
+	@echo "$(BLUE)Setting up development environment...$(NC)"
+	$(MAKE) install-all
+	$(MAKE) setup-cache
+	@echo "$(GREEN)✓ Development setup complete!$(NC)"
 
 # =============================================================================
 # Testing
@@ -84,6 +100,18 @@ test-e2e: ## Run E2E tests only
 
 test-integration: ## Run integration tests only
 	$(PYTEST) tests/integration/ -v --tb=short
+
+test-web-schema: ## Test web schema functionality
+	$(PYTEST) tests/iterative/test_typos_and_variations.py::TestTyposAndVariations::test_docker_typos -v
+	$(PYTEST) tests/iterative/test_typos_and_variations.py::TestTyposAndVariations::test_shell_service_variations -v
+
+test-nlp: ## Test NLP functionality (Polish language, fuzzy matching)
+	$(PYTEST) tests/iterative/test_typos_and_variations.py -v
+
+test-cache: ## Test cache management
+	@echo "$(BLUE)Testing cache management...$(NC)"
+	$(PYTHON) -m $(PROJECT_NAME) cache info
+	$(PYTHON) -m $(PROJECT_NAME) cache check
 
 test-cov: ## Run tests with coverage report
 	$(PYTEST) tests/ -v --cov=$(PROJECT_NAME) --cov-report=html --cov-report=term
@@ -170,6 +198,19 @@ docker-push: ## Push Docker image to registry
 demo: ## Run the end-to-end demo
 	$(PYTHON) examples/architecture/end_to_end_demo.py
 
+demo-web: ## Demo web schema extraction
+	@echo "$(BLUE)Demo: Web schema extraction...$(NC)"
+	$(PYTHON) -m $(PROJECT_NAME) web-schema extract https://httpbin.org/forms/post --headless
+
+demo-cache: ## Demo cache management
+	@echo "$(BLUE)Demo: Cache management...$(NC)"
+	$(PYTHON) -m $(PROJECT_NAME) cache info
+
+demo-nlp: ## Demo Polish NLP capabilities
+	@echo "$(BLUE)Demo: Polish NLP capabilities...$(NC)"
+	@echo "$(YELLOW)Testing Polish NLP with various queries:$(NC)"
+	@$(PYTHON) -c "from src.nlp2cmd.generation.keywords import KeywordIntentDetector; detector = KeywordIntentDetector(); queries = ['uruchom usługę nginx', 'restartuj serwis apache', 'doker ps -a', 'systemctl urachom mysql']; [print(f'Query: {q}\nResult: {detector.detect(q).domain}/{detector.detect(q).intent} (confidence: {detector.detect(q).confidence:.2f})\n') for q in queries]"
+
 test-examples: ## Run all examples to test functionality
 	@echo "$(BLUE)Testing all examples...$(NC)"
 	@echo "$(YELLOW)Architecture examples:$(NC)"
@@ -223,14 +264,20 @@ clean: ## Clean build artifacts
 	rm -rf .ruff_cache/
 	rm -rf htmlcov/
 	rm -rf .coverage
+	rm -rf .cache/
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete 2>/dev/null || true
+
+clean-cache: ## Clean external dependencies cache
+	@echo "$(YELLOW)Cleaning external dependencies cache...$(NC)"
+	$(PYTHON) -m $(PROJECT_NAME) cache clear --all
+	@echo "$(GREEN)✓ Cache cleared!$(NC)"
 
 clean-docker: ## Clean Docker resources
 	$(DOCKER_COMPOSE) down -v --rmi local
 	docker system prune -f
 
-clean-all: clean clean-docker ## Clean everything
+clean-all: clean clean-docker clean-cache ## Clean everything including cache
 
 # =============================================================================
 # Release
