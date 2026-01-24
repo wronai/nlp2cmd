@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import httpx
-import yaml
+from nlp2cmd.utils.yaml_compat import yaml
 try:
     from pydantic import BaseModel, Field
 except ImportError:  # pragma: no cover

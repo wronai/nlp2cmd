@@ -12,7 +12,7 @@ All schema storage has been consolidated to use only the `command_schemas/` dire
 2. **run_all_tests.sh**
    - Updated schema generation paths to use `command_schemas/docker.appspec.json` and `command_schemas/nginx.appspec.json`
 
-3. **TEST_SCRIPTS_README.md**
+3. **[TEST_SCRIPTS_README.md](TEST_SCRIPTS_README.md)**
    - Updated documentation to reference `command_schemas/` directory
    - Updated features list to mention "Schema management in `command_schemas/`"
 

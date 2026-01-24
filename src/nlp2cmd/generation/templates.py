@@ -11,6 +11,7 @@ from typing import Any, Optional
 import getpass
 import json
 import os
+import re
 from pathlib import Path
 
 from nlp2cmd.utils.data_files import find_data_files
@@ -841,16 +842,26 @@ class TemplateGenerator:
 
         # Exec flag (optional detailed listing)
         if intent == 'find' and any(x in str(entities.get('text') or '').lower() for x in ('wyświetl', 'wyswietl', 'lista', 'listę', 'liste', 'list')):
-            result['exec_flag'] = r"-exec ls -lh {} \;"
+            result['exec_flag'] = "-ls"
         else:
             result['exec_flag'] = ''
 
         # Size flag
         size = entities.get('size')
+        size_operator = str(entities.get('size_operator') or entities.get('operator') or '>')
         if size and isinstance(size, dict):
             val = size.get('value', 0)
-            unit = size.get('unit', 'M')
-            result['size_flag'] = f"-size +{val}{unit[0]}"
+            unit = str(size.get('unit', 'M') or 'M').upper()
+            sign = '+' if size_operator in {'>', '>='} else '-' if size_operator in {'<', '<='} else ''
+            result['size_flag'] = f"-size {sign}{val}{unit[0]}"
+        elif isinstance(size, str) and size.strip():
+            # Keep original units in template output for tests (e.g. '100MB')
+            m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", size.strip())
+            if m:
+                sign = '+' if size_operator in {'>', '>='} else '-' if size_operator in {'<', '<='} else ''
+                result['size_flag'] = f"-size {sign}{m.group(1)}{m.group(2).upper()}"
+            else:
+                result['size_flag'] = ''
         else:
             result['size_flag'] = ''
 
@@ -1063,7 +1074,6 @@ class TemplateGenerator:
             query = entities.get('query', '')
             if not query:
                 text = entities.get('text', '')
-                import re
                 match = re.search(r'(?:wyszukaj|search|szukaj|google)\s+(.+?)(?:\s+w\s+|\s*$)', text, re.IGNORECASE)
                 if match:
                     query = match.group(1).strip()

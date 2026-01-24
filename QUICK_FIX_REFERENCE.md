@@ -12,6 +12,8 @@ nlp2cmd 'Pokaż użytkowników'
 
 # ✅ CORRECT
 nlp2cmd --query "Pokaż użytkowników"
+nlp2cmd --run "Pokaż użytkowników"
+nlp2cmd -r "Pokaż użytkowników"
 ```
 
 ### With Specific DSL

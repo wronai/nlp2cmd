@@ -342,9 +342,6 @@ class ShellAdapter(BaseDSLAdapter):
             elif attr == "extension":
                 cmd_parts.append(f'-name "*.{value}"')
 
-        # Add useful output
-        cmd_parts.append(r"-exec ls -lh {} \;")
-
         return " ".join(filter(None, cmd_parts))
 
     @staticmethod

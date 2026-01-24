@@ -328,6 +328,18 @@ class KeywordIntentDetector:
                 matched_keyword=url_pattern.group(1) if url_pattern else "browser",
             )
 
+        if (
+            re.search(r"\b(użytkownik\w*|uzytkownik\w*|users?)\b", text_lower)
+            and re.search(r"\b(systemu|system)\b", text_lower)
+            and not re.search(r"\b(tabel\w*|table|sql)\b", text_lower)
+        ):
+            return DetectionResult(
+                domain="shell",
+                intent="user_list",
+                confidence=0.9,
+                matched_keyword="system users",
+            )
+
         if re.search(r"\bfind\b", text_lower) and re.search(r"\bfiles?\b", text_lower):
             return DetectionResult(
                 domain='shell',

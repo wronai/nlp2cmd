@@ -6,10 +6,11 @@ Supports Docker CLI and Docker Compose operations.
 
 from __future__ import annotations
 
+from nlp2cmd.utils.yaml_compat import yaml
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-import yaml
+import re
 
 from nlp2cmd.adapters.base import AdapterConfig, BaseDSLAdapter, SafetyPolicy
 

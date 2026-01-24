@@ -24,7 +24,8 @@
 ### Development & Contributing
 
 - **[🤝 Contributing Guide](../CONTRIBUTING.md)** - Development guidelines
-- **[📋 Project History](../PROJECT_HISTORY.md)** - Development timeline
+- **[🛠️ Maintainers](maintainers/README.md)** - Maintainer notes and project docs
+- **[📋 Project History](maintainers/PROJECT_HISTORY.md)** - Development timeline
 - **[🔄 Changelog](../CHANGELOG.md)** - Version history and changes
 
 ### Examples & Use Cases
@@ -59,6 +60,15 @@ docs/
 ├── VERSIONED_SCHEMAS.md        # Schema versioning
 ├── SCHEMA_BASED_GENERATION.md  # Schema-based generation
 ├── LLM_SCHEMA_GENERATION.md    # LLM schema generation
+├── maintainers/
+│   ├── PROJECT_HISTORY.md       # Project timeline and context
+│   ├── REFACTORING_PLAN.md      # Maintainer refactoring plan
+│   ├── REFACTORING_SUMMARY.md   # Refactoring summary
+│   ├── IMPROVEMENTS.md          # Improvement notes
+│   ├── DOCUMENTATION_UPDATE.md  # Documentation changes log
+│   ├── SCHEMA_CONSOLIDATION_SUMMARY.md # Schema consolidation notes
+│   ├── TEST_SCRIPTS_README.md   # Test scripts documentation
+│   └── TODO.md                  # Maintainer TODO list
 └── guides/
     └── user-guide.md           # Complete user tutorial
 
@@ -156,7 +166,7 @@ examples/
 ### Development Support
 
 - **[Contributing Guide](../CONTRIBUTING.md)** - Development setup
-- **[Project History](../PROJECT_HISTORY.md)** - Context and evolution
+- **[Project History](maintainers/PROJECT_HISTORY.md)** - Context and evolution
 - **[Architecture Docs](../THERMODYNAMIC_ARCHITECTURE.md)** - Technical deep-dive
 
 ---

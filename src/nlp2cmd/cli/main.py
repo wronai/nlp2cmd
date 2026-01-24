@@ -28,7 +28,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 from rich.syntax import Syntax
-import yaml
+from nlp2cmd.utils.yaml_compat import yaml
 
 from nlp2cmd import NLP2CMD
 from nlp2cmd.adapters import (
