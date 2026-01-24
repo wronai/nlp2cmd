@@ -108,6 +108,20 @@ test-web-schema: ## Test web schema functionality
 test-nlp: ## Test NLP functionality (Polish language, fuzzy matching)
 	$(PYTEST) tests/iterative/test_typos_and_variations.py -v
 
+test-enhanced: ## Test enhanced NLP integration
+	@echo "$(BLUE)Testing enhanced NLP integration...$(NC)"
+	$(PYTHON) -c "from src.nlp2cmd.generation.enhanced_context import get_enhanced_detector; detector = get_enhanced_detector(); print('✓ Enhanced NLP available' if detector else '✗ Enhanced NLP not available')"
+
+test-interactive: ## Test interactive shell mode
+	@echo "$(BLUE)Testing interactive shell mode...$(NC)"
+	@echo "Testing shell emulation with Polish commands..."
+	@echo "Commands to test manually:"
+	@echo "  nlp2cmd --interactive --dsl shell"
+	@echo "  > pokaz pliki usera"
+	@echo "  > znajdz pliki .log"
+	@echo "  > uruchom usluge nginx"
+	@echo "  > exit"
+
 test-cache: ## Test cache management
 	@echo "$(BLUE)Testing cache management...$(NC)"
 	$(PYTHON) -m $(PROJECT_NAME) cache info
@@ -206,10 +220,19 @@ demo-cache: ## Demo cache management
 	@echo "$(BLUE)Demo: Cache management...$(NC)"
 	$(PYTHON) -m $(PROJECT_NAME) cache info
 
-demo-nlp: ## Demo Polish NLP capabilities
-	@echo "$(BLUE)Demo: Polish NLP capabilities...$(NC)"
-	@echo "$(YELLOW)Testing Polish NLP with various queries:$(NC)"
-	@$(PYTHON) -c "from src.nlp2cmd.generation.keywords import KeywordIntentDetector; detector = KeywordIntentDetector(); queries = ['uruchom usługę nginx', 'restartuj serwis apache', 'doker ps -a', 'systemctl urachom mysql']; [print(f'Query: {q}\nResult: {detector.detect(q).domain}/{detector.detect(q).intent} (confidence: {detector.detect(q).confidence:.2f})\n') for q in queries]"
+demo-interactive: ## Demo interactive shell mode
+	@echo "$(BLUE)Demo: Interactive shell mode...$(NC)"
+	@echo "$(YELLOW)Starting interactive shell with Polish NLP...$(NC)"
+	@echo "$(YELLOW)Try these commands:$(NC)"
+	@echo "  > pokaz pliki usera"
+	@echo "  > znajdz pliki .log wieksze niz 10MB"
+	@echo "  > uruchom usluge nginx"
+	@echo "  > pokaż procesy zużywające najwięcej pamięci"
+	@echo "  > exit"
+	@echo ""
+	@echo "$(BLUE)Press Enter to start interactive mode...$(NC)"
+	@read -r
+	$(PYTHON) -m $(PROJECT_NAME) --interactive --dsl shell
 
 test-examples: ## Run all examples to test functionality
 	@echo "$(BLUE)Testing all examples...$(NC)"

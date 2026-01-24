@@ -5,6 +5,65 @@ All notable changes to NLP2CMD will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.21] - 2026-01-24
+
+### 🚀 Major Features
+- **Enhanced NLP Integration** - Advanced semantic similarity and context detection
+- **Shell Emulation Mode** - Full interactive shell with natural language commands
+- **Browser DSL Support** - New browser domain with URL navigation and search
+- **Multi-layer Intent Detection** - Enhanced pipeline with fallback mechanisms
+
+### 🧠 Enhanced NLP Improvements
+- **Semantic Similarity**: sentence-transformers integration for conceptual understanding
+- **Context Awareness**: Web schema integration for browser automation context
+- **Polish Language Enhancement**: Improved diacritics and typo handling
+- **Confidence Scoring**: Multi-layered confidence calculation with metrics
+- **Fallback Pipeline**: Graceful degradation from enhanced to basic detection
+
+### 🖥️ Shell Emulation
+- **Interactive Mode**: `nlp2cmd --interactive --dsl shell` with persistent session
+- **User Directory Recognition**: Smart handling of "usera" → "~" mapping
+- **Process Management**: Enhanced process and service command detection
+- **Real-time Feedback**: YAML output with detailed metrics and suggestions
+- **Polish Commands**: Native Polish shell command support
+
+### 🌐 Browser Automation
+- **URL Navigation**: Automatic URL detection and opening
+- **Search Integration**: Google, GitHub, Amazon search templates
+- **Form Interaction**: Element clicking and form filling patterns
+- **Web Context**: Integration with web schema extraction results
+
+### 🔧 Pipeline Enhancements
+- **RuleBasedPipeline**: Enhanced pipeline with context detection
+- **Enhanced Context**: Optional enhanced NLP with graceful fallback
+- **Markdown Stripping**: Automatic cleanup of LLM code block responses
+- **Entity Extraction**: Improved regex patterns for browser and shell entities
+- **Template Generation**: New browser templates for web actions
+
+### 📊 Performance & Metrics
+- **Resource Monitoring**: Detailed CPU, memory, and energy metrics
+- **Token Estimation**: LLM token usage and cost calculation
+- **Processing Time**: Per-layer timing analysis
+- **Confidence Tracking**: Which detection method succeeded
+
+### 🛠️ CLI Improvements
+- **Interactive Shell**: Enhanced REPL with environment detection
+- **Help System**: Improved command documentation and examples
+- **Error Handling**: Better error messages and recovery
+- **Output Formatting**: Rich YAML output with structured data
+
+### 📚 Documentation
+- **Enhanced NLP Guide**: Comprehensive enhanced NLP integration documentation
+- **Shell Emulation Examples**: Real-world interactive shell examples
+- **Browser Automation**: Web automation patterns and templates
+- **Performance Metrics**: Resource monitoring and optimization guide
+
+### 🧪 Testing & Quality
+- **Enhanced Test Coverage**: Tests for new NLP features
+- **Interactive Mode Testing**: Shell emulation validation
+- **Browser Pattern Tests**: URL and search pattern verification
+- **Performance Benchmarks**: Resource usage monitoring
+
 ## [1.0.20] - 2026-01-24
 
 ### 🚀 Major Features

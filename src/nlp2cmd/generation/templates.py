@@ -845,8 +845,11 @@ class TemplateGenerator:
         """Prepare shell entities."""
         result = entities.copy()
         
-        # Path default
-        result.setdefault('path', '.')
+        # Path default - handle user directory
+        if 'user' in entities and entities['user'] == 'current':
+            result.setdefault('path', '~')  # User home directory
+        else:
+            result.setdefault('path', '.')  # Current directory
         
         # Pattern
         pattern = entities.get('pattern', entities.get('file_pattern'))
@@ -867,8 +870,11 @@ class TemplateGenerator:
         result['type_flag'] = ''
         target = entities.get('target')
         if not target and intent == 'find':
-            if any(x in str(entities.get('text') or '').lower() for x in ('pliki', 'files', 'file ')):
+            text_lower = str(entities.get('text') or '').lower()
+            if any(x in text_lower for x in ('pliki', 'files', 'file ')):
                 target = 'files'
+            elif any(x in text_lower for x in ('katalogi', 'directories', 'folder', 'folders')):
+                target = 'directories'
 
         if target == 'files':
             result['type_flag'] = '-type f'
@@ -885,7 +891,14 @@ class TemplateGenerator:
 
         # Size flag
         size = entities.get('size')
+        # Detect operator from text if not explicitly provided
+        text = entities.get('text', '')
         size_operator = str(entities.get('size_operator') or entities.get('operator') or '>')
+        if "mniejsz" in text.lower() or "smaller" in text.lower():
+            size_operator = "<"
+        elif "większ" in text.lower() or "larger" in text.lower() or "bigger" in text.lower():
+            size_operator = ">"
+        
         if size and isinstance(size, dict):
             val = size.get('value', 0)
             unit = str(size.get('unit', 'M') or 'M').upper()
@@ -906,7 +919,14 @@ class TemplateGenerator:
         age = entities.get('age')
         if age and isinstance(age, dict):
             val = age.get('value', 0)
-            result['time_flag'] = f"-mtime +{val}"
+            # Detect operator for age from text
+            text = entities.get('text', '')
+            time_operator = '+'
+            if "ostatnich" in text.lower() or "last" in text.lower() or "recent" in text.lower():
+                time_operator = '-'  # newer files (last N days)
+            elif "starsze" in text.lower() or "older" in text.lower():
+                time_operator = '+'  # older files
+            result['time_flag'] = f"-mtime {time_operator}{val}"
         else:
             result['time_flag'] = ''
 
@@ -1263,8 +1283,10 @@ class TemplateGenerator:
         # Remove trailing/leading spaces
         command = command.strip()
         
-        # Remove empty flags
-        command = re.sub(r'\s+-[a-zA-Z]+\s+(?=-|$)', ' ', command)
+        # Remove empty flags (only remove standalone flags, not flags with values)
+        # This regex removes flags like "-flag " but keeps "-flag value"
+        command = re.sub(r'\s+-[a-zA-Z]+\s+$', ' ', command)
+        command = re.sub(r'\s+-[a-zA-Z]+\s+(?=-[a-zA-Z])', ' ', command)
         
         # Clean up again
         command = re.sub(r'\s+', ' ', command)

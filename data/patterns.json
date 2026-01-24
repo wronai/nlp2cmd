@@ -120,14 +120,14 @@
   },
   "shell": {
     "find": [
-      "znajdź plik", "szukaj plik", "find files", "search files",
-      "locate", "wyszukaj", "gdzie jest", "where is",
-      "find python", "find log", "znajdź pliki z rozszerzeniem",
+      "pokaż pliki użytkownika", "pokaż pliki usera", "pokaż plik usera", "pokaz plik user", "show user files",
       "znajdź pliki użytkownika", "znajdź pliki usera", "find user files",
       "szukaj plików użytkownika", "szukaj plików usera", "search user files",
-      "pokaż pliki użytkownika", "pokaż pliki usera", "show user files",
       "znajdź pliki w folderze użytkownika", "znajdź pliki w folderze usera",
-      "szukaj pliki w folderze użytkownika", "szukaj pliki w folderze usera"
+      "szukaj pliki w folderze użytkownika", "szukaj pliki w folderze usera",
+      "znajdź plik", "szukaj plik", "find files", "search files",
+      "locate", "wyszukaj", "gdzie jest", "where is",
+      "find python", "find log", "znajdź pliki z rozszerzeniem"
     ],
     "count_files": [
       "ile plików", "ile jest plików", "ile plikow", "ile jest plikow",

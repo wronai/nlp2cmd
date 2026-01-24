@@ -211,7 +211,12 @@ class RuleBasedPipeline:
         
         # Step 3: Generate command from template
         # Add original text to entities for context-aware template selection
-        merged_entities = extraction.entities.copy()
+        # Use enhanced context entities if available, otherwise use extraction entities
+        if hasattr(detection, 'entities') and detection.entities:
+            merged_entities = detection.entities.copy()
+        else:
+            merged_entities = extraction.entities.copy()
+        
         entities_with_text = merged_entities.copy()
         entities_with_text['text'] = text
 
@@ -398,7 +403,10 @@ class RuleBasedPipeline:
             warnings.append("No entities extracted from text")
 
         merged_entities: dict[str, Any] = {}
-        if isinstance(context_entities, dict) and context_entities:
+        # Use enhanced context entities if available
+        if hasattr(detection, 'entities') and detection.entities:
+            merged_entities.update(detection.entities)
+        elif isinstance(context_entities, dict) and context_entities:
             merged_entities.update(context_entities)
         merged_entities.update(extraction.entities or {})
 

@@ -629,13 +629,14 @@ class NLP2CMD:
 
                 size = normalized.get("size")
                 size_parsed = normalized.get("size_parsed")
-                query_text = normalized.get("query", "")
+                # Use full text for operator detection, not just query
+                full_text = context.get("text", "") or normalized.get("query", "")
                 
                 # Detect operator from query text
                 operator = ">"
-                if "mniejsz" in query_text.lower() or "smaller" in query_text.lower():
+                if "mniejsz" in full_text.lower() or "smaller" in full_text.lower():
                     operator = "<"
-                elif "większ" in query_text.lower() or "larger" in query_text.lower() or "bigger" in query_text.lower():
+                elif "większ" in full_text.lower() or "larger" in full_text.lower() or "bigger" in full_text.lower():
                     operator = ">"
                 
                 # Handle size as either dict (size_parsed) or string (size)
@@ -662,10 +663,17 @@ class NLP2CMD:
 
                 age = normalized.get("age")
                 if isinstance(age, dict) and "value" in age:
+                    # Detect operator for age from query text
+                    age_operator = ">"
+                    if "ostatnich" in full_text.lower() or "last" in full_text.lower() or "recent" in full_text.lower():
+                        age_operator = "<"  # newer files (last N days)
+                    elif "starsze" in full_text.lower() or "older" in full_text.lower():
+                        age_operator = ">"  # older files
+                    
                     filters.append(
                         {
                             "attribute": "mtime",
-                            "operator": ">",
+                            "operator": age_operator,
                             "value": f"{age.get('value')}_days",
                         }
                     )
@@ -732,6 +740,8 @@ class NLP2CMD:
         """
         # Merge context
         full_context = {**self._context, **(context or {})}
+        # Add text to context for operator detection
+        full_context["text"] = text
 
         # Step 1: NLP Processing - Generate execution plan
         try:

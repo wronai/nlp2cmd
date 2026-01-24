@@ -11,7 +11,7 @@
   },
   "priority_intents": {
     "sql": ["delete", "update", "insert", "show_tables", "aggregate"],
-    "shell": ["service_start", "service_restart", "service_stop", "service_status", "open_url", "file_operation", "archive", "process", "disk", "system_maintenance", "development", "security", "process_management"],
+    "shell": ["service_start", "service_restart", "service_stop", "service_status", "open_url", "file_operation", "find", "archive", "process", "disk", "system_maintenance", "development", "security", "process_management"],
     "docker": ["stop", "prune", "build", "run", "list", "logs", "exec", "start", "remove"],
     "kubernetes": ["delete", "scale", "describe", "logs"],
     "git": ["reset", "revert", "merge", "rebase", "push", "commit", "stash"],

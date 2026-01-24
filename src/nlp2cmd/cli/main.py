@@ -296,54 +296,73 @@ class InteractiveSession:
 
     def process(self, user_input: str) -> FeedbackResult:
         """Process user input and return feedback."""
-        # Use RuleBasedPipeline for enhanced context support
-        from nlp2cmd.generation.pipeline import RuleBasedPipeline
+        # Use ConceptualCommandGenerator for enhanced understanding
+        from nlp2cmd.concepts.conceptual_commands import ConceptualCommandGenerator
         
-        # Initialize pipeline with enhanced context
-        pipeline = RuleBasedPipeline(
-            detector=self.detector if hasattr(self, 'detector') else None,
-            extractor=self.extractor if hasattr(self, 'extractor') else None,
-            generator=self.generator if hasattr(self, 'generator') else None,
-            confidence_threshold=0.5,
-            use_enhanced_context=True
-        )
+        # Initialize conceptual generator
+        conceptual_generator = ConceptualCommandGenerator()
         
-        # Process with enhanced context
+        # Generate command with conceptual understanding
         with measure_resources():
-            result = pipeline.process(user_input)
+            conceptual_command = conceptual_generator.generate_command(user_input)
         
-        # Convert PipelineResult to expected format
-        if result.success:
-            # Create ExecutionPlan from PipelineResult
+        # Convert ConceptualCommand to expected format
+        if conceptual_command.command and not conceptual_command.command.startswith('#'):
+            # Create ExecutionPlan from ConceptualCommand
             from nlp2cmd.core import ExecutionPlan
             
             # Create a simple plan
             plan = ExecutionPlan(
-                intent=result.intent,
-                entities=result.entities,
-                confidence=result.confidence,
-                text=result.input_text
+                intent=conceptual_command.intent,
+                entities={'objects': [obj.to_dict() for obj in conceptual_command.objects]},
+                confidence=conceptual_command.confidence,
+                text=user_input
             )
             
             # Create result similar to NLP2CMD.transform
             class MockResult:
-                def __init__(self, command, plan, status):
+                def __init__(self, command, plan, status, dependencies):
                     self.command = command
                     self.plan = plan
                     self.status = status
-                    self.errors = result.errors
+                    self.errors = []
+                    self.warnings = []
+                    # Add dependency warnings
+                    unsatisfied_deps = [d for d in dependencies if not d.satisfied and d.dependency.required]
+                    if unsatisfied_deps:
+                        self.warnings = [f"Missing dependency: {d.dependency.name}" for d in unsatisfied_deps]
             
-            mock_result = MockResult(result.command, plan, "success")
+            mock_result = MockResult(
+                conceptual_command.command, 
+                plan, 
+                "success",
+                conceptual_command.dependencies
+            )
             
             # Analyze feedback
             feedback = self.feedback_analyzer.analyze(
                 original_input=user_input,
-                generated_output=result.command,
+                generated_output=conceptual_command.command,
                 validation_errors=[],
-                validation_warnings=[],
+                validation_warnings=mock_result.warnings,
                 dsl_type=self.dsl,
                 context=self.context,
             )
+            
+            # Add conceptual reasoning to feedback
+            feedback.metadata = {
+                'reasoning': conceptual_command.reasoning,
+                'objects': [obj.to_dict() for obj in conceptual_command.objects],
+                'dependencies': [
+                    {
+                        'name': dep.dependency.name,
+                        'type': dep.dependency.type.value,
+                        'satisfied': dep.satisfied
+                    }
+                    for dep in conceptual_command.dependencies
+                ],
+                'alternatives': conceptual_command.alternatives
+            }
             
             # Store in history
             self.history.append({
@@ -361,13 +380,13 @@ class InteractiveSession:
                     self.errors = errors
                     self.status = "error"
             
-            mock_result = MockResult(result.command, result.errors)
+            mock_result = MockResult(conceptual_command.command, ["Command generation failed"])
             
             feedback = FeedbackResult(
                 type=FeedbackType.ERROR,
                 original_input=user_input,
-                generated_output=result.command,
-                validation_errors=result.errors,
+                generated_output=conceptual_command.command,
+                validation_errors=mock_result.errors,
                 validation_warnings=[],
                 dsl_type=self.dsl,
                 context=self.context,

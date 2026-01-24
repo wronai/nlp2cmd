@@ -100,12 +100,14 @@ class RegexEntityExtractor:
     SHELL_PATTERNS: dict[str, list[str]] = {
         'path': [
             r'(?:w\s+)?(?:katalogu|folderze|ścieżce|directory|folder|path)?\s*[`"\']?([/~][\w\.\-/]+)[`"\']?',
-            r'(?:w\s+)?(?:katalogu|folderze|ścieżce|directory|folder|path)?\s*[`"\']?((?:\./|\.\./)[\w\.\-/]*|\.{1,2})[`"\']?',
             r'(?:w\s+)?(?:katalogu|folderze)?\s+(?:użytkownika|user|home)\b\s*[`"\']?([/~][\w\.\-/]*)[`"\']?',
             r'(?:do|from|to|z|in)\s+[`"\']?([/~][\w\.\-/]+)[`"\']?',
             r'(?:do|from|to|z|in)\s+[`"\']?((?:\./|\.\./)[\w\.\-/]*|\.{1,2})[`"\']?',
             r'\s([/~][\w\.\-/]+)\s',
             r'\s((?:\./|\.\./)[\w\.\-/]*|\.{1,2})\s',
+            # User file patterns
+            r'(?:pliki|plików|files?)\s+(?:użytkownika|usera|user)\b',
+            r'(?:użytkownika|usera|user)\s+(?:pliki|plików|files?)',
         ],
         'file': [
             r'(?:plik|file|log(?:ach|i|ów)?|logs?)\s+[`"\']?((?:\./|\.\./|/)[\w\.\-/]+\.[A-Za-z0-9]{1,8})[`"\']?',
@@ -125,6 +127,7 @@ class RegexEntityExtractor:
         ],
         'filename': [
             r'(?:plik|file)\s+[`"\']?([\w\.\-]+)[`"\']?',
+            r'(?:katalog|directory|folder)\s+[`"\']?([\w\.\-]+)[`"\']?',
             r'[`"\']?([\w]+\.\w+)[`"\']?',
         ],
         'size': [
@@ -136,6 +139,8 @@ class RegexEntityExtractor:
             r'(?:starsze|older)\s+(?:niż|than)?\s*(\d+)\s*(dni|days?|godzin|hours?|minut|minutes?)',
             r'(?:młodsze|newer)\s+(?:niż|than)?\s*(\d+)\s*(dni|days?|godzin|hours?|minut|minutes?)',
             r'(\d+)\s*(dni|days?|godzin|hours?)\s+(?:temu|ago)',
+            r'(?:zmodyfikowane|modified|utworzone|created)\s+(?:w\s+ciągu\s+)?ostatnich\s+(\d+)\s*(dni|days?|godzin|hours?)',
+            r'(?:zmodyfikowane|modified|utworzone|created)\s+(?:in\s+)?last\s+(\d+)\s*(dni|days?|godzin|hours?)',
         ],
         'process_name': [
             r'(?:proces|process)\s+[`"\']?(\w+)[`"\']?',
@@ -485,16 +490,25 @@ class RegexEntityExtractor:
                 result['grouping'] = [entities['group_by']]
         
         elif domain == 'shell':
+            # Handle user files patterns
+            if 'path' in entities and entities['path']:
+                path = entities['path']
+                if re.search(r'pliki.*(?:użytkownika|usera|user)|(?:użytkownika|usera|user).*pliki', path, re.IGNORECASE):
+                    result['path'] = '~'
+                elif 'folderze użytkownika' in text_lower or 'folderze usera' in text_lower:
+                    result['path'] = '~'
+                else:
+                    result['path'] = path
             # Handle "folderze użytkownika" -> default to ~ if no path found
-            if 'path' not in entities or not entities['path']:
+            elif 'path' not in entities or not entities['path']:
                 if re.search(r'folderze\s+użytkownika|katalogu\s+użytkownika|listę\s+folderów\s+użytkownika|listę\s+katalogów\s+użytkownika', text_lower):
                     result['path'] = '~'
                 else:
                     result['path'] = '.'
             
             # Normalize path
-            if 'path' in entities and entities['path']:
-                path = entities['path']
+            if 'path' in result and result['path']:
+                path = result['path']
                 if path.startswith('~'):
                     path = path.replace('~', '$HOME', 1)
                 result['path'] = path
