@@ -1,9 +1,9 @@
 {
   "total_tests": 101,
-  "passed": 5,
-  "failed": 96,
-  "success_rate": 4.9504950495049505,
-  "duration_seconds": 297.152694940567,
+  "passed": 50,
+  "failed": 51,
+  "success_rate": 49.504950495049506,
+  "duration_seconds": 322.6647732257843,
   "results": [
     {
       "query": "pokaż pliki",
@@ -14,12 +14,12 @@
         "command_pattern": "ls -la"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list",
+        "command": "ls -la ."
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "lista plików w folderze",
@@ -30,12 +30,12 @@
         "command_pattern": "ls -la"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list",
+        "command": "ls -la ."
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "pokaż pliki w folderze użytkownika",
@@ -46,12 +46,12 @@
         "command_pattern": "ls -la ~"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list",
+        "command": "ls -la ~"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "znajdź pliki .log",
@@ -62,12 +62,12 @@
         "command_pattern": "find"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "find",
+        "command": "find . -type f -name '*.log'"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "znajdz pliki konfiguracyjne",
@@ -78,12 +78,12 @@
         "command_pattern": "find"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "find",
+        "command": "find . -type f"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "skopiuj plik",
@@ -94,12 +94,12 @@
         "command_pattern": "cp"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "copy",
+        "command": "cp . ."
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "kopij plik",
@@ -110,9 +110,9 @@
         "command_pattern": "ls -la"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "sudo apt-get install {package}"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -126,9 +126,9 @@
         "command_pattern": "rm"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "# Unknown: shell/delete"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -142,9 +142,9 @@
         "command_pattern": "rm"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "delete",
+        "command": "DELETE FROM unknown_table;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -158,9 +158,9 @@
         "command_pattern": "mkdir"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "sudo apt-get install {package}"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -174,9 +174,9 @@
         "command_pattern": "mv"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "sudo apt-get install {package}"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -190,12 +190,12 @@
         "command_pattern": "ps aux"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "ps aux"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "ps",
@@ -206,12 +206,12 @@
         "command_pattern": "ps aux"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "ps aux"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "zabij proces 1234",
@@ -222,9 +222,9 @@
         "command_pattern": "kill"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "ps aux"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -238,9 +238,9 @@
         "command_pattern": "top"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "ps aux"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -254,9 +254,9 @@
         "command_pattern": "htop"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "ps aux"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -270,12 +270,12 @@
         "command_pattern": "systemctl start nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "service_start",
+        "command": "systemctl start nginx"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "uruchom uslugę nginx",
@@ -286,12 +286,12 @@
         "command_pattern": "systemctl start nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "service_start",
+        "command": "systemctl start nginx"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "systemctl uruchom nginx",
@@ -302,9 +302,9 @@
         "command_pattern": "systemctl start nginx"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "# Unknown: shell/development"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -318,9 +318,9 @@
         "command_pattern": "systemctl stop nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "process",
+        "command": "systemctl stop nginx"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -334,12 +334,12 @@
         "command_pattern": "systemctl restart nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "service_restart",
+        "command": "systemctl restart nginx"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "status usługi nginx",
@@ -350,12 +350,12 @@
         "command_pattern": "systemctl status nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "service_status",
+        "command": "systemctl status nginx"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "restartuj system",
@@ -366,12 +366,12 @@
         "command_pattern": "reboot"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "reboot",
+        "command": "reboot"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "startuj system",
@@ -382,12 +382,12 @@
         "command_pattern": "reboot"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "reboot",
+        "command": "reboot"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "zrestartuj komputer",
@@ -398,12 +398,12 @@
         "command_pattern": "reboot"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "reboot",
+        "command": "reboot"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "sprawdź miejsce na dysku",
@@ -414,12 +414,12 @@
         "command_pattern": "df"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "disk",
+        "command": "df -h ."
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "pokaż użycie pamięci",
@@ -430,9 +430,9 @@
         "command_pattern": "free"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "ps aux"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -446,9 +446,9 @@
         "command_pattern": "ping"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "xdg-open 'https://google.com'"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -462,9 +462,9 @@
         "command_pattern": "netstat"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "# Unknown: shell/network"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -478,9 +478,9 @@
         "command_pattern": "ip addr"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "# Unknown: shell/network"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -494,12 +494,12 @@
         "command_pattern": "docker ps"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "list",
+        "command": "docker ps"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "pokaż kontenery",
@@ -510,12 +510,12 @@
         "command_pattern": "docker ps"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "list",
+        "command": "docker ps"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "pokaż wszystkie kontenery",
@@ -526,9 +526,9 @@
         "command_pattern": "docker ps -a"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "list",
+        "command": "docker ps"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -542,12 +542,12 @@
         "command_pattern": "docker ps"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "list",
+        "command": "docker ps"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "dokcer images",
@@ -558,12 +558,12 @@
         "command_pattern": "docker images"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "images",
+        "command": "docker images"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "docker obrazy",
@@ -574,12 +574,12 @@
         "command_pattern": "docker images"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "images",
+        "command": "docker images"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "docker run nginx",
@@ -590,12 +590,12 @@
         "command_pattern": "docker run nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "run",
+        "command": "docker run nginx"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "docker uruchom nginx",
@@ -606,9 +606,9 @@
         "command_pattern": "docker run nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "run",
+        "command": "docker run"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -622,9 +622,9 @@
         "command_pattern": "docker run nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "run",
+        "command": "docker run"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -638,12 +638,12 @@
         "command_pattern": "docker stop"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "stop",
+        "command": "docker stop"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "docker zatrzymaj nginx",
@@ -654,9 +654,9 @@
         "command_pattern": "docker stop nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "service_restart",
+        "command": "systemctl restart nginx"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -670,9 +670,9 @@
         "command_pattern": "docker start nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "run",
+        "command": "docker run nginx"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -686,9 +686,9 @@
         "command_pattern": "docker rm nginx"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "# Unknown: shell/delete"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -702,9 +702,9 @@
         "command_pattern": "docker rm nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "rename",
+        "command": "mv . ."
       },
       "success": false,
       "status": "❌ FAIL"
@@ -718,9 +718,9 @@
         "command_pattern": "docker logs nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "logs",
+        "command": "docker logs"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -734,12 +734,12 @@
         "command_pattern": "docker logs nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "logs",
+        "command": "docker logs nginx"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "docker exec nginx bash",
@@ -750,9 +750,9 @@
         "command_pattern": "docker exec nginx bash"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "exec",
+        "command": "docker exec -it"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -766,9 +766,9 @@
         "command_pattern": "docker exec nginx bash"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "run",
+        "command": "docker run"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -782,12 +782,12 @@
         "command_pattern": "docker build"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "build",
+        "command": "docker build -t latest ."
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "zbuduj obraz docker",
@@ -798,12 +798,12 @@
         "command_pattern": "docker build"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "build",
+        "command": "docker build -t latest ."
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "docker compose up",
@@ -814,9 +814,9 @@
         "command_pattern": "docker compose up"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "run",
+        "command": "docker run"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -830,9 +830,9 @@
         "command_pattern": "docker compose down"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "remove",
+        "command": "docker rm"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -846,9 +846,9 @@
         "command_pattern": "docker compose ps"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "ps aux"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -862,12 +862,12 @@
         "command_pattern": "kubectl get pods"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "list",
+        "command": "kubectl get pods"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "pokaż pody",
@@ -878,12 +878,12 @@
         "command_pattern": "kubectl get pods"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "list",
+        "command": "kubectl get pods"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "kubectl get services",
@@ -894,12 +894,12 @@
         "command_pattern": "kubectl get services"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "list",
+        "command": "kubectl get services"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "pokaż serwisy k8s",
@@ -910,12 +910,12 @@
         "command_pattern": "kubectl get services"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "list",
+        "command": "kubectl get services"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "kubectl describe pod nginx",
@@ -926,9 +926,9 @@
         "command_pattern": "kubectl describe pod nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "describe",
+        "command": "kubectl describe pods nginx"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -942,9 +942,9 @@
         "command_pattern": "kubectl describe pod nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "describe",
+        "command": "kubectl describe pods nginx"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -958,9 +958,9 @@
         "command_pattern": "kubectl logs nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "logs",
+        "command": "kubectl logs --tail=100"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -974,12 +974,12 @@
         "command_pattern": "kubectl logs nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "logs",
+        "command": "kubectl logs nginx --tail=100"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "kubectl scale deployment nginx 3",
@@ -990,9 +990,9 @@
         "command_pattern": "kubectl scale deployment nginx 3"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "scale",
+        "command": "kubectl scale deployment/nginx --replicas=1"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1006,9 +1006,9 @@
         "command_pattern": "kubectl scale deployment nginx 3"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "scale",
+        "command": "kubectl scale deployment/nginx --replicas=1"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1022,9 +1022,9 @@
         "command_pattern": "kubectl delete pod nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "delete",
+        "command": "kubectl delete pods nginx"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1038,9 +1038,9 @@
         "command_pattern": "kubectl delete pod nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "delete",
+        "command": "kubectl delete pods nginx"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1054,9 +1054,9 @@
         "command_pattern": "kubectl apply -f deployment.yaml"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "apply",
+        "command": "kubectl apply -f"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1070,12 +1070,12 @@
         "command_pattern": "kubectl apply -f"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "apply",
+        "command": "kubectl apply -f"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "pokaż użytkowników",
@@ -1086,9 +1086,9 @@
         "command_pattern": "SELECT * FROM users"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "show",
+        "command": "SELECT * FROM unknown_table;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1102,12 +1102,12 @@
         "command_pattern": "SELECT * FROM users"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "show",
+        "command": "SELECT * FROM users;"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "znajdź użytkowników z Warszawy",
@@ -1118,9 +1118,9 @@
         "command_pattern": "SELECT * FROM users WHERE city = 'Warsaw'"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "show",
+        "command": "SELECT * FROM unknown_table;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1134,9 +1134,9 @@
         "command_pattern": "INSERT INTO users"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "insert",
+        "command": "INSERT INTO unknown_table (*) VALUES ({values});"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1150,12 +1150,12 @@
         "command_pattern": "INSERT INTO users"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "insert",
+        "command": "INSERT INTO users (*) VALUES ({values});"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "zaktualizuj email użytkownika",
@@ -1166,9 +1166,9 @@
         "command_pattern": "UPDATE users SET email"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "update",
+        "command": "UPDATE unknown_table SET ;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1182,9 +1182,9 @@
         "command_pattern": "UPDATE users"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "xdg-open 'https://example.com'"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1198,9 +1198,9 @@
         "command_pattern": "DELETE FROM users"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "delete",
+        "command": "DELETE FROM unknown_table;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1214,12 +1214,12 @@
         "command_pattern": "DELETE FROM users"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "delete",
+        "command": "DELETE FROM users WHERE active = 'false';"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "policz użytkowników",
@@ -1230,9 +1230,9 @@
         "command_pattern": "SELECT COUNT(*) FROM users"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "aggregate",
+        "command": "SELECT COUNT(*) FROM unknown_table;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1246,9 +1246,9 @@
         "command_pattern": "SELECT COUNT(*)"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "cat /etc/passwd | cut -d: -f1"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1262,9 +1262,9 @@
         "command_pattern": "SELECT AVG(age)"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "aggregate",
+        "command": "SELECT AVG(*) FROM unknown_table;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1278,9 +1278,9 @@
         "command_pattern": "SELECT AVG(age)"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "aggregate",
+        "command": "SELECT AVG(*) FROM users;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1294,9 +1294,9 @@
         "command_pattern": "SELECT city, COUNT(*)"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "aggregate",
+        "command": "SELECT COUNT(*) FROM unknown_table;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1310,9 +1310,9 @@
         "command_pattern": "SELECT city, COUNT(*)"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "aggregate",
+        "command": "SELECT COUNT(*) FROM users GROUP BY city;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1326,12 +1326,12 @@
         "command_pattern": "docker ps"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "list",
+        "command": "docker ps"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "doker images",
@@ -1342,12 +1342,12 @@
         "command_pattern": "docker images"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "images",
+        "command": "docker images"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "uruchom uslugę nginx",
@@ -1358,12 +1358,12 @@
         "command_pattern": "systemctl start nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "service_start",
+        "command": "systemctl start nginx"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "restartuj uslugę nginx",
@@ -1374,12 +1374,12 @@
         "command_pattern": "systemctl restart nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "service_restart",
+        "command": "systemctl restart nginx"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "znajdz pliki",
@@ -1390,12 +1390,12 @@
         "command_pattern": "find"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "find",
+        "command": "find . -type f"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "kopij plik",
@@ -1406,9 +1406,9 @@
         "command_pattern": "ls -la"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "sudo apt-get install {package}"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1422,9 +1422,9 @@
         "command_pattern": "rm"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "delete",
+        "command": "DELETE FROM unknown_table;"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1438,12 +1438,12 @@
         "command_pattern": "ps aux"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "ps aux"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "systemctl uruchom nginx",
@@ -1454,9 +1454,9 @@
         "command_pattern": "systemctl start nginx"
       },
       "actual": {
-        "domain": "unknown",
+        "domain": "shell",
         "intent": "unknown",
-        "command": ""
+        "command": "# Unknown: shell/development"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1470,9 +1470,9 @@
         "command_pattern": "docker run nginx"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "run",
+        "command": "docker run"
       },
       "success": false,
       "status": "❌ FAIL"
@@ -1486,12 +1486,12 @@
         "command_pattern": "kubectl get pods"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "kubernetes",
+        "intent": "list",
+        "command": "kubectl get pods"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "pokaż tabele",
@@ -1502,12 +1502,12 @@
         "command_pattern": "SHOW TABLES"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "sql",
+        "intent": "show_tables",
+        "command": "SHOW TABLES;"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "  doker  ps  ",
@@ -1518,12 +1518,12 @@
         "command_pattern": "docker ps"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "docker",
+        "intent": "list",
+        "command": "docker ps"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "ps aux",
@@ -1534,12 +1534,12 @@
         "command_pattern": "ps aux"
       },
       "actual": {
-        "domain": "unknown",
-        "intent": "unknown",
-        "command": ""
+        "domain": "shell",
+        "intent": "list_processes",
+        "command": "ps aux"
       },
-      "success": false,
-      "status": "❌ FAIL"
+      "success": true,
+      "status": "✅ PASS"
     },
     {
       "query": "coś tam",
@@ -1552,7 +1552,7 @@
       "actual": {
         "domain": "unknown",
         "intent": "unknown",
-        "command": ""
+        "command": "# Unknown: could not detect domain for: coś tam"
       },
       "success": true,
       "status": "✅ PASS"
@@ -1568,7 +1568,7 @@
       "actual": {
         "domain": "unknown",
         "intent": "unknown",
-        "command": ""
+        "command": "# Unknown: could not detect domain for: xyz123"
       },
       "success": true,
       "status": "✅ PASS"
@@ -1584,7 +1584,7 @@
       "actual": {
         "domain": "unknown",
         "intent": "unknown",
-        "command": ""
+        "command": "Usage: nlp2cmd [OPTIONS] COMMAND [ARGS]..."
       },
       "success": true,
       "status": "✅ PASS"
@@ -1600,7 +1600,7 @@
       "actual": {
         "domain": "unknown",
         "intent": "unknown",
-        "command": ""
+        "command": "# Unknown: could not detect domain for:"
       },
       "success": true,
       "status": "✅ PASS"
@@ -1616,7 +1616,7 @@
       "actual": {
         "domain": "unknown",
         "intent": "unknown",
-        "command": ""
+        "command": "# Unknown: could not detect domain for: help"
       },
       "success": true,
       "status": "✅ PASS"
