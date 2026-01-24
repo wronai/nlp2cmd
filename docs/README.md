@@ -7,6 +7,11 @@
 - **[🔧 Installation Guide](../INSTALLATION.md)** - Setup instructions and options
 - **[👥 User Guide](guides/user-guide.md)** - Complete usage tutorial
 
+### CLI & Python
+- **[🧰 CLI Reference](cli-reference.md)** - Command line usage
+- **[🐍 Python API Guide](python-api.md)** - Programmatic usage
+- **[🧪 Examples Guide](examples-guide.md)** - Examples overview
+
 ### API & Technical Documentation
 - **[🔌 API Reference](api/README.md)** - Detailed API documentation
 - **[🔬 Thermodynamic Integration](../THERMODYNAMIC_INTEGRATION.md)** - Advanced optimization guide
@@ -19,8 +24,16 @@
 - **[🔄 Changelog](../CHANGELOG.md)** - Version history and changes
 
 ### Examples & Use Cases
-- **[🚀 Use Cases](../../examples/use_cases/README.md)** - Real-world examples by domain
-- **[💡 Basic Examples](../../examples/)** - Simple getting started examples
+- **[🚀 Use Cases](../examples/use_cases/README.md)** - Real-world examples by domain
+- **[💡 Basic Examples](../examples/)** - Simple getting started examples
+
+### Schemas & Command Systems
+- **[Schema Systems](SCHEMA_SYSTEMS.md)** - Overview of schema subsystems
+- **[Schema Usage Guide](SCHEMA_USAGE_GUIDE.md)** - Practical usage and flows
+- **[Schema Complete Guide](SCHEMA_COMPLETE_GUIDE.md)** - Deep dive
+- **[Versioned Schemas](VERSIONED_SCHEMAS.md)** - Versioning and evolution
+- **[Schema-Based Generation](SCHEMA_BASED_GENERATION.md)** - Schema-driven generation
+- **[LLM Schema Generation](LLM_SCHEMA_GENERATION.md)** - LLM-assisted schema generation
 
 ---
 
@@ -31,6 +44,15 @@ docs/
 ├── README.md                    # This file - documentation hub
 ├── api/
 │   └── README.md               # API reference documentation
+├── cli-reference.md            # CLI documentation
+├── python-api.md               # Python API guide
+├── examples-guide.md           # Examples overview
+├── SCHEMA_SYSTEMS.md           # Schema systems overview
+├── SCHEMA_USAGE_GUIDE.md       # Schema usage
+├── SCHEMA_COMPLETE_GUIDE.md    # Schema deep dive
+├── VERSIONED_SCHEMAS.md        # Schema versioning
+├── SCHEMA_BASED_GENERATION.md  # Schema-based generation
+├── LLM_SCHEMA_GENERATION.md    # LLM schema generation
 └── guides/
     └── user-guide.md           # Complete user tutorial
 
@@ -62,7 +84,7 @@ examples/
 1. Start with [README.md](../README.md) for overview
 2. Follow [Installation Guide](../INSTALLATION.md) for setup
 3. Read [User Guide](guides/user-guide.md) for complete tutorial
-4. Try [Basic Examples](../../examples/) for hands-on learning
+4. Try [Basic Examples](../examples/) for hands-on learning
 
 ### 🔧 Developers
 1. Review [API Reference](api/README.md) for integration
@@ -71,11 +93,11 @@ examples/
 4. Explore [Architecture](../THERMODYNAMIC_ARCHITECTURE.md) for deep understanding
 
 ### 🏢 Domain-Specific Applications
-- **[IT & DevOps](../../examples/use_cases/README.md#it--devops)** - System administration
-- **[Data Science](../../examples/use_cases/README.md#data-science--ml)** - ML workflows
-- **[Healthcare](../../examples/use_cases/README.md#medycyna-i-healthcare)** - Medical applications
-- **[Finance](../../examples/use_cases/README.md#finanse-i-trading)** - Financial operations
-- **[Smart Cities](../../examples/use_cases/README.md#smart-cities--iot)** - Urban management
+- **[IT & DevOps](../examples/use_cases/README.md#it--devops)** - System administration
+- **[Data Science](../examples/use_cases/README.md#data-science--ml)** - ML workflows
+- **[Healthcare](../examples/use_cases/README.md#medycyna-i-healthcare)** - Medical applications
+- **[Finance](../examples/use_cases/README.md#finanse-i-trading)** - Financial operations
+- **[Smart Cities](../examples/use_cases/README.md#smart-cities--iot)** - Urban management
 
 ### 🔬 Research & Advanced Topics
 - **[Thermodynamic Computing](../THERMODYNAMIC_INTEGRATION.md)** - Energy-based optimization
@@ -88,10 +110,10 @@ examples/
 ## 🔍 Quick Links
 
 ### Core Features
-- **[🤖 DSL Generation](../README.md#-features)** - Natural language to commands
+- **[🤖 DSL Generation](../README.md#features)** - Natural language to commands
 - **[🔬 Thermodynamic Optimization](../THERMODYNAMIC_INTEGRATION.md)** - Advanced problem solving
-- **[🛡️ Safety & Validation](../README.md#-security-features)** - Secure execution
-- **[📊 Multi-DSL Support](../README.md#supported-dsls)** - SQL, Shell, Docker, K8s, DQL
+- **[🛡️ Safety & Validation](../README.md#security-features)** - Secure execution
+- **[📊 Multi-DSL Support](../README.md#dsl-support)** - SQL, Shell, Docker, K8s, DQL
 
 ### Performance & Benchmarks
 - **[⚡ Speed Comparison](../THERMODYNAMIC_INTEGRATION.md#performance-characteristics)** - DSL vs Thermodynamic
@@ -112,8 +134,8 @@ examples/
 - Missing information? Check [Contributing Guide](../CONTRIBUTING.md)
 
 ### Community & Support
-- **[Examples Repository](../../examples/)** - Community-contributed examples
-- **[Use Case Library](../../examples/use_cases/)** - Domain-specific applications
+- **[Examples Repository](../examples/)** - Community-contributed examples
+- **[Use Case Library](../examples/use_cases/)** - Domain-specific applications
 - **[API Reference](api/README.md)** - Integration help
 
 ### Development Support

@@ -7,7 +7,9 @@ Provides interactive REPL mode, file operations, and environment analysis.
 from __future__ import annotations
 
 import json
+import os
 import re
+import shlex
 import sys
 import select
 import asyncio
@@ -24,7 +26,9 @@ except Exception:
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+from rich.text import Text
 from rich.syntax import Syntax
+import yaml
 
 from nlp2cmd import NLP2CMD
 from nlp2cmd.adapters import (
@@ -245,77 +249,56 @@ class InteractiveSession:
 
     def display_feedback(self, feedback: FeedbackResult):
         """Display feedback result with formatting."""
-        icons = {
-            FeedbackType.SUCCESS: "✅",
-            FeedbackType.SYNTAX_ERROR: "❌",
-            FeedbackType.SCHEMA_MISMATCH: "⚠️",
-            FeedbackType.RUNTIME_ERROR: "💥",
-            FeedbackType.AMBIGUOUS_INPUT: "❓",
-            FeedbackType.PARTIAL_SUCCESS: "🔶",
-            FeedbackType.SECURITY_VIOLATION: "🛡️",
+        out: dict[str, Any] = {
+            "status": feedback.type.value,
+            "confidence": float(feedback.confidence),
+            "generated_command": (feedback.generated_output or "").strip() or None,
+            "errors": list(feedback.errors or []),
+            "warnings": list(feedback.warnings or []),
+            "suggestions": list(feedback.suggestions or []),
+            "clarification_questions": list(feedback.clarification_questions or []),
         }
 
-        icon = icons.get(feedback.type, "ℹ️")
-
-        console.print(f"\n{icon} Status: [bold]{feedback.type.value}[/bold]")
-        console.print(f"📊 Confidence: {feedback.confidence:.0%}")
-
-        if feedback.generated_output:
-            console.print("\n📝 Generated command:")
-            syntax = Syntax(
-                feedback.generated_output,
-                "bash",
-                theme="monokai",
-                line_numbers=False,
-            )
-            console.print(Panel(syntax, border_style="green"))
-
-        if feedback.errors:
-            console.print("\n[red]🔴 Errors:[/red]")
-            for error in feedback.errors:
-                console.print(f"   • {error}")
-
-        if feedback.warnings:
-            console.print("\n[yellow]⚠️ Warnings:[/yellow]")
-            for warning in feedback.warnings:
-                console.print(f"   • {warning}")
-
         if feedback.auto_corrections:
-            console.print("\n[cyan]🔧 Auto-corrections available:[/cyan]")
-            for original, fixed in feedback.auto_corrections.items():
-                console.print(f"   • {original[:50]}... → {fixed[:50]}...")
+            out["auto_corrections"] = dict(feedback.auto_corrections)
 
-        if feedback.suggestions:
-            console.print("\n[blue]💡 Suggestions:[/blue]")
-            for suggestion in feedback.suggestions:
-                console.print(f"   {suggestion}")
-
-        if feedback.clarification_questions:
-            console.print("\n[magenta]❓ Clarification needed:[/magenta]")
-            for i, question in enumerate(feedback.clarification_questions, 1):
-                console.print(f"   {i}. {question}")
-        
-        # Always show resource metrics
         metrics_str = format_last_metrics()
         if metrics_str:
-            console.print(f"\n📊 {metrics_str}")
-            
-            # Show token cost estimate
+            out["resource_metrics"] = metrics_str
             try:
                 from nlp2cmd.monitoring.token_costs import parse_metrics_string
+
                 metrics = parse_metrics_string(metrics_str)
-                
-                if metrics.get("time_ms") is not None and metrics.get("cpu_percent") is not None and metrics.get("memory_mb") is not None:
+                if metrics:
+                    out["resource_metrics_parsed"] = metrics
+
+                if (
+                    metrics.get("time_ms") is not None
+                    and metrics.get("cpu_percent") is not None
+                    and metrics.get("memory_mb") is not None
+                ):
                     token_estimate = estimate_token_cost(
                         metrics["time_ms"],
-                        metrics["cpu_percent"], 
+                        metrics["cpu_percent"],
                         metrics["memory_mb"],
-                        metrics.get("energy_mj")
+                        metrics.get("energy_mj"),
                     )
-                    token_str = format_token_estimate(token_estimate)
-                    console.print(f"\n{token_str}")
-            except Exception as e:
-                console.print(f"\n[red]Token cost estimation failed: {e}[/red]")
+                    out["token_estimate"] = {
+                        "total": int(token_estimate.total_tokens_estimate),
+                        "input": int(token_estimate.input_tokens_estimate),
+                        "output": int(token_estimate.output_tokens_estimate),
+                        "cost_usd": float(token_estimate.estimated_cost_usd),
+                        "model_tier": token_estimate.equivalent_model_tier,
+                        "tokens_per_ms": float(token_estimate.tokens_per_millisecond),
+                        "tokens_per_mj": float(token_estimate.tokens_per_mj),
+                    }
+            except Exception:
+                pass
+
+        yaml_text = yaml.safe_dump(out, sort_keys=False, allow_unicode=True)
+        console.print("```yaml")
+        console.print(Syntax(yaml_text, "yaml", theme="monokai", line_numbers=False))
+        console.print("```")
 
     def run(self):
         """Run interactive REPL."""

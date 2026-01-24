@@ -24,6 +24,7 @@ class DetectionResult:
     intent: str
     confidence: float
     matched_keyword: Optional[str] = None
+    entities: dict = field(default_factory=dict)
 
 
 class KeywordIntentDetector:
@@ -241,6 +242,11 @@ class KeywordIntentDetector:
 
     @staticmethod
     def _normalize_intent(domain: str, intent: str, text_lower: str) -> str:
+        if domain == 'sql':
+            if intent in {'inner_join', 'left_join', 'right_join', 'full_join'}:
+                return 'join'
+            return intent
+
         if domain != 'shell':
             return intent
 
@@ -441,12 +447,27 @@ class KeywordIntentDetector:
                     confidence = 0.9
                     keyword_length_bonus = min(len(kw) / 25, 0.05)
                     confidence = min(confidence + keyword_length_bonus, 0.95)
-                    return DetectionResult(
+                    out = DetectionResult(
                         domain='kubernetes',
                         intent=intent,
                         confidence=confidence,
                         matched_keyword=kw,
                     )
+
+                    m = re.search(r"\bnamespace\b\s+([a-z0-9][a-z0-9\-]*)", text_lower)
+                    if m:
+                        out.entities = {"namespace": m.group(1)}
+                    return out
+
+        m = re.search(r"\bnamespace\b\s+([a-z0-9][a-z0-9\-]*)", text_lower)
+        if m:
+            return DetectionResult(
+                domain="kubernetes",
+                intent="unknown",
+                confidence=0.55,
+                matched_keyword="namespace",
+                entities={"namespace": m.group(1)},
+            )
 
         return None
 
