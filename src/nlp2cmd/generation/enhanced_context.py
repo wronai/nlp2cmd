@@ -267,6 +267,17 @@ class EnhancedContextDetector:
                 keywords = [token for token, pos in pos_tags if pos.startswith(('NN', 'VB'))]
                 entities['keywords'] = keywords
                 
+                # Extract user-related entities
+                user_keywords = ['user', 'użytkownik', 'użytkownika', 'usera', 'userów', 'użytkowników']
+                user_found = any(keyword.lower() in user_keywords for keyword in keywords)
+                if user_found:
+                    entities['user'] = 'current'  # Default to current user
+                    # Check for specific user names
+                    for token, pos in pos_tags:
+                        if pos == 'NNP' and token.lower() not in user_keywords:
+                            entities['user'] = token
+                            break
+                
             except Exception as e:
                 print(f"NLTK entity extraction failed: {e}")
         

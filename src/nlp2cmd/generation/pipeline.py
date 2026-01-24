@@ -136,7 +136,9 @@ class RuleBasedPipeline:
         # Step 1.5: Try enhanced context detection if available and basic detection failed
         if (self.use_enhanced_context and 
             self.enhanced_detector and 
-            (detection.domain == 'unknown' or detection.confidence < 0.7)):
+            (detection.domain == 'unknown' or 
+             detection.confidence < 0.7 or
+             detection.intent in ['user_id', 'user_groups', 'user_whoami'])):  # Also check for user-related intents
             
             try:
                 enhanced_match = self.enhanced_detector.get_best_match(text)

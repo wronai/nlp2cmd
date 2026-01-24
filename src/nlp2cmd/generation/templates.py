@@ -405,6 +405,16 @@ class TemplateGenerator:
         'taint': "kubectl taint nodes {node} {taint}",
     }
     
+    BROWSER_TEMPLATES: dict[str, str] = {
+        'web_action': "# Browser action: {action} on {target}",
+        'navigate': "xdg-open '{url}'",
+        'click': "# Click: {element}",
+        'fill_form': "# Fill form: {form_data}",
+        'google_search': "xdg-open 'https://www.google.com/search?q={query}'",
+        'github_search': "xdg-open 'https://github.com/search?q={query}'",
+        'amazon_search': "xdg-open 'https://www.amazon.com/s?k={query}'",
+    }
+    
     GIT_TEMPLATES: dict[str, str] = {
         'status': "git status",
         'status_short': "git status -s",
@@ -506,6 +516,7 @@ class TemplateGenerator:
             'docker': self.DOCKER_TEMPLATES.copy(),
             'kubernetes': self.KUBERNETES_TEMPLATES.copy(),
             'git': self.GIT_TEMPLATES.copy(),
+            'browser': self.BROWSER_TEMPLATES.copy(),
         }
 
         self.defaults: dict[str, Any] = {}
