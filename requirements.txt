@@ -14,6 +14,13 @@ psutil>=5.9.0
 # Optional dependencies
 # NLP support
 spacy>=3.7
+rapidfuzz>=3.0
+nltk>=3.8
+textblob>=0.17
+transformers>=4.30
+sentence-transformers>=2.2
+scikit-learn>=1.3
+langdetect>=1.0.9
 
 # LLM integrations
 anthropic>=0.18

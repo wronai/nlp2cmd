@@ -1,0 +1,131 @@
+{
+  "summary": {
+    "total": 15,
+    "passed": 10,
+    "failed": 5,
+    "success_rate": 66.66666666666666,
+    "avg_confidence": 0.9133333333333333
+  },
+  "results": [
+    {
+      "query": "poka\u017c pliki",
+      "expected": "shell/list",
+      "actual": "shell/list",
+      "command": "ls -la .",
+      "confidence": 0.95,
+      "success": true
+    },
+    {
+      "query": "docker ps",
+      "expected": "docker/list",
+      "actual": "docker/list",
+      "command": "docker ps",
+      "confidence": 0.95,
+      "success": true
+    },
+    {
+      "query": "kubectl get pods",
+      "expected": "kubernetes/list",
+      "actual": "kubernetes/list",
+      "command": "kubectl get pods",
+      "confidence": 0.8,
+      "success": true
+    },
+    {
+      "query": "chc\u0119 zobaczy\u0107 wszystkie pliki w moim folderze",
+      "expected": "shell/list",
+      "actual": "shell/find",
+      "command": "find . -type f",
+      "confidence": 0.85,
+      "success": false
+    },
+    {
+      "query": "poka\u017c mi dzia\u0142aj\u0105ce kontenery dockera",
+      "expected": "docker/list",
+      "actual": "docker/list",
+      "command": "docker ps",
+      "confidence": 0.95,
+      "success": true
+    },
+    {
+      "query": "zlistuj wszystkie pody w kubernetes",
+      "expected": "kubernetes/list",
+      "actual": "kubernetes/list",
+      "command": "kubectl get pods",
+      "confidence": 0.95,
+      "success": true
+    },
+    {
+      "query": "usu\u0144 stare dane",
+      "expected": "shell/delete",
+      "actual": "sql/delete",
+      "command": "DELETE FROM unknown_table;",
+      "confidence": 0.95,
+      "success": false
+    },
+    {
+      "query": "poka\u017c statystyki",
+      "expected": "shell/list_processes",
+      "actual": "shell/find",
+      "command": "find .",
+      "confidence": 0.85,
+      "success": false
+    },
+    {
+      "query": "restartuj us\u0142ug\u0119",
+      "expected": "shell/service_restart",
+      "actual": "shell/service_restart",
+      "command": "systemctl restart nginx",
+      "confidence": 0.95,
+      "success": true
+    },
+    {
+      "query": "pokaz procesy systemowe",
+      "expected": "shell/list_processes",
+      "actual": "shell/list_processes",
+      "command": "ps aux",
+      "confidence": 0.95,
+      "success": true
+    },
+    {
+      "query": "doker uruchom kontener",
+      "expected": "docker/run",
+      "actual": "docker/run",
+      "command": "docker run",
+      "confidence": 0.95,
+      "success": true
+    },
+    {
+      "query": "kubernetl skala deployment",
+      "expected": "kubernetes/scale",
+      "actual": "kubernetes/apply",
+      "command": "kubectl apply -f",
+      "confidence": 0.85,
+      "success": false
+    },
+    {
+      "query": "znajd\u017a pliki .log w katalogu /var/log",
+      "expected": "shell/find",
+      "actual": "shell/find",
+      "command": "find /var/log -type f -name '*.log'",
+      "confidence": 0.95,
+      "success": true
+    },
+    {
+      "query": "poka\u017c u\u017cytkownik\u00f3w z miasta Warszawa",
+      "expected": "sql/select",
+      "actual": "sql/show",
+      "command": "SELECT u\u017cytkownik\u00f3w FROM unknown_table;",
+      "confidence": 0.9,
+      "success": false
+    },
+    {
+      "query": "uruchom nginx na porcie 8080",
+      "expected": "docker/run",
+      "actual": "docker/run",
+      "command": "docker run -p 8080 --name mycontainer",
+      "confidence": 0.9,
+      "success": true
+    }
+  ]
+}

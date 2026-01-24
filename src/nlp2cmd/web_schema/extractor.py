@@ -352,6 +352,7 @@ def extract_web_schema(
     url: str,
     output_dir: Optional[Path] = None,
     headless: bool = True,
+    use_cache: bool = True,
 ) -> WebPageSchema:
     """
     Extract schema from a web page and optionally save it.
@@ -360,10 +361,24 @@ def extract_web_schema(
         url: URL to analyze
         output_dir: Directory to save schema (if None, doesn't save)
         headless: Run browser in headless mode
+        use_cache: Use cached browsers if available
     
     Returns:
         WebPageSchema
     """
+    # Setup cache if requested
+    if use_cache:
+        try:
+            from nlp2cmd.utils.external_cache import ExternalCacheManager
+            cache_manager = ExternalCacheManager()
+            cache_manager.setup_environment()
+            
+            # Install if needed
+            if not cache_manager.is_playwright_cached():
+                cache_manager.install_playwright_if_needed()
+        except ImportError:
+            pass  # Cache not available, continue normally
+    
     extractor = WebSchemaExtractor(headless=headless)
     schema = extractor.extract(url)
     

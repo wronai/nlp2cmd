@@ -19,8 +19,9 @@ class ExternalCacheManager:
     
     def __init__(self, cache_dir: Optional[Path] = None):
         if cache_dir is None:
-            # Default cache in project directory
-            cache_dir = Path(__file__).parent.parent.parent / ".cache" / "external"
+            # Default cache in project root directory
+            # Go from src/nlp2cmd/utils/external_cache.py to project root
+            cache_dir = Path(__file__).parent.parent.parent.parent / ".cache" / "external"
         
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -84,6 +85,16 @@ class ExternalCacheManager:
             os.environ['MS_PLAYWRIGHT_BROWSERS_PATH'] = str(self.playwright_browsers_dir)
             
             print(f"Playwright cache configured: {self.playwright_browsers_dir}")
+            
+            # Update manifest if browsers are already cached
+            if self.is_playwright_cached():
+                self.manifest['playwright'] = {
+                    'installed_at': str(Path.cwd()),
+                    'cache_dir': str(self.playwright_browsers_dir),
+                    'browsers': self._get_installed_browsers()
+                }
+                self._save_manifest()
+            
             return True
             
         except Exception as e:
@@ -95,9 +106,19 @@ class ExternalCacheManager:
         if not self.playwright_browsers_dir.exists():
             return False
         
-        # Check for common browser directories
-        browser_dirs = ['chromium', 'firefox', 'webkit']
-        return any((self.playwright_browsers_dir / browser).exists() for browser in browser_dirs)
+        # Check for any browser directories (including versioned ones)
+        if not any(self.playwright_browsers_dir.iterdir()):
+            return False
+        
+        # Look for common browser prefixes
+        browser_prefixes = ['chromium', 'firefox', 'webkit']
+        for item in self.playwright_browsers_dir.iterdir():
+            if item.is_dir():
+                for prefix in browser_prefixes:
+                    if item.name.startswith(prefix):
+                        return True
+        
+        return False
     
     def install_playwright_if_needed(self, force: bool = False) -> bool:
         """Install Playwright browsers if not cached or force=True."""

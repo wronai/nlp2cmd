@@ -1273,9 +1273,11 @@ else:
     try:
         from nlp2cmd.cli.web_schema import web_schema_group
         from nlp2cmd.cli.history import history_group
+        from nlp2cmd.cli.cache import cache_group
     except Exception:
         web_schema_group = None
         history_group = None
+        cache_group = None
 
 
 @click.group(cls=NLP2CMDGroup, invoke_without_command=True)
@@ -1617,8 +1619,10 @@ if hasattr(click, 'Group'):
     try:
         from nlp2cmd.cli.web_schema import web_schema_group
         from nlp2cmd.cli.history import history_group
+        from nlp2cmd.cli.cache import cache_group
         main.add_command(web_schema_group)
         main.add_command(history_group)
+        main.add_command(cache_group)
     except Exception:
         pass
 

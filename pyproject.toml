@@ -98,6 +98,7 @@ all = [
 [project.scripts]
 nlp2cmd = "nlp2cmd.cli.main:main"
 app2schema = "app2schema.cli:main"
+nlp2cmd-setup = "scripts.setup_external:main"
 
 [project.urls]
 Homepage = "https://github.com/example/nlp2cmd"
