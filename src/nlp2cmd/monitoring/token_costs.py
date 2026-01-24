@@ -46,22 +46,22 @@ class TokenCostEstimator:
         "tiny": {  # GPT-3.5 Turbo level
             "tokens_per_second": 150,
             "cost_per_1k_tokens": 0.002,  # Average input+output
-            "energy_per_1k_tokens": 0.5,  # mJ
+            "energy_per_1k_tokens": 500.0,  # mJ
         },
         "small": {  # GPT-4 level
             "tokens_per_second": 80,
             "cost_per_1k_tokens": 0.02,
-            "energy_per_1k_tokens": 2.0,
+            "energy_per_1k_tokens": 2000.0,
         },
         "medium": {  # GPT-4 Turbo level
             "tokens_per_second": 120,
             "cost_per_1k_tokens": 0.015,
-            "energy_per_1k_tokens": 1.5,
+            "energy_per_1k_tokens": 1500.0,
         },
         "large": {  # Claude 3 Opus level
             "tokens_per_second": 60,
             "cost_per_1k_tokens": 0.075,
-            "energy_per_1k_tokens": 5.0,
+            "energy_per_1k_tokens": 5000.0,
         }
     }
     
@@ -89,13 +89,22 @@ class TokenCostEstimator:
         if energy_mj is not None:
             energy_tokens = self._estimate_tokens_from_energy(energy_mj)
             # Weight the estimates (energy is most reliable)
-            total_tokens = int(0.5 * energy_tokens + 0.3 * cpu_tokens + 0.2 * memory_tokens)
+            total_tokens_f = (0.5 * energy_tokens + 0.3 * cpu_tokens + 0.2 * memory_tokens)
         else:
-            total_tokens = int(0.6 * cpu_tokens + 0.4 * memory_tokens)
+            total_tokens_f = (0.6 * cpu_tokens + 0.4 * memory_tokens)
+
+        # Avoid collapsing to 0 for very small measurements.
+        total_tokens = int(round(total_tokens_f))
+        if total_tokens == 0 and total_tokens_f > 0:
+            total_tokens = 1
         
         # Split into input/output (typical ratio 70:30 for generation tasks)
-        input_tokens = int(total_tokens * 0.7)
-        output_tokens = int(total_tokens * 0.3)
+        input_tokens = int(round(total_tokens * 0.7))
+        if input_tokens < 0:
+            input_tokens = 0
+        if input_tokens > total_tokens:
+            input_tokens = total_tokens
+        output_tokens = total_tokens - input_tokens
         
         # Determine model tier based on performance characteristics
         model_tier = self._determine_model_tier(time_ms, cpu_percent, memory_mb)
@@ -145,7 +154,7 @@ class TokenCostEstimator:
         # Use reference energy per 1K tokens
         # Assume medium model as baseline
         energy_per_1k = self.MODEL_REFERENCE["medium"]["energy_per_1k_tokens"]
-        return int((energy_mj / energy_per_1k) * 1000)
+        return (energy_mj / energy_per_1k) * 1000
     
     def _determine_model_tier(self, time_ms: float, cpu_percent: float, memory_mb: float) -> str:
         """Determine equivalent model tier based on resource usage."""

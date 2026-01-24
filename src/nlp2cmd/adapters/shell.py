@@ -6,6 +6,7 @@ Supports Bash, Zsh, Fish, and PowerShell.
 
 from __future__ import annotations
 
+import re
 import shlex
 import shutil
 from dataclasses import dataclass, field
@@ -328,14 +329,14 @@ class ShellAdapter(BaseDSLAdapter):
 
             if attr == "size":
                 size_op = "+" if op in [">", ">="] else "-" if op in ["<", "<="] else ""
-                cmd_parts.append(f"-size {size_op}{value}")
+                cmd_parts.append(f"-size {size_op}{self._normalize_find_size_value(value)}")
             elif attr == "mtime":
-                # Convert days
+                # find(1): +N = older than N days, -N = newer than N days
+                time_op = "+" if op in [">", ">="] else "-" if op in ["<", "<="] else ""
+                days_val = value
                 if isinstance(value, str) and "_days" in value:
-                    days = value.replace("_days", "")
-                    cmd_parts.append(f"-mtime -{days}")
-                else:
-                    cmd_parts.append(f"-mtime -{value}")
+                    days_val = value.replace("_days", "")
+                cmd_parts.append(f"-mtime {time_op}{days_val}")
             elif attr == "name":
                 cmd_parts.append(f'-name "{value}"')
             elif attr == "extension":
@@ -345,6 +346,33 @@ class ShellAdapter(BaseDSLAdapter):
         cmd_parts.append(r"-exec ls -lh {} \;")
 
         return " ".join(filter(None, cmd_parts))
+
+    @staticmethod
+    def _normalize_find_size_value(value: Any) -> str:
+        """Normalize values like '10KB'/'1MB' into GNU find -size suffixes (k/M/G/T/c)."""
+        s = str(value or "").strip()
+        if not s:
+            return ""
+
+        m = re.match(r"^(\d+)(?:\s*)([a-zA-Z]+)?$", s)
+        if not m:
+            return s
+
+        num = m.group(1)
+        unit = (m.group(2) or "").strip().upper()
+
+        if unit in {"KB", "K"}:
+            return f"{num}k"
+        if unit in {"MB", "M"}:
+            return f"{num}M"
+        if unit in {"GB", "G"}:
+            return f"{num}G"
+        if unit in {"TB", "T"}:
+            return f"{num}T"
+        if unit in {"B", "BYTE", "BYTES", "C"}:
+            return f"{num}c"
+
+        return s
 
     def _generate_file_operation(self, entities: dict[str, Any]) -> str:
         """Generate file operation command."""

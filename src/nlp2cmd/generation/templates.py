@@ -496,17 +496,24 @@ class TemplateGenerator:
         Args:
             custom_templates: Additional templates per domain
         """
-        self.templates: dict[str, dict[str, str]] = {
-            'sql': self.SQL_TEMPLATES.copy(),
-            'shell': self.SHELL_TEMPLATES.copy(),
-            'docker': self.DOCKER_TEMPLATES.copy(),
-            'kubernetes': self.KUBERNETES_TEMPLATES.copy(),
-            'git': self.GIT_TEMPLATES.copy(),
-        }
+        self.templates: dict[str, dict[str, str]] = {}
 
         self.defaults: dict[str, Any] = {}
+        self._defaults_loaded = False
+        self._templates_loaded = False
         self._load_defaults_from_json()
         self._load_templates_from_json()
+
+        if not self._defaults_loaded:
+            raise FileNotFoundError(
+                "Template defaults not loaded. Expected defaults.json to be available in the package "
+                "data dir or user config dir, or set NLP2CMD_DEFAULTS_FILE."
+            )
+        if not self._templates_loaded:
+            raise FileNotFoundError(
+                "Templates not loaded. Expected templates.json to be available in the package data dir "
+                "or user config dir, or set NLP2CMD_TEMPLATES_FILE."
+            )
         
         if custom_templates:
             for domain, domain_templates in custom_templates.items():
@@ -524,6 +531,7 @@ class TemplateGenerator:
             except Exception:
                 continue
             if isinstance(payload, dict):
+                self._defaults_loaded = True
                 self.defaults.update(payload)
 
     def _load_templates_from_json(self) -> None:
@@ -537,6 +545,8 @@ class TemplateGenerator:
                 continue
             if not isinstance(payload, dict):
                 continue
+
+            self._templates_loaded = True
 
             # Expected format: {"shell": {"intent": "template"}, "docker": {...}, ...}
             for domain, templates in payload.items():
@@ -1205,6 +1215,13 @@ class TemplateGenerator:
         """Get template for domain/intent."""
         return self.templates.get(domain, {}).get(intent)
     
-    def list_templates(self, domain: str) -> list[str]:
-        """List available templates for domain."""
+    def list_templates(self, domain: Optional[str] = None):
+        """List available templates.
+
+        Backwards compatible behavior:
+        - If domain is provided: returns list[str] of intents for that domain
+        - If domain is None: returns dict[str, list[str]] for all domains
+        """
+        if domain is None:
+            return {d: list(intents.keys()) for d, intents in self.templates.items()}
         return list(self.templates.get(domain, {}).keys())

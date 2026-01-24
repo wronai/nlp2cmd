@@ -8,6 +8,7 @@ for transforming natural language into domain-specific commands.
 from __future__ import annotations
 
 import logging
+import os
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Callable, Optional
@@ -438,6 +439,12 @@ class NLP2CMD:
         
         # Initialize backend if not provided
         if nlp_backend is None:
+            def _truthy_env(name: str) -> bool:
+                v = os.environ.get(name)
+                if not isinstance(v, str):
+                    return False
+                return v.strip().lower() in {"1", "true", "yes", "y", "on"}
+
             dynamic_registry = getattr(adapter, "registry", None)
             if adapter.DSL_NAME == "dynamic" and dynamic_registry is not None:
                 try:
@@ -452,15 +459,26 @@ class NLP2CMD:
                     print(f"[NLP2CMD] Failed to import HybridNLPBackend: {e}", file=sys.stderr)
                     self.nlp_backend = RuleBasedBackend(rules={}, config={"dsl": adapter.DSL_NAME})
             else:
-                # Convert adapter INTENTS to rule format
-                rules = {}
-                for intent_name, intent_config in adapter.INTENTS.items():
-                    patterns = intent_config.get("patterns", [])
-                    rules[intent_name] = patterns
-                self.nlp_backend = RuleBasedBackend(
-                    rules=rules,
-                    config={"dsl": adapter.DSL_NAME},
-                )
+                if adapter.DSL_NAME == "shell" and _truthy_env("NLP2CMD_SEMANTIC_NLP"):
+                    try:
+                        from nlp2cmd.nlp_light import SemanticShellBackend
+
+                        self.nlp_backend = SemanticShellBackend(config={"dsl": adapter.DSL_NAME})
+                    except Exception:
+                        self.nlp_backend = RuleBasedBackend(
+                            rules={k: list(v.get("patterns", [])) for k, v in adapter.INTENTS.items()},
+                            config={"dsl": adapter.DSL_NAME},
+                        )
+                else:
+                    # Convert adapter INTENTS to rule format
+                    rules = {}
+                    for intent_name, intent_config in adapter.INTENTS.items():
+                        patterns = intent_config.get("patterns", [])
+                        rules[intent_name] = patterns
+                    self.nlp_backend = RuleBasedBackend(
+                        rules=rules,
+                        config={"dsl": adapter.DSL_NAME},
+                    )
         else:
             self.nlp_backend = nlp_backend
             

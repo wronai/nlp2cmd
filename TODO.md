@@ -101,6 +101,59 @@
 
 ---
 
+## 🟠 v0.3.x/v0.4.x - Lightweight NLP (Regex → NLP) (IN PROGRESS)
+
+Cel: stopniowo zastąpić `KeywordIntentDetector` + `RegexEntityExtractor` lekkim NLP (preferowany: `spaCy` bez ciężkich modeli), **bez utraty wydajności** i z bezpiecznym fallbackiem do obecnych reguł.
+
+### P0: Minimalny PoC (Shell / find) (1-2 dni)
+- [ ] **Feature flag + wiring**
+  - [ ] `NLP2CMD_SEMANTIC_NLP=1` włącza nowy backend tylko dla `--dsl shell`
+  - [ ] brak spaCy / błąd inicjalizacji → fallback do `RuleBasedBackend`
+  - [ ] `NLP2CMD_SPACY_MODEL` pozwala wybrać model (domyślnie: `spacy.blank('pl')`)
+
+- [ ] **Semantic backend (light)**
+  - [ ] `SemanticShellBackend(NLPBackend)` generuje `ExecutionPlan(intent='file_search', ...)`
+  - [ ] ekstrakcja: `path`, `size` (+ operator), `age/mtime` (+ operator), `extension`
+  - [ ] obsługa PL porównań:
+    - [ ] `większe/mniejsze niż`, `powyżej/poniżej`, `nie większe niż`
+    - [ ] `starsze/nowsze niż`, `ostatnio zmienione`
+  - [ ] confidence score + heurystyki (np. wykryto size+unit => high)
+
+- [ ] **Regresje krytyczne (smoke)**
+  - [ ] `Znajdź pliki większe niż 1MB` → `-size +1M` i bez `*.większe`
+  - [ ] `Znajdź pliki mniejsze niż 10KB` → `-size -10K`
+  - [ ] `Znajdź logi starsze niż 7 dni` → `-mtime +7` + `-name '*.log'`
+
+### P1: spaCy textcat jako lekki klasyfikator intencji (2-4 dni)
+- [ ] **Autogeneracja datasetu z `adapter.INTENTS.patterns`**
+  - [ ] `patterns` jako pozytywne przykłady (PL+EN)
+  - [ ] balansowanie klas + proste augmentacje
+
+- [ ] **Trenowanie i zapis małego modelu textcat**
+  - [ ] artefakt modelu w `data/models/textcat_shell/` (lub cache user-level)
+  - [ ] warmup + cache embeddingów
+
+- [ ] **Backend wyboru intencji**
+  - [ ] jeśli textcat confidence >= threshold → intent z textcat
+  - [ ] inaczej → fallback do rule-based
+
+### P2: ONNX (opcjonalnie, jeśli textcat nadal zbyt wolny/ciężki)
+- [ ] **Opcjonalny runtime ONNX**
+  - [ ] `onnxruntime` jako extra
+  - [ ] eksport prostego klasyfikatora intencji do ONNX
+  - [ ] benchmark: cold/warm latency + memory
+
+### P3: Rozszerzenie na inne domeny
+- [ ] Docker/Kubernetes: logi, nazwy zasobów, namespace, kontener
+- [ ] SQL: tabela/kolumny/where (z zachowaniem obecnych heurystyk)
+
+### Kryteria sukcesu
+- [ ] Latencja warm dla prostych zapytań: <30ms (shell)
+- [ ] Brak regresji w przypadkach krytycznych (większe/mniejsze/starsze/negacje)
+- [ ] Feature-flag pozwala bezpiecznie wyłączyć NLP i wrócić do regexów
+
+---
+
 ## 🟡 v0.5.0 - MCP Protocol
 
 ### P0: Krytyczne

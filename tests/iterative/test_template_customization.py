@@ -17,6 +17,11 @@ from nlp2cmd.generation.pipeline import (
 )
 
 
+@pytest.fixture
+def generator() -> TemplateGenerator:
+    return TemplateGenerator()
+
+
 class TestTemplateCustomization:
     """Test template customization."""
     

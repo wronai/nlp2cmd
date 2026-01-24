@@ -8,6 +8,11 @@ nlp2cmd -r "otwórz https://www.prototypowanie.pl/kontakt/ i wypelnij formularz 
 
 
 ![img_2.png](img_2.png)
+
+realizacja zadan w shell
+![img_3.png](img_3.png)
+
+
 # NLP2CMD
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)

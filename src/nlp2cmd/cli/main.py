@@ -16,6 +16,11 @@ from pathlib import Path
 from typing import Any, Optional
 
 import click
+
+try:
+    from dotenv import load_dotenv
+except Exception:
+    load_dotenv = None
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -1177,6 +1182,11 @@ def main(
     auto_install: bool,
 ):
     """NLP2CMD - Natural Language to Domain-Specific Commands."""
+    if load_dotenv is not None:
+        try:
+            load_dotenv()
+        except Exception:
+            pass
     ctx.ensure_object(dict)
     ctx.obj["dsl"] = dsl
     ctx.obj["auto_repair"] = auto_repair
