@@ -848,6 +848,13 @@ class TemplateGenerator:
         # Path default - handle user directory
         if 'user' in entities and entities['user'] == 'current':
             result.setdefault('path', '~')  # User home directory
+        elif 'username' in entities:
+            username = entities['username']
+            # Handle specific username paths
+            if username == 'root':
+                result['path'] = '/root'  # Root user home
+            else:
+                result['path'] = f'~{username}'  # Specific user home
         else:
             result.setdefault('path', '.')  # Current directory
         

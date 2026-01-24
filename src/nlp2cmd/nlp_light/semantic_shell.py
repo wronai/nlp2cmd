@@ -59,6 +59,16 @@ class SemanticShellBackend(NLPBackend):
         entities: dict[str, Any] = {}
         entities["scope"] = self._extract_scope(text)
         entities["target"] = self._infer_target(text_lower)
+        
+        # Extract username using NLP
+        username = self._extract_username_with_nlp(text)
+        if username:
+            entities["username"] = username
+            # Adjust scope for user directories
+            if username.lower() == "root":
+                entities["scope"] = "/root"
+            else:
+                entities["scope"] = f"~{username}"
 
         filters: list[dict[str, Any]] = []
 
@@ -206,3 +216,84 @@ class SemanticShellBackend(NLPBackend):
 
         value_int = int(size.value) if float(size.value).is_integer() else int(round(size.value))
         return f"{value_int}{unit_letter}"
+
+    def _extract_username_with_nlp(self, text: str) -> Optional[str]:
+        """Extract username using intelligent patterns (fallback when spaCy not available)."""
+        if not text:
+            return None
+        
+        # Try spaCy first if available
+        if self._nlp:
+            try:
+                doc = self._nlp(text)
+                
+                # Look for patterns like "foldery usera", "pliki usera", "katalogi usera"
+                for token in doc:
+                    token_lower = token.text.lower()
+                    
+                    # Check if this token indicates user context
+                    if token_lower in ["usera", "użytkownika", "user", "użytkownik"]:
+                        # Look for the next token or related tokens
+                        for i, other_token in enumerate(doc):
+                            if other_token == token:
+                                # Check next token
+                                if i + 1 < len(doc):
+                                    next_token = doc[i + 1]
+                                    # If next token is a potential username
+                                    if (next_token.is_alpha or next_token.is_digit or 
+                                        "_" in next_token.text or "-" in next_token.text):
+                                        return next_token.text
+                                # Check previous token
+                                if i > 0:
+                                    prev_token = doc[i - 1]
+                                    # If previous token is a potential username
+                                    if (prev_token.is_alpha or prev_token.is_digit or 
+                                        "_" in prev_token.text or "-" in prev_token.text):
+                                        return prev_token.text
+                                
+                                # If no specific username found, return generic "usera"
+                                return "usera"
+                
+                # Check for user-related patterns in dependencies
+                for token in doc:
+                    if token.text.lower() in ["foldery", "pliki", "katalogi", "files", "directories"]:
+                        # Check if there's a user-related token nearby
+                        for child in token.children:
+                            if child.text.lower() in ["usera", "użytkownika", "user", "użytkownik"]:
+                                return "usera"
+                        # Check head dependencies
+                        for child in token.head.children:
+                            if child.text.lower() in ["usera", "użytkownika", "user", "użytkownik"]:
+                                return "usera"
+            except Exception:
+                pass  # Fallback to regex patterns
+        
+        # Fallback: Use intelligent regex patterns for username extraction
+        patterns = [
+            # Pattern: "foldery usera" -> no specific username
+            r'(foldery|pliki|katalogi|files?)\s+(użytkownika|usera|user|użytkownik)(?:\s|$)',
+            # Pattern: "użytkownika tom" -> specific username
+            r'(użytkownika|usera|user|użytkownik)\s+([a-zA-Z0-9_-]+)(?:\s+(foldery|pliki|katalogi|files?)|$)',
+            # Pattern: "tom foldery" -> username first
+            r'([a-zA-Z0-9_-]+)\s+(?:foldery|pliki|katalogi|files?)\s+(użytkownika|usera|user|użytkownik)',
+            # Pattern: "user tom" -> simple user command
+            r'(?:użytkownika|usera|user|użytkownik)\s+([a-zA-Z0-9_-]+)',
+            # Pattern: "pliki użytkownika" -> generic user context
+            r'(?:foldery|pliki|katalogi|files?)\s+(?:użytkownika|usera|user|użytkownik)(?:\s|$)',
+            # Pattern: standalone username with context
+            r'([a-zA-Z0-9_-]+)\s+(?:foldery|pliki|katalogi|files?)',
+        ]
+        
+        for pattern in patterns:
+            m = re.search(pattern, text, re.IGNORECASE)
+            if m:
+                groups = m.groups()
+                if len(groups) >= 2 and groups[1]:  # Specific username found
+                    username = groups[1]
+                    # Validate username (no spaces, reasonable characters)
+                    if re.match(r'^[a-zA-Z0-9_-]+$', username):
+                        return username
+                else:  # Generic "usera" pattern
+                    return "usera"
+        
+        return None

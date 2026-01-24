@@ -182,31 +182,55 @@ class SemanticObjectFactory:
     
     def _create_user_object(self, entities: Dict[str, Any], query: str) -> Optional[VirtualObject]:
         """Create user object from entities."""
-        user_value = entities.get('user', '')
-        
-        if user_value == 'current':
-            # Create current user object
-            import os
-            username = os.environ.get('USER', os.environ.get('USERNAME', 'user'))
-            return self.object_manager.create_user_object(username, is_current=True)
+        # Check for specific username first
+        username = entities.get('username', '')
+        if not username:
+            # Fallback to user entity
+            user_value = entities.get('user', '')
+            if user_value == 'current':
+                # Create current user object
+                import os
+                username = os.environ.get('USER', os.environ.get('USERNAME', 'user'))
+                return self.object_manager.create_user_object(username, is_current=True)
+            else:
+                # Create specific user object
+                username = user_value
+                return self.object_manager.create_user_object(username, is_current=False)
         else:
-            # Create specific user object
-            return self.object_manager.create_user_object(user_value, is_current=False)
+            # Create user object with specific username
+            return self.object_manager.create_user_object(username, is_current=False)
     
     def _create_file_objects(self, entities: Dict[str, Any], query: str) -> List[VirtualObject]:
         """Create file objects from entities."""
         objects = []
         
         # Determine file location based on context
-        if 'user' in entities:
+        if 'user' in entities or 'username' in entities:
             # User files - use home directory
             import os
             home_dir = Path(os.path.expanduser('~'))
+            
+            # Check for specific username
+            username = entities.get('username', '')
+            if username:
+                # Use specific user's home directory
+                user_home = Path(f"/home/{username}") if username != 'root' else Path("/root")
+                if user_home.exists():
+                    home_dir = user_home
+                else:
+                    # Fallback to current user home
+                    home_dir = Path(os.path.expanduser('~'))
+            
             file_path = home_dir / '*'
             
             file_obj = self.object_manager.create_file_object(file_path, 'user_files')
             file_obj.set_property('user_context', True)
             file_obj.set_property('pattern', '*')
+            
+            # Add username property if available
+            if username:
+                file_obj.set_property('username', username)
+            
             objects.append(file_obj)
         
         return objects
@@ -216,13 +240,29 @@ class SemanticObjectFactory:
         objects = []
         
         # Determine directory location based on context
-        if 'user' in entities:
+        if 'user' in entities or 'username' in entities:
             # User directory - use home directory
             import os
             home_dir = Path(os.path.expanduser('~'))
             
+            # Check for specific username
+            username = entities.get('username', '')
+            if username:
+                # Use specific user's home directory
+                user_home = Path(f"/home/{username}") if username != 'root' else Path("/root")
+                if user_home.exists():
+                    home_dir = user_home
+                else:
+                    # Fallback to current user home
+                    home_dir = Path(os.path.expanduser('~'))
+            
             dir_obj = self.object_manager.create_directory_object(home_dir, 'user_home')
             dir_obj.set_property('user_context', True)
+            
+            # Add username property if available
+            if username:
+                dir_obj.set_property('username', username)
+            
             objects.append(dir_obj)
         
         return objects
