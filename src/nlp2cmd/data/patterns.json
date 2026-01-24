@@ -143,7 +143,7 @@
       "lista plików", "listę plików", "lista folderów", "listę folderów", "lista katalogów", "listę katalogów",
       "pokaż katalog", "pokaż katalogi", "pokaż folder", "pokaż foldery", "ls", "dir", "wylistuj",
       "zawartość katalogu", "zawartość folderu", "directory contents", "folder contents",
-      "pokaż pliki", "listuj pliki", "wypisz pliki", "lista do kerów", "listę do kerów", "lista do kórów"
+      "pokaż pliki", "listuj pliki", "wypisz pliki"
     ],
     "process": [
       "procesy", "ps", "uruchomione procesy", "running processes",
@@ -157,8 +157,11 @@
       "kopiuj", "przenieś", "usuń plik", "copy", "move", "rm",
       "skopiuj", "mv", "rename", "zmień nazwę",
       "skopiuj plik", "przenieś plik", "usuń plik", "usuń wszystkie pliki",
+      "kopij", "kopjuj", "kopuj",
       "utwórz katalog", "zmień nazwę pliku", "zmień nazwę pliku na",
-      "sprawdź rozmiar pliku", "rozmiar pliku", "du plik", "wielkość pliku"
+      "sprawdź rozmiar pliku", "rozmiar pliku", "du plik", "wielkość pliku",
+      "zainstaluj", "install", "apt install", "apt-get install", "dodaj", "pobierz",
+      "wget", "curl", "download", "pobierz plik"
     ],
     "disk": [
       "miejsce na dysku", "disk space", "df", "du", "rozmiar",
@@ -215,13 +218,13 @@
     ],
     "process_management": [
       "zabij proces", "uruchom proces", "zatrzymaj proces", "restartuj proces", "uruchom ponownie",
-      "uruchom w tle", "uruchom skrypt", "zatrzymaj usługę", "uruchom usługę", "status usługi",
+      "uruchom w tle", "uruchom skrypt", "status usługi",
       "sprawdź status", "monitor systemowy", "htop", "top"
     ],
     "service_start": [
       "uruchom usługę", "uruchom serwis", "uruchom service", "start service",
       "systemctl start", "startuj usługę", "startuj serwis", "wystartuj usługę",
-      "uruchom usługę systemową", "startuj usługę systemową"
+      "uruchom usługę systemową", "startuj usługę systemową", "uruchom usluge", "uruchom uslugi"
     ],
     "service_stop": [
       "zatrzymaj usługę", "zatrzymaj serwis", "stop service",
@@ -229,7 +232,8 @@
     ],
     "service_restart": [
       "restartuj usługę", "restartuj serwis", "restart service",
-      "systemctl restart"
+      "systemctl restart", "zrestartuj usługę", "restartuj usługe",
+      "restart usługę", "restart serwis", "restart nginx"
     ],
     "service_status": [
       "status usługi", "status serwisu", "status service",
@@ -314,7 +318,7 @@
       "moja nazwa", "my username"
     ],
     "user_id": [
-      "id", "user id", "uid", "gid", "groups", "grupy użytkownika"
+      "user id", "uid", "gid", "groups", "grupy użytkownika"
     ],
     "user_list": [
       "użytkownicy", "users", "lista użytkowników", "list users",
@@ -483,7 +487,8 @@
   "docker": {
     "run": [
       "uruchom kontener", "docker run", "start container", "docker start",
-      "docker compose up", "compose up", "docker-compose up"
+      "docker compose up", "compose up", "docker-compose up",
+      "uruchom nginx", "docker uruchom nginx"
     ],
     "run_detached": [
       "uruchom w tle", "docker run -d", "run detached", "docker compose up -d",
@@ -507,7 +512,9 @@
     ],
     "list": [
       "pokaż kontenery", "docker ps", "list containers", "docker container ls",
-      "kontenery", "containers"
+      "kontenery", "containers", "lista do kerów", "listę do kerów", "lista kontenerów", "listę kontenerów",
+      "lista dkerów", "listę dkerów", "lista dkorów", "listę dkorów",
+      "sprawdź czy kontener działa", "sprawdz kontener", "pokaz kontener", "status kontenera"
     ],
     "list_all": [
       "pokaż wszystkie kontenery", "docker ps -a", "list all containers",

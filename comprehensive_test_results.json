@@ -1,0 +1,1625 @@
+{
+  "total_tests": 101,
+  "passed": 5,
+  "failed": 96,
+  "success_rate": 4.9504950495049505,
+  "duration_seconds": 297.152694940567,
+  "results": [
+    {
+      "query": "pokaż pliki",
+      "description": "Basic file listing",
+      "expected": {
+        "domain": "shell",
+        "intent": "list",
+        "command_pattern": "ls -la"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "lista plików w folderze",
+      "description": "File listing with folder",
+      "expected": {
+        "domain": "shell",
+        "intent": "list",
+        "command_pattern": "ls -la"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż pliki w folderze użytkownika",
+      "description": "User home directory",
+      "expected": {
+        "domain": "shell",
+        "intent": "list",
+        "command_pattern": "ls -la ~"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "znajdź pliki .log",
+      "description": "Find log files",
+      "expected": {
+        "domain": "shell",
+        "intent": "find",
+        "command_pattern": "find"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "znajdz pliki konfiguracyjne",
+      "description": "Find config files (typo)",
+      "expected": {
+        "domain": "shell",
+        "intent": "find",
+        "command_pattern": "find"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "skopiuj plik",
+      "description": "Copy file",
+      "expected": {
+        "domain": "shell",
+        "intent": "copy",
+        "command_pattern": "cp"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "kopij plik",
+      "description": "Copy file with typo",
+      "expected": {
+        "domain": "shell",
+        "intent": "file_operation",
+        "command_pattern": "ls -la"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "usuń plik stary.txt",
+      "description": "Delete specific file",
+      "expected": {
+        "domain": "shell",
+        "intent": "delete",
+        "command_pattern": "rm"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "usun plik test.txt",
+      "description": "Delete with typo",
+      "expected": {
+        "domain": "shell",
+        "intent": "delete",
+        "command_pattern": "rm"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "utwórz katalog nowy",
+      "description": "Create directory",
+      "expected": {
+        "domain": "shell",
+        "intent": "create",
+        "command_pattern": "mkdir"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "zmień nazwę pliku",
+      "description": "Rename file",
+      "expected": {
+        "domain": "shell",
+        "intent": "rename",
+        "command_pattern": "mv"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż procesy",
+      "description": "Show processes",
+      "expected": {
+        "domain": "shell",
+        "intent": "list_processes",
+        "command_pattern": "ps aux"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "ps",
+      "description": "Short ps command",
+      "expected": {
+        "domain": "shell",
+        "intent": "list_processes",
+        "command_pattern": "ps aux"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "zabij proces 1234",
+      "description": "Kill process",
+      "expected": {
+        "domain": "shell",
+        "intent": "process_kill",
+        "command_pattern": "kill"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "sprawdź użycie CPU",
+      "description": "Check CPU usage",
+      "expected": {
+        "domain": "shell",
+        "intent": "process",
+        "command_pattern": "top"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "monitor systemowy",
+      "description": "System monitor",
+      "expected": {
+        "domain": "shell",
+        "intent": "process",
+        "command_pattern": "htop"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "uruchom usługę nginx",
+      "description": "Start nginx service",
+      "expected": {
+        "domain": "shell",
+        "intent": "service_start",
+        "command_pattern": "systemctl start nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "uruchom uslugę nginx",
+      "description": "Start service with typo",
+      "expected": {
+        "domain": "shell",
+        "intent": "service_start",
+        "command_pattern": "systemctl start nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "systemctl uruchom nginx",
+      "description": "Start with systemctl",
+      "expected": {
+        "domain": "shell",
+        "intent": "service_start",
+        "command_pattern": "systemctl start nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "zatrzymaj usługę nginx",
+      "description": "Stop nginx service",
+      "expected": {
+        "domain": "shell",
+        "intent": "service_stop",
+        "command_pattern": "systemctl stop nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "restartuj usługę nginx",
+      "description": "Restart nginx service",
+      "expected": {
+        "domain": "shell",
+        "intent": "service_restart",
+        "command_pattern": "systemctl restart nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "status usługi nginx",
+      "description": "Check nginx status",
+      "expected": {
+        "domain": "shell",
+        "intent": "service_status",
+        "command_pattern": "systemctl status nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "restartuj system",
+      "description": "Reboot system",
+      "expected": {
+        "domain": "shell",
+        "intent": "reboot",
+        "command_pattern": "reboot"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "startuj system",
+      "description": "Start system (reboot)",
+      "expected": {
+        "domain": "shell",
+        "intent": "reboot",
+        "command_pattern": "reboot"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "zrestartuj komputer",
+      "description": "Restart computer",
+      "expected": {
+        "domain": "shell",
+        "intent": "reboot",
+        "command_pattern": "reboot"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "sprawdź miejsce na dysku",
+      "description": "Check disk space",
+      "expected": {
+        "domain": "shell",
+        "intent": "disk",
+        "command_pattern": "df"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż użycie pamięci",
+      "description": "Check memory usage",
+      "expected": {
+        "domain": "shell",
+        "intent": "disk",
+        "command_pattern": "free"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "ping google.com",
+      "description": "Ping host",
+      "expected": {
+        "domain": "shell",
+        "intent": "network_ping",
+        "command_pattern": "ping"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "sprawdź porty",
+      "description": "Check open ports",
+      "expected": {
+        "domain": "shell",
+        "intent": "network_port",
+        "command_pattern": "netstat"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż adres IP",
+      "description": "Show IP address",
+      "expected": {
+        "domain": "shell",
+        "intent": "network_ip",
+        "command_pattern": "ip addr"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker ps",
+      "description": "List running containers",
+      "expected": {
+        "domain": "docker",
+        "intent": "list",
+        "command_pattern": "docker ps"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż kontenery",
+      "description": "Show containers in Polish",
+      "expected": {
+        "domain": "docker",
+        "intent": "list",
+        "command_pattern": "docker ps"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż wszystkie kontenery",
+      "description": "Show all containers",
+      "expected": {
+        "domain": "docker",
+        "intent": "list_all",
+        "command_pattern": "docker ps -a"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "doker ps",
+      "description": "Docker with typo",
+      "expected": {
+        "domain": "docker",
+        "intent": "list",
+        "command_pattern": "docker ps"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "dokcer images",
+      "description": "Docker images with typo",
+      "expected": {
+        "domain": "docker",
+        "intent": "images",
+        "command_pattern": "docker images"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker obrazy",
+      "description": "Docker images in Polish",
+      "expected": {
+        "domain": "docker",
+        "intent": "images",
+        "command_pattern": "docker images"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker run nginx",
+      "description": "Run nginx container",
+      "expected": {
+        "domain": "docker",
+        "intent": "run",
+        "command_pattern": "docker run nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker uruchom nginx",
+      "description": "Run container in Polish",
+      "expected": {
+        "domain": "docker",
+        "intent": "run",
+        "command_pattern": "docker run nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "doker uruchom nginx",
+      "description": "Run with typo",
+      "expected": {
+        "domain": "docker",
+        "intent": "run",
+        "command_pattern": "docker run nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker stop kontener",
+      "description": "Stop container",
+      "expected": {
+        "domain": "docker",
+        "intent": "stop",
+        "command_pattern": "docker stop"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker zatrzymaj nginx",
+      "description": "Stop in Polish",
+      "expected": {
+        "domain": "docker",
+        "intent": "stop",
+        "command_pattern": "docker stop nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker start nginx",
+      "description": "Start container",
+      "expected": {
+        "domain": "docker",
+        "intent": "start",
+        "command_pattern": "docker start nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker usuń nginx",
+      "description": "Remove container",
+      "expected": {
+        "domain": "docker",
+        "intent": "remove",
+        "command_pattern": "docker rm nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker remove nginx",
+      "description": "Remove container English",
+      "expected": {
+        "domain": "docker",
+        "intent": "remove",
+        "command_pattern": "docker rm nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker logs nginx",
+      "description": "Show container logs",
+      "expected": {
+        "domain": "docker",
+        "intent": "logs",
+        "command_pattern": "docker logs nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż logi kontenera nginx",
+      "description": "Logs in Polish",
+      "expected": {
+        "domain": "docker",
+        "intent": "logs",
+        "command_pattern": "docker logs nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker exec nginx bash",
+      "description": "Exec into container",
+      "expected": {
+        "domain": "docker",
+        "intent": "exec",
+        "command_pattern": "docker exec nginx bash"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker wejdź do nginx",
+      "description": "Exec in Polish",
+      "expected": {
+        "domain": "docker",
+        "intent": "exec",
+        "command_pattern": "docker exec nginx bash"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker build .",
+      "description": "Build Docker image",
+      "expected": {
+        "domain": "docker",
+        "intent": "build",
+        "command_pattern": "docker build"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "zbuduj obraz docker",
+      "description": "Build in Polish",
+      "expected": {
+        "domain": "docker",
+        "intent": "build",
+        "command_pattern": "docker build"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker compose up",
+      "description": "Docker compose up",
+      "expected": {
+        "domain": "docker",
+        "intent": "compose",
+        "command_pattern": "docker compose up"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker-compose down",
+      "description": "Docker compose down",
+      "expected": {
+        "domain": "docker",
+        "intent": "compose",
+        "command_pattern": "docker compose down"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker compose ps",
+      "description": "Compose ps",
+      "expected": {
+        "domain": "docker",
+        "intent": "compose",
+        "command_pattern": "docker compose ps"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "kubectl get pods",
+      "description": "List pods",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "list",
+        "command_pattern": "kubectl get pods"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż pody",
+      "description": "Show pods in Polish",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "list",
+        "command_pattern": "kubectl get pods"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "kubectl get services",
+      "description": "List services",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "list",
+        "command_pattern": "kubectl get services"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż serwisy k8s",
+      "description": "Services in Polish",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "list",
+        "command_pattern": "kubectl get services"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "kubectl describe pod nginx",
+      "description": "Describe pod",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "describe",
+        "command_pattern": "kubectl describe pod nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "opisz pod nginx",
+      "description": "Describe in Polish",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "describe",
+        "command_pattern": "kubectl describe pod nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "kubectl logs nginx",
+      "description": "Pod logs",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "logs",
+        "command_pattern": "kubectl logs nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "logi poda nginx",
+      "description": "Logs in Polish",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "logs",
+        "command_pattern": "kubectl logs nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "kubectl scale deployment nginx 3",
+      "description": "Scale deployment",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "scale",
+        "command_pattern": "kubectl scale deployment nginx 3"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "skaluj deployment nginx do 3",
+      "description": "Scale in Polish",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "scale",
+        "command_pattern": "kubectl scale deployment nginx 3"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "kubectl delete pod nginx",
+      "description": "Delete pod",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "delete",
+        "command_pattern": "kubectl delete pod nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "usuń pod nginx",
+      "description": "Delete in Polish",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "delete",
+        "command_pattern": "kubectl delete pod nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "kubectl apply -f deployment.yaml",
+      "description": "Apply manifest",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "apply",
+        "command_pattern": "kubectl apply -f deployment.yaml"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "zastosuj konfigurację k8s",
+      "description": "Apply in Polish",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "apply",
+        "command_pattern": "kubectl apply -f"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż użytkowników",
+      "description": "Show users",
+      "expected": {
+        "domain": "sql",
+        "intent": "show",
+        "command_pattern": "SELECT * FROM users"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "SELECT * FROM users",
+      "description": "Direct SQL",
+      "expected": {
+        "domain": "sql",
+        "intent": "show",
+        "command_pattern": "SELECT * FROM users"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "znajdź użytkowników z Warszawy",
+      "description": "Select with condition",
+      "expected": {
+        "domain": "sql",
+        "intent": "select",
+        "command_pattern": "SELECT * FROM users WHERE city = 'Warsaw'"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "dodaj nowego użytkownika",
+      "description": "Insert user",
+      "expected": {
+        "domain": "sql",
+        "intent": "insert",
+        "command_pattern": "INSERT INTO users"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "INSERT INTO users (name) VALUES ('Jan')",
+      "description": "Direct insert",
+      "expected": {
+        "domain": "sql",
+        "intent": "insert",
+        "command_pattern": "INSERT INTO users"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "zaktualizuj email użytkownika",
+      "description": "Update user",
+      "expected": {
+        "domain": "sql",
+        "intent": "update",
+        "command_pattern": "UPDATE users SET email"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "UPDATE users SET email = 'test@example.com'",
+      "description": "Direct update",
+      "expected": {
+        "domain": "sql",
+        "intent": "update",
+        "command_pattern": "UPDATE users"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "usuń stare rekordy",
+      "description": "Delete records",
+      "expected": {
+        "domain": "sql",
+        "intent": "delete",
+        "command_pattern": "DELETE FROM users"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "DELETE FROM users WHERE active = false",
+      "description": "Direct delete",
+      "expected": {
+        "domain": "sql",
+        "intent": "delete",
+        "command_pattern": "DELETE FROM users"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "policz użytkowników",
+      "description": "Count users",
+      "expected": {
+        "domain": "sql",
+        "intent": "aggregate",
+        "command_pattern": "SELECT COUNT(*) FROM users"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "COUNT(*) FROM users",
+      "description": "Direct count",
+      "expected": {
+        "domain": "sql",
+        "intent": "aggregate",
+        "command_pattern": "SELECT COUNT(*)"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "średnia wieku użytkowników",
+      "description": "Average age",
+      "expected": {
+        "domain": "sql",
+        "intent": "aggregate",
+        "command_pattern": "SELECT AVG(age)"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "SELECT AVG(age) FROM users",
+      "description": "Direct average",
+      "expected": {
+        "domain": "sql",
+        "intent": "aggregate",
+        "command_pattern": "SELECT AVG(age)"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "grupuj użytkowników po mieście",
+      "description": "Group by city",
+      "expected": {
+        "domain": "sql",
+        "intent": "aggregate",
+        "command_pattern": "SELECT city, COUNT(*)"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "SELECT city, COUNT(*) FROM users GROUP BY city",
+      "description": "Direct group by",
+      "expected": {
+        "domain": "sql",
+        "intent": "aggregate",
+        "command_pattern": "SELECT city, COUNT(*)"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "dokcer ps",
+      "description": "Docker typo",
+      "expected": {
+        "domain": "docker",
+        "intent": "list",
+        "command_pattern": "docker ps"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "doker images",
+      "description": "Another docker typo",
+      "expected": {
+        "domain": "docker",
+        "intent": "images",
+        "command_pattern": "docker images"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "uruchom uslugę nginx",
+      "description": "Service with typo",
+      "expected": {
+        "domain": "shell",
+        "intent": "service_start",
+        "command_pattern": "systemctl start nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "restartuj uslugę nginx",
+      "description": "Restart with typo",
+      "expected": {
+        "domain": "shell",
+        "intent": "service_restart",
+        "command_pattern": "systemctl restart nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "znajdz pliki",
+      "description": "Find with typo",
+      "expected": {
+        "domain": "shell",
+        "intent": "find",
+        "command_pattern": "find"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "kopij plik",
+      "description": "Copy with typo",
+      "expected": {
+        "domain": "shell",
+        "intent": "file_operation",
+        "command_pattern": "ls -la"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "usun plik",
+      "description": "Delete with typo",
+      "expected": {
+        "domain": "shell",
+        "intent": "delete",
+        "command_pattern": "rm"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż procesy",
+      "description": "Show processes",
+      "expected": {
+        "domain": "shell",
+        "intent": "list_processes",
+        "command_pattern": "ps aux"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "systemctl uruchom nginx",
+      "description": "Systemctl command",
+      "expected": {
+        "domain": "shell",
+        "intent": "service_start",
+        "command_pattern": "systemctl start nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "docker uruchom nginx",
+      "description": "Docker in Polish",
+      "expected": {
+        "domain": "docker",
+        "intent": "run",
+        "command_pattern": "docker run nginx"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "kubectl get pody",
+      "description": "K8s with Polish typo",
+      "expected": {
+        "domain": "kubernetes",
+        "intent": "list",
+        "command_pattern": "kubectl get pods"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "pokaż tabele",
+      "description": "Show tables in Polish",
+      "expected": {
+        "domain": "sql",
+        "intent": "show_tables",
+        "command_pattern": "SHOW TABLES"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "  doker  ps  ",
+      "description": "Extra spaces",
+      "expected": {
+        "domain": "docker",
+        "intent": "list",
+        "command_pattern": "docker ps"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "ps aux",
+      "description": "Direct ps command",
+      "expected": {
+        "domain": "shell",
+        "intent": "list_processes",
+        "command_pattern": "ps aux"
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": false,
+      "status": "❌ FAIL"
+    },
+    {
+      "query": "coś tam",
+      "description": "Completely unclear",
+      "expected": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command_pattern": ""
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": true,
+      "status": "✅ PASS"
+    },
+    {
+      "query": "xyz123",
+      "description": "Random text",
+      "expected": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command_pattern": ""
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": true,
+      "status": "✅ PASS"
+    },
+    {
+      "query": "",
+      "description": "Empty input",
+      "expected": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command_pattern": ""
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": true,
+      "status": "✅ PASS"
+    },
+    {
+      "query": "   ",
+      "description": "Whitespace only",
+      "expected": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command_pattern": ""
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": true,
+      "status": "✅ PASS"
+    },
+    {
+      "query": "help",
+      "description": "Help command",
+      "expected": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command_pattern": ""
+      },
+      "actual": {
+        "domain": "unknown",
+        "intent": "unknown",
+        "command": ""
+      },
+      "success": true,
+      "status": "✅ PASS"
+    }
+  ]
+}

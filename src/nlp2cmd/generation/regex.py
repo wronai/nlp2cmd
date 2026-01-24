@@ -101,6 +101,7 @@ class RegexEntityExtractor:
         'path': [
             r'(?:w\s+)?(?:katalogu|folderze|ścieżce|directory|folder|path)?\s*[`"\']?([/~][\w\.\-/]+)[`"\']?',
             r'(?:w\s+)?(?:katalogu|folderze|ścieżce|directory|folder|path)?\s*[`"\']?((?:\./|\.\./)[\w\.\-/]*|\.{1,2})[`"\']?',
+            r'(?:w\s+)?(?:katalogu|folderze)?\s+(?:użytkownika|user|home)\b\s*[`"\']?([/~][\w\.\-/]*)[`"\']?',
             r'(?:do|from|to|z|in)\s+[`"\']?([/~][\w\.\-/]+)[`"\']?',
             r'(?:do|from|to|z|in)\s+[`"\']?((?:\./|\.\./)[\w\.\-/]*|\.{1,2})[`"\']?',
             r'\s([/~][\w\.\-/]+)\s',
@@ -153,6 +154,11 @@ class RegexEntityExtractor:
         'query': [
             r'(?:wyszukaj|search|szukaj|znajdź|look up)\s+[`"\']?(.+?)[`"\']?(?:\s+w\s+|\s+in\s+|\s*$)',
             r'(?:google|search for)\s+[`"\']?(.+?)[`"\']?',
+        ],
+        'package': [
+            r'(?:zainstaluj|install|apt install|apt-get install)\s+([a-zA-Z0-9][\w\-\+\.]*)',
+            r'(?:zainstaluj|install|apt install|apt-get install)\s+pakiet\s+([a-zA-Z0-9][\w\-\+\.]*)',
+            r'(?:dodaj|pobierz|wget|curl)\s+([a-zA-Z0-9][\w\-\+\.]*)',
         ],
     }
     
@@ -322,7 +328,7 @@ class RegexEntityExtractor:
                         break  # Use first match for each entity type
         
         # Post-processing: build structured entities
-        entities = self._post_process(entities, domain)
+        entities = self._post_process(entities, domain, text.lower())
         
         return ExtractionResult(
             entities=entities,
@@ -401,7 +407,7 @@ class RegexEntityExtractor:
         }
         return unit_map.get(unit.lower(), unit)
     
-    def _post_process(self, entities: dict[str, Any], domain: str) -> dict[str, Any]:
+    def _post_process(self, entities: dict[str, Any], domain: str, text_lower: str) -> dict[str, Any]:
         """Post-process entities for adapter compatibility."""
         result = entities.copy()
         
@@ -453,6 +459,13 @@ class RegexEntityExtractor:
                 result['grouping'] = [entities['group_by']]
         
         elif domain == 'shell':
+            # Handle "folderze użytkownika" -> default to ~ if no path found
+            if 'path' not in entities or not entities['path']:
+                if re.search(r'folderze\s+użytkownika|katalogu\s+użytkownika', text_lower):
+                    result['path'] = '~'
+                else:
+                    result['path'] = '.'
+            
             # Normalize path
             if 'path' in entities and entities['path']:
                 path = entities['path']

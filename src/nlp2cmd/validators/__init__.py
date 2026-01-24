@@ -220,11 +220,17 @@ class SQLValidator(BaseValidator):
             warnings.append("DROP TABLE operation detected - ensure you have a backup")
 
         # Check reserved keywords in identifiers (basic check)
-        reserved_keywords = ['SELECT', 'FROM', 'WHERE', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP', 'ALTER']
-        for keyword in reserved_keywords:
-            if f' {keyword} ' in content_upper or content_upper.startswith(f'{keyword} '):
-                # This is normal SQL usage, not a warning
-                pass
+        reserved_keywords = ['SELECT', 'FROM', 'WHERE', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP', 'ALTER', 'ORDER', 'GROUP', 'HAVING']
+        # Simple check for keywords used as column/table names without backticks
+        words = re.findall(r'\b\w+\b', content)
+        for word in words:
+            if word.upper() in reserved_keywords and word.upper() not in ['SELECT', 'FROM', 'WHERE', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'DROP', 'ALTER']:
+                # Check if it's likely used as an identifier (not a keyword)
+                context = content_upper
+                if f' {word.upper()} ' in context or f'{word.upper()} ' in context or f' {word.upper()}' in context:
+                    if not any(f'{word.upper()}(' in context for word in ['COUNT', 'SUM', 'AVG', 'MIN', 'MAX']):
+                        warnings.append(f"Reserved keyword '{word}' used as identifier - consider using backticks")
+                        break
 
         # Check aggregate without GROUP BY
         aggregate_functions = ['COUNT(', 'SUM(', 'AVG(', 'MIN(', 'MAX(']
@@ -233,6 +239,21 @@ class SQLValidator(BaseValidator):
         
         if has_aggregate and not has_group_by and 'WHERE' in content_upper:
             warnings.append("Aggregate function without GROUP BY may return unexpected results")
+
+        # Check LIMIT clause
+        if 'LIMIT' in content_upper:
+            limit_match = re.search(r'LIMIT\s+(-?\d+)', content_upper)
+            if limit_match and int(limit_match.group(1)) < 0:
+                errors.append("LIMIT value cannot be negative")
+
+        # Check JOIN syntax
+        join_types = ['JOIN', 'INNER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'FULL JOIN', 'CROSS JOIN']
+        for join_type in join_types:
+            if join_type in content_upper:
+                # Basic check for JOIN condition
+                if ' ON ' not in content_upper and ' USING ' not in content_upper:
+                    errors.append(f"JOIN without ON or USING clause")
+                break
 
         # Basic syntax check
         syntax_result = SyntaxValidator().validate(content)
@@ -297,8 +318,22 @@ class ShellValidator(BaseValidator):
         injection_patterns = ["&&", "||", ";", "$(", "`"]
         for pattern in injection_patterns:
             if pattern in content and not pattern in ["&&", "||"]:  # Allow logical operators in safe contexts
-                if pattern in [";", "$(", "`"]:
-                    errors.append(f"Command injection pattern detected: {pattern}")
+                if pattern == ";":
+                    errors.append("Command separator detected - potential injection risk")
+                elif pattern == "$(":
+                    warnings.append("Command substitution detected - review for safety")
+                elif pattern == "`":
+                    warnings.append("Backtick command substitution detected - review for safety")
+
+        # Check for dangerous permission changes
+        if "chmod" in content_lower and ("777" in content or "a+rwx" in content):
+            warnings.append("Dangerous permission change detected")
+            suggestions.append("Consider more restrictive permissions")
+
+        # Check for process killing
+        if "kill" in content_lower and ("-9" in content or "SIGKILL" in content_upper):
+            warnings.append("Force kill signal detected - consider graceful termination")
+            suggestions.append("Try SIGTERM (kill -15) first")
 
         # Check for system file modification
         system_paths = ["/etc/", "/boot/", "/sys/", "/proc/", "/dev/", "/root/", "/usr/bin/"]
@@ -306,12 +341,8 @@ class ShellValidator(BaseValidator):
             if path in content and (">>" in content or ">" in content):
                 errors.append(f"System file modification detected: {path}")
 
-        # Check for permission changes (chmod 777)
-        if "chmod" in content_lower and ("777" in content or "666" in content):
-            errors.append("Dangerous permission change detected")
-
         # Check for background job patterns
-        if "nohup" in content_lower or "&" in content and not content.endswith("& "):
+        if "nohup" in content_lower or (content.endswith("&") and not content.endswith(" &")):
             errors.append("Background job detected - verify job management")
 
         # Check for path traversal
@@ -544,27 +575,29 @@ class DockerValidator(BaseValidator):
 
         # Check for host network
         if "--network host" in content or "--net=host" in content:
-            warnings.append("Host network mode bypasses network isolation")
+            warnings.append("Host network bypasses network isolation")
 
         # Check for dangerous volume mounts
         dangerous_mounts = ["-v /:/", "-v /etc:", "-v /var/run/docker.sock"]
         for mount in dangerous_mounts:
             if mount in content:
                 if "docker.sock" in mount:
-                    warnings.append("Docker socket mount detected: /var/run/docker.sock")
+                    warnings.append("Docker socket mount detected")
                 else:
-                    warnings.append(f"Potentially dangerous volume mount: {mount}")
+                    warnings.append(f"Dangerous volume mount: {mount}")
 
-        # Check for missing image tag
-        if "docker run" in content or "docker pull" in content:
-            # Simple heuristic: look for image without tag
-            parts = content.split()
-            for i, part in enumerate(parts):
-                if part in ["run", "pull"] and i + 1 < len(parts):
-                    image = parts[i + 1]
-                    if not image.startswith("-") and ":" not in image:
-                        warnings.append(f"Image '{image}' has no tag, using :latest")
-                        suggestions.append("Specify explicit image tag for reproducibility")
+        # docker socket mount warning (more general check)
+        if "docker.sock" in content_lower:
+            warnings.append("Docker socket mount detected")
+
+        # Check for image tag
+        parts = content_lower.split()
+        for i, part in enumerate(parts):
+            if part in ["run", "pull"] and i + 1 < len(parts):
+                image = parts[i + 1]
+                if not image.startswith("-") and ":" not in image:
+                    warnings.append(f"Image '{image}' has no tag, using :latest")
+                    suggestions.append("Specify explicit image tag for reproducibility")
 
         return ValidationResult(
             is_valid=len(errors) == 0,

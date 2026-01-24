@@ -5,7 +5,22 @@ Provides CPU, memory, and energy consumption tracking.
 """
 
 import time
-import psutil
+try:
+    import psutil
+except Exception:  # pragma: no cover
+    class _PsutilStub:
+        def cpu_percent(self, *args, **kwargs):
+            return 0.0
+        def Process(self, *args, **kwargs):
+            class _ProcessStub:
+                def memory_info(self):
+                    class _MemInfo:
+                        rss = 0
+                    return _MemInfo()
+                def memory_percent(self):
+                    return 0.0
+            return _ProcessStub()
+    psutil = _PsutilStub()
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
 from contextlib import contextmanager

@@ -17,7 +17,47 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import numpy as np
+try:
+    import numpy as np
+except Exception:  # pragma: no cover
+    class _NumpyStub:
+        def __getattr__(self, name):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def array(self, obj, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def zeros_like(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def sum(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def exp(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def random(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def sqrt(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def mean(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def std(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+    np = _NumpyStub()
 
 
 # =============================================================================

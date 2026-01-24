@@ -13,6 +13,7 @@
 - **[🧰 CLI Reference](cli-reference.md)** - Command line usage
 - **[🐍 Python API Guide](python-api.md)** - Programmatic usage
 - **[🧪 Examples Guide](examples-guide.md)** - Examples overview
+- **[⚡ Quick Fix Reference](quick-fix-reference.md)** - Common issues and solutions
 
 ### API & Technical Documentation
 
@@ -27,6 +28,13 @@
 - **[🛠️ Maintainers](maintainers/README.md)** - Maintainer notes and project docs
 - **[📋 Project History](maintainers/PROJECT_HISTORY.md)** - Development timeline
 - **[🔄 Changelog](../CHANGELOG.md)** - Version history and changes
+
+### Maintainer Quick Links
+
+- **[📋 TODO](maintainers/TODO.md)** - Current maintainer tasks
+- **[🔄 Refactoring Plan](maintainers/REFACTORING_PLAN.md)** - Ongoing refactoring work
+- **[📝 Refactoring Summary](maintainers/REFACTORING_SUMMARY.md)** - Completed refactoring
+- **[📄 Documentation Updates](maintainers/DOCUMENTATION_UPDATE.md)** - Docs changelog
 
 ### Examples & Use Cases
 

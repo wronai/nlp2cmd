@@ -4,10 +4,53 @@ CLI commands for web schema extraction and management.
 
 from __future__ import annotations
 
-import click
+try:
+    import click
+except Exception:  # pragma: no cover
+    class _ClickStub:
+        class Group:
+            def __init__(self, *args, **kwargs):
+                pass
+            def command(self, *args, **kwargs):
+                def decorator(func):
+                    return func
+                return decorator
+        def group(self, *args, **kwargs):
+            def decorator(func):
+                return func
+            return decorator
+        def argument(self, *args, **kwargs):
+            def decorator(func):
+                return func
+            return decorator
+        def option(self, *args, **kwargs):
+            def decorator(func):
+                return func
+            return decorator
+        def Path(self, *args, **kwargs):
+            return str
+        def Abort(self):
+            raise SystemExit(1)
+    click = _ClickStub()
 from pathlib import Path
-from rich.console import Console
-from rich.table import Table
+try:
+    from rich.console import Console
+    from rich.table import Table
+except Exception:  # pragma: no cover
+    class Console:
+        def print(self, *args, **kwargs):
+            try:
+                builtins_print = __builtins__["print"] if isinstance(__builtins__, dict) else print
+                builtins_print(*args)
+            except Exception:
+                return
+    class Table:
+        def __init__(self, *args, **kwargs):
+            return
+        def add_column(self, *args, **kwargs):
+            return
+        def add_row(self, *args, **kwargs):
+            return
 
 console = Console()
 

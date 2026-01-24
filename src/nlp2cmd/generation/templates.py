@@ -105,6 +105,7 @@ class TemplateGenerator:
     }
     
     SHELL_TEMPLATES: dict[str, str] = {
+        'file_operation': "sudo apt-get install {package}",
         'find': "find {path} {type_flag} {name_flag} {size_flag} {time_flag} {exec_flag}",
         'find_simple': "find {path} -name '{pattern}'",
         'count_files': "find '{path}' -maxdepth 1 -mindepth 1 -type f {name_flag_count} | wc -l",

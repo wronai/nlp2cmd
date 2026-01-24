@@ -18,7 +18,47 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
-import numpy as np
+try:
+    import numpy as np
+except Exception:  # pragma: no cover
+    class _NumpyStub:
+        def __getattr__(self, name):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def array(self, obj, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def zeros_like(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def pad(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def var(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def sum(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def exp(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def argmax(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+        def max(self, *args, **kwargs):
+            raise ImportError(
+                "numpy is not installed. Install it to use thermodynamic optimization features."
+            )
+    np = _NumpyStub()
 import re
 import json
 from pathlib import Path

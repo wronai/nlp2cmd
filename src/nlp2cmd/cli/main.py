@@ -64,6 +64,21 @@ except Exception:  # pragma: no cover
         def pass_context(func):
             return func
 
+        @staticmethod
+        def Choice(choices):
+            class _Choice:
+                def __init__(self, choices):
+                    self.choices = choices
+            return _Choice(choices)
+
+        @staticmethod
+        def Path(**kwargs):
+            class _Path:
+                def __init__(self, **kwargs):
+                    for k, v in kwargs.items():
+                        setattr(self, k, v)
+            return _Path(**kwargs)
+
     click = _ClickStub()
 
 try:
@@ -1233,8 +1248,34 @@ def _fallback_open_url_from_query(query: str) -> None:
             console.print(f"\n[yellow]Opened URL without Playwright: {url}[/yellow]")
 
 
-from nlp2cmd.cli.web_schema import web_schema_group
-from nlp2cmd.cli.history import history_group
+# Stub commands for when click is not available
+def repair(*args, **kwargs):
+    pass
+
+def validate(*args, **kwargs):
+    pass
+
+def analyze_env(*args, **kwargs):
+    pass
+
+def version(*args, **kwargs):
+    pass
+
+# Add command methods to main when click is not available
+if not hasattr(click, 'Group'):
+    def _stub_command(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    # Apply the stub command method immediately after main function is defined
+else:
+    # If click is available, we need to handle the imports properly
+    try:
+        from nlp2cmd.cli.web_schema import web_schema_group
+        from nlp2cmd.cli.history import history_group
+    except Exception:
+        web_schema_group = None
+        history_group = None
 
 
 @click.group(cls=NLP2CMDGroup, invoke_without_command=True)
@@ -1394,8 +1435,20 @@ def main(
         else:
             console.print(ctx.get_help())
 
+# Apply command method stub after main function definition
+if not hasattr(click, 'Group'):
+    def _stub_command(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+    main.command = _stub_command
+    main.add_command = lambda cmd: None
 
-@main.command()
+# Stub command decorators for when click is not available
+_command_decorator = main.command if hasattr(main, 'command') else lambda *args, **kwargs: lambda func: func
+
+
+@_command_decorator
 @click.argument("file", type=click.Path(exists=True))
 @click.option("--backup", is_flag=True, help="Create backup before repair")
 @click.pass_context
@@ -1451,7 +1504,7 @@ def repair(ctx, file: str, backup: bool):
         console.print("\n✅ No issues found!")
 
 
-@main.command()
+@_command_decorator
 @click.argument("file", type=click.Path(exists=True))
 @click.pass_context
 def validate(ctx, file: str):
@@ -1483,7 +1536,7 @@ def validate(ctx, file: str):
             console.print(f"  [yellow]• {warning}[/yellow]")
 
 
-@main.command("analyze-env")
+@_command_decorator
 @click.option("-o", "--output", type=click.Path(), help="Output file (JSON)")
 @click.pass_context
 def analyze_env(ctx, output: Optional[str]):
@@ -1559,8 +1612,15 @@ def analyze_env(ctx, output: Optional[str]):
 
 
 # Register subcommands
-main.add_command(web_schema_group)
-main.add_command(history_group)
+# Add command groups to main (only if click is available)
+if hasattr(click, 'Group'):
+    try:
+        from nlp2cmd.cli.web_schema import web_schema_group
+        from nlp2cmd.cli.history import history_group
+        main.add_command(web_schema_group)
+        main.add_command(history_group)
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

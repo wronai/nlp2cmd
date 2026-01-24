@@ -110,7 +110,8 @@ LLM plans. Code executes. System controls.
 | **[Thermodynamic Architecture](THERMODYNAMIC_ARCHITECTURE.md)** | Deep technical architecture overview |
 | **[Contributing Guide](CONTRIBUTING.md)** | Development guidelines and contribution process |
 | **[Generation Module](README_GENERATION.md)** | DSL generation implementation details |
-| **[Quick Fix Reference](QUICK_FIX_REFERENCE.md)** | Common issues and solutions |
+| **[Quick Fix Reference](docs/quick-fix-reference.md)** | Common issues and solutions |
+| **[Keyword Detection Flow](docs/KEYWORD_DETECTION_FLOW.md)** | Detailed keyword intent detection pipeline and fallback mechanisms |
 
 ## 🚀 Quick Start
 
@@ -293,6 +294,43 @@ nlp = NLP2CMD(adapter=SQLAdapter(dialect="postgresql"))
 result = nlp.transform("Pokaż wszystkich użytkowników z Warszawy")
 print(result.command)  # SELECT * FROM users WHERE city = 'Warszawa';
 ```
+
+## 🔍 Keyword Intent Detection
+
+NLP2CMD uses a **robust multi-layered detection pipeline** that ensures reliable intent recognition even with typos, variations, or missing dependencies:
+
+### Detection Pipeline (11 Layers)
+
+1. **Text Normalization** - Polish diacritics, typo corrections, optional lemmatization
+2. **Fast Path Detection** - Quick browser/search queries
+3. **SQL Context Detection** - Identify SQL keywords
+4. **SQL DROP Detection** - High-priority dangerous operations
+5. **Docker Detection** - Explicit Docker commands
+6. **Kubernetes Detection** - K8s-specific commands
+7. **Service Restart Detection** - Service management priority
+8. **Priority Intents** - Configured high-priority patterns
+9. **General Pattern Matching** - Full keyword matching with confidence scoring
+10. **Fuzzy Matching** - Optional rapidfuzz for typos (85% threshold)
+11. **Final Fallback** - Always returns `unknown/unknown`
+
+### Key Guarantees
+
+✅ **Always works** - Final fallback ensures no method returns `None`  
+✅ **Graceful degradation** - Missing dependencies don't break the pipeline  
+✅ **Typo tolerance** - Built-in corrections + optional fuzzy matching  
+✅ **Performance optimized** - Fast path and priority checks first  
+✅ **Safety first** - Dangerous operations get highest priority  
+
+### Example Flow
+
+```text
+Input: "dokcer ps" (typo)
+1. Normalization: "dokcer" → "docker"
+2. Pattern matching: "docker ps" → docker/list
+Result: ✅ Works without fuzzy matching
+```
+
+**[📖 Full Documentation](docs/KEYWORD_DETECTION_FLOW.md)**
 
 ## 📋 Action Registry
 

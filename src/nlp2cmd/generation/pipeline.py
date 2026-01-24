@@ -123,12 +123,27 @@ class RuleBasedPipeline:
             if agg is not None:
                 dominant = agg.get("detection")
                 if isinstance(dominant, DetectionResult):
-                    if (dominant.domain and dominant.domain != "unknown") and (
-                        detection.domain == "unknown" or dominant.confidence >= detection.confidence
-                    ):
+                    # Enhanced multi-sentence decision logic
+                    consistency = agg.get("consistency", {})
+                    domain_consistency = consistency.get("domain", 0.0)
+                    intent_consistency = consistency.get("intent", 0.0)
+                    
+                    # Use aggregated result if:
+                    # 1. Original detection is unknown, OR
+                    # 2. Aggregated has higher confidence, OR  
+                    # 3. High consistency (>0.7) even with slightly lower confidence
+                    should_use_agg = (
+                        detection.domain == "unknown" or
+                        dominant.confidence >= detection.confidence or
+                        (domain_consistency > 0.7 and dominant.confidence > 0.6)
+                    )
+                    
+                    if should_use_agg:
                         detection = dominant
+                        consistency_info = f" (domain: {domain_consistency:.2f}, intent: {intent_consistency:.2f})"
                         warnings.append(
-                            f"Multi-sentence aggregation: using {dominant.domain}/{dominant.intent} (confidence {dominant.confidence:.2f})"
+                            f"Multi-sentence aggregation: using {dominant.domain}/{dominant.intent} "
+                            f"(confidence {dominant.confidence:.2f}){consistency_info}"
                         )
         
         if detection.domain == 'unknown':
@@ -416,112 +431,147 @@ class RuleBasedPipeline:
                     ll = ln.lower()
                     if "traceback (most recent call last)" in ll:
                         score += 4
-                    if re.search(r"file \".+\", line \d+", ln):
-                        score += 3
-                    if re.search(r"\b(exception|error|fatal|stack trace)\b", ll):
-                        score += 1
-                    if re.search(r"^\d{4}-\d{2}-\d{2}[ t]\d{2}:\d{2}:\d{2}", ln):
-                        score += 1
-                    if re.search(r"^\[(info|warn|warning|error|debug|trace)\]", ll):
-                        score += 1
-                if score >= 4:
-                    return [text.strip()]
-
-        parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", text.strip()) if p.strip()]
-        if len(parts) >= 2:
-            return parts
-
-        if len(text) < 250:
-            return parts
-
         try:
             import spacy
-
-            try:
-                nlp = spacy.blank("pl")
-            except Exception:
-                nlp = spacy.blank("en")
-            if "sentencizer" not in nlp.pipe_names:
-                nlp.add_pipe("sentencizer")
+            
+            # Try Polish model first, then English
+            models = ["pl_core_news_sm", "en_core_web_sm"]
+            nlp = None
+            
+            for model in models:
+                try:
+                    nlp = spacy.load(model)
+                    break
+                except OSError:
+                    continue
+            
+            # Fallback to blank model with sentencizer
+            if nlp is None:
+                try:
+                    nlp = spacy.blank("pl")
+                except Exception:
+                    nlp = spacy.blank("en")
+                
+                if "sentencizer" not in nlp.pipe_names:
+                    nlp.add_pipe("sentencizer")
+            
             doc = nlp(text)
             sents = [s.text.strip() for s in doc.sents if s.text and s.text.strip()]
+            
             if len(sents) >= 2:
                 return sents
+                
+        except ImportError:
+            pass  # spaCy not available
         except Exception:
-            return parts
-
+            pass  # spaCy failed
+        
+        # Fallback to regex-based splitting
+        parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", text) if p.strip()]
         return parts
 
     def _aggregate_detection(self, sentences: list[str]) -> Optional[dict[str, Any]]:
-        if not sentences:
+        """Enhanced aggregation of multi-sentence detection using semantic analysis."""
+        if not sentences or len(sentences) < 2:
             return None
 
         domain_scores: dict[str, float] = {}
         intent_scores: dict[str, float] = {}
-        best: Optional[DetectionResult] = None
-
-        prev_domain: Optional[str] = None
-        prev_intent: Optional[str] = None
-        prev_conf: float = 0.0
-
-        for sent in sentences:
+        sentence_results: list[DetectionResult] = []
+        
+        # Enhanced Polish connectors and semantic markers
+        polish_connectors = {
+            'sequence': ['następnie', 'potem', 'dalej', 'wtedy', 'na koniec', 'potem', 'po czym', 'zanim'],
+            'conditional': ['jeśli', 'jeżeli', 'gdy', 'gdyby', 'w razie', 'przy'],
+            'causal': ['ponieważ', 'dlatego', 'zatem', 'w związku z tym', 'wskutek'],
+            'additive': ['oraz', 'i', 'także', 'również', 'ponadto', 'wszakże'],
+            'contrastive': ['ale', 'jednakże', 'lecz', 'aczkolwiek', 'natomiast', 'mimo wszystko']
+        }
+        
+        # Analyze each sentence
+        for i, sent in enumerate(sentences):
             d = self.detector.detect(sent)
-
+            sentence_results.append(d)
+            
             sent_lower = sent.strip().lower()
-            begins_with_connector = bool(
-                re.match(r"^(nast[eę]pnie|potem|dalej|oraz|a potem|je[sś]li|je[sś]eli|gdy|wtedy|na koniec)\b", sent_lower)
-            )
-
-            if d.domain == "unknown" and prev_domain and begins_with_connector:
-                cands = self.detector.detect_all(sent)
-                chosen = None
-                for c in cands[:8]:
-                    if c.domain == prev_domain:
-                        chosen = c
-                        break
-                if chosen is not None:
-                    d = chosen
-                else:
-                    d = DetectionResult(
-                        domain=prev_domain,
-                        intent=prev_intent or "unknown",
-                        confidence=max(0.35, min(0.7, prev_conf * 0.6)),
-                        matched_keyword=None,
-                    )
-
+            
+            # Detect sentence type and connectors
+            connector_type = None
+            for conn_type, connectors in polish_connectors.items():
+                if any(re.match(rf"^{re.escape(conn)}\b", sent_lower) for conn in connectors):
+                    connector_type = conn_type
+                    break
+            
+            # Weight confidence based on position and connector type
+            weight = 1.0
+            if i == 0:
+                weight = 1.2  # First sentence gets higher weight
+            elif i == len(sentences) - 1:
+                weight = 1.1  # Last sentence gets slightly higher weight
+            
+            if connector_type == 'sequence':
+                weight *= 1.15
+            elif connector_type == 'conditional':
+                weight *= 0.9  # Conditional sentences are less central
+            elif connector_type == 'causal':
+                weight *= 1.25  # Causal sentences are important
+            
+            # Apply weighted scoring
             if isinstance(d.domain, str) and d.domain and d.domain != "unknown":
-                domain_scores[d.domain] = domain_scores.get(d.domain, 0.0) + float(d.confidence)
-
+                domain_scores[d.domain] = domain_scores.get(d.domain, 0.0) + (float(d.confidence) * weight)
+            
             if isinstance(d.intent, str) and d.intent and d.intent != "unknown":
-                intent_scores[d.intent] = intent_scores.get(d.intent, 0.0) + float(d.confidence)
-
-            if best is None or d.confidence > best.confidence:
-                best = d
-
-            if d.domain != "unknown":
-                prev_domain = d.domain
-                prev_intent = d.intent
-                prev_conf = float(d.confidence)
-
-        if not domain_scores or not intent_scores:
+                intent_scores[d.intent] = intent_scores.get(d.intent, 0.0) + (float(d.confidence) * weight)
+        
+        # Enhanced domain consistency analysis
+        if not domain_scores:
             return None
-
-        dominant_domain = max(domain_scores.items(), key=lambda x: x[1])[0]
-        dominant_intent = max(intent_scores.items(), key=lambda x: x[1])[0]
-
-        conf = 0.0
-        if best is not None:
-            conf = float(best.confidence)
-
+        
+        # Find dominant domain with consistency bonus
+        sorted_domains = sorted(domain_scores.items(), key=lambda x: x[1], reverse=True)
+        dominant_domain, dominant_score = sorted_domains[0]
+        
+        # Apply consistency bonus if most sentences agree on domain
+        domain_consistency = sum(1 for r in sentence_results if r.domain == dominant_domain) / len(sentence_results)
+        if domain_consistency >= 0.6:
+            dominant_score *= 1.2
+        
+        # Enhanced intent detection with context awareness
+        if not intent_scores:
+            dominant_intent = "unknown"
+        else:
+            sorted_intents = sorted(intent_scores.items(), key=lambda x: x[1], reverse=True)
+            dominant_intent, intent_score = sorted_intents[0]
+            
+            # Apply intent consistency bonus
+            intent_consistency = sum(1 for r in sentence_results if r.intent == dominant_intent) / len(sentence_results)
+            if intent_consistency >= 0.5:
+                intent_score *= 1.1
+        
+        # Find best individual detection as fallback
+        best = max(sentence_results, key=lambda x: x.confidence)
+        
+        # Calculate final confidence with multiple factors
+        base_confidence = float(best.confidence)
+        consistency_bonus = (domain_consistency + intent_consistency) / 2 * 0.2
+        sentence_count_bonus = min(len(sentences) * 0.05, 0.15)
+        
+        final_confidence = min(0.95, base_confidence + consistency_bonus + sentence_count_bonus)
+        
         return {
             "domain_scores": domain_scores,
             "intent_scores": intent_scores,
             "detection": DetectionResult(
                 domain=dominant_domain,
                 intent=dominant_intent,
-                confidence=conf,
+                confidence=final_confidence,
                 matched_keyword=None,
             ),
+            "consistency": {
+                "domain": domain_consistency,
+                "intent": intent_consistency if intent_scores else 0.0
+            },
+            "sentence_count": len(sentences)
         }
 
     def process_with_llm_repair(

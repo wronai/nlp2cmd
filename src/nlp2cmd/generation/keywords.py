@@ -15,6 +15,45 @@ import re
 
 from nlp2cmd.utils.data_files import find_data_files
 
+@staticmethod
+def _normalize_polish_text(text: str) -> str:
+    """Normalize Polish diacritics to handle typos."""
+    text = text.replace('ł', 'l').replace('Ł', 'L')
+    text = text.replace('ą', 'a').replace('Ą', 'A')
+    text = text.replace('ę', 'e').replace('Ę', 'E')
+    text = text.replace('ś', 's').replace('Ś', 'S')
+    text = text.replace('ć', 'c').replace('Ć', 'C')
+    text = text.replace('ń', 'n').replace('Ń', 'N')
+    text = text.replace('ó', 'o').replace('Ó', 'O')
+    text = text.replace('ź', 'z').replace('Ź', 'Z')
+    text = text.replace('ż', 'z').replace('Ż', 'Z')
+    return text
+
+try:
+    from rapidfuzz import fuzz, process
+except ImportError:
+    # rapidfuzz not installed - fuzzy matching disabled
+    fuzz = None
+    process = None
+
+try:
+    import spacy
+    # Try to load Polish model - will be None if not available
+    NLP_MODEL = None
+    try:
+        NLP_MODEL = spacy.load("pl_core_news_sm")
+    except OSError:
+        try:
+            # Try CLARIN model as fallback
+            NLP_MODEL = spacy.load("spacy_pl_model")
+        except OSError:
+            # No Polish model available
+            pass
+except ImportError:
+    # spaCy not installed - lemmatization disabled
+    spacy = None
+    NLP_MODEL = None
+
 
 @dataclass
 class DetectionResult:
@@ -101,7 +140,7 @@ class KeywordIntentDetector:
                 for d, items in boosters.items():
                     if not isinstance(d, str) or not d.strip() or not isinstance(items, list):
                         continue
-                    clean = [x.strip() for x in items if isinstance(x, str) and x.strip()]
+                    clean = [_normalize_polish_text(x.strip()) for x in items if isinstance(x, str) and x.strip()]
                     if not clean:
                         continue
                     key = d.strip()
@@ -121,7 +160,7 @@ class KeywordIntentDetector:
                 for d, items in priority.items():
                     if not isinstance(d, str) or not d.strip() or not isinstance(items, list):
                         continue
-                    clean = [x.strip() for x in items if isinstance(x, str) and x.strip()]
+                    clean = [_normalize_polish_text(x.strip()) for x in items if isinstance(x, str) and x.strip()]
                     if not clean:
                         continue
                     key = d.strip()
@@ -141,7 +180,7 @@ class KeywordIntentDetector:
                 b = fast_path.get("browser_keywords")
                 if isinstance(b, list):
                     prev = list(self.fast_path_browser_keywords)
-                    clean = [x.strip() for x in b if isinstance(x, str) and x.strip()]
+                    clean = [_normalize_polish_text(x.strip()) for x in b if isinstance(x, str) and x.strip()]
                     merged: list[str] = []
                     seen: set[str] = set()
                     for s in [*prev, *clean]:
@@ -155,7 +194,7 @@ class KeywordIntentDetector:
                 s = fast_path.get("search_keywords")
                 if isinstance(s, list):
                     prev = list(self.fast_path_search_keywords)
-                    clean = [x.strip() for x in s if isinstance(x, str) and x.strip()]
+                    clean = [_normalize_polish_text(x.strip()) for x in s if isinstance(x, str) and x.strip()]
                     merged: list[str] = []
                     seen: set[str] = set()
                     for ss in [*prev, *clean]:
@@ -178,7 +217,8 @@ class KeywordIntentDetector:
             return
 
         base: dict[str, dict[str, list[str]]] = {
-            d: {i: list(kws) for i, kws in intents.items()}
+            d: {i: [_normalize_polish_text(kw.strip()) for kw in kws if isinstance(kw, str) and kw.strip()] 
+                for i, kws in intents.items()}
             for d, intents in self.PATTERNS.items()
         }
 
@@ -219,7 +259,7 @@ class KeywordIntentDetector:
                         if not isinstance(intent, str) or not intent.strip() or not isinstance(keywords, list):
                             continue
                         i = intent.strip()
-                        clean = [kw.strip() for kw in keywords if isinstance(kw, str) and kw.strip()]
+                        clean = [_normalize_polish_text(kw.strip()) for kw in keywords if isinstance(kw, str) and kw.strip()]
                         if not clean:
                             continue
                         prev = bucket.get(i)
@@ -240,16 +280,70 @@ class KeywordIntentDetector:
             return re.search(r"(?<![a-z0-9])deploy(?![a-z0-9])", text_lower) is not None
         if len(k) <= 3 and re.fullmatch(r"[a-z0-9]+", k):
             return re.search(rf"(?<![a-z0-9]){re.escape(k)}(?![a-z0-9])", text_lower) is not None
+        # Use regex with flexible spacing for multi-word keywords to handle extra spaces
+        if ' ' in k:
+            pattern = r'\s+'.join(map(re.escape, k.split()))
+            return re.search(pattern, text_lower) is not None
         return k in text_lower
 
     @staticmethod
     def _normalize_text_lower(text_lower: str) -> str:
         if not isinstance(text_lower, str) or not text_lower:
             return text_lower
+        
+        # Apply existing regex-based normalizations
+        # Normalize Polish diacritics to handle typos
+        text_lower = _normalize_polish_text(text_lower)
+        text_lower = text_lower.replace('ł', 'l').replace('Ł', 'L')
+        text_lower = text_lower.replace('ą', 'a').replace('Ą', 'A')
+        text_lower = text_lower.replace('ę', 'e').replace('Ę', 'E')
+        text_lower = text_lower.replace('ś', 's').replace('Ś', 'S')
+        text_lower = text_lower.replace('ć', 'c').replace('Ć', 'C')
+        text_lower = text_lower.replace('ń', 'n').replace('Ń', 'N')
+        text_lower = text_lower.replace('ó', 'o').replace('Ó', 'O')
+        text_lower = text_lower.replace('ź', 'z').replace('Ź', 'Z')
+        text_lower = text_lower.replace('ż', 'z').replace('Ż', 'Z')
+        
         text_lower = re.sub(r"(?<![a-z0-9])doker(?![a-z0-9])", "docker", text_lower)
         text_lower = re.sub(r"(?<![a-z0-9])dokcer(?![a-z0-9])", "docker", text_lower)
         text_lower = re.sub(r"\bstartuj(?:cie|my|)?\b", "uruchom", text_lower)
         text_lower = re.sub(r"\bwystartuj(?:cie|my|)?\b", "uruchom", text_lower)
+        
+        # Apply lemmatization if spaCy Polish model is available, but only for words
+        # that don't match our exact patterns to avoid breaking existing functionality
+        if NLP_MODEL is not None:
+            try:
+                doc = NLP_MODEL(text_lower)
+                # Extract lemmas for each token, but preserve exact matches for important keywords
+                lemmatized_tokens = []
+                for token in doc:
+                    # Keep punctuation and numbers as-is
+                    if token.is_punct or token.like_num or token.is_space:
+                        lemmatized_tokens.append(token.text)
+                    else:
+                        original_text = token.text.lower()
+                        lemma = token.lemma_.lower()
+                        
+                        # Don't lemmatize important command keywords that have exact patterns
+                        important_keywords = {
+                            'restartuj', 'uruchom', 'zrestartuj', 'startuj', 'wystartuj',
+                            'zatrzymaj', 'stopuj', 'usuń', 'skopiuj', 'przenieś', 'znajdź',
+                            'pokaż', 'sprawdź', 'utwórz', 'zmień', 'restart', 'docker', 'ps',
+                            'systemctl', 'nginx', 'kontener', 'kontenery', 'plik', 'foldery',
+                            'katalog', 'katalogi', 'usługa', 'usługi', 'usługę', 'serwis',
+                            'komputer', 'system', 'proces', 'procesy'
+                        }
+                        
+                        # Use original text if it's an important keyword or lemma is empty/too short
+                        if original_text in important_keywords or not lemma or len(lemma) <= 1:
+                            lemmatized_tokens.append(original_text)
+                        else:
+                            lemmatized_tokens.append(lemma)
+                text_lower = " ".join(lemmatized_tokens)
+            except Exception:
+                # If lemmatization fails, continue with regex-normalized text
+                pass
+        
         return text_lower
 
     @staticmethod
@@ -700,7 +794,8 @@ class KeywordIntentDetector:
             return False
         if domain in {'docker', 'kubernetes'}:
             boosters = self.domain_boosters.get(domain, [])
-            if not any(b.lower() in text_lower for b in boosters):
+            text_clean = text_lower.strip()
+            if not any(b.lower() in text_clean for b in boosters):
                 return False
         return True
 
@@ -768,6 +863,29 @@ class KeywordIntentDetector:
             return best_match
         return None
 
+    def _detect_explicit_service_restart(self, text_lower: str) -> Optional[DetectionResult]:
+        """
+        Explicit detection for service restart commands.
+        This should be checked before general pattern matching to avoid conflicts.
+        """
+        restart_patterns = [
+            r'\brestartuj\s+(?:usługę|usluge|serwis|service)\b',
+            r'\bzrestartuj\s+(?:usługę|usluge|serwis|service)\b',
+            r'\bprzerestartuj\s+(?:usługę|usluge|serwis|service)\b',
+            r'\bsystemctl\s+restart\b',
+        ]
+        
+        for pattern in restart_patterns:
+            if re.search(pattern, text_lower):
+                return DetectionResult(
+                    domain='shell',
+                    intent='service_restart',
+                    confidence=0.95,
+                    matched_keyword='restartuj usługę',
+                )
+        
+        return None
+
     def _detect_best_from_patterns(
         self,
         text_lower: str,
@@ -795,7 +913,10 @@ class KeywordIntentDetector:
                                 continue
 
                         confidence = 0.7
-                        keyword_length_bonus = min(len(kw) / 20, 0.15)
+                        keyword_length_bonus = min(len(kw) / 15, 0.2)  # Increased bonus for longer keywords
+                        # Extra bonus for service-related patterns to prioritize them over generic ones
+                        if domain == 'shell' and intent.startswith('service_'):
+                            keyword_length_bonus += 0.05
                         confidence += keyword_length_bonus
                         domain_boost = self._calculate_domain_boost(text_lower, domain)
                         confidence += domain_boost
@@ -849,6 +970,11 @@ class KeywordIntentDetector:
         if k8s_explicit is not None:
             return k8s_explicit
 
+        # Explicit service_restart detection before pattern matching
+        service_restart = self._detect_explicit_service_restart(text_lower)
+        if service_restart is not None:
+            return service_restart
+
         priority_match = self._detect_best_from_priority_intents(
             text_lower,
             sql_context=sql_context,
@@ -865,6 +991,12 @@ class KeywordIntentDetector:
         if best_match is not None:
             return best_match
 
+        # Fuzzy matching fallback if rapidfuzz is available
+        if fuzz is not None and process is not None:
+            fuzzy_match = self._detect_best_from_fuzzy(text_lower)
+            if fuzzy_match is not None:
+                return fuzzy_match
+
         return DetectionResult(
             domain='unknown',
             intent='unknown',
@@ -875,7 +1007,8 @@ class KeywordIntentDetector:
     def _calculate_domain_boost(self, text: str, domain: str) -> float:
         """Calculate confidence boost based on domain-specific keywords."""
         boosters = self.domain_boosters.get(domain, [])
-        matches = sum(1 for b in boosters if b.lower() in text)
+        text_clean = text.strip().lower()
+        matches = sum(1 for b in boosters if b.lower() in text_clean)
         return min(matches * 0.05, 0.15)
     
     def detect_all(self, text: str) -> list[DetectionResult]:
@@ -938,3 +1071,89 @@ class KeywordIntentDetector:
     def get_supported_intents(self, domain: str) -> list[str]:
         """Get list of supported intents for a domain."""
         return list(self.patterns.get(domain, {}).keys())
+
+    def _detect_best_from_fuzzy(self, text_lower: str) -> Optional[DetectionResult]:
+        """
+        Fuzzy matching fallback using rapidfuzz.
+        Tries to match text against domain boosters and intent keywords with similarity threshold.
+        """
+        if fuzz is None or process is None:
+            return None
+
+        # Collect all possible keywords with their domain/intent mapping
+        all_keywords = []
+        
+        # Add domain boosters
+        for domain, boosters in self.domain_boosters.items():
+            for booster in boosters:
+                all_keywords.append((booster.lower(), domain, 'domain_booster', domain))
+        
+        # Add intent keywords from patterns
+        for domain, intents in self.patterns.items():
+            for intent, keywords in intents.items():
+                for keyword in keywords:
+                    all_keywords.append((keyword.lower(), domain, intent, intent))
+        
+        if not all_keywords:
+            return None
+
+        # Extract just the keyword strings for rapidfuzz
+        keyword_strings = [kw for kw, _, _, _ in all_keywords]
+        
+        # Use rapidfuzz to find best matches
+        try:
+            # Find best match with score
+            result = process.extractOne(
+                text_lower,
+                keyword_strings,
+                scorer=fuzz.WRatio,
+                score_cutoff=85  # Threshold for fuzzy matching
+            )
+            
+            if result is None:
+                return None
+            
+            matched_keyword, score, _ = result
+            
+            # Find the corresponding domain/intent
+            for kw, domain, intent_type, mapped_intent in all_keywords:
+                if kw == matched_keyword:
+                    # Calculate confidence based on similarity score
+                    confidence = score / 100.0
+                    
+                    # Apply domain boost if it's a domain booster
+                    if intent_type == 'domain_booster':
+                        # For domain boosters, we need to find the best intent within that domain
+                        domain_intents = self.patterns.get(domain, {})
+                        best_intent = None
+                        best_intent_score = 0.0
+                        
+                        for intent, keywords in domain_intents.items():
+                            for kw in keywords:
+                                kw_score = fuzz.WRatio(text_lower, kw.lower())
+                                if kw_score > best_intent_score:
+                                    best_intent_score = kw_score
+                                    best_intent = intent
+                        
+                        if best_intent and best_intent_score >= 85:
+                            return DetectionResult(
+                                domain=domain,
+                                intent=self._normalize_intent(domain, best_intent, text_lower),
+                                confidence=min(best_intent_score / 100.0, 0.85),  # Cap fuzzy confidence
+                                matched_keyword=matched_keyword,
+                            )
+                    else:
+                        # Direct intent match
+                        return DetectionResult(
+                            domain=domain,
+                            intent=self._normalize_intent(domain, mapped_intent, text_lower),
+                            confidence=min(confidence, 0.85),  # Cap fuzzy confidence
+                            matched_keyword=matched_keyword,
+                        )
+                    break
+            
+        except Exception:
+            # If rapidfuzz fails for any reason, silently fall back
+            pass
+        
+        return None

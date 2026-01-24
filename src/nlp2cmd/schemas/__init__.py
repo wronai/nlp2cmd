@@ -7,6 +7,7 @@ Supports Docker, Kubernetes, SQL, Terraform, and other configuration formats.
 from __future__ import annotations
 
 import re
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
@@ -52,6 +53,21 @@ class FileFormatSchema:
         if self.generator is None:
             return str(data.get("content", ""))
         return self.generator(data)
+    
+    def matches_extension(self, filename: str) -> bool:
+        """Check if filename matches any of this schema's extensions."""
+        import fnmatch
+        filename_lower = filename.lower()
+        for pattern in self.extensions:
+            pattern_lower = pattern.lower()
+            # Use fnmatch for all patterns - it handles all cases correctly
+            if fnmatch.fnmatch(filename_lower, pattern_lower):
+                return True
+        return False
+    
+    def matches_mime_type(self, mime_type: str) -> bool:
+        """Check if MIME type matches this schema."""
+        return mime_type in self.mime_types
     
     def self_validate(self) -> dict[str, Any]:
         """Validate the schema itself."""
@@ -203,6 +219,23 @@ class SchemaRegistry:
             ],
         )
 
+        # JSON schema
+        self._schemas["json"] = FileFormatSchema(
+            name="JSON",
+            extensions=["*.json"],
+            mime_types=["application/json"],
+            validator=self._validate_json,
+            parser=lambda c: json.loads(c) if c.strip() else {},
+            generator=lambda d: json.dumps(d, indent=2),
+            repair_rules=[
+                {
+                    "pattern": r",\s*}",
+                    "fix": "}",
+                    "reason": "Remove trailing comma",
+                },
+            ],
+        )
+
     def register(self, name: Union[str, FileFormatSchema], schema: Optional[FileFormatSchema] = None) -> None:
         """Register a new schema."""
         if schema is None and isinstance(name, FileFormatSchema):
@@ -283,6 +316,13 @@ class SchemaRegistry:
 
     def reload(self, name: str, schema: FileFormatSchema) -> None:
         self._schemas[name.lower()] = schema
+
+    def get_version(self, name: str, version: str) -> Optional[FileFormatSchema]:
+        """Get schema by name and version."""
+        schema = self.get(name)
+        if schema and schema.version == version:
+            return schema
+        return None
 
     def export_schema(self, name: str) -> dict[str, Any]:
         schema = self.get(name)
@@ -387,21 +427,29 @@ class SchemaRegistry:
         filename = file_path.name
         full_path = str(file_path)
 
+        # Find all matching schemas
+        matching_schemas = []
         for schema in self._schemas.values():
             for pattern in schema.extensions:
                 if self._match_pattern(filename, pattern):
-                    return schema
+                    matching_schemas.append(schema)
+                    break
                 if self._match_pattern(full_path, pattern):
-                    return schema
+                    matching_schemas.append(schema)
+                    break
+
+        # Return the highest priority schema
+        if matching_schemas:
+            return max(matching_schemas, key=lambda s: s.priority)
 
         # Try content-based detection
         return self._detect_by_content(file_path)
 
     def _match_pattern(self, text: str, pattern: str) -> bool:
-        """Match filename against pattern."""
+        """Match filename against pattern (case insensitive)."""
         import fnmatch
 
-        return fnmatch.fnmatch(text, pattern) or text == pattern
+        return fnmatch.fnmatch(text.lower(), pattern.lower()) or text.lower() == pattern.lower()
 
     def _detect_by_content(self, file_path: Path) -> Optional[FileFormatSchema]:
         """Detect format by content analysis."""
@@ -659,6 +707,10 @@ class SchemaRegistry:
         if not isinstance(data, dict):
             return {"valid": False, "errors": ["Root must be a mapping"], "warnings": []}
 
+        # Check for version key (older docker-compose format)
+        if "version" not in data:
+            errors.append("Missing 'version' key")
+
         if "services" not in data:
             errors.append("Missing 'services' key")
 
@@ -686,6 +738,7 @@ class SchemaRegistry:
         except yaml.YAMLError as e:
             return {"valid": False, "errors": [f"YAML error: {e}"], "warnings": []}
 
+        # If it's not a Deployment, consider it valid (might be other K8s resource)
         if data.get("kind") != "Deployment":
             return {"valid": True, "errors": [], "warnings": []}
 
@@ -696,8 +749,13 @@ class SchemaRegistry:
         if "selector" not in spec:
             errors.append("spec.selector is required")
 
-        template = spec.get("template", {}).get("spec", {})
-        containers = template.get("containers", [])
+        template = spec.get("template", {})
+        if not template:
+            errors.append("spec.template is required")
+            return {"valid": len(errors) == 0, "errors": errors, "warnings": warnings}
+
+        template_spec = template.get("spec", {})
+        containers = template_spec.get("containers", [])
 
         for i, container in enumerate(containers):
             if "name" not in container:
@@ -812,6 +870,14 @@ class SchemaRegistry:
                 value = f'"{value}"'
             lines.append(f"{key}={value}")
         return "\n".join(lines)
+
+    def _validate_json(self, content: str) -> dict[str, Any]:
+        """Validate JSON content."""
+        try:
+            json.loads(content)
+            return {"valid": True, "errors": [], "warnings": []}
+        except json.JSONDecodeError as e:
+            return {"valid": False, "errors": [str(e)], "warnings": []}
 
 
 # Convenience exports

@@ -379,6 +379,27 @@ class ShellAdapter(BaseDSLAdapter):
         target = entities.get("target", "")
         destination = entities.get("destination", "")
         
+        # Extract operation from matched keyword if not in entities
+        if not operation and "matched_keyword" in entities:
+            matched = entities["matched_keyword"]
+            if any(kw in matched for kw in ["zainstaluj", "install", "apt install", "apt-get install"]):
+                operation = "install"
+            elif any(kw in matched for kw in ["dodaj", "pobierz", "wget", "curl"]):
+                operation = "download"
+        
+        # Handle install operations
+        if "zainstaluj" in operation or "install" in operation or "apt install" in operation or "apt-get install" in operation:
+            package = entities.get("package", target)
+            if package:
+                return f"sudo apt-get install {package}"
+            else:
+                return "sudo apt-get install"
+        elif "dodaj" in operation or "pobierz" in operation or "wget" in operation or "curl" in operation:
+            if target:
+                return f"wget {target}"
+            else:
+                return "wget"
+        
         # Handle specific Polish patterns
         if "kopiuj" in operation or "copy" in operation:
             if destination:
