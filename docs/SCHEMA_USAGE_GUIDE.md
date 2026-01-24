@@ -1,5 +1,12 @@
 # How to Use Schemas in NLP2CMD - Complete Guide
 
+## 📚 Related Documentation
+
+- **[Documentation Hub](README.md)** - Entry point for all docs
+- **[Schema Systems](SCHEMA_SYSTEMS.md)** - Overview of schema subsystems
+- **[Schema Complete Guide](SCHEMA_COMPLETE_GUIDE.md)** - Deep dive
+- **[Versioned Schemas](VERSIONED_SCHEMAS.md)** - Versioning and evolution
+
 ## Overview
 
 This guide explains how schemas are extracted from commands and used to generate commands based on user prompts.
@@ -9,6 +16,7 @@ This guide explains how schemas are extracted from commands and used to generate
 ### Core Files
 
 #### Schema Extraction
+
 ```python
 # src/nlp2cmd/schema_extraction/__init__.py
 class DynamicSchemaRegistry:
@@ -20,6 +28,7 @@ class DynamicSchemaRegistry:
 ```
 
 #### Schema Storage
+
 ```python
 # src/nlp2cmd/storage/per_command_store.py
 class PerCommandSchemaStore:
@@ -31,6 +40,7 @@ class PerCommandSchemaStore:
 ```
 
 #### Schema-Based Generation
+
 ```python
 # src/nlp2cmd/schema_based/generator.py
 class SchemaBasedGenerator:
@@ -43,6 +53,7 @@ class SchemaBasedGenerator:
 ## 2. Schema Extraction Process
 
 ### Step 1: Extract Schema from Command
+
 ```python
 from nlp2cmd.schema_extraction import DynamicSchemaRegistry
 
@@ -59,6 +70,7 @@ print(f"Template: {schema.commands[0].template}")
 ```
 
 ### Step 2: Schema Structure
+
 ```json
 {
   "command": "docker",
@@ -84,6 +96,7 @@ print(f"Template: {schema.commands[0].template}")
 ```
 
 ### Step 3: Storage
+
 ```bash
 command_schemas/
 ├── commands/
@@ -99,6 +112,7 @@ command_schemas/
 ## 3. Using Schemas for Command Generation
 
 ### Method 1: SchemaDrivenAdapter
+
 ```python
 from nlp2cmd.schema_based.adapter import SchemaDrivenAppSpecAdapter
 from nlp2cmd import NLP2CMD
@@ -113,6 +127,7 @@ print(result.command)  # Output: docker ps
 ```
 
 ### Method 2: Direct Schema Generation
+
 ```python
 from nlp2cmd.schema_based.generator import SchemaBasedGenerator
 
@@ -130,6 +145,7 @@ print(command)  # Output: docker ps
 ```
 
 ### Method 3: Intelligent Version-Aware Generation
+
 ```python
 from nlp2cmd.intelligent.version_aware_generator import VersionAwareCommandGenerator
 
@@ -146,11 +162,13 @@ print(f"Schema used: v{metadata['schema_version']}")
 ## 4. Complete Example: From Prompt to Command
 
 ### Step 1: User Prompt
+
 ```python
 user_prompt = "show all running docker containers"
 ```
 
 ### Step 2: Command Detection
+
 ```python
 from nlp2cmd.intelligent.command_detector import CommandDetector
 
@@ -160,12 +178,14 @@ detected_command = detector.detect_command(user_prompt)
 ```
 
 ### Step 3: Schema Loading
+
 ```python
 schema = registry.get_command_by_name(detected_command)
 # Loads: ./command_schemas/commands/docker.json
 ```
 
 ### Step 4: Context Extraction
+
 ```python
 context = {
     "action": "show",
@@ -175,6 +195,7 @@ context = {
 ```
 
 ### Step 5: Command Generation
+
 ```python
 generator = SchemaBasedGenerator()
 generator.learn_from_schema(schema)
@@ -185,6 +206,7 @@ command = generator.generate_command(detected_command, context)
 ## 5. Running Examples
 
 ### Example 1: Docker Operations
+
 ```python
 # examples/docker/basic_docker.py
 from nlp2cmd import NLP2CMD
@@ -210,6 +232,7 @@ for query in queries:
 ```
 
 ### Example 2: Kubernetes Operations
+
 ```python
 # examples/kubernetes/basic_kubernetes.py
 from nlp2cmd.schema_based.adapter import SchemaDrivenAppSpecAdapter
@@ -231,6 +254,7 @@ for query in queries:
 ```
 
 ### Example 3: File Operations
+
 ```python
 # examples/shell/basic_shell.py
 from nlp2cmd.intelligent import IntelligentNLP2CMD
@@ -249,15 +273,17 @@ result = nlp.transform("compress logs directory")
 ## 6. Schema Management
 
 ### Generate Schemas for Commands
+
 ```bash
 # Generate schemas for all commands in cmd.csv
-python3 update_schemas.py --force
+python3 tools/schema/update_schemas.py --force
 
 # Generate schemas from prompts
-python3 generate_cmd_simple.py
+python3 tools/generation/generate_cmd_simple.py
 ```
 
 ### View Stored Schemas
+
 ```python
 # List all stored commands
 commands = registry.list_all_commands()
@@ -269,6 +295,7 @@ print(f"Docker schema: {schema.commands[0].template}")
 ```
 
 ### Update Schema
+
 ```python
 # Force update schema
 schema = registry.register_shell_help("docker", force_update=True)
@@ -280,21 +307,25 @@ registry._auto_save()
 ## 7. Key Locations
 
 ### Source Code
+
 - `src/nlp2cmd/schema_extraction/` - Schema extraction logic
 - `src/nlp2cmd/schema_based/` - Schema-based generation
 - `src/nlp2cmd/storage/` - Persistent storage
 - `src/nlp2cmd/intelligent/` - Intelligent generation
 
 ### Examples
+
 - `examples/docker/basic_docker.py` - Docker examples
 - `examples/kubernetes/basic_kubernetes.py` - Kubernetes examples
 - `examples/shell/basic_shell.py` - Shell command examples
 
 ### Storage
+
 - `command_schemas/commands/` - Individual command schemas
 - `command_schemas/index.json` - Master index
 
 ### Documentation
+
 - `docs/SCHEMA_SYSTEMS.md` - Complete system documentation
 - `docs/VERSIONED_SCHEMAS.md` - Version management guide
 
@@ -356,6 +387,7 @@ if __name__ == "__main__":
 ## 9. Troubleshooting
 
 ### Schema Not Found
+
 ```python
 # Check if schema exists
 if command not in registry.schemas:
@@ -364,6 +396,7 @@ if command not in registry.schemas:
 ```
 
 ### Command Generation Fails
+
 ```python
 # Enable debug mode
 import logging
@@ -375,6 +408,7 @@ print(f"Schema template: {schema.commands[0].template}")
 ```
 
 ### Storage Issues
+
 ```python
 # Check storage directory
 import os

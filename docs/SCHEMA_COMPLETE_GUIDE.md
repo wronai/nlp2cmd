@@ -1,8 +1,16 @@
 # NLP2CMD Schema System - Complete Guide
 
+## 📚 Related Documentation
+
+- **[Documentation Hub](README.md)** - Entry point for all docs
+- **[Schema Systems](SCHEMA_SYSTEMS.md)** - Overview of schema subsystems
+- **[Schema Usage Guide](SCHEMA_USAGE_GUIDE.md)** - Practical usage and flows
+- **[Versioned Schemas](VERSIONED_SCHEMAS.md)** - Versioning and evolution
+
 ## Where Schemas are Used
 
 ### 1. **Schema Extraction Location**
+
 ```python
 # Main file: src/nlp2cmd/schema_extraction/__init__.py
 class DynamicSchemaRegistry:
@@ -14,7 +22,8 @@ class DynamicSchemaRegistry:
 ```
 
 ### 2. **Schema Storage Location**
-```
+
+```text
 command_schemas/
 ├── commands/           # Individual command schemas
 │   ├── docker.json    # Docker command schema
@@ -26,6 +35,7 @@ command_schemas/
 ```
 
 ### 3. **Schema Usage in Generation**
+
 ```python
 # src/nlp2cmd/adapters/dynamic.py
 class DynamicAdapter:
@@ -43,13 +53,15 @@ class DynamicAdapter:
 ## Complete Flow Example
 
 ### Step 1: Extract Schema from Command
+
 ```bash
 # Command: docker --version
 # Output: Docker version 29.1.5, build 0e6fee6
 ```
 
 ### Step 2: Parse and Create Schema
-```python
+
+```jsonc
 # Resulting schema in command_schemas/commands/docker.json:
 {
   "command": "docker",
@@ -71,12 +83,14 @@ class DynamicAdapter:
 ```
 
 ### Step 3: Store Persistently
+
 ```python
 # Saved to: ./command_schemas/commands/docker.json
 # Indexed in: ./command_schemas/index.json
 ```
 
 ### Step 4: Load When Needed
+
 ```python
 registry = DynamicSchemaRegistry(storage_dir="./command_schemas")
 schema = registry.get_command_by_name("docker")
@@ -84,6 +98,7 @@ schema = registry.get_command_by_name("docker")
 ```
 
 ### Step 5: Generate Command from User Prompt
+
 ```python
 # User prompt: "list all containers"
 # 1. Detect command: "docker" (matches patterns)
@@ -96,6 +111,7 @@ schema = registry.get_command_by_name("docker")
 ## Running Examples
 
 ### 1. Basic Docker Example
+
 ```python
 # examples/docker/basic_docker.py
 from nlp2cmd import NLP2CMD
@@ -120,8 +136,9 @@ for query in queries:
 ```
 
 ### 2. Version-Aware Example
+
 ```python
-# demo_version_detection.py
+# demos/demo_version_detection.py
 from nlp2cmd.intelligent.version_aware_generator import VersionAwareCommandGenerator
 
 generator = VersionAwareCommandGenerator()
@@ -136,6 +153,7 @@ print(f"Schema version used: {metadata['schema_version']}")
 ## Key API Methods
 
 ### Schema Registry
+
 ```python
 registry = DynamicSchemaRegistry()
 
@@ -153,6 +171,7 @@ commands = registry.list_all_commands()
 ```
 
 ### Command Generation
+
 ```python
 # Using DynamicAdapter
 adapter = DynamicAdapter(schema_registry=registry)
@@ -167,16 +186,19 @@ command, metadata = generator.generate_command("user prompt")
 ## Managing Schemas
 
 ### Update All Schemas
+
 ```bash
-python3 update_schemas.py --force
+python3 tools/schema/update_schemas.py --force
 ```
 
 ### Generate Schema for Specific Command
+
 ```python
 registry.register_shell_help("kubectl", force_update=True)
 ```
 
 ### Export/Import Schemas
+
 ```python
 # Export all schemas
 registry.save_cache("all_schemas.json")
@@ -188,7 +210,7 @@ registry.load_cache("all_schemas.json")
 ## File Locations Summary
 
 | Purpose | Location |
-|---------|----------|
+| --------- | ---------- |
 | Schema extraction code | `./src/nlp2cmd/schema_extraction/` |
 | Schema storage | `./command_schemas/` |
 | Individual schemas | `./command_schemas/commands/*.json` |
@@ -201,7 +223,7 @@ registry.load_cache("all_schemas.json")
 
 ```bash
 # 1. Generate schemas for common commands
-python3 tools/update_schemas.py --force
+python3 tools/schema/update_schemas.py --force
 
 # 2. Generate commands from prompts
 python3 tools/generation/generate_cmd_simple.py
@@ -224,6 +246,7 @@ print(s.commands[0].template)
 ## Troubleshooting
 
 ### Schema Not Found
+
 ```python
 # Check if schema exists
 if command not in registry.schemas:
@@ -232,6 +255,7 @@ if command not in registry.schemas:
 ```
 
 ### Command Generation Fails
+
 ```python
 # Enable debug logging
 import logging
@@ -243,9 +267,10 @@ print(f"Template: {schema.template}")
 ```
 
 ### Update Schemas
+
 ```bash
 # Force regenerate all schemas
-python3 update_schemas.py --force
+python3 tools/schema/update_schemas.py --force
 
 # Check storage
 ls -la command_schemas/commands/

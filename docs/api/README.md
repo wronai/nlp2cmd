@@ -2,6 +2,7 @@
 
 ## 📚 Related Documentation
 
+- **[Documentation Hub](../README.md)** - Entry point for all docs
 - **[User Guide](../guides/user-guide.md)** - Complete usage tutorial
 - **[Installation Guide](../../INSTALLATION.md)** - Setup instructions
 - **[Thermodynamic Integration](../../THERMODYNAMIC_INTEGRATION.md)** - Advanced optimization

@@ -2,11 +2,31 @@
 
 ## 📚 Related Documentation
 
+- **[Documentation Hub](../README.md)** - Entry point for all docs
 - **[Installation Guide](../../INSTALLATION.md)** - Setup instructions
 - **[API Reference](../api/README.md)** - Detailed API documentation
 - **[Thermodynamic Integration](../../THERMODYNAMIC_INTEGRATION.md)** - Advanced optimization
 - **[Contributing Guide](../../CONTRIBUTING.md)** - Development guidelines
 - **[Examples](../../examples/)** - Practical code examples
+
+## Configuration
+
+### JSON configuration files
+
+NLP2CMD loads rule-based keywords and templates from JSON files. Resolution order is:
+
+- packaged defaults (`nlp2cmd/data/*.json`)
+- project overrides (`./data/*.json`)
+- user overrides (`~/.config/nlp2cmd/*.json` and legacy `~/.nlp2cmd/*.json`)
+- explicit env path (highest precedence)
+
+Environment variables:
+
+- `NLP2CMD_CONFIG_DIR`: user config directory (overrides XDG default)
+- `NLP2CMD_PATTERNS_FILE`: explicit `patterns.json`
+- `NLP2CMD_KEYWORD_DETECTOR_CONFIG`: explicit `keyword_intent_detector_config.json`
+- `NLP2CMD_TEMPLATES_FILE`: explicit `templates.json`
+- `NLP2CMD_DEFAULTS_FILE`: explicit `defaults.json`
 
 ## Introduction
 

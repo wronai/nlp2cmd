@@ -2,6 +2,14 @@
 
 This guide provides comprehensive documentation for the NLP2CMD Command Line Interface.
 
+## 📚 Related Documentation
+
+- **[Documentation Hub](README.md)** - Entry point for all docs
+- **[User Guide](guides/user-guide.md)** - Complete usage tutorial
+- **[Python API Guide](python-api.md)** - Programmatic usage
+- **[API Reference](api/README.md)** - Detailed API documentation
+- **[Examples Guide](examples-guide.md)** - Examples overview
+
 ## Installation
 
 ```bash
@@ -19,7 +27,7 @@ nlp2cmd [OPTIONS] COMMAND [ARGS]
 ### Core Options
 
 | Option | Short | Description |
-|--------|-------|-------------|
+| -------- | ------- | ------------- |
 | `--query` | `-q` | Single query to process (required for text queries) |
 | `--dsl` | `-d` | DSL type: auto, sql, shell, docker, kubernetes, dql |
 | `--interactive` | `-i` | Start interactive mode |
@@ -79,27 +87,32 @@ nlp2cmd repair nginx.conf
 ## DSL Types
 
 ### SQL
+
 ```bash
 nlp2cmd --dsl sql --query "show all users where city is Warsaw"
 ```
 
 **Supported databases:**
+
 - PostgreSQL
 - MySQL
 - SQLite
 
 **Example outputs:**
+
 ```sql
 SELECT * FROM users WHERE city = 'Warsaw';
 SELECT COUNT(*) FROM orders WHERE created_at > '2024-01-01';
 ```
 
 ### Shell
+
 ```bash
 nlp2cmd --dsl shell --query "find all log files larger than 10MB"
 ```
 
 **Example outputs:**
+
 ```bash
 find . -type f -name "*.log" -size +10MB -exec ls -lh {} \;
 ps aux | grep nginx | head -10
@@ -107,11 +120,13 @@ df -h | grep -E "^/dev/"
 ```
 
 ### Docker
+
 ```bash
 nlp2cmd --dsl docker --query "show all running containers"
 ```
 
 **Example outputs:**
+
 ```bash
 docker ps
 docker ps -a
@@ -120,11 +135,13 @@ docker-compose up -d
 ```
 
 ### Kubernetes
+
 ```bash
 nlp2cmd --dsl kubernetes --query "scale deployment nginx to 3 replicas"
 ```
 
 **Example outputs:**
+
 ```bash
 kubectl scale deployment nginx --replicas=3
 kubectl get pods
@@ -132,11 +149,13 @@ kubectl apply -f deployment.yaml
 ```
 
 ### DQL (Doctrine)
+
 ```bash
 nlp2cmd --dsl dql --query "find all active users"
 ```
 
 **Example outputs:**
+
 ```php
 SELECT u FROM User u WHERE u.active = true;
 SELECT e FROM Employee e WHERE e.department.name = 'IT';
@@ -145,11 +164,13 @@ SELECT e FROM Employee e WHERE e.department.name = 'IT';
 ## Advanced Options
 
 ### Explain Mode
+
 ```bash
 nlp2cmd --explain --query "check system status"
 ```
 
 **Output includes:**
+
 - Generated command
 - Source (rules/llm)
 - Domain classification
@@ -157,11 +178,13 @@ nlp2cmd --explain --query "check system status"
 - Latency information
 
 ### Auto-Repair Mode
+
 ```bash
 nlp2cmd --auto-repair --query "fix nginx configuration"
 ```
 
 **Features:**
+
 - Automatic error detection
 - Suggests fixes
 - Applies repairs when safe
@@ -183,6 +206,7 @@ nlp2cmd> exit          # Exit interactive mode
 ## Real-World Examples
 
 ### DevOps Workflow
+
 ```bash
 # Check system status
 nlp2cmd --query "check system health"
@@ -198,6 +222,7 @@ nlp2cmd --dsl kubernetes --query "scale deployment based on CPU usage"
 ```
 
 ### Data Analysis
+
 ```bash
 # Database queries
 nlp2cmd --dsl sql --query "show top 10 customers by revenue"
@@ -210,6 +235,7 @@ nlp2cmd --dsl shell --query "find error patterns in access logs"
 ```
 
 ### System Administration
+
 ```bash
 # Environment analysis
 nlp2cmd analyze-env
@@ -224,6 +250,7 @@ nlp2cmd --query "monitor disk space and alert if below 10%"
 ## Output Formats
 
 ### Standard Output
+
 ```bash
 $ nlp2cmd --query "show users"
 SELECT * FROM users;
@@ -232,6 +259,7 @@ SELECT * FROM users;
 ```
 
 ### Explained Output
+
 ```bash
 $ nlp2cmd --explain --query "show users"
 
@@ -247,7 +275,8 @@ SELECT * FROM users;
 ```
 
 ### Interactive Output
-```
+
+```text
 ✅ Status: success
 📊 Confidence: 100%
 
@@ -266,7 +295,7 @@ Every command execution now displays comprehensive resource metrics:
 ### Metrics Displayed
 
 | Metric | Description | Format |
-|--------|-------------|--------|
+| -------- | ------------- | -------- |
 | **Time** | Execution time in milliseconds | `⏱️ Time: 13.7ms` |
 | **CPU** | CPU usage percentage during execution | `💻 CPU: 0.0%` |
 | **RAM** | Memory usage in MB and percentage | `🧠 RAM: 54.8MB (0.1%)` |
@@ -302,19 +331,22 @@ $ nlp2cmd --query "optimize resource allocation"
 
 ### Common Errors
 
-**1. Missing --query flag**
+#### 1. Missing --query flag
+
 ```bash
 ❌ nlp2cmd "show users"
 ✅ nlp2cmd --query "show users"
 ```
 
-**2. Invalid DSL**
+#### 2. Invalid DSL
+
 ```bash
 ❌ nlp2cmd --dsl invalid --query "show users"
 ✅ nlp2cmd --dsl sql --query "show users"
 ```
 
-**3. File not found**
+#### 3. File not found
+
 ```bash
 ❌ nlp2cmd validate nonexistent.json
 ✅ nlp2cmd validate existing-config.json
@@ -330,6 +362,7 @@ $ nlp2cmd --query "optimize resource allocation"
 ## Integration Examples
 
 ### Shell Scripts
+
 ```bash
 #!/bin/bash
 # Automated system check
@@ -345,6 +378,7 @@ nlp2cmd --dsl docker --query "show container status" >> health_report.txt
 ```
 
 ### Cron Jobs
+
 ```bash
 # Daily system maintenance
 0 2 * * * /usr/local/bin/nlp2cmd --query "cleanup temporary files"
@@ -352,6 +386,7 @@ nlp2cmd --dsl docker --query "show container status" >> health_report.txt
 ```
 
 ### CI/CD Pipeline
+
 ```bash
 # GitHub Actions example
 - name: Analyze environment

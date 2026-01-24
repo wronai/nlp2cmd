@@ -1,0 +1,13 @@
+.venv/
+.venv/**
+venv/
+venv/**
+dist/
+dist/**
+.pytest_cache/
+.pytest_cache/**
+command_schemas/
+command_schemas/**
+project.functions.toon
+project.toon
+project.toon-schema.json

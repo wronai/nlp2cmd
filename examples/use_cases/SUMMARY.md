@@ -3,7 +3,7 @@
 ## Tabela zastosowań
 
 | Dziedzina | Typ problemu | Główna korzyść |
-|-----------|-------------|----------------|
+| ----------- | ------------- | ---------------- |
 | IT & DevOps | Scheduling, Automation | 80% redukcja pracy manualnej |
 | Data Science | Hyperparameter opt. | Szybsza konwergencja modeli |
 | Bioinformatyka | Pipeline scheduling | 10x szybsza analiza |
@@ -18,28 +18,32 @@
 ## Kluczowe cechy NLP2CMD
 
 ### 🎯 **Hybrydowe podejście**
+
 - **Rule-based** dla prostych zapytań (latencja < 5ms)
 - **Thermodynamic** dla złożonych problemów optymalizacyjnych
 - **LLM** dla nieustrukturyzowanych zapytań
 
 ### ⚡ **Wydajność**
+
 - **100% routing accuracy** - poprawne klasyfikowanie zapytań
 - **2.4x - 5.0x speedup** dla małych problemów (adaptacyjne kroki)
 - **45-57% oszczędności energii** vs tradycyjne LLM
 
 ### 🔍 **Walidacja rozwiązań**
+
 - Sprawdzanie ograniczeń (capacity, demand, deadlines)
 - Wykrywanie konfliktów (overlaps, violations)
 - Ocena jakości rozwiązania (feasibility, optimality)
 
 ### 🌐 **Wielojęzyczna obsługa**
+
 - Polski i angielski w jednym systemie
 - Rozpoznawanie słów kluczowych w obu językach
 - Adaptacyjne pattern matching
 
 ## Architektura systemu
 
-```
+```text
 NLP2CMD
 ├── 🔄 Hybrid Generator
 │   ├── Rule-based Pipeline (DSL commands)
@@ -61,6 +65,7 @@ NLP2CMD
 ## Przykłady użycia
 
 ### IT & DevOps
+
 ```python
 from nlp2cmd import HybridThermodynamicGenerator
 
@@ -79,6 +84,7 @@ result = await generator.generate("""
 ```
 
 ### Data Science
+
 ```python
 from nlp2cmd.generation import create_thermodynamic_generator
 
@@ -93,6 +99,7 @@ result = await thermo.generate("""
 ```
 
 ### Logistyka
+
 ```python
 # VRP - Vehicle Routing Problem
 result = await thermo.generate("""
@@ -105,7 +112,7 @@ result = await thermo.generate("""
 ## Metryki wydajności
 
 | Metryka | Wynik | Cel |
-|---------|-------|-----|
+| --------- | ------- | ----- |
 | DSL latency | <3ms | <5ms ✅ |
 | Routing accuracy | 100% | >95% ✅ |
 | Thermo latency (simple) | ~340ms | <500ms ✅ |
@@ -116,11 +123,13 @@ result = await thermo.generate("""
 ## Wdrożenie
 
 ### Instalacja
+
 ```bash
 pip install nlp2cmd[thermodynamic]
 ```
 
 ### Szybki start
+
 ```python
 from nlp2cmd import HybridThermodynamicGenerator
 
@@ -129,6 +138,7 @@ result = await generator.generate("Twój problem optymalizacyjny...")
 ```
 
 ### Konfiguracja
+
 ```python
 # Adapter specyficzny dla domeny
 from nlp2cmd.adapters import KubernetesAdapter
@@ -147,34 +157,37 @@ generator = HybridThermodynamicGenerator(
 ## Przypadki użycia
 
 ### ✅ **Produkcja**
+
 - Automatyzacja operacji DevOps
 - Optymalizacja CI/CD pipeline
 - Zarządzanie infrastrukturą
 
 ### ✅ **Badania i rozwój**
+
 - Optymalizacja eksperymentów naukowych
 - Planowanie symulacji komputerowych
 - Analiza danych genomowych
 
 ### ✅ **Biznes**
+
 - Optymalizacja łańcucha dostaw
 - Zarządzanie zasobami
 - Planowanie produkcji
 
 ## Dokumentacja
 
-- 📖 **Szczegółowa dokumentacja**: docs.nlp2cmd.io
-- 🚀 **API Reference**: api.nlp2cmd.io
-- 💡 **Przykłady**: github.com/wronai/nlp2cmd/examples
-- 🐛 **Issue tracker**: github.com/wronai/nlp2cmd/issues
+- 📖 **Szczegółowa dokumentacja**: [docs/README.md](../../docs/README.md)
+- 🚀 **API Reference**: [docs/api/README.md](../../docs/api/README.md)
+- 💡 **Przykłady**: [examples/](../)
+- 🐛 **Issue tracker**: [GitHub Issues](https://github.com/wronai/nlp2cmd/issues)
 
 ## Wsparcie
 
-- 📧 **Email**: support@nlp2cmd.io
-- 💬 **Discord**: discord.gg/nlp2cmd
+- 📧 **Email**: [support@nlp2cmd.io](mailto:support@nlp2cmd.io)
+- 💬 **Discord**: [discord.gg/nlp2cmd](https://discord.gg/nlp2cmd)
 - 🐦 **Twitter**: @nlp2cmd
-- 📱 **LinkedIn**: linkedin.com/company/nlp2cmd
+- 📱 **LinkedIn**: [linkedin.com/company/nlp2cmd](https://linkedin.com/company/nlp2cmd)
 
 ---
 
-*NLP2CMD - Natural Language to Command Transformation*
+NLP2CMD - Natural Language to Command Transformation

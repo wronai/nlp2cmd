@@ -6,12 +6,10 @@ nlp2cmd -r "otwórz https://www.prototypowanie.pl/kontakt/ i wypelnij formularz 
 
 ![img_1.png](img_1.png)
 
-
 ![img_2.png](img_2.png)
 
 realizacja zadan w shell
 ![img_3.png](img_3.png)
-
 
 # NLP2CMD
 
@@ -23,7 +21,7 @@ realizacja zadan w shell
 
 ## 🏗️ Architecture v0.2.0: LLM as Planner + Typed Actions
 
-```
+```text
    ┌─────────────────┐
    │   User Query    │
    └────────┬────────┘
@@ -68,17 +66,21 @@ realizacja zadan w shell
 └─────────────────┘
 ```
 
-**Key Principle: LLM plans. Code executes. System controls.**
+### Key Principle
+
+LLM plans. Code executes. System controls.
 
 ## ✨ Features
 
 ### Core Capabilities
+
 - 🗣️ **5 DSL Adapters**: SQL, Shell, Docker, Kubernetes, DQL (Doctrine)
 - 📁 **11 File Format Schemas**: Dockerfile, docker-compose, K8s manifests, GitHub workflows, .env, and more
 - 🛡️ **Safety Policies**: Allowlist-based action control, no eval/shell execution
 - 🔄 **Multi-step Plans**: Support for `foreach` loops and variable references between steps
 
 ### New Architecture Components (v0.2.0)
+
 - 🔀 **Decision Router**: Intelligently routes queries to direct execution or LLM planner
 - 📋 **Action Registry**: Central registry of 19+ typed actions with full validation
 - ⚡ **Plan Executor**: Executes multi-step plans with tracing, retry, and error handling
@@ -86,6 +88,7 @@ realizacja zadan w shell
 - 📊 **Result Aggregator**: Multiple output formats (text, table, JSON, markdown)
 
 ### Security Features
+
 - ✅ No direct LLM access to system
 - ✅ Typed actions (no eval/shell)
 - ✅ Allowlist of permitted actions
@@ -96,6 +99,7 @@ realizacja zadan w shell
 
 | Document | Description |
 |----------|-------------|
+| **[Documentation Hub](docs/README.md)** | Entry point and navigation for all docs |
 | **[Installation Guide](INSTALLATION.md)** | Setup instructions and installation options |
 | **[User Guide](docs/guides/user-guide.md)** | Complete usage tutorial and examples |
 | **[CLI Reference](docs/cli-reference.md)** | Comprehensive CLI documentation |
@@ -438,24 +442,28 @@ See [Thermodynamic Integration](THERMODYNAMIC_INTEGRATION.md) for detailed docum
 ## 💡 Examples
 
 ### CLI Examples
+
 - **[Shell Commands Demo](examples/use_cases/shell_commands_demo.sh)** - Complete CLI usage examples
 - **[Simple Demo](examples/use_cases/simple_demo_examples.py)** - Python API + Shell concepts
 - **[Complete Examples](examples/use_cases/complete_python_shell_examples.py)** - Full Python API examples
 - **[DSL Commands Demo](examples/use_cases/dsl_commands_demo.py)** - Direct DSL generation examples
 
 ### Quick Examples
+
 - **[Basic SQL](examples/sql/basic_sql.py)** - Simple SQL queries
 - **[Shell Commands](examples/shell/basic_shell.py)** - Common shell operations  
 - **[Docker Management](examples/docker/basic_docker.py)** - Container operations
 - **[Kubernetes](examples/kubernetes/basic_kubernetes.py)** - K8s cluster management
 
 ### Advanced Examples  
+
 - **[End-to-End Demo](examples/architecture/end_to_end_demo.py)** - Complete workflow
 - **[Log Analysis Pipeline](examples/pipelines/log_analysis.py)** - Data processing
 - **[Infrastructure Health](examples/pipelines/infrastructure_health.py)** - System monitoring
 - **[Configuration Validation](examples/validation/config_validation.py)** - File validation
 
 ### Use Case Examples
+
 - **[DevOps Automation](examples/use_cases/devops_automation.py)** - IT operations
 - **[Data Science & ML](examples/use_cases/data_science_ml.py)** - Data workflows
 - **[Healthcare](examples/use_cases/healthcare.py)** - Medical applications
@@ -463,6 +471,7 @@ See [Thermodynamic Integration](THERMODYNAMIC_INTEGRATION.md) for detailed docum
 - **[Smart Cities](examples/use_cases/smart_cities.py)** - Urban management
 
 ### Documentation
+
 - **[CLI Reference](docs/cli-reference.md)** - Complete CLI documentation
 - **[Python API Guide](docs/python-api.md)** - Detailed Python API usage
 - **[Examples Guide](docs/examples-guide.md)** - Comprehensive examples overview
@@ -471,7 +480,7 @@ See [Examples README](examples/use_cases/README.md) for all available examples.
 
 ## 📁 Project Structure
 
-```
+```text
 nlp2cmd/
 ├── src/nlp2cmd/
 │   ├── __init__.py       # Main exports
@@ -500,6 +509,7 @@ nlp2cmd/
 ## 🔖 Version History
 
 ### v0.3.0+ (Thermodynamic Integration)
+
 - **NEW**: Thermodynamic optimization using Whitelam's generative framework
 - Langevin dynamics for constraint satisfaction problems
 - 50-70% energy reduction vs pure LLM inference
@@ -508,6 +518,7 @@ nlp2cmd/
 - Parallel sampling with energy-based voting
 
 ### v0.2.0 (Current)
+
 - New architecture: LLM as Planner + Typed Actions
 - Decision Router for intelligent query routing
 - Action Registry with 19+ typed actions
@@ -517,6 +528,7 @@ nlp2cmd/
 - 150+ tests
 
 ### v0.1.0
+
 - Initial release
 - 5 DSL adapters
 - 11 file format schemas

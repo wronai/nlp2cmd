@@ -2,6 +2,7 @@
 
 ## 📚 Related Documentation
 
+- **[Documentation Hub](../../docs/README.md)** - Entry point for all docs
 - **[User Guide](../../docs/guides/user-guide.md)** - Complete usage tutorial
 - **[API Reference](../../docs/api/README.md)** - Detailed API documentation
 - **[Thermodynamic Integration](../../THERMODYNAMIC_INTEGRATION.md)** - Advanced optimization
@@ -34,7 +35,7 @@ generator = HybridThermodynamicGenerator()
 result = await generator.generate("Twój problem optymalizacyjny...")
 ```
 
-Szczegółowa dokumentacja: docs.nlp2cmd.io
+Szczegółowa dokumentacja: [docs/README.md](../../docs/README.md)
 
 ---
 

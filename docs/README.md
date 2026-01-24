@@ -3,31 +3,37 @@
 ## 🎯 Quick Navigation
 
 ### Getting Started
+
 - **[📖 README.md](../README.md)** - Main project overview and quick start
 - **[🔧 Installation Guide](../INSTALLATION.md)** - Setup instructions and options
 - **[👥 User Guide](guides/user-guide.md)** - Complete usage tutorial
 
 ### CLI & Python
+
 - **[🧰 CLI Reference](cli-reference.md)** - Command line usage
 - **[🐍 Python API Guide](python-api.md)** - Programmatic usage
 - **[🧪 Examples Guide](examples-guide.md)** - Examples overview
 
 ### API & Technical Documentation
+
 - **[🔌 API Reference](api/README.md)** - Detailed API documentation
 - **[🔬 Thermodynamic Integration](../THERMODYNAMIC_INTEGRATION.md)** - Advanced optimization guide
 - **[🏗️ Thermodynamic Architecture](../THERMODYNAMIC_ARCHITECTURE.md)** - Deep technical architecture
 - **[⚙️ Generation Module](../README_GENERATION.md)** - DSL generation implementation
 
 ### Development & Contributing
+
 - **[🤝 Contributing Guide](../CONTRIBUTING.md)** - Development guidelines
 - **[📋 Project History](../PROJECT_HISTORY.md)** - Development timeline
 - **[🔄 Changelog](../CHANGELOG.md)** - Version history and changes
 
 ### Examples & Use Cases
+
 - **[🚀 Use Cases](../examples/use_cases/README.md)** - Real-world examples by domain
 - **[💡 Basic Examples](../examples/)** - Simple getting started examples
 
 ### Schemas & Command Systems
+
 - **[Schema Systems](SCHEMA_SYSTEMS.md)** - Overview of schema subsystems
 - **[Schema Usage Guide](SCHEMA_USAGE_GUIDE.md)** - Practical usage and flows
 - **[Schema Complete Guide](SCHEMA_COMPLETE_GUIDE.md)** - Deep dive
@@ -39,7 +45,7 @@
 
 ## 🗂️ Documentation Structure
 
-```
+```text
 docs/
 ├── README.md                    # This file - documentation hub
 ├── api/
@@ -81,18 +87,21 @@ examples/
 ## 🎯 Documentation by Use Case
 
 ### 🔰 New Users
+
 1. Start with [README.md](../README.md) for overview
 2. Follow [Installation Guide](../INSTALLATION.md) for setup
 3. Read [User Guide](guides/user-guide.md) for complete tutorial
 4. Try [Basic Examples](../examples/) for hands-on learning
 
 ### 🔧 Developers
+
 1. Review [API Reference](api/README.md) for integration
 2. Study [Thermodynamic Integration](../THERMODYNAMIC_INTEGRATION.md) for advanced features
 3. Follow [Contributing Guide](../CONTRIBUTING.md) for development setup
 4. Explore [Architecture](../THERMODYNAMIC_ARCHITECTURE.md) for deep understanding
 
 ### 🏢 Domain-Specific Applications
+
 - **[IT & DevOps](../examples/use_cases/README.md#it--devops)** - System administration
 - **[Data Science](../examples/use_cases/README.md#data-science--ml)** - ML workflows
 - **[Healthcare](../examples/use_cases/README.md#medycyna-i-healthcare)** - Medical applications
@@ -100,6 +109,7 @@ examples/
 - **[Smart Cities](../examples/use_cases/README.md#smart-cities--iot)** - Urban management
 
 ### 🔬 Research & Advanced Topics
+
 - **[Thermodynamic Computing](../THERMODYNAMIC_INTEGRATION.md)** - Energy-based optimization
 - **[Langevin Dynamics](../THERMODYNAMIC_ARCHITECTURE.md)** - Physics-based sampling
 - **[Energy Models](../README_GENERATION.md)** - Constraint satisfaction
@@ -110,17 +120,20 @@ examples/
 ## 🔍 Quick Links
 
 ### Core Features
-- **[🤖 DSL Generation](../README.md#features)** - Natural language to commands
+
+- **[🤖 DSL Generation](../README.md#-features)** - Natural language to commands
 - **[🔬 Thermodynamic Optimization](../THERMODYNAMIC_INTEGRATION.md)** - Advanced problem solving
 - **[🛡️ Safety & Validation](../README.md#security-features)** - Secure execution
-- **[📊 Multi-DSL Support](../README.md#dsl-support)** - SQL, Shell, Docker, K8s, DQL
+- **[📊 Multi-DSL Support](../README.md#-dsl-support)** - SQL, Shell, Docker, K8s, DQL
 
 ### Performance & Benchmarks
+
 - **[⚡ Speed Comparison](../THERMODYNAMIC_INTEGRATION.md#performance-characteristics)** - DSL vs Thermodynamic
 - **[🔋 Energy Efficiency](../THERMODYNAMIC_INTEGRATION.md#energy-efficiency)** - Power consumption analysis
 - **[📈 Accuracy Metrics](../README_GENERATION.md#performance-comparison)** - Quality measurements
 
 ### Scientific Background
+
 - **[📜 Whitelam (2025)](../THERMODYNAMIC_INTEGRATION.md#primary-sources)** - Foundational paper
 - **[🔬 Langevin Dynamics](../THERMODYNAMIC_ARCHITECTURE.md#-kontekst-framework-whitelama)** - Theoretical foundation
 - **[⚛️ Energy-Based Models](../THERMODYNAMIC_INTEGRATION.md#theoretical-background)** - Mathematical framework
@@ -130,15 +143,18 @@ examples/
 ## 📞 Getting Help
 
 ### Documentation Issues
+
 - Found an error? Open an issue on [GitHub](https://github.com/wronai/nlp2cmd/issues)
 - Missing information? Check [Contributing Guide](../CONTRIBUTING.md)
 
 ### Community & Support
+
 - **[Examples Repository](../examples/)** - Community-contributed examples
 - **[Use Case Library](../examples/use_cases/)** - Domain-specific applications
 - **[API Reference](api/README.md)** - Integration help
 
 ### Development Support
+
 - **[Contributing Guide](../CONTRIBUTING.md)** - Development setup
 - **[Project History](../PROJECT_HISTORY.md)** - Context and evolution
 - **[Architecture Docs](../THERMODYNAMIC_ARCHITECTURE.md)** - Technical deep-dive
