@@ -607,12 +607,21 @@ class NLP2CMD:
                 filters: list[dict[str, Any]] = []
 
                 ext = normalized.get("file_pattern")
-                if ext and isinstance(ext, str):
-                    filters.append({"attribute": "extension", "operator": "=", "value": ext})
-
                 pattern = normalized.get("pattern")
+                
+                # Avoid duplicate extension filters
+                extension_value = None
+                
+                if ext and isinstance(ext, str):
+                    extension_value = ext
+                
                 if pattern and isinstance(pattern, str) and pattern.startswith("*."):
-                    filters.append({"attribute": "extension", "operator": "=", "value": pattern[2:]})
+                    pattern_ext = pattern[2:]
+                    if extension_value is None:  # Only use pattern if file_pattern wasn't set
+                        extension_value = pattern_ext
+                
+                if extension_value:
+                    filters.append({"attribute": "extension", "operator": "=", "value": extension_value})
 
                 filename = normalized.get("filename")
                 if filename and isinstance(filename, str):

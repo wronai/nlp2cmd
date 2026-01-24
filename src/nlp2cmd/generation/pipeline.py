@@ -140,7 +140,7 @@ class RuleBasedPipeline:
             
             try:
                 enhanced_match = self.enhanced_detector.get_best_match(text)
-                if enhanced_match and enhanced_match.combined_score > 0.6:
+                if enhanced_match and enhanced_match.combined_score > 0.25:  # Even lower threshold
                     # Convert enhanced match to DetectionResult
                     detection = DetectionResult(
                         domain=enhanced_match.domain,
