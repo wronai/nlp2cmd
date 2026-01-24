@@ -22,6 +22,13 @@ from nlp2cmd.generation.keywords import KeywordIntentDetector, DetectionResult
 from nlp2cmd.generation.regex import RegexEntityExtractor, ExtractionResult
 from nlp2cmd.generation.templates import TemplateGenerator, TemplateResult
 
+# Import enhanced context detector
+try:
+    from nlp2cmd.generation.enhanced_context import get_enhanced_detector
+    ENHANCED_CONTEXT_AVAILABLE = True
+except ImportError:
+    ENHANCED_CONTEXT_AVAILABLE = False
+
 
 @dataclass
 class PipelineResult:
@@ -85,6 +92,7 @@ class RuleBasedPipeline:
         extractor: Optional[RegexEntityExtractor] = None,
         generator: Optional[TemplateGenerator] = None,
         confidence_threshold: float = 0.5,
+        use_enhanced_context: bool = True,
     ):
         """
         Initialize pipeline.
@@ -94,11 +102,19 @@ class RuleBasedPipeline:
             extractor: Entity extractor (default: RegexEntityExtractor)
             generator: Template generator (default: TemplateGenerator)
             confidence_threshold: Minimum confidence to proceed
+            use_enhanced_context: Use enhanced NLP context detection
         """
         self.detector = detector or KeywordIntentDetector()
         self.extractor = extractor or RegexEntityExtractor()
         self.generator = generator or TemplateGenerator()
         self.confidence_threshold = confidence_threshold
+        self.use_enhanced_context = use_enhanced_context and ENHANCED_CONTEXT_AVAILABLE
+        
+        # Initialize enhanced detector if available
+        if self.use_enhanced_context:
+            self.enhanced_detector = get_enhanced_detector()
+        else:
+            self.enhanced_detector = None
     
     def process(self, text: str) -> PipelineResult:
         """
@@ -116,6 +132,26 @@ class RuleBasedPipeline:
         
         # Step 1: Detect domain and intent
         detection = self.detector.detect(text)
+        
+        # Step 1.5: Try enhanced context detection if available and basic detection failed
+        if (self.use_enhanced_context and 
+            self.enhanced_detector and 
+            (detection.domain == 'unknown' or detection.confidence < 0.7)):
+            
+            try:
+                enhanced_match = self.enhanced_detector.get_best_match(text)
+                if enhanced_match and enhanced_match.combined_score > 0.6:
+                    # Convert enhanced match to DetectionResult
+                    detection = DetectionResult(
+                        domain=enhanced_match.domain,
+                        intent=enhanced_match.intent,
+                        confidence=enhanced_match.combined_score,
+                        matched_keyword=enhanced_match.pattern,
+                        entities=enhanced_match.entities
+                    )
+            except Exception as e:
+                # Enhanced detection failed, continue with basic detection
+                pass
 
         sentences = self._split_sentences(text)
         if len(sentences) >= 2:

@@ -382,7 +382,7 @@
       }
     },
     {
-      "id": "click_icon-button-02804c31-41cf-45c3-a1ec-f4a8961eb44c",
+      "id": "click_icon-button-87347a72-b595-4930-a8f0-6fc508e5982c",
       "name": "Click button",
       "description": "Click button",
       "parameters": [],
@@ -391,7 +391,7 @@
         "click "
       ],
       "metadata": {
-        "selector": "#icon-button-02804c31-41cf-45c3-a1ec-f4a8961eb44c",
+        "selector": "#icon-button-87347a72-b595-4930-a8f0-6fc508e5982c",
         "element_type": "button"
       }
     },
@@ -777,7 +777,7 @@
   "metadata": {
     "url": "https://github.com",
     "title": "GitHub · Change is constant. GitHub keeps you ahead. · GitHub",
-    "extracted_at": "2026-01-24T21:15:48.254636",
+    "extracted_at": "2026-01-24T21:29:15.000881",
     "total_inputs": 7,
     "total_buttons": 44,
     "total_links": 1

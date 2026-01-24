@@ -461,7 +461,7 @@ class RegexEntityExtractor:
         elif domain == 'shell':
             # Handle "folderze użytkownika" -> default to ~ if no path found
             if 'path' not in entities or not entities['path']:
-                if re.search(r'folderze\s+użytkownika|katalogu\s+użytkownika', text_lower):
+                if re.search(r'folderze\s+użytkownika|katalogu\s+użytkownika|listę\s+folderów\s+użytkownika|listę\s+katalogów\s+użytkownika', text_lower):
                     result['path'] = '~'
                 else:
                     result['path'] = '.'

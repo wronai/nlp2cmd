@@ -1,28 +1,28 @@
 {
   "summary": {
     "total": 18,
-    "domain_passed": 7,
-    "intent_passed": 1,
-    "overall_passed": 1,
-    "domain_success_rate": 38.88888888888889,
-    "intent_success_rate": 5.555555555555555,
-    "overall_success_rate": 5.555555555555555,
-    "avg_confidence": 0.8833333333333333,
+    "domain_passed": 10,
+    "intent_passed": 4,
+    "overall_passed": 4,
+    "domain_success_rate": 55.55555555555556,
+    "intent_success_rate": 22.22222222222222,
+    "overall_success_rate": 22.22222222222222,
+    "avg_confidence": 0.9305555555555556,
     "site_stats": {
       "github": {
         "total": 4,
-        "passed": 0,
-        "domain_passed": 1
+        "passed": 1,
+        "domain_passed": 2
       },
       "google": {
         "total": 5,
-        "passed": 0,
-        "domain_passed": 1
+        "passed": 1,
+        "domain_passed": 2
       },
       "amazon": {
         "total": 5,
-        "passed": 0,
-        "domain_passed": 1
+        "passed": 1,
+        "domain_passed": 2
       },
       "general": {
         "total": 4,
@@ -37,13 +37,13 @@
       "expected_domain": "browser",
       "expected_intent": "web_action",
       "expected_site": "github",
-      "actual_domain": "shell",
-      "actual_intent": "find",
-      "command": "find .",
-      "confidence": 0.85,
-      "domain_success": false,
-      "intent_success": false,
-      "overall_success": false
+      "actual_domain": "browser",
+      "actual_intent": "web_action",
+      "command": "# Unknown: browser/web_action",
+      "confidence": 0.95,
+      "domain_success": true,
+      "intent_success": true,
+      "overall_success": true
     },
     {
       "query": "wyszukaj u\u017cytkownika github",
@@ -66,7 +66,7 @@
       "actual_domain": "browser",
       "actual_intent": "click",
       "command": "# Unknown: browser/click",
-      "confidence": 0.9,
+      "confidence": 0.95,
       "domain_success": true,
       "intent_success": false,
       "overall_success": false
@@ -105,7 +105,7 @@
       "actual_domain": "browser",
       "actual_intent": "click",
       "command": "# Unknown: browser/click",
-      "confidence": 0.9,
+      "confidence": 0.95,
       "domain_success": true,
       "intent_success": false,
       "overall_success": false
@@ -115,26 +115,26 @@
       "expected_domain": "browser",
       "expected_intent": "web_action",
       "expected_site": "google",
-      "actual_domain": "sql",
-      "actual_intent": "unknown",
-      "command": "TRUNCATE TABLE unknown_table;",
+      "actual_domain": "browser",
+      "actual_intent": "web_action",
+      "command": "# Unknown: browser/web_action",
       "confidence": 0.85,
-      "domain_success": false,
-      "intent_success": false,
-      "overall_success": false
+      "domain_success": true,
+      "intent_success": true,
+      "overall_success": true
     },
     {
       "query": "szukaj na amazon",
       "expected_domain": "browser",
       "expected_intent": "web_action",
       "expected_site": "amazon",
-      "actual_domain": "shell",
-      "actual_intent": "unknown",
-      "command": "df -h .",
-      "confidence": 0.85,
-      "domain_success": false,
-      "intent_success": false,
-      "overall_success": false
+      "actual_domain": "browser",
+      "actual_intent": "web_action",
+      "command": "# Unknown: browser/web_action",
+      "confidence": 0.95,
+      "domain_success": true,
+      "intent_success": true,
+      "overall_success": true
     },
     {
       "query": "znajd\u017a produkt na amazon",
@@ -142,9 +142,9 @@
       "expected_intent": "web_action",
       "expected_site": "amazon",
       "actual_domain": "shell",
-      "actual_intent": "find",
-      "command": "find .",
-      "confidence": 0.85,
+      "actual_intent": "unknown",
+      "command": "# Unknown: shell/amazon_search",
+      "confidence": 0.95,
       "domain_success": false,
       "intent_success": false,
       "overall_success": false
@@ -170,7 +170,7 @@
       "actual_domain": "browser",
       "actual_intent": "click",
       "command": "# Unknown: browser/click",
-      "confidence": 0.9,
+      "confidence": 0.95,
       "domain_success": true,
       "intent_success": false,
       "overall_success": false
@@ -183,7 +183,7 @@
       "actual_domain": "browser",
       "actual_intent": "web_action",
       "command": "# Unknown: browser/web_action",
-      "confidence": 0.9,
+      "confidence": 0.95,
       "domain_success": true,
       "intent_success": false,
       "overall_success": false
@@ -196,7 +196,7 @@
       "actual_domain": "browser",
       "actual_intent": "web_action",
       "command": "# Unknown: browser/web_action",
-      "confidence": 0.9,
+      "confidence": 0.95,
       "domain_success": true,
       "intent_success": false,
       "overall_success": false
@@ -209,7 +209,7 @@
       "actual_domain": "browser",
       "actual_intent": "web_action",
       "command": "# Unknown: browser/web_action",
-      "confidence": 0.9,
+      "confidence": 0.95,
       "domain_success": true,
       "intent_success": false,
       "overall_success": false
@@ -222,7 +222,7 @@
       "actual_domain": "browser",
       "actual_intent": "web_action",
       "command": "# Unknown: browser/web_action",
-      "confidence": 0.9,
+      "confidence": 0.95,
       "domain_success": true,
       "intent_success": true,
       "overall_success": true
@@ -246,9 +246,9 @@
       "expected_intent": "web_action",
       "expected_site": "amazon",
       "actual_domain": "shell",
-      "actual_intent": "find",
-      "command": "find .",
-      "confidence": 0.85,
+      "actual_intent": "unknown",
+      "command": "# Unknown: shell/amazon_search",
+      "confidence": 0.95,
       "domain_success": false,
       "intent_success": false,
       "overall_success": false
@@ -259,9 +259,9 @@
       "expected_intent": "web_action",
       "expected_site": "github",
       "actual_domain": "shell",
-      "actual_intent": "list_processes",
-      "command": "ps aux",
-      "confidence": 0.85,
+      "actual_intent": "unknown",
+      "command": "# Unknown: shell/github_search",
+      "confidence": 0.95,
       "domain_success": false,
       "intent_success": false,
       "overall_success": false

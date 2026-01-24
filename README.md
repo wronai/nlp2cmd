@@ -168,6 +168,7 @@ LLM plans. Code executes. System controls.
 | **[Generation Module](README_GENERATION.md)** | DSL generation implementation details |
 | **[Quick Fix Reference](docs/quick-fix-reference.md)** | Common issues and solutions |
 | **[Keyword Detection Flow](docs/KEYWORD_DETECTION_FLOW.md)** | Detailed keyword intent detection pipeline and fallback mechanisms |
+| **[Enhanced NLP Integration](docs/ENHANCED_NLP_INTEGRATION.md)** | Advanced NLP libraries integration with semantic similarity and web schema context |
 | **[Web Schema Guide](docs/WEB_SCHEMA_GUIDE.md)** | Browser automation and form filling |
 | **[Cache Management Guide](docs/CACHE_MANAGEMENT.md)** | External dependencies caching |
 
@@ -182,6 +183,38 @@ pip install nlp2cmd[all]
 # Or install specific components
 pip install nlp2cmd[browser,nlp]  # Web automation + Polish NLP
 pip install nlp2cmd[sql,shell]   # Database + system commands
+```
+
+### Shell Emulation Mode
+
+NLP2cmd provides full shell emulation capabilities for system commands:
+
+```bash
+# Interactive shell mode
+nlp2cmd --interactive --dsl shell
+nlp2cmd> list files in current directory
+nlp2cmd> find files larger than 100MB
+nlp2cmd> show running processes
+nlp2cmd> exit
+
+# Single query mode
+nlp2cmd --dsl shell --query "list files in current directory"
+# Output: ls -la .
+
+# Execute immediately (run mode)
+nlp2cmd --run "list files in current directory" --auto-confirm
+# Executes: ls -la . with real output
+
+# Polish language support
+nlp2cmd --dsl shell --query "znajdź pliki .log większe niż 10MB"
+# Output: find . -type f -name "*.log" -size +10MB -exec ls -lh {} \;
+
+# Process management
+nlp2cmd --dsl shell --query "uruchom usługę nginx"
+# Output: systemctl start nginx
+
+nlp2cmd --dsl shell --query "pokaż procesy zużywające najwięcej pamięci"
+# Output: ps aux --sort=-%mem | head -10
 ```
 
 ### Setup External Dependencies
@@ -235,21 +268,77 @@ nlp2cmd repair docker-compose.yml --backup
 
 #### Working Examples
 
+##### Shell Emulation Examples
+
 ```bash
-$ nlp2cmd --query "Pokaż użytkowników"
-SELECT * FROM unknown_table;
+# Interactive mode
+$ nlp2cmd --interactive --dsl shell
+╭──────────────────────────────────────────╮
+│ NLP2CMD Interactive Mode                 │
+│ Type 'help' for commands, 'exit' to quit │
+╰──────────────────────────────────────────╯
+🔍 Environment: Linux (6.17.0-8-generic)
+🛠️  Tools: docker, docker-compose, kubectl, git, python, node, terraform, ansible
+📁 Config files: 6
+
+nlp2cmd> list files in current directory
+ls -la .
+
+nlp2cmd> find files larger than 100MB
+find . -type f -size +100MB -exec ls -lh {} \;
+
+nlp2cmd> show running processes
+ps aux
+
+nlp2cmd> exit
+👋 Goodbye!
+
+# Single query examples
+$ nlp2cmd --dsl shell --query "Pokaż użytkowników"
+ls -la .
 
 📊 ⏱️  Time: 13.7ms | 💻 CPU: 0.0% | 🧠 RAM: 54.8MB (0.1%) | ⚡ Energy: 0.120mJ
-
-$ nlp2cmd --dsl docker --query "Pokaż wszystkie kontenery"
-docker ps -a
-
-📊 ⏱️  Time: 2.2ms | 💻 CPU: 0.0% | 🧠 RAM: 55.2MB (0.1%) | ⚡ Energy: 0.019mJ
 
 $ nlp2cmd --dsl shell --query "Znajdź pliki .log większe niż 10MB"
 find . -type f -name "*.log" -size +10MB -exec ls -lh {} \;
 
 📊 ⏱️  Time: 3.1ms | 💻 CPU: 0.0% | 🧠 RAM: 55.1MB (0.1%) | ⚡ Energy: 0.028mJ
+
+# Run mode with execution
+$ nlp2cmd --run "list files in current directory" --auto-confirm
+╭──────────────────────────────── 🚀 Run Mode ─────────────────────────────────╮
+│ list files in current directory                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Generating command...
+Detected: shell/list
+
+$ ls -la .
+  total 1280
+  drwxrwxr-x 23 tom tom   4096 Jan 24 21:23 .
+  drwxrwxr-x 31 tom tom   4096 Jan 24 09:33 ..
+  -rw-r--r--  1 tom tom   5450 Jan 24 21:20 CHANGELOG.md
+  -rw-r--r--  1 tom tom  22677 Jan 24 21:20 README.md
+  ...
+✓ Command completed in 25.7ms
+
+# Polish language examples
+$ nlp2cmd --dsl shell --query "uruchom usługę nginx"
+systemctl start nginx
+
+$ nlp2cmd --dsl shell --query "pokaż procesy zużywające najwięcej pamięci"
+ps aux --sort=-%mem | head -10
+
+$ nlp2cmd --dsl shell --query "znajdź pliki z rozszerzeniem .py"
+find . -name "*.py" -type f
+```
+
+##### Other DSL Examples
+
+```bash
+$ nlp2cmd --dsl docker --query "Pokaż wszystkie kontenery"
+docker ps -a
+
+📊 ⏱️  Time: 2.2ms | 💻 CPU: 0.0% | 🧠 RAM: 55.2MB (0.1%) | ⚡ Energy: 0.019mJ
 
 $ nlp2cmd web-schema extract https://httpbin.org/forms/post
 ✓ Schema extracted successfully

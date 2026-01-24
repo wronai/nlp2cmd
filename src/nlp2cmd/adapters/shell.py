@@ -316,6 +316,22 @@ class ShellAdapter(BaseDSLAdapter):
         elif "rozmiar" in str(target) or "du" in str(target):
             file_path = entities.get("file_path", target)
             return f"du -h {file_path}"
+        
+        # Handle combined patterns (e.g., "znajdź pliki .log większe niż 10MB")
+        combined_cmd = None
+        if ".log" in str(target) and "większe niż" in str(target):
+            size = entities.get("size", "10MB")
+            size_val = size.replace("MB", "M") if "MB" in size else size
+            combined_cmd = f"find {scope} -type f -name '*.log' -size +{size_val}"
+        elif ".log" in str(target):
+            combined_cmd = f"find {scope} -type f -name '*.log'"
+        elif "większe niż" in str(target):
+            size = entities.get("size", "100M")
+            size_val = size.replace("MB", "M") if "MB" in size else size
+            combined_cmd = f"find {scope} -size +{size_val}"
+        
+        if combined_cmd:
+            return combined_cmd
 
         # Determine if searching for files or directories
         type_flag = "-type f" if target == "files" else "-type d" if target == "directories" else ""

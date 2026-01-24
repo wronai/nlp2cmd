@@ -88,6 +88,7 @@ class EnhancedContextDetector:
     
     def _initialize_nlp(self):
         """Initialize NLP libraries."""
+        global NLTK_AVAILABLE
         if NLTK_AVAILABLE:
             try:
                 nltk.download('punkt', quiet=True)
@@ -109,6 +110,7 @@ class EnhancedContextDetector:
                 print(f"NLTK initialization failed: {e}")
                 NLTK_AVAILABLE = False
         
+        global SENTENCE_TRANSFORMERS_AVAILABLE
         if SENTENCE_TRANSFORMERS_AVAILABLE:
             try:
                 # Use multilingual model for Polish/English
@@ -117,6 +119,7 @@ class EnhancedContextDetector:
                 print(f"Sentence transformers initialization failed: {e}")
                 SENTENCE_TRANSFORMERS_AVAILABLE = False
         
+        global TRANSFORMERS_AVAILABLE
         if TRANSFORMERS_AVAILABLE:
             try:
                 # Use lightweight multilingual model
