@@ -140,6 +140,7 @@ class RegexEntityExtractor:
             r'(?:młodsze|newer)\s+(?:niż|than)?\s*(\d+)\s*(dni|days?|godzin|hours?|minut|minutes?)',
             r'(\d+)\s*(dni|days?|godzin|hours?)\s+(?:temu|ago)',
             r'(?:zmodyfikowane|modified|utworzone|created)\s+(?:w\s+ciągu\s+)?ostatnich\s+(\d+)\s*(dni|days?|godzin|hours?)',
+            r'(?:zmodyfikowane|modified|utworzone|created)\s+(?:w\s+ciągu\s+)?ostatnie\s+(\d+)\s*(dni|days?|godzin|hours?)',
             r'(?:zmodyfikowane|modified|utworzone|created)\s+(?:in\s+)?last\s+(\d+)\s*(dni|days?|godzin|hours?)',
         ],
         'process_name': [

@@ -268,6 +268,7 @@ class ShellAdapter(BaseDSLAdapter):
 
         generators = {
             "file_search": self._generate_file_search,
+            "find": self._generate_find,
             "file_operation": self._generate_file_operation,
             "process_management": self._generate_process_management,
             "process_monitoring": self._generate_process_monitoring,
@@ -294,73 +295,125 @@ class ShellAdapter(BaseDSLAdapter):
         """Generate find command."""
         target = entities.get("target", "files")
         filters = entities.get("filters", [])
-        scope = entities.get("scope", ".")
+        scope = entities.get("path", entities.get("scope", "."))
         
-        # Handle specific Polish patterns from natural language
-        if "rozszerzeniem" in str(target) or "extension" in str(target):
+        # Build find command with entities
+        cmd_parts = ["find", scope]
+        
+        # Add type filter
+        if target == "files" or "plik" in str(target).lower():
+            cmd_parts.append("-type f")
+        elif target == "directories" or "katalog" in str(target).lower():
+            cmd_parts.append("-type d")
+        
+        # Add name pattern
+        if "filename" in entities:
+            cmd_parts.extend(["-name", f'"{entities["filename"]}"'])
+        elif "file_pattern" in entities:
+            cmd_parts.extend(["-name", f'"*.{entities["file_pattern"]}"'])
+        
+        # Add size filter
+        if "size" in entities and isinstance(entities["size"], dict):
+            size_info = entities["size"]
+            if "value" in size_info and "unit" in size_info:
+                unit = size_info['unit']
+                # Convert MB->M, GB->G, KB->K, etc.
+                if unit.startswith('M') and len(unit) > 1:
+                    unit = 'M'
+                elif unit.startswith('G') and len(unit) > 1:
+                    unit = 'G'
+                elif unit.startswith('K') and len(unit) > 1:
+                    unit = 'K'
+                elif unit.startswith('T') and len(unit) > 1:
+                    unit = 'T'
+                cmd_parts.append(f"-size +{size_info['value']}{unit}")
+        elif "size" in entities:
+            cmd_parts.append(f"-size +{entities['size']}")
+        
+        # Add age/time filter
+        if "age" in entities and isinstance(entities["age"], dict):
+            age_info = entities["age"]
+            if "value" in age_info and "unit" in age_info:
+                unit_map = {"days": "mtime", "hours": "mmin", "minutes": "mmin"}
+                time_unit = unit_map.get(age_info["unit"].lower(), "mtime")
+                cmd_parts.append(f"-{time_unit} -{age_info['value']}")
+        
+        # Handle specific Polish patterns from natural language (fallback)
+        elif "rozszerzeniem" in str(target) or "extension" in str(target):
             extension = entities.get("extension", "py")
-            return f"find {scope} -name '*.{extension}' -type f"
+            cmd_parts.extend(["-name", f"*.{extension}"])
         elif "większe niż" in str(target) or "size" in str(target):
             size = entities.get("size", "100M")
-            return f"find {scope} -size +{size}"
+            cmd_parts.append(f"-size +{size}")
         elif "zmodyfikowane" in str(target) or "mtime" in str(target):
             days = entities.get("days", "7")
-            return f"find {scope} -mtime -{days}"
-        elif "zawartość" in str(target) or "cat" in str(target):
-            file_path = entities.get("file_path", target)
-            return f"cat {file_path}"
-        elif "ostatnie" in str(target) or "tail" in str(target):
-            file_path = entities.get("file_path", target)
-            lines = entities.get("lines", "10")
-            return f"tail -{lines} {file_path}"
-        elif "rozmiar" in str(target) or "du" in str(target):
-            file_path = entities.get("file_path", target)
-            return f"du -h {file_path}"
+            cmd_parts.append(f"-mtime -{days}")
         
-        # Handle combined patterns (e.g., "znajdź pliki .log większe niż 10MB")
-        combined_cmd = None
-        if ".log" in str(target) and "większe niż" in str(target):
-            size = entities.get("size", "10MB")
-            size_val = size.replace("MB", "M") if "MB" in size else size
-            combined_cmd = f"find {scope} -type f -name '*.log' -size +{size_val}"
-        elif ".log" in str(target):
-            combined_cmd = f"find {scope} -type f -name '*.log'"
-        elif "większe niż" in str(target):
-            size = entities.get("size", "100M")
-            size_val = size.replace("MB", "M") if "MB" in size else size
-            combined_cmd = f"find {scope} -size +{size_val}"
+        return " ".join(cmd_parts)
+
+    def _generate_find(self, entities: dict[str, Any]) -> str:
+        """Generate find command using entities."""
+        scope = entities.get("path", entities.get("scope", "."))
+        cmd_parts = ["find", scope]
         
-        if combined_cmd:
-            return combined_cmd
-
-        # Determine if searching for files or directories
-        type_flag = "-type f" if target == "files" else "-type d" if target == "directories" else ""
-
-        cmd_parts = ["find", scope, type_flag]
-
-        for f in filters:
-            attr = f.get("attribute", "")
-            op = f.get("operator", "=")
-            value = f.get("value", "")
-
-            if attr == "size":
-                size_op = "+" if op in [">", ">="] else "-" if op in ["<", "<="] else ""
-                cmd_parts.append(f"-size {size_op}{self._normalize_find_size_value(value)}")
-            elif attr == "mtime":
-                # find(1): +N = older than N days, -N = newer than N days
-                days_val = value
-                if isinstance(value, str) and "_days" in value:
-                    days_val = value.replace("_days", "")
-                time_op = "+" if op in [">", ">="] else "-" if op in ["<", "<="] else ""
-                if not time_op and isinstance(value, str) and value.endswith("_days"):
-                    time_op = "-"
-                cmd_parts.append(f"-mtime {time_op}{days_val}")
-            elif attr == "name":
-                cmd_parts.append(f'-name "{value}"')
-            elif attr == "extension":
-                cmd_parts.append(f'-name "*.{value}"')
-
-        return " ".join(filter(None, cmd_parts))
+        # Add type filter
+        target = entities.get("target", "files")
+        if target == "files" or "plik" in str(target).lower():
+            cmd_parts.append("-type f")
+        elif target == "directories" or "katalog" in str(target).lower():
+            cmd_parts.append("-type d")
+        
+        # Add name pattern
+        if "filename" in entities:
+            cmd_parts.extend(["-name", f'"{entities["filename"]}"'])
+        elif "file_pattern" in entities:
+            cmd_parts.extend(["-name", f'"*.{entities["file_pattern"]}"'])
+        
+        # Add size filter
+        if "size" in entities and isinstance(entities["size"], dict):
+            size_info = entities["size"]
+            if "value" in size_info and "unit" in size_info:
+                unit = size_info['unit']
+                # Convert MB->M, GB->G, KB->K, etc.
+                if unit.startswith('M') and len(unit) > 1:
+                    unit = 'M'
+                elif unit.startswith('G') and len(unit) > 1:
+                    unit = 'G'
+                elif unit.startswith('K') and len(unit) > 1:
+                    unit = 'K'
+                elif unit.startswith('T') and len(unit) > 1:
+                    unit = 'T'
+                cmd_parts.append(f"-size +{size_info['value']}{unit}")
+        
+        # Handle string size (e.g., "10MB")
+        elif "size" in entities and isinstance(entities["size"], str):
+            size_str = entities["size"]
+            # Parse string like "10MB" and convert
+            import re
+            m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", size_str.strip())
+            if m:
+                value = m.group(1)
+                unit = m.group(2).upper()
+                # Convert MB->M, GB->G, KB->K, etc.
+                if unit.startswith('M') and len(unit) > 1:
+                    unit = 'M'
+                elif unit.startswith('G') and len(unit) > 1:
+                    unit = 'G'
+                elif unit.startswith('K') and len(unit) > 1:
+                    unit = 'K'
+                elif unit.startswith('T') and len(unit) > 1:
+                    unit = 'T'
+                cmd_parts.append(f"-size +{value}{unit}")
+        
+        # Add age/time filter
+        if "age" in entities and isinstance(entities["age"], dict):
+            age_info = entities["age"]
+            if "value" in age_info and "unit" in age_info:
+                unit_map = {"days": "mtime", "hours": "mmin", "minutes": "mmin"}
+                time_unit = unit_map.get(age_info["unit"].lower(), "mtime")
+                cmd_parts.append(f"-{time_unit} -{age_info['value']}")
+        
+        return " ".join(cmd_parts)
 
     @staticmethod
     def _normalize_find_size_value(value: Any) -> str:

@@ -239,7 +239,7 @@ class SemanticObjectFactory:
         elif obj_type == ObjectType.FILE:
             filename = properties.get('filename', '*')
             
-            if properties.get('user_context'):
+            if properties.get('user_context') is True:
                 import os
                 home_dir = Path(os.path.expanduser('~'))
                 path = home_dir / filename
@@ -252,7 +252,7 @@ class SemanticObjectFactory:
         elif obj_type == ObjectType.DIRECTORY:
             dirname = properties.get('dirname', '.')
             
-            if properties.get('user_context'):
+            if properties.get('user_context') is True:
                 import os
                 home_dir = Path(os.path.expanduser('~'))
                 path = home_dir

@@ -6,9 +6,9 @@ Provides dependency-aware command generation with environment objects.
 """
 
 from .environment import EnvironmentObject, EnvironmentContext
-from .virtual_objects import VirtualObject, VirtualObjectManager
-from .semantic_objects import SemanticObject, SemanticObjectFactory
-from .dependency_resolver import DependencyResolver
+from .virtual_objects import VirtualObject, VirtualObjectManager, ObjectType
+from .semantic_objects import SemanticPattern, SemanticObjectFactory
+from .dependency_resolver import DependencyResolver, DependencyType
 from .conceptual_commands import ConceptualCommandGenerator
 
 __all__ = [
@@ -16,8 +16,10 @@ __all__ = [
     'EnvironmentContext', 
     'VirtualObject',
     'VirtualObjectManager',
-    'SemanticObject',
+    'ObjectType',
+    'SemanticPattern',
     'SemanticObjectFactory',
     'DependencyResolver',
+    'DependencyType',
     'ConceptualCommandGenerator',
 ]
