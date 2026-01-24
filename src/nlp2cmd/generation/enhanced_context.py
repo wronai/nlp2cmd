@@ -52,6 +52,18 @@ try:
 except ImportError:
     LANGDETECT_AVAILABLE = False
 
+try:
+    from nlp2cmd.generation.enhanced_context import get_enhanced_detector
+    ENHANCED_CONTEXT_AVAILABLE = True
+except ImportError:
+    ENHANCED_CONTEXT_AVAILABLE = False
+
+try:
+    from rapidfuzz import fuzz, process
+    FUZZY_AVAILABLE = True
+except ImportError:
+    FUZZY_AVAILABLE = False
+
 
 @dataclass
 class ContextualMatch:
@@ -172,49 +184,67 @@ class EnhancedContextDetector:
                 print(f"Failed to load templates: {e}")
     
     def _build_semantic_index(self):
-        """Build semantic index for patterns and templates."""
+        """Build semantic index for all domain/intent combinations."""
         if not SENTENCE_TRANSFORMERS_AVAILABLE:
             return
         
-        all_patterns = []
-        pattern_keys = []
+        self.semantic_index = {}
         
-        # Extract patterns from templates
-        for domain, intents in self.templates.items():
-            if isinstance(intents, dict):
-                for intent, template in intents.items():
-                    # Create description from template
-                    description = f"{domain} {intent} {template}"
-                    all_patterns.append(description)
-                    pattern_keys.append((domain, intent, template))
+        # Load patterns for semantic indexing
+        patterns_file = Path("/home/tom/github/wronai/nlp2cmd/data/patterns.json")
+        if patterns_file.exists():
+            with open(patterns_file, 'r', encoding='utf-8') as f:
+                patterns = json.load(f)
+            
+            # Skip schema field and iterate domains
+            for domain, intents in patterns.items():
+                if domain.startswith('$'):  # Skip schema field
+                    continue
+                if isinstance(intents, dict):
+                    for intent, pattern_list in intents.items():
+                        if isinstance(pattern_list, list):
+                            # Add patterns to semantic index
+                            for pattern in pattern_list:
+                                if pattern not in self.semantic_index:
+                                    self.semantic_index[pattern] = {}
+                                self.semantic_index[pattern][domain] = intent
         
-        # Extract patterns from web schemas
-        for domain, schemas in self.schemas.items():
-            if domain == 'browser':
-                for site_name, schema in schemas.items():
-                    if 'actions' in schema:
-                        for action in schema['actions']:
-                            # Create description from web action
-                            action_desc = action.get('description', '')
-                            action_name = action.get('name', '')
-                            description = f"browser {action_name} {action_desc}"
-                            all_patterns.append(description)
-                            pattern_keys.append(('browser', 'web_action', action))
+        # Add web schema actions to semantic index
+        if 'browser' in self.schemas:
+            for site_name, schema in self.schemas['browser'].items():
+                if 'actions' in schema:
+                    for action in schema['actions']:
+                        action_name = action.get('name', '')
+                        description = action.get('description', '')
+                        examples = action.get('examples', [])
+                        
+                        # Add action name
+                        if action_name:
+                            if action_name not in self.semantic_index:
+                                self.semantic_index[action_name] = {}
+                            self.semantic_index[action_name]['browser'] = 'web_action'
+                        
+                        # Add description
+                        if description:
+                            if description not in self.semantic_index:
+                                self.semantic_index[description] = {}
+                            self.semantic_index[description]['browser'] = 'web_action'
+                        
+                        # Add examples
+                        for example in examples:
+                            if example not in self.semantic_index:
+                                self.semantic_index[example] = {}
+                            self.semantic_index[example]['browser'] = 'web_action'
         
-        # Encode all patterns
-        if all_patterns:
-            embeddings = self.sentence_model.encode(all_patterns)
-            for i, key in enumerate(pattern_keys):
-                domain, intent, template_or_action = key
-                semantic_key = f"{domain}/{intent}"
-                if semantic_key not in self.semantic_index:
-                    self.semantic_index[semantic_key] = []
-                self.semantic_index[semantic_key].append({
-                    'embedding': embeddings[i],
-                    'template': template_or_action,
-                    'domain': domain,
-                    'intent': intent
-                })
+        # Encode all semantic keys
+        self.semantic_embeddings = {}
+        for semantic_key in self.semantic_index.keys():
+            try:
+                embedding = self.sentence_model.encode(semantic_key, convert_to_tensor=True)
+                self.semantic_embeddings[semantic_key] = embedding
+            except Exception as e:
+                print(f"Failed to encode semantic key '{semantic_key}': {e}")
+                continue
     
     def _preprocess_text(self, text: str) -> str:
         """Advanced text preprocessing."""
@@ -296,69 +326,113 @@ class EnhancedContextDetector:
         return entities
     
     def _calculate_keyword_similarity(self, query: str, pattern: str) -> float:
-        """Calculate keyword-based similarity."""
-        query_words = set(self._preprocess_text(query).split())
-        pattern_words = set(self._preprocess_text(pattern).split())
-        
-        # Remove stop words
-        query_words -= self.stop_words
-        pattern_words -= self.stop_words
-        
-        if not query_words or not pattern_words:
+        """Calculate keyword similarity with fuzzy matching."""
+        if not pattern:
             return 0.0
+        
+        query_words = set(query.lower().split())
+        pattern_words = set(pattern.lower().split())
+        
+        # Exact match
+        if query_words == pattern_words:
+            return 1.0
         
         # Jaccard similarity
         intersection = query_words.intersection(pattern_words)
         union = query_words.union(pattern_words)
+        jaccard = len(intersection) / len(union) if union else 0.0
         
-        return len(intersection) / len(union) if union else 0.0
+        # Fuzzy matching for typo tolerance
+        fuzzy_score = 0.0
+        if FUZZY_AVAILABLE and len(query) > 3 and len(pattern) > 3:
+            # Use rapidfuzz for fuzzy string matching
+            fuzzy_score = fuzz.ratio(query.lower(), pattern.lower()) / 100.0
+        
+        # Combine scores (70% Jaccard, 30% fuzzy)
+        combined_score = 0.7 * jaccard + 0.3 * fuzzy_score
+        
+        return combined_score
     
     def _calculate_semantic_similarity(self, query: str, domain: str, intent: str) -> float:
         """Calculate semantic similarity using sentence transformers."""
         if not SENTENCE_TRANSFORMERS_AVAILABLE:
             return 0.0
         
-        semantic_key = f"{domain}/{intent}"
-        if semantic_key not in self.semantic_index:
-            return 0.0
+        # Try to find patterns for this domain/intent combination
+        patterns_file = Path("/home/tom/github/wronai/nlp2cmd/data/patterns.json")
+        if patterns_file.exists():
+            with open(patterns_file, 'r', encoding='utf-8') as f:
+                patterns = json.load(f)
+            
+            # Get patterns for this domain/intent
+            domain_patterns = patterns.get(domain, {})
+            intent_patterns = domain_patterns.get(intent, [])
+            
+            if intent_patterns:
+                try:
+                    # Encode query and patterns using sentence_model
+                    query_embedding = self.sentence_model.encode([query])
+                    pattern_embeddings = self.sentence_model.encode(intent_patterns)
+                    
+                    # Calculate cosine similarity
+                    similarities = cosine_similarity(query_embedding, pattern_embeddings)[0]
+                    
+                    # Return maximum similarity
+                    return float(max(similarities)) if len(similarities) > 0 else 0.0
+                    
+                except Exception as e:
+                    print(f"Semantic similarity calculation failed: {e}")
+                    return 0.0
         
-        try:
-            query_embedding = self.sentence_model.encode([query])
-            
-            # Calculate similarity with all embeddings for this semantic key
-            similarities = []
-            for item in self.semantic_index[semantic_key]:
-                pattern_embedding = item['embedding'].reshape(1, -1)
-                similarity = cosine_similarity(query_embedding, pattern_embedding)[0][0]
-                similarities.append(similarity)
-            
-            # Return the maximum similarity
-            return float(max(similarities)) if similarities else 0.0
-        except Exception as e:
-            print(f"Semantic similarity calculation failed: {e}")
-            return 0.0
+        # Fallback: use semantic index if available
+        semantic_key = f"{domain}/{intent}"
+        if semantic_key in self.semantic_index:
+            try:
+                query_embedding = self.sentence_model.encode([query])
+                
+                # Calculate similarity with all embeddings for this semantic key
+                similarities = []
+                for item in self.semantic_index[semantic_key]:
+                    pattern_embedding = item['embedding'].reshape(1, -1)
+                    similarity = cosine_similarity(query_embedding, pattern_embedding)[0][0]
+                    similarities.append(similarity)
+                
+                # Return the maximum similarity
+                return float(max(similarities)) if similarities else 0.0
+            except Exception as e:
+                print(f"Semantic similarity calculation failed: {e}")
+                return 0.0
+        
+        return 0.0
     
     def _calculate_context_score(self, query: str, domain: str, intent: str, entities: Dict[str, Any]) -> float:
         """Calculate context-based score using schema information."""
         score = 0.0
         
-        # Check if domain has relevant schemas
+        # Domain schema availability
         if domain in self.schemas:
             score += 0.3
         
-        # Check if intent exists in templates
+        # Template availability
         if domain in self.templates and intent in self.templates[domain]:
             score += 0.3
         
-        # Bonus for entity matches
+        # Entity matching bonus
         if 'keywords' in entities:
             keywords = entities['keywords']
             if any(keyword in domain or keyword in intent for keyword in keywords):
                 score += 0.2
         
-        # Language bonus
+        # Language detection bonus
         if entities.get('language') in ['pl', 'en']:
             score += 0.2
+        
+        # Shell domain boost for file/user operations
+        if domain == 'shell':
+            shell_keywords = ['plik', 'folder', 'użytkownik', 'uzytkownik', 'pokaż', 'pokaz', 'lista', 'list']
+            query_lower = query.lower()
+            if any(keyword in query_lower for keyword in shell_keywords):
+                score += 0.3
         
         return min(score, 1.0)
     

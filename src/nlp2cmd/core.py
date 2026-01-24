@@ -628,14 +628,37 @@ class NLP2CMD:
                     filters.append({"attribute": "name", "operator": "=", "value": filename})
 
                 size = normalized.get("size")
-                if isinstance(size, dict) and "value" in size:
+                size_parsed = normalized.get("size_parsed")
+                query_text = normalized.get("query", "")
+                
+                # Detect operator from query text
+                operator = ">"
+                if "mniejsz" in query_text.lower() or "smaller" in query_text.lower():
+                    operator = "<"
+                elif "większ" in query_text.lower() or "larger" in query_text.lower() or "bigger" in query_text.lower():
+                    operator = ">"
+                
+                # Handle size as either dict (size_parsed) or string (size)
+                if isinstance(size_parsed, dict) and "value" in size_parsed:
                     filters.append(
                         {
                             "attribute": "size",
-                            "operator": ">",
-                            "value": f"{size.get('value')}{size.get('unit', '')}",
+                            "operator": operator,
+                            "value": f"{size_parsed.get('value')}{size_parsed.get('unit', '')}",
                         }
                     )
+                elif isinstance(size, str) and size.strip():
+                    # Parse string size like "10MB"
+                    import re
+                    m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", size.strip())
+                    if m:
+                        filters.append(
+                            {
+                                "attribute": "size",
+                                "operator": operator,
+                                "value": f"{m.group(1)}{m.group(2)}",
+                            }
+                        )
 
                 age = normalized.get("age")
                 if isinstance(age, dict) and "value" in age:

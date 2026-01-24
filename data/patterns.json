@@ -123,9 +123,11 @@
       "znajdź plik", "szukaj plik", "find files", "search files",
       "locate", "wyszukaj", "gdzie jest", "where is",
       "find python", "find log", "znajdź pliki z rozszerzeniem",
-      "znajdź pliki większe niż", "znajdź pliki zmodyfikowane",
-      "pokaż zawartość pliku", "wyświetl plik", "cat plik", "odczytaj plik",
-      "pokaż ostatnie linii pliku", "tail plik", "koniec pliku"
+      "znajdź pliki użytkownika", "znajdź pliki usera", "find user files",
+      "szukaj plików użytkownika", "szukaj plików usera", "search user files",
+      "pokaż pliki użytkownika", "pokaż pliki usera", "show user files",
+      "znajdź pliki w folderze użytkownika", "znajdź pliki w folderze usera",
+      "szukaj pliki w folderze użytkownika", "szukaj pliki w folderze usera"
     ],
     "count_files": [
       "ile plików", "ile jest plików", "ile plikow", "ile jest plikow",
@@ -145,7 +147,7 @@
       "zawartość katalogu", "zawartość folderu", "directory contents", "folder contents",
       "pokaż listę folderów użytkownika", "pokaż foldery użytkownika", "pokaż katalogi użytkownika",
       "lista folderów użytkownika", "listę folderów użytkownika", "pokaż katalog domowy użytkownika",
-      "pokaż pliki", "listuj pliki", "wypisz pliki"
+      "listuj pliki", "wypisz pliki"
     ],
     "process": [
       "procesy", "ps", "uruchomione procesy", "running processes",

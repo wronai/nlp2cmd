@@ -296,45 +296,90 @@ class InteractiveSession:
 
     def process(self, user_input: str) -> FeedbackResult:
         """Process user input and return feedback."""
-        # Select adapter
-        if self.dsl == "appspec":
-            if not self.appspec:
-                raise ValueError("--appspec is required when using --dsl appspec")
-            adapter = AppSpecAdapter(appspec_path=self.appspec)
-        else:
-            adapter = get_adapter(self.dsl, self.context["environment"])
-        nlp2cmd = NLP2CMD(adapter=adapter)
-
-        # Transform with monitoring
-        with measure_resources():
-            result = nlp2cmd.transform(user_input, context=self.context)
-
-        self.context["last_plan"] = result.plan.model_dump() if hasattr(result.plan, "model_dump") else {}
-        self.context["transform_status"] = result.status.value if hasattr(result.status, "value") else str(result.status)
-        prev = self.context.get("previous_commands")
-        if not isinstance(prev, list):
-            prev = []
-        prev.append(result.command)
-        self.context["previous_commands"] = prev
-
-        # Analyze feedback
-        feedback = self.feedback_analyzer.analyze(
-            original_input=user_input,
-            generated_output=result.command,
-            validation_errors=result.errors,
-            validation_warnings=result.warnings,
-            dsl_type=result.dsl_type,
-            context=self.context,
+        # Use RuleBasedPipeline for enhanced context support
+        from nlp2cmd.generation.pipeline import RuleBasedPipeline
+        
+        # Initialize pipeline with enhanced context
+        pipeline = RuleBasedPipeline(
+            detector=self.detector if hasattr(self, 'detector') else None,
+            extractor=self.extractor if hasattr(self, 'extractor') else None,
+            generator=self.generator if hasattr(self, 'generator') else None,
+            confidence_threshold=0.5,
+            use_enhanced_context=True
         )
-
-        # Store in history
-        self.history.append({
-            "input": user_input,
-            "result": result,
-            "feedback": feedback,
-        })
-
-        return feedback
+        
+        # Process with enhanced context
+        with measure_resources():
+            result = pipeline.process(user_input)
+        
+        # Convert PipelineResult to expected format
+        if result.success:
+            # Create ExecutionPlan from PipelineResult
+            from nlp2cmd.core import ExecutionPlan
+            
+            # Create a simple plan
+            plan = ExecutionPlan(
+                intent=result.intent,
+                entities=result.entities,
+                confidence=result.confidence,
+                text=result.input_text
+            )
+            
+            # Create result similar to NLP2CMD.transform
+            class MockResult:
+                def __init__(self, command, plan, status):
+                    self.command = command
+                    self.plan = plan
+                    self.status = status
+                    self.errors = result.errors
+            
+            mock_result = MockResult(result.command, plan, "success")
+            
+            # Analyze feedback
+            feedback = self.feedback_analyzer.analyze(
+                original_input=user_input,
+                generated_output=result.command,
+                validation_errors=[],
+                validation_warnings=[],
+                dsl_type=self.dsl,
+                context=self.context,
+            )
+            
+            # Store in history
+            self.history.append({
+                "input": user_input,
+                "result": mock_result,
+                "feedback": feedback,
+            })
+            
+            return feedback
+        else:
+            # Handle failure case
+            class MockResult:
+                def __init__(self, command, errors):
+                    self.command = command
+                    self.errors = errors
+                    self.status = "error"
+            
+            mock_result = MockResult(result.command, result.errors)
+            
+            feedback = FeedbackResult(
+                type=FeedbackType.ERROR,
+                original_input=user_input,
+                generated_output=result.command,
+                validation_errors=result.errors,
+                validation_warnings=[],
+                dsl_type=self.dsl,
+                context=self.context,
+            )
+            
+            self.history.append({
+                "input": user_input,
+                "result": mock_result,
+                "feedback": feedback,
+            })
+            
+            return feedback
 
     def display_feedback(self, feedback: FeedbackResult):
         """Display feedback result with formatting."""
