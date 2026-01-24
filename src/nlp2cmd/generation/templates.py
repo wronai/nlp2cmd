@@ -354,6 +354,7 @@ class TemplateGenerator:
         'apply_recursive': "kubectl apply -R -f {directory} {namespace}",
         'delete': "kubectl delete {resource} {name} {namespace} {selector}",
         'delete_force': "kubectl delete {resource} {name} {namespace} --force --grace-period=0",
+        'create': "kubectl create {resource} {name} --image={image} {namespace}",
         'scale': "kubectl scale {resource}/{name} --replicas={replicas} {namespace}",
         'logs': "kubectl logs {pod} {container} {namespace} {follow} --tail={tail}",
         'logs_simple': "kubectl logs {pod} {namespace} --tail={tail}",
@@ -496,7 +497,13 @@ class TemplateGenerator:
         Args:
             custom_templates: Additional templates per domain
         """
-        self.templates: dict[str, dict[str, str]] = {}
+        self.templates: dict[str, dict[str, str]] = {
+            'sql': self.SQL_TEMPLATES.copy(),
+            'shell': self.SHELL_TEMPLATES.copy(),
+            'docker': self.DOCKER_TEMPLATES.copy(),
+            'kubernetes': self.KUBERNETES_TEMPLATES.copy(),
+            'git': self.GIT_TEMPLATES.copy(),
+        }
 
         self.defaults: dict[str, Any] = {}
         self._defaults_loaded = False
@@ -504,16 +511,24 @@ class TemplateGenerator:
         self._load_defaults_from_json()
         self._load_templates_from_json()
 
-        if not self._defaults_loaded:
-            raise FileNotFoundError(
-                "Template defaults not loaded. Expected defaults.json to be available in the package "
-                "data dir or user config dir, or set NLP2CMD_DEFAULTS_FILE."
-            )
-        if not self._templates_loaded:
-            raise FileNotFoundError(
-                "Templates not loaded. Expected templates.json to be available in the package data dir "
-                "or user config dir, or set NLP2CMD_TEMPLATES_FILE."
-            )
+        strict = str(os.environ.get("NLP2CMD_STRICT_CONFIG") or "").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "y",
+            "on",
+        }
+        if strict:
+            if not self._defaults_loaded:
+                raise FileNotFoundError(
+                    "Template defaults not loaded. Expected defaults.json to be available in the package "
+                    "data dir or user config dir, or set NLP2CMD_DEFAULTS_FILE."
+                )
+            if not self._templates_loaded:
+                raise FileNotFoundError(
+                    "Templates not loaded. Expected templates.json to be available in the package data dir "
+                    "or user config dir, or set NLP2CMD_TEMPLATES_FILE."
+                )
         
         if custom_templates:
             for domain, domain_templates in custom_templates.items():
@@ -652,6 +667,7 @@ class TemplateGenerator:
                 'container_list': 'list',
                 'container_management': 'list',
                 'image_list': 'images',
+                'remove': 'rm',
             },
             'kubernetes': {
                 'list': 'get',

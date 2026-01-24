@@ -13,7 +13,64 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Callable, Optional
 
-from pydantic import BaseModel, Field
+try:
+    from pydantic import BaseModel, Field
+except ImportError:  # pragma: no cover
+    import copy
+    from dataclasses import dataclass as _dataclass
+
+    @_dataclass
+    class _FieldInfo:
+        default: Any = ...
+        default_factory: Optional[Callable[[], Any]] = None
+
+    def Field(
+        default: Any = ...,  # noqa: N803
+        default_factory: Optional[Callable[[], Any]] = None,
+        description: str | None = None,
+        **_: Any,
+    ) -> Any:
+        return _FieldInfo(default=default, default_factory=default_factory)
+
+    class BaseModel:  # noqa: D101
+        def __init__(self, **data: Any):
+            annotations = getattr(self.__class__, "__annotations__", {})
+            for key in annotations.keys():
+                if key in data:
+                    value = data[key]
+                else:
+                    default_value = getattr(self.__class__, key, ...)
+                    if isinstance(default_value, _FieldInfo):
+                        if default_value.default_factory is not None:
+                            value = default_value.default_factory()
+                        else:
+                            value = default_value.default
+                    else:
+                        value = default_value
+
+                if value is ...:
+                    raise TypeError(f"Missing required field: {key}")
+
+                setattr(self, key, value)
+
+        def model_dump(self) -> dict[str, Any]:
+            out: dict[str, Any] = {}
+            annotations = getattr(self.__class__, "__annotations__", {})
+            for key in annotations.keys():
+                value = getattr(self, key)
+                if isinstance(value, BaseModel):
+                    out[key] = value.model_dump()
+                else:
+                    out[key] = value
+            return out
+
+        def model_copy(self, update: Optional[dict[str, Any]] = None, deep: bool = False):
+            data = self.model_dump()
+            if update:
+                data.update(update)
+            if deep:
+                data = copy.deepcopy(data)
+            return self.__class__(**data)
 
 from nlp2cmd.ir import ActionIR
 

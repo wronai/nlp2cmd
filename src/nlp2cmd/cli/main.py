@@ -250,6 +250,8 @@ class InteractiveSession:
     def display_feedback(self, feedback: FeedbackResult):
         """Display feedback result with formatting."""
         out: dict[str, Any] = {
+            "dsl": getattr(self, "dsl", None),
+            "query": feedback.original_input,
             "status": feedback.type.value,
             "confidence": float(feedback.confidence),
             "generated_command": (feedback.generated_output or "").strip() or None,

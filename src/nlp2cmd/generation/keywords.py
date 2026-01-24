@@ -236,6 +236,8 @@ class KeywordIntentDetector:
         k = (kw or "").strip().lower()
         if not k:
             return False
+        if k == "deploy":
+            return re.search(r"(?<![a-z0-9])deploy(?![a-z0-9])", text_lower) is not None
         if len(k) <= 3 and re.fullmatch(r"[a-z0-9]+", k):
             return re.search(rf"(?<![a-z0-9]){re.escape(k)}(?![a-z0-9])", text_lower) is not None
         return k in text_lower
@@ -245,6 +247,12 @@ class KeywordIntentDetector:
         if domain == 'sql':
             if intent in {'inner_join', 'left_join', 'right_join', 'full_join'}:
                 return 'join'
+            return intent
+
+        if domain == 'docker':
+            if intent == 'compose':
+                if re.search(r"\b(run|start|launch|uruchom|odpal|wystartuj)\b", text_lower):
+                    return 'compose_up'
             return intent
 
         if domain != 'shell':
@@ -404,9 +412,80 @@ class KeywordIntentDetector:
         sql_explicit = bool(re.search(r"\b(select|update|delete|insert|where|join|sql|table|tabela)\b", text_lower))
         return sql_context, sql_explicit
 
-    def _detect_explicit_docker(self, text_lower: str) -> Optional[DetectionResult]:
-        if 'docker' not in text_lower:
+    def _detect_sql_drop_table(self, text_lower: str, *, sql_context: bool, sql_explicit: bool) -> Optional[DetectionResult]:
+        if not (sql_context or sql_explicit):
             return None
+
+        sql_intents = self.patterns.get('sql', {})
+        drop_keywords = sql_intents.get('drop_table', [])
+        for kw in drop_keywords:
+            if self._match_keyword(text_lower, kw):
+                confidence = 0.9
+                keyword_length_bonus = min(len(kw) / 25, 0.05)
+                confidence = min(confidence + keyword_length_bonus, 0.95)
+                return DetectionResult(
+                    domain='sql',
+                    intent='drop_table',
+                    confidence=confidence,
+                    matched_keyword=kw,
+                )
+
+        # Guard against priority SQL delete winning for "usuń tabelę ..."
+        if re.search(r"\b(usuń|usun|skasuj|delete|drop)\b\s+tabel\w*\b", text_lower):
+            return DetectionResult(
+                domain='sql',
+                intent='drop_table',
+                confidence=0.9,
+                matched_keyword='drop table',
+            )
+
+        return None
+
+    def _detect_explicit_docker(self, text_lower: str) -> Optional[DetectionResult]:
+        docker_boosters = self.domain_boosters.get('docker', [])
+        has_docker_context = (
+            'docker' in text_lower
+            or any(b.lower() in text_lower for b in docker_boosters)
+            or any(x in text_lower for x in ("kontener", "container", "obraz", "image"))
+        )
+        if not has_docker_context:
+            return None
+
+        if (
+            re.search(r"\bzatrzyman\w*\b", text_lower)
+            and re.search(r"\b(uruchom|odpal|start)\b", text_lower)
+            and ("kontener" in text_lower or "container" in text_lower)
+        ):
+            return DetectionResult(
+                domain='docker',
+                intent='start',
+                confidence=0.85,
+                matched_keyword='start stopped container',
+            )
+
+        if (
+            ("obraz" in text_lower or "image" in text_lower)
+            and ("repozytor" in text_lower or "registry" in text_lower)
+            and re.search(r"\b(wypchnij|push|wyślij|wyslij|opublikuj|publish)\b", text_lower)
+        ):
+            return DetectionResult(
+                domain='docker',
+                intent='push',
+                confidence=0.85,
+                matched_keyword='push image',
+            )
+
+        if (
+            ("kontener" in text_lower or "container" in text_lower)
+            and re.search(r"\b(komend\w*|polecen\w*)\b", text_lower)
+            and re.search(r"\b(wykonaj|exec|uruchom)\b", text_lower)
+        ):
+            return DetectionResult(
+                domain='docker',
+                intent='exec',
+                confidence=0.85,
+                matched_keyword='exec in container',
+            )
 
         run_detached = self._detect_fast_path_docker_run_detached(text_lower)
         if run_detached is not None:
@@ -434,8 +513,81 @@ class KeywordIntentDetector:
 
     def _detect_explicit_kubernetes(self, text_lower: str) -> Optional[DetectionResult]:
         k8s_boosters = self.domain_boosters.get('kubernetes', [])
-        if not any(booster.lower() in text_lower for booster in k8s_boosters):
+        has_k8s_context = (
+            any(booster.lower() in text_lower for booster in k8s_boosters)
+            or any(
+                x in text_lower
+                for x in (
+                    'pod', 'pods', 'pody',
+                    'deployment',
+                    'namespace',
+                    'service', 'serwis',
+                    'configmap',
+                    'secret',
+                    'ingress',
+                    'cluster',
+                )
+            )
+            or re.search(r"\b(zastosuj|apply)\b", text_lower) is not None
+        )
+        if not has_k8s_context:
             return None
+
+        if re.search(r"\b(zastosuj|apply)\b", text_lower) and re.search(
+            r"\b(konfiguracj\w*|yaml|yml|manifest)\b",
+            text_lower,
+        ):
+            return DetectionResult(
+                domain='kubernetes',
+                intent='apply',
+                confidence=0.85,
+                matched_keyword='apply',
+            )
+
+        if re.search(r"\b(utw[oó]rz|stw[oó]rz|create)\b", text_lower):
+            if re.search(r"\b(serwis|service)\b", text_lower):
+                return DetectionResult(
+                    domain='kubernetes',
+                    intent='create_service',
+                    confidence=0.85,
+                    matched_keyword='service',
+                )
+            if 'configmap' in text_lower:
+                return DetectionResult(
+                    domain='kubernetes',
+                    intent='create_configmap',
+                    confidence=0.85,
+                    matched_keyword='configmap',
+                )
+            if 'secret' in text_lower:
+                return DetectionResult(
+                    domain='kubernetes',
+                    intent='create_secret',
+                    confidence=0.85,
+                    matched_keyword='secret',
+                )
+            if 'ingress' in text_lower:
+                return DetectionResult(
+                    domain='kubernetes',
+                    intent='create_ingress',
+                    confidence=0.85,
+                    matched_keyword='ingress',
+                )
+            if 'deployment' in text_lower:
+                return DetectionResult(
+                    domain='kubernetes',
+                    intent='create',
+                    confidence=0.85,
+                    matched_keyword='deployment',
+                )
+
+        if re.search(r"\bget\b", text_lower) and ("pods" in text_lower or re.search(r"\bpody\b", text_lower)):
+            return DetectionResult(
+                domain='kubernetes',
+                intent='get',
+                confidence=0.8,
+                matched_keyword='get pods',
+            )
 
         k8s_intents = self.patterns.get('kubernetes', {})
         priority = list(self.priority_intents.get('kubernetes', []))
@@ -480,6 +632,25 @@ class KeywordIntentDetector:
         sql_explicit: bool,
     ) -> bool:
         if domain == 'sql' and not (sql_context or sql_explicit):
+            return False
+        if domain == 'kubernetes':
+            if any(
+                x in text_lower
+                for x in (
+                    'kubectl', 'kubernetes', 'k8s',
+                    'pod', 'pods', 'pody',
+                    'deployment', 'namespace',
+                    'service', 'serwis',
+                    'configmap', 'secret', 'ingress',
+                    'cluster',
+                )
+            ):
+                return True
+            if re.search(r"\b(zastosuj|apply)\b", text_lower) and re.search(
+                r"\b(konfiguracj\w*|yaml|yml|manifest)\b",
+                text_lower,
+            ):
+                return True
             return False
         if domain in {'docker', 'kubernetes'}:
             boosters = self.domain_boosters.get(domain, [])
@@ -619,6 +790,10 @@ class KeywordIntentDetector:
             return fast_path
 
         sql_context, sql_explicit = self._compute_sql_context(text_lower)
+
+        sql_drop = self._detect_sql_drop_table(text_lower, sql_context=sql_context, sql_explicit=sql_explicit)
+        if sql_drop is not None:
+            return sql_drop
 
         docker_explicit = self._detect_explicit_docker(text_lower)
         if docker_explicit is not None:

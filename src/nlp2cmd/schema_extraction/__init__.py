@@ -27,7 +27,13 @@ from typing import Any, Dict, List, Optional, Union
 
 import httpx
 import yaml
-from pydantic import BaseModel, Field
+try:
+    from pydantic import BaseModel, Field
+except ImportError:  # pragma: no cover
+    BaseModel = object  # type: ignore
+
+    def Field(*args: Any, **kwargs: Any):  # noqa: N802
+        return None
 
 # Import per-command storage
 from ..storage.per_command_store import PerCommandSchemaStore
