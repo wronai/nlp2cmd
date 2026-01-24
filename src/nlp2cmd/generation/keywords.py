@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 import re
 
+from nlp2cmd.utils.data_files import find_data_files
+
 
 @dataclass
 class DetectionResult:
@@ -806,7 +808,6 @@ class KeywordIntentDetector:
         
         Args:
             patterns: Custom patterns to use (or default PATTERNS)
-            custom_patterns: Custom patterns to use as fallback when patterns is not provided
             confidence_threshold: Minimum confidence to return a match
         """
         self._custom_patterns_provided = patterns is not None or custom_patterns is not None
@@ -832,110 +833,112 @@ class KeywordIntentDetector:
             self.patterns = dict(self.PATTERNS)
 
     def _load_detector_config_from_json(self) -> None:
-        path = os.environ.get("NLP2CMD_KEYWORD_DETECTOR_CONFIG") or "./data/keyword_intent_detector_config.json"
-        p = Path(path)
-        if not p.exists():
-            return
-        try:
-            payload = json.loads(p.read_text(encoding="utf-8"))
-        except Exception:
-            return
-        if not isinstance(payload, dict):
-            return
+        for p in find_data_files(
+            explicit_path=os.environ.get("NLP2CMD_KEYWORD_DETECTOR_CONFIG"),
+            default_filename="keyword_intent_detector_config.json",
+        ):
+            try:
+                payload = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            if not isinstance(payload, dict):
+                continue
 
-        boosters = payload.get("domain_boosters")
-        if isinstance(boosters, dict):
-            loaded: dict[str, list[str]] = {}
-            for d, items in boosters.items():
-                if not isinstance(d, str) or not d.strip() or not isinstance(items, list):
-                    continue
-                clean = [x.strip() for x in items if isinstance(x, str) and x.strip()]
-                if clean:
-                    loaded[d.strip()] = clean
-            if loaded:
-                self.domain_boosters = loaded
+            boosters = payload.get("domain_boosters")
+            if isinstance(boosters, dict):
+                loaded: dict[str, list[str]] = {}
+                for d, items in boosters.items():
+                    if not isinstance(d, str) or not d.strip() or not isinstance(items, list):
+                        continue
+                    clean = [x.strip() for x in items if isinstance(x, str) and x.strip()]
+                    if clean:
+                        loaded[d.strip()] = clean
+                if loaded:
+                    self.domain_boosters = loaded
 
-        priority = payload.get("priority_intents")
-        if isinstance(priority, dict):
-            loaded_p: dict[str, list[str]] = {}
-            for d, items in priority.items():
-                if not isinstance(d, str) or not d.strip() or not isinstance(items, list):
-                    continue
-                clean = [x.strip() for x in items if isinstance(x, str) and x.strip()]
-                if clean:
-                    loaded_p[d.strip()] = clean
-            if loaded_p:
-                self.priority_intents = loaded_p
+            priority = payload.get("priority_intents")
+            if isinstance(priority, dict):
+                loaded_p: dict[str, list[str]] = {}
+                for d, items in priority.items():
+                    if not isinstance(d, str) or not d.strip() or not isinstance(items, list):
+                        continue
+                    clean = [x.strip() for x in items if isinstance(x, str) and x.strip()]
+                    if clean:
+                        loaded_p[d.strip()] = clean
+                if loaded_p:
+                    self.priority_intents = loaded_p
 
-        fast_path = payload.get("fast_path")
-        if isinstance(fast_path, dict):
-            b = fast_path.get("browser_keywords")
-            if isinstance(b, list):
-                self.fast_path_browser_keywords = [x.strip() for x in b if isinstance(x, str) and x.strip()]
+            fast_path = payload.get("fast_path")
+            if isinstance(fast_path, dict):
+                b = fast_path.get("browser_keywords")
+                if isinstance(b, list):
+                    self.fast_path_browser_keywords = [x.strip() for x in b if isinstance(x, str) and x.strip()]
 
-            s = fast_path.get("search_keywords")
-            if isinstance(s, list):
-                self.fast_path_search_keywords = [x.strip() for x in s if isinstance(x, str) and x.strip()]
+                s = fast_path.get("search_keywords")
+                if isinstance(s, list):
+                    self.fast_path_search_keywords = [x.strip() for x in s if isinstance(x, str) and x.strip()]
 
-            imgs = fast_path.get("common_images")
-            if isinstance(imgs, list):
-                self.fast_path_common_images = set(x.strip().lower() for x in imgs if isinstance(x, str) and x.strip())
+                imgs = fast_path.get("common_images")
+                if isinstance(imgs, list):
+                    self.fast_path_common_images = set(
+                        x.strip().lower() for x in imgs if isinstance(x, str) and x.strip()
+                    )
 
     def _load_patterns_from_json(self) -> None:
         """Load patterns from external JSON file with fallback to embedded PATTERNS."""
-        path = os.environ.get("NLP2CMD_PATTERNS_FILE") or "./data/patterns.json"
-        p = Path(path)
-        if not p.exists():
-            if self._custom_patterns_provided:
-                return
-            for domain, intents in self.PATTERNS.items():
-                for intent, keywords in intents.items():
-                    self.add_pattern(domain, intent, keywords)
-            return
-        try:
-            payload = json.loads(p.read_text(encoding="utf-8"))
-        except Exception:
-            if self._custom_patterns_provided:
-                return
-            for domain, intents in self.PATTERNS.items():
-                for intent, keywords in intents.items():
-                    self.add_pattern(domain, intent, keywords)
-            return
-        if not isinstance(payload, dict):
-            if self._custom_patterns_provided:
-                return
-            for domain, intents in self.PATTERNS.items():
-                for intent, keywords in intents.items():
-                    self.add_pattern(domain, intent, keywords)
+        if self._custom_patterns_provided:
             return
 
-        # Expected format: {"shell": {"intent": ["kw", ...]}, "sql": {...}, ...}
-        loaded_any = False
-        for domain, intents in payload.items():
-            if not isinstance(domain, str) or not domain:
-                continue
-            if not isinstance(intents, dict):
-                continue
-            for intent, keywords in intents.items():
-                if not isinstance(intent, str) or not intent:
+        base: dict[str, dict[str, list[str]]] = {
+            d: {i: list(kws) for i, kws in intents.items()}
+            for d, intents in self.PATTERNS.items()
+        }
+
+        def _dedupe_case_insensitive(items: list[str]) -> list[str]:
+            out: list[str] = []
+            seen: set[str] = set()
+            for s in items:
+                if not isinstance(s, str):
                     continue
-                if not isinstance(keywords, list):
+                key = s.strip()
+                if not key:
                     continue
-                clean: list[str] = []
-                for kw in keywords:
-                    if isinstance(kw, str) and kw.strip():
-                        clean.append(kw.strip())
-                if clean:
-                    self.add_pattern(domain, intent, clean)
-                    loaded_any = True
-        
-        # If no valid patterns were loaded, fallback to embedded PATTERNS
-        if not loaded_any:
-            if self._custom_patterns_provided:
-                return
-            for domain, intents in self.PATTERNS.items():
-                for intent, keywords in intents.items():
-                    self.add_pattern(domain, intent, keywords)
+                k = key.lower()
+                if k in seen:
+                    continue
+                seen.add(k)
+                out.append(key)
+            return out
+
+        for p in find_data_files(
+            explicit_path=os.environ.get("NLP2CMD_PATTERNS_FILE"),
+            default_filename="patterns.json",
+        ):
+            try:
+                payload = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+
+            if isinstance(payload, dict):
+                for domain, intents in payload.items():
+                    if not isinstance(domain, str) or not domain.strip() or not isinstance(intents, dict):
+                        continue
+                    d = domain.strip()
+                    bucket = base.setdefault(d, {})
+                    if not isinstance(bucket, dict):
+                        continue
+                    for intent, keywords in intents.items():
+                        if not isinstance(intent, str) or not intent.strip() or not isinstance(keywords, list):
+                            continue
+                        i = intent.strip()
+                        clean = [kw.strip() for kw in keywords if isinstance(kw, str) and kw.strip()]
+                        if not clean:
+                            continue
+                        prev = bucket.get(i)
+                        prev_list = prev if isinstance(prev, list) else []
+                        bucket[i] = _dedupe_case_insensitive([*clean, *prev_list])
+
+        self.patterns = base
     
     # Priority intents - check these first as they are more specific/destructive
     PRIORITY_INTENTS: dict[str, list[str]] = {
@@ -944,6 +947,65 @@ class KeywordIntentDetector:
         'docker': ['stop', 'prune', 'build', 'run', 'list', 'logs', 'exec', 'start', 'remove'],
         'kubernetes': ['delete', 'scale', 'describe', 'logs'],
     }
+
+    @staticmethod
+    def _match_keyword(text_lower: str, kw: str) -> bool:
+        k = (kw or "").strip().lower()
+        if not k:
+            return False
+        if len(k) <= 3 and re.fullmatch(r"[a-z0-9]+", k):
+            return re.search(rf"(?<![a-z0-9]){re.escape(k)}(?![a-z0-9])", text_lower) is not None
+        return k in text_lower
+
+    @staticmethod
+    def _normalize_intent(domain: str, intent: str, text_lower: str) -> str:
+        if domain != 'shell':
+            return intent
+
+        if intent in {'process', 'process_list', 'process_management'}:
+            return 'list_processes'
+        if intent == 'disk':
+            return 'disk_usage'
+        if intent == 'archive':
+            return 'compress'
+        if intent.startswith('perm_chmod') or intent == 'perm_chmod':
+            return 'chmod'
+        if intent == 'grep':
+            return 'search'
+
+        if intent == 'file_operation':
+            if any(k in text_lower for k in ['skopiuj', 'kopiuj', 'copy', 'cp '] ):
+                return 'copy'
+            if any(k in text_lower for k in ['przenieś', 'przenies', 'move', 'mv '] ):
+                return 'move'
+            if any(k in text_lower for k in ['usuń', 'usun', 'delete', 'remove', 'rm '] ):
+                return 'delete'
+
+        return intent
+
+    @staticmethod
+    def _has_shell_file_context(text_lower: str) -> bool:
+        if not isinstance(text_lower, str):
+            return False
+        if any(x in text_lower for x in ['/', './', '../']):
+            return True
+        if re.search(r"\.[a-z0-9]{1,5}\b", text_lower):
+            return True
+        if re.search(r"\bplik\w*\b", text_lower):
+            return True
+        if re.search(r"\bfile\w*\b", text_lower):
+            return True
+        if re.search(r"\bkatalog\w*\b", text_lower):
+            return True
+        if re.search(r"\bfolder\w*\b", text_lower):
+            return True
+        if re.search(r"\bdirectory\w*\b", text_lower):
+            return True
+        if re.search(r"\bpath\w*\b", text_lower):
+            return True
+        if 'ścieżk' in text_lower or 'sciezk' in text_lower:
+            return True
+        return False
     
     def detect(self, text: str) -> DetectionResult:
         """
@@ -982,6 +1044,57 @@ class KeywordIntentDetector:
                 matched_keyword=url_pattern.group(1) if url_pattern else "browser",
             )
 
+        if re.search(r"\bfind\b", text_lower) and re.search(r"\bfiles?\b", text_lower):
+            return DetectionResult(
+                domain='shell',
+                intent='find',
+                confidence=0.9,
+                matched_keyword='find files',
+            )
+
+        if 'uprawnien' in text_lower or re.search(r"\bchmod\b", text_lower):
+            return DetectionResult(
+                domain='shell',
+                intent='chmod',
+                confidence=0.9,
+                matched_keyword='uprawnienia',
+            )
+
+        if self._has_shell_file_context(text_lower) and re.search(r"\b(usuń|usun|skasuj|delete|remove|rm)\b", text_lower):
+            return DetectionResult(
+                domain='shell',
+                intent='delete',
+                confidence=0.9,
+                matched_keyword='delete file',
+            )
+
+        if (
+            ('logach' in text_lower or 'logi' in text_lower or re.search(r"\blogs?\b", text_lower))
+            and ('error' in text_lower)
+            and ('znajd' in text_lower or re.search(r"\b(find|search|grep)\b", text_lower))
+        ):
+            return DetectionResult(
+                domain='shell',
+                intent='search',
+                confidence=0.9,
+                matched_keyword='error',
+            )
+
+        # Heuristic: "pokaż logi aplikacji" is commonly a container logs request.
+        # Prefer docker unless the query clearly targets system logs or file paths.
+        if (
+            'logi aplikacji' in text_lower
+            and not self._has_shell_file_context(text_lower)
+            and 'systemowe' not in text_lower
+            and 'kubectl' not in text_lower
+        ):
+            return DetectionResult(
+                domain='docker',
+                intent='logs',
+                confidence=0.85,
+                matched_keyword='logi aplikacji',
+            )
+
         # Fast-path: docker-like queries without explicit 'docker' keyword.
         # Example: "run nginx on port 8080".
         # Without this, generic shell 'development' keywords (e.g. 'run') can dominate.
@@ -998,8 +1111,11 @@ class KeywordIntentDetector:
             )
 
         sql_boosters = self.domain_boosters.get('sql', [])
-        sql_context = any(b.lower() in text_lower for b in sql_boosters)
-        sql_explicit = bool(re.search(r"\b(select|update|delete|insert|from|where|join|sql|table|tabela)\b", text_lower))
+        sql_soft_context = bool(
+            re.search(r"\b(użytkown\w*|uzytkown\w*|rekord\w*|record\w*|tabel\w*|table\w*|dane\w*)\b", text_lower)
+        )
+        sql_context = any(b.lower() in text_lower for b in sql_boosters) or sql_soft_context
+        sql_explicit = bool(re.search(r"\b(select|update|delete|insert|where|join|sql|table|tabela)\b", text_lower))
 
         # Fast-path: if the user explicitly uses the docker CLI, prefer docker intents
         # (prevents shell/process keywords like 'ps' from dominating).
@@ -1017,13 +1133,14 @@ class KeywordIntentDetector:
             for intent in ordered_intents:
                 keywords = docker_intents.get(intent, [])
                 for kw in keywords:
-                    if kw.lower() in text_lower:
+                    if self._match_keyword(text_lower, kw):
                         confidence = 0.9
                         keyword_length_bonus = min(len(kw) / 25, 0.05)
                         confidence = min(confidence + keyword_length_bonus, 0.95)
+                        out_intent = self._normalize_intent('docker', intent, text_lower)
                         return DetectionResult(
                             domain='docker',
-                            intent=intent,
+                            intent=out_intent,
                             confidence=confidence,
                             matched_keyword=kw,
                         )
@@ -1038,7 +1155,7 @@ class KeywordIntentDetector:
             for intent in ordered_intents:
                 keywords = k8s_intents.get(intent, [])
                 for kw in keywords:
-                    if kw.lower() in text_lower:
+                    if self._match_keyword(text_lower, kw):
                         confidence = 0.9
                         keyword_length_bonus = min(len(kw) / 25, 0.05)
                         confidence = min(confidence + keyword_length_bonus, 0.95)
@@ -1062,9 +1179,9 @@ class KeywordIntentDetector:
 
             # Guard: docker intents should only win when docker-specific boosters are present.
             # This prevents generic phrases like "pokaż logi" from overriding kubernetes.
-            if domain == 'docker':
-                docker_boosters = self.domain_boosters.get('docker', [])
-                if not any(b.lower() in text_lower for b in docker_boosters):
+            if domain in {'docker', 'kubernetes'}:
+                boosters = self.domain_boosters.get(domain, [])
+                if not any(b.lower() in text_lower for b in boosters):
                     continue
 
             for intent in priority_intents:
@@ -1073,19 +1190,12 @@ class KeywordIntentDetector:
                 
                 # Special handling: prefer shell for file operations when shell context is present
                 if domain == 'sql' and intent == 'delete':
-                    shell_boosters = self.domain_boosters.get('shell', [])
-                    shell_context = any(b.lower() in text_lower for b in shell_boosters)
-                    sql_boosters = self.domain_boosters.get('sql', [])
-                    sql_context = any(b.lower() in text_lower for b in sql_boosters)
-                    
-                    # Only skip SQL delete if shell context is strong AND no SQL context
-                    if shell_context and not sql_context:
-                        # Skip SQL delete intent when shell context is detected but no SQL context
+                    if self._has_shell_file_context(text_lower):
                         continue
                 
                 keywords = self.patterns[domain][intent]
                 for kw in keywords:
-                    if kw.lower() in text_lower:
+                    if self._match_keyword(text_lower, kw):
                         confidence = 0.85  # Higher base confidence for priority
                         keyword_length_bonus = min(len(kw) / 20, 0.10)
                         confidence = min(confidence + keyword_length_bonus, 0.95)
@@ -1100,9 +1210,10 @@ class KeywordIntentDetector:
                         
                         if score > best_score:
                             best_score = score
+                            out_intent = self._normalize_intent(domain, intent, text_lower)
                             best_match = DetectionResult(
                                 domain=domain,
-                                intent=intent,
+                                intent=out_intent,
                                 confidence=confidence,
                                 matched_keyword=kw,
                             )
@@ -1115,15 +1226,18 @@ class KeywordIntentDetector:
         for domain, intents in self.patterns.items():
             if domain == 'sql' and not (sql_context or sql_explicit):
                 continue
+            # Guard: require explicit domain boosters for docker/kubernetes.
+            # Prevents generic words like "pokaż" from matching those domains.
+            if domain in {'docker', 'kubernetes'}:
+                boosters = self.domain_boosters.get(domain, [])
+                if not any(b.lower() in text_lower for b in boosters):
+                    continue
             for intent, keywords in intents.items():
                 for kw in keywords:
-                    if kw.lower() in text_lower:
+                    if self._match_keyword(text_lower, kw):
                         # Special handling: prefer shell for file operations when shell context is present
                         if domain == 'sql' and intent == 'delete':
-                            shell_boosters = self.domain_boosters.get('shell', [])
-                            shell_context = any(b.lower() in text_lower for b in shell_boosters)
-                            if shell_context:
-                                # Skip SQL delete intent when shell context is detected
+                            if self._has_shell_file_context(text_lower):
                                 continue
                         
                         # Base confidence
@@ -1147,9 +1261,10 @@ class KeywordIntentDetector:
                         
                         if score > best_score:
                             best_score = score
+                            out_intent = self._normalize_intent(domain, intent, text_lower)
                             best_match = DetectionResult(
                                 domain=domain,
-                                intent=intent,
+                                intent=out_intent,
                                 confidence=confidence,
                                 matched_keyword=kw,
                             )
@@ -1185,16 +1300,23 @@ class KeywordIntentDetector:
         seen: set[tuple[str, str]] = set()
         
         for domain, intents in self.patterns.items():
+            # Keep behavior consistent with `detect`: avoid returning docker/kubernetes
+            # results when the query contains no domain-specific boosters.
+            if domain in {'docker', 'kubernetes'}:
+                boosters = self.domain_boosters.get(domain, [])
+                if not any(b.lower() in text_lower for b in boosters):
+                    continue
             for intent, keywords in intents.items():
                 for kw in keywords:
-                    if kw.lower() in text_lower:
-                        key = (domain, intent)
+                    if self._match_keyword(text_lower, kw):
+                        out_intent = self._normalize_intent(domain, intent, text_lower)
+                        key = (domain, out_intent)
                         if key not in seen:
                             seen.add(key)
                             confidence = 0.7 + self._calculate_domain_boost(text_lower, domain)
                             results.append(DetectionResult(
                                 domain=domain,
-                                intent=intent,
+                                intent=out_intent,
                                 confidence=min(confidence, 0.95),
                                 matched_keyword=kw,
                             ))

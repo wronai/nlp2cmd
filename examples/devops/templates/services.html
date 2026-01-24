@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-terminal text-blue-600 text-2xl mr-3"></i>
+                    <h1 class="text-xl font-semibold text-gray-900">NLP2CMD</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-home mr-1"></i> Strona główna
+                    </a>
+                    <a href="/history" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-history mr-1"></i> Historia
+                    </a>
+                    <a href="/services" class="text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-server mr-1"></i> Usługi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Usługi</h2>
+                <p class="text-gray-600">Wykryto {{ total }} usług</p>
+            </div>
+
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                {% if services %}
+                <div class="divide-y divide-gray-200">
+                    {% for name, svc in services.items() %}
+                    <div class="p-6">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <div class="font-semibold text-gray-900">{{ name }}</div>
+                                <div class="mt-1 text-sm text-gray-600">
+                                    Typ: <span class="font-mono">{{ svc.type }}</span>
+                                    {% if svc.port %} | Port: <span class="font-mono">{{ svc.port }}</span>{% endif %}
+                                </div>
+                                {% if svc.image %}
+                                <div class="mt-1 text-sm text-gray-600">Image: <span class="font-mono">{{ svc.image }}</span></div>
+                                {% endif %}
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                {{ svc.status }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-6 text-gray-600">
+                    Brak wdrożonych usług. Spróbuj np. "Uruchom serwis czatu na porcie 8080".
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

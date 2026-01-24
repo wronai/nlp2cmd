@@ -9,6 +9,8 @@ from typing import List, Tuple, Dict, Optional
 from dataclasses import dataclass
 from collections import defaultdict
 
+from nlp2cmd.utils.data_files import find_data_file
+
 @dataclass
 class CommandMatch:
     """Represents a matched command with confidence."""
@@ -221,12 +223,15 @@ class CommandDetector:
 
             context_weights = loaded.get("context_weights")
             if isinstance(context_weights, dict) and context_weights:
-                self.context_weights = context_weights
+                # Merge into defaults to avoid KeyError if config is partial
+                self.context_weights.update(context_weights)
 
     def _load_config_from_json(self) -> Optional[Dict[str, Dict]]:
-        path = os.environ.get("NLP2CMD_COMMAND_DETECTOR_FILE") or "./data/command_detector.json"
-        p = Path(path)
-        if not p.exists():
+        p = find_data_file(
+            explicit_path=os.environ.get("NLP2CMD_COMMAND_DETECTOR_FILE"),
+            default_filename="command_detector.json",
+        )
+        if not p:
             return None
         try:
             payload = json.loads(p.read_text(encoding="utf-8"))

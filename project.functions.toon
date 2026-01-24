@@ -1,6 +1,6 @@
 project: nlp2cmd
-generated: "2026-01-23T19:28:41.634908"
-modules[216]{path,lang,items}:
+generated: "2026-01-24T07:37:01.690825"
+modules[218]{path,lang,items}:
   termo1.py,python,1
   termo.py,python,4
   termo_demo.py,python,5
@@ -100,7 +100,7 @@ modules[216]{path,lang,items}:
   tests/integration/__init__.py,python,0
   tests/integration/test_workflows.py,python,28
   tests/base/test_base_adapter.py,python,42
-  src/nlp2cmd/pipeline_runner.py,python,8
+  src/nlp2cmd/pipeline_runner.py,python,9
   src/nlp2cmd/schema_driven.py,python,8
   src/nlp2cmd/__init__.py,python,0
   src/nlp2cmd/appspec_runtime.py,python,2
@@ -114,12 +114,12 @@ modules[216]{path,lang,items}:
   src/nlp2cmd/monitoring/token_costs.py,python,10
   src/nlp2cmd/monitoring/__init__.py,python,0
   src/nlp2cmd/schemas/__init__.py,python,35
-  src/nlp2cmd/generation/regex.py,python,10
-  src/nlp2cmd/generation/keywords.py,python,9
+  src/nlp2cmd/generation/regex.py,python,11
+  src/nlp2cmd/generation/keywords.py,python,12
   src/nlp2cmd/generation/thermodynamic.py,python,26
   src/nlp2cmd/generation/__init__.py,python,0
   src/nlp2cmd/generation/templates.py,python,17
-  src/nlp2cmd/generation/pipeline.py,python,23
+  src/nlp2cmd/generation/pipeline.py,python,26
   src/nlp2cmd/generation/llm_multi.py,python,11
   src/nlp2cmd/generation/validating.py,python,9
   src/nlp2cmd/generation/hybrid.py,python,15
@@ -133,7 +133,7 @@ modules[216]{path,lang,items}:
   src/nlp2cmd/cli/web_schema.py,python,5
   src/nlp2cmd/cli/__init__.py,python,0
   src/nlp2cmd/cli/history.py,python,6
-  src/nlp2cmd/cli/main.py,python,23
+  src/nlp2cmd/cli/main.py,python,24
   src/nlp2cmd/web_schema/form_data_loader.py,python,38
   src/nlp2cmd/web_schema/__init__.py,python,0
   src/nlp2cmd/web_schema/extractor.py,python,10
@@ -160,6 +160,7 @@ modules[216]{path,lang,items}:
   src/nlp2cmd/adapters/appspec.py,python,6
   src/nlp2cmd/utils/playwright_installer.py,python,5
   src/nlp2cmd/utils/__init__.py,python,0
+  src/nlp2cmd/utils/data_files.py,python,5
   src/nlp2cmd/environment/__init__.py,python,15
   src/nlp2cmd/context/__init__.py,python,0
   src/nlp2cmd/context/disambiguator.py,python,5
@@ -175,7 +176,7 @@ modules[216]{path,lang,items}:
   src/nlp2cmd/schema_extraction/__init__.py,python,45
   src/nlp2cmd/schema_extraction/llm_extractor.py,python,11
   src/nlp2cmd/intelligent/dynamic_generator.py,python,6
-  src/nlp2cmd/intelligent/command_detector.py,python,4
+  src/nlp2cmd/intelligent/command_detector.py,python,5
   src/nlp2cmd/intelligent/version_aware_generator.py,python,11
   examples/use_cases/logistics_supply_chain.py,python,7
   examples/use_cases/education.py,python,8
@@ -209,6 +210,7 @@ modules[216]{path,lang,items}:
   examples/devops/demo.py,python,3
   examples/devops/web_app_example.py,python,8
   examples/devops/nlp2cmd_web_controller.py,python,52
+  examples/devops/simple_web_test.py,python,6
   examples/shell/environment_analysis.py,python,2
   examples/shell/feedback_loop.py,python,1
   examples/shell/basic_shell.py,python,1
@@ -643,7 +645,7 @@ function_details:
       split_sentences,function,"(text:str) -> list[str]",221-240,false,20,14,splits sentences
       aggregate_detection,function,"(items:list[dict[str,Any]]) -> dict[str, Any]",243-270,false,28,11,aggregate detection
       build_cases,function,"() -> list[PromptCase]",273-364,false,92,1,creates cases
-      main,function,() -> int,367-554,false,188,54,main
+      main,function,() -> int,367-600,false,234,71,main
   tools/manual_tests/test_100_commands.py:
     functions[4]{name,kind,sig,loc,async,lines,cc,does}:
       load_config,function,() -> Dict,14-20,false,7,2,Load configuration from YAML file.
@@ -1738,15 +1740,16 @@ function_details:
       TestBaseAdapterTestCase._get_expected_intents,method,"() -> List[str]",350-352,false,3,1,Get expected intents for mock adapter.
       TestBaseAdapterTestCase._get_minimal_intent,method,() -> str,354-356,false,3,1,Get minimal intent that should work.
   src/nlp2cmd/pipeline_runner.py:
-    functions[8]{name,kind,sig,loc,async,lines,cc,does}:
-      PipelineRunner.__init__,method,() -> None,56-75,false,20,4,creates
-      PipelineRunner.run,method,"(ir:ActionIR) -> RunnerResult",77-108,false,32,4,starts
-      PipelineRunner._run_shell,method,"(command:str) -> RunnerResult",110-172,false,63,17,starts shell
-      PipelineRunner._parse_shell_command,method,"(command:str) -> dict[str, Any]",174-205,false,32,15,parses shell command
-      PipelineRunner._check_against_safety_policy,method,"(command:str, policy:SafetyPolicy) -> dict[str, Any]",208-224,false,17,7,checks against safety policy
-      PipelineRunner._run_dom_dql,method,"(dql_json:str) -> RunnerResult",226-305,false,80,28,starts dom dql
-      PipelineRunner._run_dom_multi_action,method,"(payload:dict[str,Any]) -> RunnerResult",307-556,false,250,45,Execute multiple browser actions in sequence.
-      PipelineRunner._dismiss_popups,method,"(page, schema_loader=None) -> None",559-579,false,21,5,Try to dismiss common popups and cookie consents.
+    functions[9]{name,kind,sig,loc,async,lines,cc,does}:
+      ShellExecutionPolicy.load_from_data,method,"(path:str='./data/shell_execution_policy.json') -> None",46-78,false,33,18,Optionally load policy configuration from JSON in data/.
+      PipelineRunner.__init__,method,() -> None,91-114,false,24,5,creates
+      PipelineRunner.run,method,"(ir:ActionIR) -> RunnerResult",116-147,false,32,4,starts
+      PipelineRunner._run_shell,method,"(command:str) -> RunnerResult",149-211,false,63,17,starts shell
+      PipelineRunner._parse_shell_command,method,"(command:str) -> dict[str, Any]",213-244,false,32,15,parses shell command
+      PipelineRunner._check_against_safety_policy,method,"(command:str, policy:SafetyPolicy) -> dict[str, Any]",247-263,false,17,7,checks against safety policy
+      PipelineRunner._run_dom_dql,method,"(dql_json:str) -> RunnerResult",265-344,false,80,28,starts dom dql
+      PipelineRunner._run_dom_multi_action,method,"(payload:dict[str,Any]) -> RunnerResult",346-595,false,250,45,Execute multiple browser actions in sequence.
+      PipelineRunner._dismiss_popups,method,"(page, schema_loader=None) -> None",598-618,false,21,5,Try to dismiss common popups and cookie consents.
   src/nlp2cmd/schema_driven.py:
     functions[8]{name,kind,sig,loc,async,lines,cc,does}:
       SchemaDrivenNLP2CMD.__init__,method,"(spec:AppSpec) -> None",19-20,false,2,1,creates
@@ -1884,28 +1887,32 @@ function_details:
       SchemaRegistry._parse_env_file,method,"(content:str) -> dict[str, str]",716-732,false,17,9,Parse .env file.
       SchemaRegistry._generate_env_file,method,"(data:dict[str,str]) -> str",734-741,false,8,4,Generate .env file.
   src/nlp2cmd/generation/regex.py:
-    functions[10]{name,kind,sig,loc,async,lines,cc,does}:
-      RegexEntityExtractor.__init__,method,"(custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None) -> None",208-229,false,22,4,Initialize entity extractor.
-      RegexEntityExtractor.extract,method,"(text:str, domain:str) -> ExtractionResult",231-276,false,46,7,Extract entities from text.
-      RegexEntityExtractor._process_match,method,"(entity_type:str, match:Any) -> Any",278-307,false,30,16,Process regex match and return value.
-      RegexEntityExtractor._parse_columns,method,"(value:str) -> list[str]",309-324,false,16,7,Parse column list from string.
-      RegexEntityExtractor._normalize_direction,method,"(value:str) -> str",326-332,false,7,3,Normalize sort direction.
-      RegexEntityExtractor._normalize_time_unit,method,"(unit:str) -> str",334-347,false,14,1,Normalize time unit.
-      RegexEntityExtractor._post_process,method,"(entities:dict[str,Any], domain:str) -> dict[str, Any]",349-420,false,72,17,Post-process entities for adapter compatibility.
-      RegexEntityExtractor.extract_all_numbers,method,"(text:str) -> list[int]",422-424,false,3,2,Extract all numbers from text.
-      RegexEntityExtractor.extract_quoted_strings,method,"(text:str) -> list[str]",426-431,false,6,2,Extract all quoted strings from text.
-      RegexEntityExtractor.add_pattern,method,"(domain:str, entity_type:str, patterns:list[str]) -> None",433-446,false,14,3,Add custom patterns.
+    functions[11]{name,kind,sig,loc,async,lines,cc,does}:
+      RegexEntityExtractor.__init__,method,"(custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None) -> None",222-246,false,25,4,Initialize entity extractor.
+      RegexEntityExtractor._load_patterns_from_json,method,() -> None,248-284,false,37,20,retrieves patterns from json
+      RegexEntityExtractor.extract,method,"(text:str, domain:str) -> ExtractionResult",286-331,false,46,7,Extract entities from text.
+      RegexEntityExtractor._process_match,method,"(entity_type:str, match:Any) -> Any",333-362,false,30,16,Process regex match and return value.
+      RegexEntityExtractor._parse_columns,method,"(value:str) -> list[str]",364-379,false,16,7,Parse column list from string.
+      RegexEntityExtractor._normalize_direction,method,"(value:str) -> str",381-387,false,7,3,Normalize sort direction.
+      RegexEntityExtractor._normalize_time_unit,method,"(unit:str) -> str",389-402,false,14,1,Normalize time unit.
+      RegexEntityExtractor._post_process,method,"(entities:dict[str,Any], domain:str) -> dict[str, Any]",404-475,false,72,17,Post-process entities for adapter compatibility.
+      RegexEntityExtractor.extract_all_numbers,method,"(text:str) -> list[int]",477-479,false,3,2,Extract all numbers from text.
+      RegexEntityExtractor.extract_quoted_strings,method,"(text:str) -> list[str]",481-486,false,6,2,Extract all quoted strings from text.
+      RegexEntityExtractor.add_pattern,method,"(domain:str, entity_type:str, patterns:list[str]) -> None",488-501,false,14,3,Add custom patterns.
   src/nlp2cmd/generation/keywords.py:
-    functions[9]{name,kind,sig,loc,async,lines,cc,does}:
-      KeywordIntentDetector.__init__,method,"(patterns:Optional[dict[str,dict[str,list[str]]]]=None, confidence_threshold:float=0.5) -> None",798-822,false,25,3,Initialize keyword detector.
-      KeywordIntentDetector._load_detector_config_from_json,method,() -> None,824-872,false,49,38,retrieves detector config from json
-      KeywordIntentDetector._load_patterns_from_json,method,() -> None,874-902,false,29,17,retrieves patterns from json
-      KeywordIntentDetector.detect,method,"(text:str) -> DetectionResult",912-1129,false,218,70,Detect domain and intent from text.
-      KeywordIntentDetector._calculate_domain_boost,method,"(text:str, domain:str) -> float",1131-1135,false,5,3,Calculate confidence boost based on domain-specific keywords.
-      KeywordIntentDetector.detect_all,method,"(text:str) -> list[DetectionResult]",1137-1166,false,30,6,Detect all matching domains and intents.
-      KeywordIntentDetector.add_pattern,method,"(domain:str, intent:str, keywords:list[str]) -> None",1168-1181,false,14,3,Add custom patterns.
-      KeywordIntentDetector.get_supported_domains,method,"() -> list[str]",1183-1185,false,3,1,Get list of supported domains.
-      KeywordIntentDetector.get_supported_intents,method,"(domain:str) -> list[str]",1187-1189,false,3,1,Get list of supported intents for a domain.
+    functions[12]{name,kind,sig,loc,async,lines,cc,does}:
+      KeywordIntentDetector.__init__,method,"(patterns:Optional[dict[str,dict[str,list[str]]]]=None, custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None, confidence_threshold:float=0.5) -> None",800-833,false,34,7,Initialize keyword detector.
+      KeywordIntentDetector._load_detector_config_from_json,method,() -> None,835-885,false,51,37,retrieves detector config from json
+      KeywordIntentDetector._load_patterns_from_json,method,() -> None,887-942,false,56,22,Load patterns from external JSON file with fallback to embedded PATTERNS.
+      KeywordIntentDetector._match_keyword,method,"(text_lower:str, kw:str) -> bool",953-959,false,7,5,filters keyword
+      KeywordIntentDetector._normalize_intent,method,"(domain:str, intent:str, text_lower:str) -> str",962-985,false,24,15,normalize intent
+      KeywordIntentDetector._has_shell_file_context,method,"(text_lower:str) -> bool",988-1009,false,22,13,has shell file context
+      KeywordIntentDetector.detect,method,"(text:str) -> DetectionResult",1011-1279,false,269,87,Detect domain and intent from text.
+      KeywordIntentDetector._calculate_domain_boost,method,"(text:str, domain:str) -> float",1281-1285,false,5,3,Calculate confidence boost based on domain-specific keywords.
+      KeywordIntentDetector.detect_all,method,"(text:str) -> list[DetectionResult]",1287-1323,false,37,9,Detect all matching domains and intents.
+      KeywordIntentDetector.add_pattern,method,"(domain:str, intent:str, keywords:list[str]) -> None",1325-1338,false,14,3,Add custom patterns.
+      KeywordIntentDetector.get_supported_domains,method,"() -> list[str]",1340-1342,false,3,1,Get list of supported domains.
+      KeywordIntentDetector.get_supported_intents,method,"(domain:str) -> list[str]",1344-1346,false,3,1,Get list of supported intents for a domain.
   src/nlp2cmd/generation/thermodynamic.py:
     functions[26]{name,kind,sig,loc,async,lines,cc,does}:
       create_thermodynamic_generator,function,"(llm_client:Optional[LLMClient]=None, n_samples:int=5, n_steps:int=500, adaptive_steps:bool=True) -> ThermodynamicGenerator",888-915,false,28,1,Factory function for thermodynamic generator.
@@ -1936,48 +1943,51 @@ function_details:
       HybridThermodynamicGenerator.generate,method,"(text:str, context:Optional[dict[str,Any]]=None) -> dict[str, Any]",827-885,true,59,16,Route and generate based on problem type.
   src/nlp2cmd/generation/templates.py:
     functions[17]{name,kind,sig,loc,async,lines,cc,does}:
-      TemplateGenerator.__init__,method,"(custom_templates:Optional[dict[str,dict[str,str]]]=None) -> None",483-509,false,27,4,Initialize template generator.
-      TemplateGenerator._load_defaults_from_json,method,() -> None,511-521,false,11,5,retrieves defaults from json
-      TemplateGenerator._load_templates_from_json,method,() -> None,523-545,false,23,14,retrieves templates from json
-      TemplateGenerator._get_default,method,"(key:str, fallback:Any) -> Any",547-551,false,5,4,retrieves default
-      TemplateGenerator.generate,method,"(domain:str, intent:str, entities:dict[str,Any]) -> TemplateResult",553-611,false,59,5,Generate DSL command from template.
-      TemplateGenerator._find_alternative_template,method,"(domain:str, intent:str, entities:dict[str,Any]) -> Optional[str]",613-671,false,59,19,Find alternative template based on intent mapping and context.
-      TemplateGenerator._prepare_entities,method,"(domain:str, intent:str, entities:dict[str,Any]) -> dict[str, Any]",673-691,false,19,5,Prepare entities with defaults and formatting.
-      TemplateGenerator._prepare_sql_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",693-772,false,80,16,Prepare SQL entities.
-      TemplateGenerator._prepare_shell_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",774-1019,false,246,121,Prepare shell entities.
-      TemplateGenerator._prepare_docker_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",1021-1077,false,57,9,Prepare Docker entities.
-      TemplateGenerator._prepare_kubernetes_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",1079-1127,false,49,7,Prepare Kubernetes entities.
-      TemplateGenerator._fill_template,method,"(template:str, entities:dict[str,Any]) -> str",1129-1138,false,10,4,Fill template with entities.
-      TemplateGenerator._clean_command,method,"(command:str) -> str",1140-1155,false,16,1,Clean up generated command.
-      TemplateGenerator._find_missing,method,"(template:str, entities:dict[str,Any]) -> list[str]",1157-1161,false,5,4,Find missing entities in template.
-      TemplateGenerator.add_template,method,"(domain:str, intent:str, template:str) -> None",1163-1174,false,12,2,Add custom template.
-      TemplateGenerator.get_template,method,"(domain:str, intent:str) -> Optional[str]",1176-1178,false,3,1,Get template for domain/intent.
-      TemplateGenerator.list_templates,method,"(domain:str) -> list[str]",1180-1182,false,3,1,List available templates for domain.
+      TemplateGenerator.__init__,method,"(custom_templates:Optional[dict[str,dict[str,str]]]=None) -> None",489-515,false,27,4,Initialize template generator.
+      TemplateGenerator._load_defaults_from_json,method,() -> None,517-529,false,13,4,retrieves defaults from json
+      TemplateGenerator._load_templates_from_json,method,() -> None,531-555,false,25,13,retrieves templates from json
+      TemplateGenerator._get_default,method,"(key:str, fallback:Any) -> Any",557-561,false,5,4,retrieves default
+      TemplateGenerator.generate,method,"(domain:str, intent:str, entities:dict[str,Any]) -> TemplateResult",563-621,false,59,5,Generate DSL command from template.
+      TemplateGenerator._find_alternative_template,method,"(domain:str, intent:str, entities:dict[str,Any]) -> Optional[str]",623-681,false,59,19,Find alternative template based on intent mapping and context.
+      TemplateGenerator._prepare_entities,method,"(domain:str, intent:str, entities:dict[str,Any]) -> dict[str, Any]",683-701,false,19,5,Prepare entities with defaults and formatting.
+      TemplateGenerator._prepare_sql_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",703-782,false,80,16,Prepare SQL entities.
+      TemplateGenerator._prepare_shell_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",784-1038,false,255,123,Prepare shell entities.
+      TemplateGenerator._prepare_docker_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",1040-1096,false,57,9,Prepare Docker entities.
+      TemplateGenerator._prepare_kubernetes_entities,method,"(intent:str, entities:dict[str,Any]) -> dict[str, Any]",1098-1147,false,50,9,Prepare Kubernetes entities.
+      TemplateGenerator._fill_template,method,"(template:str, entities:dict[str,Any]) -> str",1149-1158,false,10,4,Fill template with entities.
+      TemplateGenerator._clean_command,method,"(command:str) -> str",1160-1175,false,16,1,Clean up generated command.
+      TemplateGenerator._find_missing,method,"(template:str, entities:dict[str,Any]) -> list[str]",1177-1181,false,5,4,Find missing entities in template.
+      TemplateGenerator.add_template,method,"(domain:str, intent:str, template:str) -> None",1183-1194,false,12,2,Add custom template.
+      TemplateGenerator.get_template,method,"(domain:str, intent:str) -> Optional[str]",1196-1198,false,3,1,Get template for domain/intent.
+      TemplateGenerator.list_templates,method,"(domain:str) -> list[str]",1200-1202,false,3,1,List available templates for domain.
   src/nlp2cmd/generation/pipeline.py:
-    functions[23]{name,kind,sig,loc,async,lines,cc,does}:
-      create_pipeline,function,"(confidence_threshold:float=0.5, custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None, custom_templates:Optional[dict[str,dict[str,str]]]=None) -> RuleBasedPipeline",621-652,false,32,4,Factory function to create a configured pipeline.
-      PipelineResult.to_plan,method,"() -> dict[str, Any]",49-55,false,7,1,Convert to execution plan format for adapters.
-      RuleBasedPipeline.__init__,method,"(detector:Optional[KeywordIntentDetector]=None, extractor:Optional[RegexEntityExtractor]=None, generator:Optional[TemplateGenerator]=None, confidence_threshold:float=0.5) -> None",75-94,false,20,4,Initialize pipeline.
-      RuleBasedPipeline.process,method,"(text:str) -> PipelineResult",96-207,false,112,20,Process natural language text through the pipeline.
-      RuleBasedPipeline._split_sentences,method,"(text:str) -> list[str]",209-249,false,41,23,splits sentences
-      RuleBasedPipeline._aggregate_detection,method,"(sentences:list[str]) -> Optional[dict[str, Any]]",251-321,false,71,22,aggregate detection
-      RuleBasedPipeline.process_with_llm_repair,method,"(text:str) -> PipelineResult",323-355,false,33,6,processes with llm repair
-      RuleBasedPipeline._suggest_schema_patch,method,"(text:str, last_result:PipelineResult) -> Optional[dict[str, Any]]",357-417,false,61,10,suggest schema patch
-      RuleBasedPipeline._apply_schema_patch,method,"(patch:dict[str,Any]) -> None",419-439,false,21,21,apply schema patch
-      RuleBasedPipeline._persist_schema_patch,method,"(patch:dict[str,Any]) -> None",441-451,false,11,5,caches schema patch
-      RuleBasedPipeline._merge_json_file,method,"(path:Path, patch:dict[str,Any]) -> None",453-489,false,37,21,merges json file
-      RuleBasedPipeline.process_batch,method,"(texts:list[str]) -> list[PipelineResult]",491-501,false,11,2,Process multiple texts.
-      RuleBasedPipeline.detect_only,method,"(text:str) -> DetectionResult",503-513,false,11,1,Only detect domain and intent (skip extraction and generation).
-      RuleBasedPipeline.extract_only,method,"(text:str, domain:str) -> ExtractionResult",515-526,false,12,1,Only extract entities (skip detection and generation).
-      RuleBasedPipeline.generate_only,method,"(domain:str, intent:str, entities:dict[str,Any]) -> TemplateResult",528-545,false,18,1,Only generate command (skip detection and extraction).
-      RuleBasedPipeline.get_supported_domains,method,"() -> list[str]",547-549,false,3,1,Get list of supported domains.
-      RuleBasedPipeline.get_supported_intents,method,"(domain:str) -> list[str]",551-553,false,3,1,Get list of supported intents for a domain.
-      PipelineMetrics.__init__,method,() -> None,559-566,false,8,1,creates
-      PipelineMetrics.record,method,"(result:PipelineResult) -> None",568-584,false,17,3,Record a pipeline result.
-      PipelineMetrics.success_rate,method,() -> float,587-591,false,5,2,Calculate success rate.
-      PipelineMetrics.avg_latency_ms,method,() -> float,594-598,false,5,2,Calculate average latency.
-      PipelineMetrics.avg_confidence,method,() -> float,601-605,false,5,2,Calculate average confidence.
-      PipelineMetrics.report,method,"() -> dict[str, Any]",607-618,false,12,1,Generate metrics report.
+    functions[26]{name,kind,sig,loc,async,lines,cc,does}:
+      create_pipeline,function,"(confidence_threshold:float=0.5, custom_patterns:Optional[dict[str,dict[str,list[str]]]]=None, custom_templates:Optional[dict[str,dict[str,str]]]=None) -> RuleBasedPipeline",818-849,false,32,4,Factory function to create a configured pipeline.
+      PipelineResult.to_plan,method,"() -> dict[str, Any]",51-57,false,7,1,Convert to execution plan format for adapters.
+      RuleBasedPipeline.__init__,method,"(detector:Optional[KeywordIntentDetector]=None, extractor:Optional[RegexEntityExtractor]=None, generator:Optional[TemplateGenerator]=None, confidence_threshold:float=0.5) -> None",77-96,false,20,4,Initialize pipeline.
+      RuleBasedPipeline.process,method,"(text:str) -> PipelineResult",98-210,false,113,20,Process natural language text through the pipeline.
+      RuleBasedPipeline._infer_domain_from_markers,method,"(text_lower:str) -> Optional[str]",212-228,false,17,10,infer domain from markers
+      RuleBasedPipeline.process_steps,method,"(text:str) -> list[PipelineResult]",230-305,false,76,33,processes steps
+      RuleBasedPipeline._process_with_detection,method,"(text:str, detection:DetectionResult) -> PipelineResult",307-398,false,92,16,processes with detection
+      RuleBasedPipeline._split_sentences,method,"(text:str) -> list[str]",400-440,false,41,23,splits sentences
+      RuleBasedPipeline._aggregate_detection,method,"(sentences:list[str]) -> Optional[dict[str, Any]]",442-512,false,71,22,aggregate detection
+      RuleBasedPipeline.process_with_llm_repair,method,"(text:str) -> PipelineResult",514-546,false,33,6,processes with llm repair
+      RuleBasedPipeline._suggest_schema_patch,method,"(text:str, last_result:PipelineResult) -> Optional[dict[str, Any]]",548-608,false,61,10,suggest schema patch
+      RuleBasedPipeline._apply_schema_patch,method,"(patch:dict[str,Any]) -> None",610-630,false,21,21,apply schema patch
+      RuleBasedPipeline._persist_schema_patch,method,"(patch:dict[str,Any]) -> None",632-648,false,17,3,caches schema patch
+      RuleBasedPipeline._merge_json_file,method,"(path:Path, patch:dict[str,Any]) -> None",650-686,false,37,21,merges json file
+      RuleBasedPipeline.process_batch,method,"(texts:list[str]) -> list[PipelineResult]",688-698,false,11,2,Process multiple texts.
+      RuleBasedPipeline.detect_only,method,"(text:str) -> DetectionResult",700-710,false,11,1,Only detect domain and intent (skip extraction and generation).
+      RuleBasedPipeline.extract_only,method,"(text:str, domain:str) -> ExtractionResult",712-723,false,12,1,Only extract entities (skip detection and generation).
+      RuleBasedPipeline.generate_only,method,"(domain:str, intent:str, entities:dict[str,Any]) -> TemplateResult",725-742,false,18,1,Only generate command (skip detection and extraction).
+      RuleBasedPipeline.get_supported_domains,method,"() -> list[str]",744-746,false,3,1,Get list of supported domains.
+      RuleBasedPipeline.get_supported_intents,method,"(domain:str) -> list[str]",748-750,false,3,1,Get list of supported intents for a domain.
+      PipelineMetrics.__init__,method,() -> None,756-763,false,8,1,creates
+      PipelineMetrics.record,method,"(result:PipelineResult) -> None",765-781,false,17,3,Record a pipeline result.
+      PipelineMetrics.success_rate,method,() -> float,784-788,false,5,2,Calculate success rate.
+      PipelineMetrics.avg_latency_ms,method,() -> float,791-795,false,5,2,Calculate average latency.
+      PipelineMetrics.avg_confidence,method,() -> float,798-802,false,5,2,Calculate average confidence.
+      PipelineMetrics.report,method,"() -> dict[str, Any]",804-815,false,12,1,Generate metrics report.
   src/nlp2cmd/generation/llm_multi.py:
     functions[11]{name,kind,sig,loc,async,lines,cc,does}:
       LLMDomainRouter.__init__,method,"(llm_client:LLMClient, config:Optional[LLMConfig]=None) -> None",56-62,false,7,2,creates
@@ -2128,30 +2138,31 @@ function_details:
       export_analytics,function,"(output:Path) -> None",194-204,false,11,1,Export detailed analytics to JSON.
       clear_history,function,"(confirm:bool) -> None",213-226,false,14,3,Clear command history.
   src/nlp2cmd/cli/main.py:
-    functions[23]{name,kind,sig,loc,async,lines,cc,does}:
-      _shell_env_context,function,"(context:dict[str,Any]) -> dict[str, Any]",73-90,false,18,5,shell env context
-      get_adapter,function,"(dsl:str, context:dict[str,Any]) -> None",93-113,false,21,3,Get the appropriate adapter for the DSL type.
-      _looks_like_log_input,function,"(text:str) -> bool",452-480,false,29,13,looks like log input
-      _interactive_followup,function,"(session:InteractiveSession, feedback:FeedbackResult) -> FeedbackResult",483-501,false,19,7,interactive followup
-      _handle_run_query,function,"(query:str, dsl:str, appspec:Optional[Path], auto_confirm:bool, execute_web:bool, auto_install:bool, auto_repair:bool) -> None",504-900,false,397,81,"Handle --run option: generate and execute command with error recovery."
-      _suggest_next_steps,function,"(original_query:str, command:str, result, runner:ExecutionRunner) -> None",903-956,false,54,16,Suggest next steps based on error context.
-      _is_playwright_error,function,"(msg:str) -> bool",959-971,false,13,9,is playwright error
-      _maybe_install_playwright,function,"(msg:str, runner:ExecutionRunner) -> bool",974-1000,false,27,9,maybe install playwright
-      _fallback_open_url,function,(ir) -> None,1003-1020,false,18,8,fallback open url
-      _fallback_open_url_from_query,function,"(query:str) -> None",1023-1031,false,9,5,fallback open url from query
-      main,function,"(ctx, interactive:bool, dsl:str, appspec:Optional[Path], query:Optional[str], run_query:Optional[str], auto_repair:bool, explain:bool) -> None",1059-1188,false,130,29,NLP2CMD - Natural Language to Domain-Specific Commands.
-      repair,function,"(ctx, file:str, backup:bool) -> None",1195-1244,false,50,11,Repair a configuration file.
-      validate,function,"(ctx, file:str) -> None",1250-1276,false,27,7,Validate a configuration file.
-      analyze_env,function,"(ctx, output:Optional[str]) -> None",1282-1351,false,70,12,Analyze system environment.
-      NLP2CMDGroup.parse_args,method,"(ctx:Any, args:list[str]) -> None",47-70,false,24,9,parses args
-      InteractiveSession.__init__,method,"(dsl:str='auto', auto_repair:bool=False, appspec:Optional[str]=None) -> None",119-139,false,21,1,creates
-      InteractiveSession._analyze_environment,method,() -> None,141-155,false,15,3,Analyze current environment.
-      InteractiveSession.process,method,"(user_input:str) -> FeedbackResult",157-197,false,41,6,Process user input and return feedback.
-      InteractiveSession.display_feedback,method,"(feedback:FeedbackResult) -> None",199-271,false,73,17,Display feedback result with formatting.
-      InteractiveSession.run,method,() -> None,273-321,false,49,10,Run interactive REPL.
-      InteractiveSession._show_help,method,() -> None,323-339,false,17,1,Display help information.
-      InteractiveSession._handle_command,method,"(cmd:str) -> None",341-396,false,56,14,Handle special commands.
-      InteractiveSession._correction_loop,method,"(feedback:FeedbackResult) -> None",398-449,false,52,19,Interactive correction loop.
+    functions[24]{name,kind,sig,loc,async,lines,cc,does}:
+      _system_beep,function,() -> None,47-52,false,6,2,system beep
+      _timed_default_yes,function,"(timed_prompt:str, full_prompt:str) -> str",55-85,false,31,8,timed default yes
+      _shell_env_context,function,"(context:dict[str,Any]) -> dict[str, Any]",88-105,false,18,5,shell env context
+      get_adapter,function,"(dsl:str, context:dict[str,Any]) -> None",108-128,false,21,3,Get the appropriate adapter for the DSL type.
+      _looks_like_log_input,function,"(text:str) -> bool",467-495,false,29,13,looks like log input
+      _interactive_followup,function,"(session:InteractiveSession, feedback:FeedbackResult) -> FeedbackResult",498-516,false,19,7,interactive followup
+      _handle_run_query,function,"(query:str, dsl:str, appspec:Optional[Path], auto_confirm:bool, execute_web:bool, auto_install:bool, auto_repair:bool) -> None",519-980,false,462,104,"Handle --run option: generate and execute command with error recovery."
+      _suggest_next_steps,function,"(original_query:str, command:str, result, runner:ExecutionRunner) -> None",983-1036,false,54,16,Suggest next steps based on error context.
+      _is_playwright_error,function,"(msg:str) -> bool",1039-1051,false,13,9,is playwright error
+      _maybe_install_playwright,function,"(msg:str, runner:ExecutionRunner) -> bool",1054-1080,false,27,9,maybe install playwright
+      _fallback_open_url,function,(ir) -> None,1083-1100,false,18,8,fallback open url
+      _fallback_open_url_from_query,function,"(query:str) -> None",1103-1111,false,9,5,fallback open url from query
+      main,function,"(ctx, interactive:bool, dsl:str, appspec:Optional[Path], query:Optional[str], run_query:Optional[str], auto_repair:bool, explain:bool) -> None",1139-1268,false,130,29,NLP2CMD - Natural Language to Domain-Specific Commands.
+      repair,function,"(ctx, file:str, backup:bool) -> None",1275-1324,false,50,11,Repair a configuration file.
+      validate,function,"(ctx, file:str) -> None",1330-1356,false,27,7,Validate a configuration file.
+      analyze_env,function,"(ctx, output:Optional[str]) -> None",1362-1431,false,70,12,Analyze system environment.
+      InteractiveSession.__init__,method,"(dsl:str='auto', auto_repair:bool=False, appspec:Optional[str]=None) -> None",134-154,false,21,1,creates
+      InteractiveSession._analyze_environment,method,() -> None,156-170,false,15,3,Analyze current environment.
+      InteractiveSession.process,method,"(user_input:str) -> FeedbackResult",172-212,false,41,6,Process user input and return feedback.
+      InteractiveSession.display_feedback,method,"(feedback:FeedbackResult) -> None",214-286,false,73,17,Display feedback result with formatting.
+      InteractiveSession.run,method,() -> None,288-336,false,49,10,Run interactive REPL.
+      InteractiveSession._show_help,method,() -> None,338-354,false,17,1,Display help information.
+      InteractiveSession._handle_command,method,"(cmd:str) -> None",356-411,false,56,14,Handle special commands.
+      InteractiveSession._correction_loop,method,"(feedback:FeedbackResult) -> None",413-464,false,52,19,Interactive correction loop.
   src/nlp2cmd/web_schema/form_data_loader.py:
     functions[38]{name,kind,sig,loc,async,lines,cc,does}:
       create_example_env_file,function,"(path:str='.env.example') -> None",624-646,false,23,1,Create example .env file with form field templates.
@@ -2226,7 +2237,7 @@ function_details:
       FormField.get_display_name,method,() -> str,34-36,false,3,5,Get human-readable field name.
       FormHandler.__init__,method,"(console:Optional[Console]=None) -> None",51-52,false,2,2,creates
       FormHandler.detect_form_fields,method,"(page) -> list[FormField]",54-185,false,132,22,Detect all form fields on a page.
-      FormHandler.detect_submit_button,method,"(page) -> Optional[str]",187-200,false,14,4,Detect form submit button.
+      FormHandler.detect_submit_button,method,"(page, data_loader:Optional[FormDataLoader]=None) -> Optional[str]",187-200,false,14,5,Detect form submit button.
       FormHandler.automatic_fill,method,"(fields:list[FormField], data_loader:Optional[FormDataLoader]=None) -> FormData",202-287,false,86,13,Automatically fill form using data from .env and data/*.json files.
       FormHandler.interactive_fill,method,"(fields:list[FormField], prefill:Optional[dict[str,str]]=None) -> FormData",289-354,false,66,16,Interactively collect form data from user.
       FormHandler.fill_form,method,"(page, form_data:FormData, submit:bool=False) -> bool",356-415,false,60,13,Fill form fields on page.
@@ -2536,6 +2547,13 @@ function_details:
       install_playwright,function,"(console:Optional[Console]=None) -> bool",41-72,false,32,4,Install Playwright package.
       install_playwright_browsers,function,"(console:Optional[Console]=None) -> bool",75-107,false,33,4,Install Playwright browsers (chromium).
       ensure_playwright_installed,function,"(console:Optional[Console]=None, auto_install:bool=False) -> bool",110-152,false,43,10,"Ensure Playwright is installed, prompting user if needed."
+  src/nlp2cmd/utils/data_files.py:
+    functions[5]{name,kind,sig,loc,async,lines,cc,does}:
+      get_user_config_dir,function,() -> Path,8-26,false,19,3,Return the user config directory for NLP2CMD.
+      _package_data_dir,function,() -> Path,29-31,false,3,1,package data dir
+      find_data_files,function,"(explicit_path:Optional[str], default_filename:str) -> list[Path]",34-76,false,43,8,Return a list of existing data file paths in merge order.
+      find_data_file,function,"(explicit_path:Optional[str], default_filename:str) -> Optional[Path]",79-93,false,15,2,Resolve a data/*.json file path.
+      data_file_write_path,function,"(explicit_path:Optional[str], default_filename:str) -> Path",96-105,false,10,2,Resolve a writable path for a data file.
   src/nlp2cmd/environment/__init__.py:
     functions[15]{name,kind,sig,loc,async,lines,cc,does}:
       EnvironmentAnalyzer.__init__,method,() -> None,131-132,false,2,1,creates
@@ -2731,11 +2749,12 @@ function_details:
       DynamicSchemaGenerator._generate_description,method,"(command:str, context:Optional[str]=None) -> str",154-202,false,49,5,Generate description based on command and context.
       DynamicSchemaGenerator._infer_category,method,"(command:str, context:Optional[str]=None) -> str",204-230,false,27,5,Infer category from command and context.
   src/nlp2cmd/intelligent/command_detector.py:
-    functions[4]{name,kind,sig,loc,async,lines,cc,does}:
-      test_command_detector,function,() -> None,302-336,false,35,6,Test the command detector with various queries.
-      CommandDetector.__init__,method,() -> None,20-211,false,192,1,Initialize the detector with keyword mappings.
-      CommandDetector.detect_command,method,"(query:str, top_k:int=3) -> List[CommandMatch]",213-272,false,60,14,Detect the most likely commands from a natural language query.
-      CommandDetector._extract_context,method,"(query:str, command:str) -> str",274-299,false,26,5,Extract relevant context for the command.
+    functions[5]{name,kind,sig,loc,async,lines,cc,does}:
+      test_command_detector,function,() -> None,377-411,false,35,6,Test the command detector with various queries.
+      CommandDetector.__init__,method,() -> None,25-227,false,203,6,Initialize the detector with keyword mappings.
+      CommandDetector._load_config_from_json,method,"() -> Optional[Dict[str, Dict]]",229-286,false,58,31,retrieves config from json
+      CommandDetector.detect_command,method,"(query:str, top_k:int=3) -> List[CommandMatch]",288-347,false,60,14,Detect the most likely commands from a natural language query.
+      CommandDetector._extract_context,method,"(query:str, command:str) -> str",349-374,false,26,5,Extract relevant context for the command.
   src/nlp2cmd/intelligent/version_aware_generator.py:
     functions[11]{name,kind,sig,loc,async,lines,cc,does}:
       test_version_aware_generation,function,() -> None,303-349,false,47,8,Test the version-aware command generation.
@@ -2961,58 +2980,66 @@ function_details:
       get_examples,function,() -> None,142-144,true,3,1,Pobierz przykładowe komendy.
   examples/devops/nlp2cmd_web_controller.py:
     functions[52]{name,kind,sig,loc,async,lines,cc,does}:
-      run_command,function,"(command:str, dsl:str='auto', use_llm:bool=True, auto_install:bool=False) -> dict[str, Any]",1308-1311,true,4,1,Quick way to run a single NLP2CMD command.
-      DeploymentPlan.to_compose,method,"() -> dict[str, Any]",71-124,false,54,17,Convert to docker-compose format.
-      DeploymentPlan._create_redis_service,method,"() -> dict[str, Any]",126-132,false,7,1,Create Redis service configuration.
-      DeploymentPlan._create_postgres_service,method,"() -> dict[str, Any]",134-152,false,19,1,Create PostgreSQL service configuration.
-      OutputFileManager.__init__,method,"(output_dir:str='./generated') -> None",158-160,false,3,1,creates
-      OutputFileManager.save_docker_compose,method,"(compose_config:dict[str,Any], filename:str='docker-compose.yml') -> str",162-172,false,11,1,Save Docker Compose configuration to file.
-      OutputFileManager.save_service_config,method,"(service_config:dict[str,Any], service_name:str) -> str",174-181,false,8,1,Save individual service configuration to JSON file.
-      OutputFileManager.save_deployment_plan,method,"(plan:dict[str,Any], name:str) -> str",183-190,false,8,1,Save complete deployment plan to JSON file.
-      DockerManager.__init__,method,"(compose_file_path:str, output_dir:str='./generated') -> None",196-199,false,4,1,creates
-      DockerManager.start_services,method,"(show_logs:bool=True) -> dict[str, Any]",201-252,true,52,6,Start Docker Compose services and optionally show logs.
-      DockerManager.get_container_status,method,"() -> dict[str, Any]",254-315,true,62,12,Get status of all containers.
-      DockerManager.show_logs,method,"(follow:bool=False, lines:int=20, service:Optional[str]=None) -> None",317-371,true,55,13,Show logs from containers.
-      DockerManager.stop_services,method,"() -> dict[str, Any]",373-402,true,30,3,Stop and remove containers.
-      NLCommandParser.parse,method,"(text:str) -> dict[str, Any]",466-484,false,19,1,Parse natural language command.
-      NLCommandParser._detect_intent,method,"(text:str) -> str",486-524,false,39,19,Detect command intent.
-      NLCommandParser._detect_service_type,method,"(text:str) -> Optional[ServiceType]",526-532,false,7,4,Detect service type from text.
-      NLCommandParser._extract_entities,method,"(text:str) -> dict[str, Any]",534-571,false,38,16,Extract entities from text.
-      NLP2CMDWebController.__init__,method,"(output_dir:str='./generated', use_llm_fallback:bool=True, auto_install:bool=False) -> None",582-619,false,38,4,creates
-      NLP2CMDWebController.execute,method,"(command:str, dsl:str='auto') -> dict[str, Any]",621-664,true,44,3,Execute a natural language command.
-      NLP2CMDWebController._handle_deploy,method,"(parsed:dict) -> dict[str, Any]",666-730,true,65,5,Handle deploy intent.
-      NLP2CMDWebController._handle_configure,method,"(parsed:dict) -> dict[str, Any]",732-747,true,16,3,Handle configure intent.
-      NLP2CMDWebController._handle_scale,method,"(parsed:dict) -> dict[str, Any]",749-760,true,12,1,Handle scale intent.
-      NLP2CMDWebController._handle_status,method,"(parsed:dict) -> dict[str, Any]",762-773,true,12,2,Handle status intent.
-      NLP2CMDWebController._handle_stop,method,"(parsed:dict) -> dict[str, Any]",775-784,true,10,1,Handle stop intent.
-      NLP2CMDWebController._handle_unknown,method,"(parsed:dict) -> dict[str, Any]",786-809,true,24,2,Handle unknown intent by trying NLP2CMD core with LLM fallback.
-      NLP2CMDWebController._execute_with_nlp2cmd,method,"(command:str, dsl:str) -> dict[str, Any]",811-847,true,37,7,Execute command using NLP2CMD core with LLM fallback.
-      NLP2CMDWebController._try_llm_fallback,method,"(command:str) -> dict[str, Any]",849-889,true,41,5,Try to generate command using LLM fallback.
-      NLP2CMDWebController._handle_logs,method,"(parsed:dict) -> dict[str, Any]",891-910,true,20,3,Handle logs intent.
-      NLP2CMDWebController._handle_test,method,"(parsed:dict) -> dict[str, Any]",912-931,true,20,2,Handle test intent.
-      NLP2CMDWebController._handle_monitor,method,"(parsed:dict) -> dict[str, Any]",933-941,true,9,1,Handle monitor intent.
-      NLP2CMDWebController._handle_restart,method,"(parsed:dict) -> dict[str, Any]",943-962,true,20,2,Handle restart intent.
-      NLP2CMDWebController._get_service_name_by_type,method,"(service_type:ServiceType) -> str",964-973,false,10,1,Get service name by service type.
-      NLP2CMDWebController._get_test_commands,method,"(service_type:ServiceType, entities:dict) -> list[str]",975-990,false,16,4,Get test commands for service type.
-      NLP2CMDWebController.save_full_deployment_plan,method,"(name:str='full-deployment') -> dict[str, Any]",992-1070,true,79,7,Save complete deployment plan with all services.
-      NLP2CMDWebController.get_generated_files_info,method,"() -> dict[str, Any]",1072-1096,false,25,4,Get information about generated files.
-      NLP2CMDWebController.show_container_logs,method,"(follow:bool=False, lines:int=20, service:Optional[str]=None) -> dict[str, Any]",1098-1111,true,14,2,Show logs from running containers.
-      NLP2CMDWebController.get_container_status,method,"() -> dict[str, Any]",1113-1121,true,9,2,Get current status of all containers.
-      NLP2CMDWebController.stop_containers,method,"() -> dict[str, Any]",1123-1137,true,15,3,Stop all running containers.
-      NLP2CMDWebController._create_chat_template,method,"(entities:dict) -> ServiceConfig",1140-1154,false,15,1,Create chat service configuration.
-      NLP2CMDWebController._create_email_template,method,"(entities:dict) -> ServiceConfig",1156-1182,false,27,2,Create email service configuration.
-      NLP2CMDWebController._create_contact_template,method,"(entities:dict) -> ServiceConfig",1184-1200,false,17,1,Create contact form service configuration.
-      NLP2CMDWebController._create_database_template,method,"(entities:dict) -> ServiceConfig",1202-1216,false,15,1,Create database service configuration.
-      NLP2CMDWebController._create_cache_template,method,"(entities:dict) -> ServiceConfig",1218-1227,false,10,1,Create cache service configuration.
-      NLP2CMDWebController._configure_email,method,"(entities:dict) -> dict[str, Any]",1229-1251,true,23,1,Configure email service with credentials.
-      NLP2CMDWebController._configure_chat,method,"(entities:dict) -> dict[str, Any]",1253-1266,true,14,1,Configure chat service.
-      NLP2CMDWebController._guess_imap_host,method,"(email:str) -> str",1268-1285,false,18,3,Guess IMAP host from email domain.
-      NLP2CMDWebController._guess_smtp_host,method,"(email:str) -> str",1287-1304,false,18,3,Guess SMTP host from email domain.
-      NLP2CMDWebAPI.__init__,method,() -> None,1323-1328,false,6,1,creates
-      NLP2CMDWebAPI.process_command,method,"(command:str, dsl:str='auto') -> dict[str, Any]",1330-1356,true,27,2,Process command from web interface.
-      NLP2CMDWebAPI.get_status,method,"() -> dict[str, Any]",1358-1375,false,18,1,Get API status and capabilities.
-      NLP2CMDWebAPI.get_history,method,"(limit:int=10) -> dict[str, Any]",1377-1384,false,8,1,Get command history.
-      NLP2CMDWebAPI.get_services,method,"() -> dict[str, Any]",1386-1401,false,16,2,Get deployed services.
+      run_command,function,"(command:str, dsl:str='auto', use_llm:bool=True, auto_install:bool=False) -> dict[str, Any]",1312-1315,true,4,1,Quick way to run a single NLP2CMD command.
+      DeploymentPlan.to_compose,method,"() -> dict[str, Any]",72-125,false,54,17,Convert to docker-compose format.
+      DeploymentPlan._create_redis_service,method,"() -> dict[str, Any]",127-133,false,7,1,Create Redis service configuration.
+      DeploymentPlan._create_postgres_service,method,"() -> dict[str, Any]",135-153,false,19,1,Create PostgreSQL service configuration.
+      OutputFileManager.__init__,method,"(output_dir:str='./generated') -> None",159-161,false,3,1,creates
+      OutputFileManager.save_docker_compose,method,"(compose_config:dict[str,Any], filename:str='docker-compose.yml') -> str",163-173,false,11,1,Save Docker Compose configuration to file.
+      OutputFileManager.save_service_config,method,"(service_config:dict[str,Any], service_name:str) -> str",175-182,false,8,1,Save individual service configuration to JSON file.
+      OutputFileManager.save_deployment_plan,method,"(plan:dict[str,Any], name:str) -> str",184-191,false,8,1,Save complete deployment plan to JSON file.
+      DockerManager.__init__,method,"(compose_file_path:str, output_dir:str='./generated') -> None",197-200,false,4,1,creates
+      DockerManager.start_services,method,"(show_logs:bool=True) -> dict[str, Any]",202-253,true,52,6,Start Docker Compose services and optionally show logs.
+      DockerManager.get_container_status,method,"() -> dict[str, Any]",255-316,true,62,12,Get status of all containers.
+      DockerManager.show_logs,method,"(follow:bool=False, lines:int=20, service:Optional[str]=None) -> None",318-372,true,55,13,Show logs from containers.
+      DockerManager.stop_services,method,"() -> dict[str, Any]",374-403,true,30,3,Stop and remove containers.
+      NLCommandParser.parse,method,"(text:str) -> dict[str, Any]",467-485,false,19,1,Parse natural language command.
+      NLCommandParser._detect_intent,method,"(text:str) -> str",487-525,false,39,19,Detect command intent.
+      NLCommandParser._detect_service_type,method,"(text:str) -> Optional[ServiceType]",527-533,false,7,4,Detect service type from text.
+      NLCommandParser._extract_entities,method,"(text:str) -> dict[str, Any]",535-572,false,38,16,Extract entities from text.
+      NLP2CMDWebController.__init__,method,"(output_dir:str='./generated', use_llm_fallback:bool=True, auto_install:bool=False) -> None",583-623,false,41,4,creates
+      NLP2CMDWebController.execute,method,"(command:str, dsl:str='auto') -> dict[str, Any]",625-668,true,44,3,Execute a natural language command.
+      NLP2CMDWebController._handle_deploy,method,"(parsed:dict) -> dict[str, Any]",670-734,true,65,5,Handle deploy intent.
+      NLP2CMDWebController._handle_configure,method,"(parsed:dict) -> dict[str, Any]",736-751,true,16,3,Handle configure intent.
+      NLP2CMDWebController._handle_scale,method,"(parsed:dict) -> dict[str, Any]",753-764,true,12,1,Handle scale intent.
+      NLP2CMDWebController._handle_status,method,"(parsed:dict) -> dict[str, Any]",766-777,true,12,2,Handle status intent.
+      NLP2CMDWebController._handle_stop,method,"(parsed:dict) -> dict[str, Any]",779-788,true,10,1,Handle stop intent.
+      NLP2CMDWebController._handle_unknown,method,"(parsed:dict) -> dict[str, Any]",790-813,true,24,2,Handle unknown intent by trying NLP2CMD core with LLM fallback.
+      NLP2CMDWebController._execute_with_nlp2cmd,method,"(command:str, dsl:str) -> dict[str, Any]",815-851,true,37,7,Execute command using NLP2CMD core with LLM fallback.
+      NLP2CMDWebController._try_llm_fallback,method,"(command:str) -> dict[str, Any]",853-893,true,41,5,Try to generate command using LLM fallback.
+      NLP2CMDWebController._handle_logs,method,"(parsed:dict) -> dict[str, Any]",895-914,true,20,3,Handle logs intent.
+      NLP2CMDWebController._handle_test,method,"(parsed:dict) -> dict[str, Any]",916-935,true,20,2,Handle test intent.
+      NLP2CMDWebController._handle_monitor,method,"(parsed:dict) -> dict[str, Any]",937-945,true,9,1,Handle monitor intent.
+      NLP2CMDWebController._handle_restart,method,"(parsed:dict) -> dict[str, Any]",947-966,true,20,2,Handle restart intent.
+      NLP2CMDWebController._get_service_name_by_type,method,"(service_type:ServiceType) -> str",968-977,false,10,1,Get service name by service type.
+      NLP2CMDWebController._get_test_commands,method,"(service_type:ServiceType, entities:dict) -> list[str]",979-994,false,16,4,Get test commands for service type.
+      NLP2CMDWebController.save_full_deployment_plan,method,"(name:str='full-deployment') -> dict[str, Any]",996-1074,true,79,7,Save complete deployment plan with all services.
+      NLP2CMDWebController.get_generated_files_info,method,"() -> dict[str, Any]",1076-1100,false,25,4,Get information about generated files.
+      NLP2CMDWebController.show_container_logs,method,"(follow:bool=False, lines:int=20, service:Optional[str]=None) -> dict[str, Any]",1102-1115,true,14,2,Show logs from running containers.
+      NLP2CMDWebController.get_container_status,method,"() -> dict[str, Any]",1117-1125,true,9,2,Get current status of all containers.
+      NLP2CMDWebController.stop_containers,method,"() -> dict[str, Any]",1127-1141,true,15,3,Stop all running containers.
+      NLP2CMDWebController._create_chat_template,method,"(entities:dict) -> ServiceConfig",1144-1158,false,15,1,Create chat service configuration.
+      NLP2CMDWebController._create_email_template,method,"(entities:dict) -> ServiceConfig",1160-1186,false,27,2,Create email service configuration.
+      NLP2CMDWebController._create_contact_template,method,"(entities:dict) -> ServiceConfig",1188-1204,false,17,1,Create contact form service configuration.
+      NLP2CMDWebController._create_database_template,method,"(entities:dict) -> ServiceConfig",1206-1220,false,15,1,Create database service configuration.
+      NLP2CMDWebController._create_cache_template,method,"(entities:dict) -> ServiceConfig",1222-1231,false,10,1,Create cache service configuration.
+      NLP2CMDWebController._configure_email,method,"(entities:dict) -> dict[str, Any]",1233-1255,true,23,1,Configure email service with credentials.
+      NLP2CMDWebController._configure_chat,method,"(entities:dict) -> dict[str, Any]",1257-1270,true,14,1,Configure chat service.
+      NLP2CMDWebController._guess_imap_host,method,"(email:str) -> str",1272-1289,false,18,3,Guess IMAP host from email domain.
+      NLP2CMDWebController._guess_smtp_host,method,"(email:str) -> str",1291-1308,false,18,3,Guess SMTP host from email domain.
+      NLP2CMDWebAPI.__init__,method,() -> None,1327-1332,false,6,1,creates
+      NLP2CMDWebAPI.process_command,method,"(command:str, dsl:str='auto') -> dict[str, Any]",1334-1360,true,27,2,Process command from web interface.
+      NLP2CMDWebAPI.get_status,method,"() -> dict[str, Any]",1362-1379,false,18,1,Get API status and capabilities.
+      NLP2CMDWebAPI.get_history,method,"(limit:int=10) -> dict[str, Any]",1381-1388,false,8,1,Get command history.
+      NLP2CMDWebAPI.get_services,method,"() -> dict[str, Any]",1390-1405,false,16,2,Get deployed services.
+  examples/devops/simple_web_test.py:
+    functions[6]{name,kind,sig,loc,async,lines,cc,does}:
+      run_server,function,(port=8002) -> None,134-145,false,12,2,starts server
+      NLP2CMDHandler.__init__,method,() -> None,26-28,false,3,1,creates
+      NLP2CMDHandler.do_GET,method,() -> None,30-95,false,66,3,do get
+      NLP2CMDHandler.do_POST,method,() -> None,97-122,false,26,3,do post
+      NLP2CMDHandler.send_json_response,method,(data) -> None,124-128,false,5,1,sends json response
+      NLP2CMDHandler.log_message,method,(format) -> None,130-132,false,3,1,logs message
   examples/shell/environment_analysis.py:
     functions[2]{name,kind,sig,loc,async,lines,cc,does}:
       format_size,function,"(gb:float) -> str",24-28,false,5,2,Format size in human-readable format.

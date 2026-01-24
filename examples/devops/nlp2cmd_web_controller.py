@@ -19,6 +19,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import sys
 import subprocess
 import yaml
 from dataclasses import dataclass, field
@@ -601,8 +602,11 @@ class NLP2CMDWebController:
                 self.llm_client = LiteLLMClient()
             except ImportError:
                 if auto_install:
-                    import subprocess
-                    subprocess.run(["pip", "install", "litellm"], check=True, capture_output=True)
+                    subprocess.run(
+                        [sys.executable, "-m", "pip", "install", "litellm"],
+                        check=True,
+                        capture_output=True,
+                    )
                     self.llm_client = LiteLLMClient()
                 else:
                     self.llm_client = None

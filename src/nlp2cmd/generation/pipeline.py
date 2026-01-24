@@ -15,6 +15,8 @@ from pathlib import Path
 import re
 import time
 
+from nlp2cmd.utils.data_files import data_file_write_path
+
 from nlp2cmd.generation.keywords import KeywordIntentDetector, DetectionResult
 from nlp2cmd.generation.regex import RegexEntityExtractor, ExtractionResult
 from nlp2cmd.generation.templates import TemplateGenerator, TemplateResult
@@ -150,7 +152,8 @@ class RuleBasedPipeline:
         
         # Step 3: Generate command from template
         # Add original text to entities for context-aware template selection
-        entities_with_text = extraction.entities.copy()
+        merged_entities = extraction.entities.copy()
+        entities_with_text = merged_entities.copy()
         entities_with_text['text'] = text
 
         template_result = self.generator.generate(
@@ -196,7 +199,7 @@ class RuleBasedPipeline:
             domain=detection.domain,
             intent=detection.intent,
             detection_confidence=detection.confidence,
-            entities=extraction.entities,
+            entities=merged_entities,
             command=template_result.command,
             template_used=template_result.template_used,
             success=template_result.success and len(errors) == 0,
@@ -205,6 +208,24 @@ class RuleBasedPipeline:
             errors=errors,
             warnings=warnings,
         )
+
+    def _infer_domain_from_markers(self, text_lower: str) -> Optional[str]:
+        if not text_lower:
+            return None
+
+        if any(x in text_lower for x in ("kubectl", "kubernetes", "k8s")) or re.search(r"\bpod(y)?\b", text_lower):
+            return "kubernetes"
+
+        if any(x in text_lower for x in ("docker", "kontener", "container", "docker-compose", "compose")):
+            return "docker"
+
+        if re.search(r"\b(select|update|delete|insert|from|where|join|sql|tabela|table)\b", text_lower):
+            return "sql"
+
+        if any(x in text_lower for x in ("entity", "graph", "dql")):
+            return "dql"
+
+        return None
 
     def process_steps(self, text: str) -> list[PipelineResult]:
         sentences = self._split_sentences(text)
@@ -215,14 +236,42 @@ class RuleBasedPipeline:
         prev_domain: Optional[str] = None
         prev_intent: Optional[str] = None
         prev_conf: float = 0.0
+        prev_entities: dict[str, Any] = {}
 
         for sent in sentences:
-            d = self.detector.detect(sent)
-
             sent_lower = sent.strip().lower()
+            forced_domain = self._infer_domain_from_markers(sent_lower)
+
+            d = self.detector.detect(sent)
+            if forced_domain is not None and d.domain != forced_domain:
+                for c in self.detector.detect_all(sent)[:12]:
+                    if c.domain == forced_domain:
+                        d = c
+                        break
+
             begins_with_connector = bool(
                 re.match(r"^(nast[eę]pnie|potem|dalej|oraz|a potem|je[sś]li|je[sś]eli|gdy|wtedy|na koniec)\b", sent_lower)
             )
+
+            is_conditional = bool(re.match(r"^(je[sś]li|je[sś]eli|gdy|wtedy)\b", sent_lower))
+
+            if prev_domain and begins_with_connector and forced_domain is None and d.domain != prev_domain:
+                # Avoid domain drift on continuation/conditional sentences unless explicit markers appear.
+                d = DetectionResult(
+                    domain=prev_domain,
+                    intent=d.intent if d.intent != "unknown" else (prev_intent or "unknown"),
+                    confidence=max(0.35, min(0.7, prev_conf * 0.6)),
+                    matched_keyword=None,
+                )
+
+            if prev_domain == "shell" and prev_intent and prev_intent.startswith("git_") and begins_with_connector and forced_domain is None:
+                if "status" in sent_lower:
+                    d = DetectionResult(
+                        domain="shell",
+                        intent="git_status",
+                        confidence=max(0.6, min(0.85, prev_conf * 0.8)),
+                        matched_keyword="git_status_followup",
+                    )
 
             if (d.domain == "unknown" or d.intent == "unknown") and prev_domain and begins_with_connector:
                 chosen = None
@@ -240,17 +289,28 @@ class RuleBasedPipeline:
                         matched_keyword=None,
                     )
 
-            step = self._process_with_detection(sent, d)
+            context_entities: dict[str, Any] = {}
+            if prev_domain and d.domain == prev_domain and (begins_with_connector or is_conditional):
+                context_entities = dict(prev_entities)
+
+            step = self._process_with_detection(sent, d, context_entities=context_entities)
             results.append(step)
 
             if step.domain != "unknown":
                 prev_domain = step.domain
                 prev_intent = step.intent
                 prev_conf = float(step.detection_confidence)
+                prev_entities = step.entities or {}
 
         return results
 
-    def _process_with_detection(self, text: str, detection: DetectionResult) -> PipelineResult:
+    def _process_with_detection(
+        self,
+        text: str,
+        detection: DetectionResult,
+        *,
+        context_entities: Optional[dict[str, Any]] = None,
+    ) -> PipelineResult:
         start_time = time.time()
         errors: list[str] = []
         warnings: list[str] = []
@@ -277,7 +337,12 @@ class RuleBasedPipeline:
         if not extraction.entities:
             warnings.append("No entities extracted from text")
 
-        entities_with_text = extraction.entities.copy()
+        merged_entities: dict[str, Any] = {}
+        if isinstance(context_entities, dict) and context_entities:
+            merged_entities.update(context_entities)
+        merged_entities.update(extraction.entities or {})
+
+        entities_with_text = merged_entities.copy()
         entities_with_text['text'] = text
 
         template_result = self.generator.generate(
@@ -565,8 +630,14 @@ class RuleBasedPipeline:
                         self.generator.add_template(domain, intent, template)
 
     def _persist_schema_patch(self, patch: dict[str, Any]) -> None:
-        patterns_path = Path(os.environ.get("NLP2CMD_PATTERNS_FILE") or "./data/patterns.json")
-        templates_path = Path(os.environ.get("NLP2CMD_TEMPLATES_FILE") or "./data/templates.json")
+        patterns_path = data_file_write_path(
+            explicit_path=os.environ.get("NLP2CMD_PATTERNS_FILE"),
+            default_filename="patterns.json",
+        )
+        templates_path = data_file_write_path(
+            explicit_path=os.environ.get("NLP2CMD_TEMPLATES_FILE"),
+            default_filename="templates.json",
+        )
 
         patterns = patch.get("patterns")
         if isinstance(patterns, dict):

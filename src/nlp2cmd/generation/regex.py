@@ -6,9 +6,13 @@ Extract entities from text using regex patterns without LLM.
 
 from __future__ import annotations
 
+import json
+import os
 import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
+
+from nlp2cmd.utils.data_files import find_data_file
 
 
 @dataclass
@@ -102,11 +106,21 @@ class RegexEntityExtractor:
             r'\s([/~][\w\.\-/]+)\s',
             r'\s((?:\./|\.\./)[\w\.\-/]*|\.{1,2})\s',
         ],
+        'file': [
+            r'(?:plik|file|log(?:ach|i|ów)?|logs?)\s+[`"\']?((?:\./|\.\./|/)[\w\.\-/]+\.[A-Za-z0-9]{1,8})[`"\']?',
+            r'[`"\']?((?:\./|\.\./|/)[\w\.\-/]+\.(?:log|txt|json|ya?ml|csv|tsv|py|sh|md))[`"\']?',
+            r'\b([\w\-]+\.(?:log|txt|json|ya?ml|csv|tsv|py|sh|md))\b',
+        ],
+        'lines': [
+            r'(?:ostatni(?:e|ch)?|tail|last)\s+(\d+)\s+(?:lini[ie]|lines?|wiersz(?:y|e))',
+            r'(?:pokaż|wyświetl|show)\s+(\d+)\s+(?:lini[ie]|lines?|wiersz(?:y|e))',
+            r'(?:--tail|--lines|-n)\s+(\d+)',
+        ],
         'file_pattern': [
             r'\*\.(\w+)',
             r'\.(\w+)\s+files?',
-            r'(?:pliki?|files?)\s+\.?((\w+))',
-            r'(?:rozszerzenie|extension)\s+\.?(\w+)',
+            r'(?:pliki?|files?)\s+\.(\w{1,16})\b',
+            r'(?:rozszerzenie|extension)\s+\.?((\w+))',
         ],
         'filename': [
             r'(?:plik|file)\s+[`"\']?([\w\.\-]+)[`"\']?',
@@ -221,12 +235,53 @@ class RegexEntityExtractor:
             'docker': self.DOCKER_PATTERNS.copy(),
             'kubernetes': self.KUBERNETES_PATTERNS.copy(),
         }
+
+        self._custom_patterns_provided = custom_patterns is not None
+        self._load_patterns_from_json()
         
         if custom_patterns:
             for domain, domain_patterns in custom_patterns.items():
                 if domain not in self.patterns:
                     self.patterns[domain] = {}
                 self.patterns[domain].update(domain_patterns)
+
+    def _load_patterns_from_json(self) -> None:
+        if self._custom_patterns_provided:
+            return
+
+        p = find_data_file(
+            explicit_path=os.environ.get("NLP2CMD_REGEX_PATTERNS_FILE"),
+            default_filename="regex_patterns.json",
+        )
+        if not p:
+            return
+
+        try:
+            payload = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            return
+        if not isinstance(payload, dict):
+            return
+
+        for domain, domain_patterns in payload.items():
+            if not isinstance(domain, str) or not domain.strip() or domain.startswith("$"):
+                continue
+            if not isinstance(domain_patterns, dict):
+                continue
+
+            bucket = self.patterns.setdefault(domain.strip(), {})
+            if not isinstance(bucket, dict):
+                continue
+
+            for entity_type, patterns in domain_patterns.items():
+                if not isinstance(entity_type, str) or not entity_type.strip() or not isinstance(patterns, list):
+                    continue
+                clean = [x.strip() for x in patterns if isinstance(x, str) and x.strip()]
+                if not clean:
+                    continue
+                prev = bucket.get(entity_type)
+                prev_list = prev if isinstance(prev, list) else []
+                bucket[entity_type.strip()] = prev_list + clean
     
     def extract(self, text: str, domain: str) -> ExtractionResult:
         """

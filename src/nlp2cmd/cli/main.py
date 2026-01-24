@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import select
 import asyncio
 import shlex
 from pathlib import Path
@@ -68,6 +69,47 @@ class NLP2CMDGroup(click.Group):
                 args = rewritten
 
         return super().parse_args(ctx, args)
+
+
+def _system_beep() -> None:
+    try:
+        sys.stdout.write("\a")
+        sys.stdout.flush()
+    except Exception:
+        return
+
+
+def _timed_default_yes(
+    *,
+    timed_prompt: str,
+    full_prompt: str,
+    timeout_s: float = 1.0,
+) -> str:
+    if not sys.stdin.isatty():
+        return "y"
+
+    console.print(timed_prompt, end="")
+    _system_beep()
+    try:
+        ready, _, _ = select.select([sys.stdin], [], [], timeout_s)
+    except Exception:
+        ready = []
+
+    if not ready:
+        console.print("y")
+        return "y"
+
+    try:
+        line = sys.stdin.readline()
+    except Exception:
+        line = ""
+
+    resp = (line or "").strip().lower()
+    if resp:
+        return resp
+
+    resp = console.input(full_prompt).strip().lower()
+    return resp or "y"
 
 
 def _shell_env_context(context: dict[str, Any]) -> dict[str, Any]:
@@ -708,7 +750,11 @@ Rules:
                         try:
                             import subprocess
                             console.print("[dim]Installing litellm...[/dim]")
-                            subprocess.run(["pip", "install", "litellm"], check=True, capture_output=True)
+                            subprocess.run(
+                                [sys.executable, "-m", "pip", "install", "litellm"],
+                                check=True,
+                                capture_output=True,
+                            )
                             console.print("[green]✓ litellm installed successfully. Retrying LLM fallback...[/green]")
                             # Retry after installation
                             from nlp2cmd.generation.llm_simple import LiteLLMClient
@@ -914,14 +960,18 @@ Rules:
 
                 if not approved and not auto_confirm:
                     if reason == "submit":
-                        prompt = "\n[yellow]This action will submit a form. Proceed? [y/N/a(always for this site)]:[/yellow] "
+                        timed_prompt = "\n[yellow]This action will submit a form. Proceed? (auto-Y in 1s; Enter=choose):[/yellow] "
+                        full_prompt = "\n[yellow]This action will submit a form. Proceed? [[y/N/a(always for this site)]]:[/yellow] "
+                        resp = _timed_default_yes(timed_prompt=timed_prompt, full_prompt=full_prompt)
                     elif reason == "press_enter":
-                        prompt = "\n[yellow]This action will press Enter (may submit a form). Proceed? [y/N/a(always for this site)]:[/yellow] "
+                        timed_prompt = "\n[yellow]This action will press Enter (may submit a form). Proceed? (auto-Y in 1s; Enter=choose):[/yellow] "
+                        full_prompt = "\n[yellow]This action will press Enter (may submit a form). Proceed? [[y/N/a(always for this site)]]:[/yellow] "
+                        resp = _timed_default_yes(timed_prompt=timed_prompt, full_prompt=full_prompt)
                     else:
-                        prompt = "\n[yellow]This action requires confirmation. Proceed? [y/N]:[/yellow] "
+                        prompt = "\n[yellow]This action requires confirmation. Proceed? [[y/N]]:[/yellow] "
+                        console.print(prompt, end="")
+                        resp = console.input().strip().lower()
 
-                    console.print(prompt, end="")
-                    resp = console.input().strip().lower()
                     if resp in {"a", "always"} and reason in {"submit", "press_enter"}:
                         loader_for_confirm.set_site_approval(reason, True)
                         approved = True

@@ -627,14 +627,14 @@ def create_example_env_file(path: str = ".env.example") -> None:
 # Uncomment and fill in values for automatic form filling
 
 # Personal Information
-FORM_NAME=Jan Kowalski
-FORM_LASTNAME=Kowalski
-FORM_EMAIL=jan.kowalski@example.com
-FORM_PHONE=+48 123 456 789
+FORM_NAME=YOUR_NAME
+FORM_LASTNAME=YOUR_LASTNAME
+FORM_EMAIL=your.email@example.com
+FORM_PHONE=+00 000 000 000
 
 # Message Content
-FORM_MESSAGE=Dzień dobry, chciałbym uzyskać więcej informacji.
-FORM_SUBJECT=Zapytanie
+FORM_MESSAGE=YOUR_MESSAGE
+FORM_SUBJECT=YOUR_SUBJECT
 
 # Business Information
 # FORM_COMPANY=Moja Firma Sp. z o.o.
@@ -650,16 +650,16 @@ def create_example_form_data_json(path: str = "./data/form_data.json") -> None:
     """Create example form_data.json file."""
     data = {
         "defaults": {
-            "imię": "Jan",
-            "email": "jan@example.com",
-            "telefon": "+48 123 456 789",
-            "wiadomość": "Dzień dobry, proszę o kontakt."
+            "imię": "YOUR_NAME",
+            "email": "your.email@example.com",
+            "telefon": "+00 000 000 000",
+            "wiadomość": "YOUR_MESSAGE"
         },
         "sites": {
-            "prototypowanie.pl": {
-                "Imię": "Jan Kowalski",
-                "Adres e-mail": "kontakt@example.com",
-                "Wiadomość": "Dzień dobry, jestem zainteresowany współpracą."
+            "example.com": {
+                "Imię": "YOUR_NAME",
+                "Adres e-mail": "your.email@example.com",
+                "Wiadomość": "YOUR_MESSAGE"
             }
         }
     }

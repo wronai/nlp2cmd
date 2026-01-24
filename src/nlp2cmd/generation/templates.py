@@ -13,6 +13,8 @@ import json
 import os
 from pathlib import Path
 
+from nlp2cmd.utils.data_files import find_data_files
+
 
 @dataclass
 class TemplateResult:
@@ -102,15 +104,17 @@ class TemplateGenerator:
     }
     
     SHELL_TEMPLATES: dict[str, str] = {
-        'find': "find {path} {type_flag} {name_flag} {size_flag} {time_flag}",
+        'find': "find {path} {type_flag} {name_flag} {size_flag} {time_flag} {exec_flag}",
         'find_simple': "find {path} -name '{pattern}'",
         'count_files': "find '{path}' -maxdepth 1 -mindepth 1 -type f {name_flag_count} | wc -l",
         'count_dirs': "find '{path}' -maxdepth 1 -mindepth 1 -type d {name_flag_count} | wc -l",
         'list': "ls -la {path}",
         'list_recursive': "ls -laR {path}",
         'grep': "grep -r '{pattern}' {path}",
+        'search': "grep -r '{pattern}' {path}",
         'grep_file': "grep '{pattern}' {file}",
         'process': "ps aux",
+        'list_processes': "ps aux",
         'process_list': "ps aux | grep {process_name}",
         'process_top': "ps aux --sort=-%{metric} | head -n {limit}",
         'disk_usage': "df -h {path}",
@@ -193,6 +197,7 @@ class TemplateGenerator:
         'text_search_errors': "grep -i error {file}",
         'git_status': "git status",
         'git_branch': "git branch --show-current",
+        'git_log': "git log --oneline -n {limit}",
         # Browser/URL opening (cross-platform)
         'open_url': "xdg-open '{url}'",
         'open_browser': "xdg-open '{url}'",
@@ -356,6 +361,7 @@ class TemplateGenerator:
         'exec': "kubectl exec -it {pod} {container} {namespace} -- {command}",
         'exec_bash': "kubectl exec -it {pod} {namespace} -- /bin/bash",
         'port_forward': "kubectl port-forward {resource} {ports} {namespace}",
+        'rollout': "kubectl rollout status {resource}/{name} {namespace}",
         'rollout_status': "kubectl rollout status {resource}/{name} {namespace}",
         'rollout_restart': "kubectl rollout restart {resource}/{name} {namespace}",
         'rollout_history': "kubectl rollout history {resource}/{name} {namespace}",
@@ -509,40 +515,40 @@ class TemplateGenerator:
                 self.templates[domain].update(domain_templates)
 
     def _load_defaults_from_json(self) -> None:
-        path = os.environ.get("NLP2CMD_DEFAULTS_FILE") or "./data/defaults.json"
-        p = Path(path)
-        if not p.exists():
-            return
-        try:
-            payload = json.loads(p.read_text(encoding="utf-8"))
-        except Exception:
-            return
-        if isinstance(payload, dict):
-            self.defaults.update(payload)
+        for p in find_data_files(
+            explicit_path=os.environ.get("NLP2CMD_DEFAULTS_FILE"),
+            default_filename="defaults.json",
+        ):
+            try:
+                payload = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            if isinstance(payload, dict):
+                self.defaults.update(payload)
 
     def _load_templates_from_json(self) -> None:
-        path = os.environ.get("NLP2CMD_TEMPLATES_FILE") or "./data/templates.json"
-        p = Path(path)
-        if not p.exists():
-            return
-        try:
-            payload = json.loads(p.read_text(encoding="utf-8"))
-        except Exception:
-            return
-        if not isinstance(payload, dict):
-            return
-
-        # Expected format: {"shell": {"intent": "template"}, "docker": {...}, ...}
-        for domain, templates in payload.items():
-            if not isinstance(domain, str) or not domain:
+        for p in find_data_files(
+            explicit_path=os.environ.get("NLP2CMD_TEMPLATES_FILE"),
+            default_filename="templates.json",
+        ):
+            try:
+                payload = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
                 continue
-            if not isinstance(templates, dict):
+            if not isinstance(payload, dict):
                 continue
 
-            bucket = self.templates.setdefault(domain, {})
-            for intent, template in templates.items():
-                if isinstance(intent, str) and intent and isinstance(template, str) and template:
-                    bucket[intent] = template
+            # Expected format: {"shell": {"intent": "template"}, "docker": {...}, ...}
+            for domain, templates in payload.items():
+                if not isinstance(domain, str) or not domain:
+                    continue
+                if not isinstance(templates, dict):
+                    continue
+
+                bucket = self.templates.setdefault(domain, {})
+                for intent, template in templates.items():
+                    if isinstance(intent, str) and intent and isinstance(template, str) and template:
+                        bucket[intent] = template
 
     def _get_default(self, key: str, fallback: Any) -> Any:
         if key in self.defaults:
@@ -792,16 +798,27 @@ class TemplateGenerator:
             result['name_flag_count'] = f"-name '{result['pattern']}'"
         else:
             result['name_flag_count'] = ''
-        
+
         # Find flags
         result['type_flag'] = ''
-        if entities.get('target') == 'files':
+        target = entities.get('target')
+        if not target and intent == 'find':
+            if any(x in str(entities.get('text') or '').lower() for x in ('pliki', 'files', 'file ')):
+                target = 'files'
+
+        if target == 'files':
             result['type_flag'] = '-type f'
-        elif entities.get('target') == 'directories':
+        elif target == 'directories':
             result['type_flag'] = '-type d'
         
         result['name_flag'] = f"-name '{result['pattern']}'" if result['pattern'] != '*' else ''
-        
+
+        # Exec flag (optional detailed listing)
+        if intent == 'find' and any(x in str(entities.get('text') or '').lower() for x in ('wyświetl', 'wyswietl', 'lista', 'listę', 'liste', 'list')):
+            result['exec_flag'] = r"-exec ls -lh {} \;"
+        else:
+            result['exec_flag'] = ''
+
         # Size flag
         size = entities.get('size')
         if size and isinstance(size, dict):
@@ -810,7 +827,7 @@ class TemplateGenerator:
             result['size_flag'] = f"-size +{val}{unit[0]}"
         else:
             result['size_flag'] = ''
-        
+
         # Time flag
         age = entities.get('age')
         if age and isinstance(age, dict):
@@ -818,11 +835,12 @@ class TemplateGenerator:
             result['time_flag'] = f"-mtime +{val}"
         else:
             result['time_flag'] = ''
-        
+
         # Process monitoring
         result.setdefault('metric', 'mem')
         result.setdefault('limit', '10')
         result.setdefault('process_name', '')
+
         
         # Archive
         result.setdefault('archive', 'archive.tar.gz')
@@ -833,6 +851,15 @@ class TemplateGenerator:
         result.setdefault('flags', '')
         result.setdefault('target', '')
         result.setdefault('file', '')
+
+        # Text processing defaults
+        if intent in {'text_tail', 'text_head', 'text_tail_follow'}:
+            # Prefer explicit `file` entity, then `filename`
+            result.setdefault('file', entities.get('file', entities.get('filename', '')))
+            # Prefer explicit `lines`, then `limit`
+            result.setdefault('lines', str(entities.get('lines', entities.get('limit', '10'))))
+            if not result.get('file'):
+                result['file'] = 'app.log'
         
         # Polish-specific defaults
         if intent == 'file_search':
@@ -1079,9 +1106,10 @@ class TemplateGenerator:
     def _prepare_kubernetes_entities(self, intent: str, entities: dict[str, Any]) -> dict[str, Any]:
         """Prepare Kubernetes entities."""
         result = entities.copy()
-        
+
         # Resource type
-        result.setdefault('resource', entities.get('resource_type', 'pods'))
+        default_resource = 'deployment' if isinstance(intent, str) and intent.startswith('rollout') else 'pods'
+        result.setdefault('resource', entities.get('resource_type', default_resource))
         
         # Name
         name = entities.get('resource_name', entities.get('name', ''))

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-terminal text-blue-600 text-2xl mr-3"></i>
+                    <h1 class="text-xl font-semibold text-gray-900">NLP2CMD</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-home mr-1"></i> Strona główna
+                    </a>
+                    <a href="/history" class="text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-history mr-1"></i> Historia
+                    </a>
+                    <a href="/services" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-server mr-1"></i> Usługi
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Historia komend</h2>
+                <p class="text-gray-600">Ostatnie {{ total }} wpisów</p>
+            </div>
+
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                {% if history %}
+                <div class="divide-y divide-gray-200">
+                    {% for item in history|reverse %}
+                    <div class="p-6">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <div class="text-sm text-gray-500">{{ item.timestamp if item.timestamp else '' }}</div>
+                                <div class="mt-1 font-mono text-gray-900">{{ item.command }}</div>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if item.result.status == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ item.result.status }}
+                            </span>
+                        </div>
+
+                        {% if item.result.command %}
+                        <div class="mt-4 bg-gray-900 text-green-400 p-3 rounded font-mono text-sm overflow-x-auto">
+                            {{ item.result.command }}
+                        </div>
+                        {% endif %}
+
+                        {% if item.result.message %}
+                        <div class="mt-3 text-sm text-gray-700">
+                            {{ item.result.message }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-6 text-gray-600">
+                    Brak historii. Wróć na stronę główną i wygeneruj pierwszą komendę.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

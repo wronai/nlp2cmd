@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 
 from nlp2cmd.adapters.base import SafetyPolicy
 from nlp2cmd.ir import ActionIR
+from nlp2cmd.utils.data_files import find_data_file
 
 
 @dataclass
@@ -45,30 +46,12 @@ class ShellExecutionPolicy:
     def load_from_data(self, path: str = "./data/shell_execution_policy.json") -> None:
         """Optionally load policy configuration from JSON in data/."""
 
-        def _candidate_paths() -> list[Path]:
-            yield Path(path)
-            yield Path("data") / "shell_execution_policy.json"
-            yield Path("./data") / "shell_execution_policy.json"
-            try:
-                repo_root = Path(__file__).resolve().parents[4]
-                yield repo_root / "data" / "shell_execution_policy.json"
-            except Exception:
-                return
-
-        cfg_path: Optional[Path] = None
-        for p in _candidate_paths():
-            try:
-                if p.exists() and p.is_file():
-                    cfg_path = p
-                    break
-            except Exception:
-                continue
-
-        if not cfg_path:
+        p = find_data_file(explicit_path=path, default_filename="shell_execution_policy.json")
+        if not p:
             return
 
         try:
-            raw = json.loads(cfg_path.read_text(encoding="utf-8"))
+            raw = json.loads(p.read_text(encoding="utf-8"))
         except Exception:
             return
         if not isinstance(raw, dict):

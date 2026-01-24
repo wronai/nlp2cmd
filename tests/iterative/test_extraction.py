@@ -86,7 +86,11 @@ class TestRegexEntityExtractor:
         result = extractor.extract("pliki większe niż 100MB", domain='shell')
         size = result.entities.get('size', '')
         assert '100' in size
-    
+
+    def test_shell_extract_size_does_not_set_file_pattern(self, extractor):
+        result = extractor.extract("Znajdź pliki większe niż 1MB", domain='shell')
+        assert result.entities.get('file_pattern') in {None, ''}
+
     def test_shell_extract_process_name(self, extractor):
         """Test process name extraction."""
         result = extractor.extract("proces nginx", domain='shell')

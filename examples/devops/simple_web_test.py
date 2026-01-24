@@ -24,7 +24,7 @@ except ImportError as e:
 
 class NLP2CMDHandler(BaseHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        self.api = NLP2CMDWebAPI(use_llm_fallback=True, auto_install=True)
+        self.api = NLP2CMDWebAPI()
         super().__init__(*args, **kwargs)
     
     def do_GET(self):
