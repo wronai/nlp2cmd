@@ -19,6 +19,58 @@ realizacja zadan w shell
 
 **Natural Language to Domain-Specific Commands** - Production-ready framework for transforming natural language into DSL commands with full safety, validation, and observability.
 
+## 🚀 Quick Start
+
+```bash
+# Install with all dependencies
+pip install nlp2cmd[all]
+
+# Setup external dependencies cache (Playwright browsers)
+nlp2cmd cache auto-setup
+
+# Start using
+nlp2cmd "uruchom usługę nginx"
+nlp2cmd "show all users from database"
+nlp2cmd "doker ps -a"
+```
+
+## 🎯 Key Features
+
+### 🌐 Multi-Domain Support
+- **SQL** - Natural language to SQL queries
+- **Shell** - System commands and file operations  
+- **Docker** - Container management
+- **Kubernetes** - K8s orchestration
+- **Web Schema** - Browser automation and form filling
+- **DQL** - Domain Query Language
+
+### 🧠 Advanced NLP
+- **Polish Language Support** - Native Polish NLP with spaCy
+- **Fuzzy Matching** - Typo tolerance with rapidfuzz
+- **Lemmatization** - Word form normalization
+- **Pattern Matching** - Multi-word keyword detection
+- **Confidence Scoring** - Intent detection reliability
+
+### 🌍 Web Automation
+```bash
+# Extract schema from any website
+nlp2cmd web-schema extract https://example.com
+
+# Fill forms automatically
+nlp2cmd -r "otwórz https://www.prototypowanie.pl/kontakt/ i wypełnij formularz i wyślij"
+
+# Manage interaction history
+nlp2cmd web-schema history --stats
+```
+
+### 💾 Smart Caching
+```bash
+# External dependencies cache management
+nlp2cmd cache info          # Show cache status
+nlp2cmd cache auto-setup    # Install and configure
+nlp2cmd cache clear         # Clear cache if needed
+```
+
 ## 🏗️ Architecture v0.2.0: LLM as Planner + Typed Actions
 
 ```text
@@ -74,10 +126,12 @@ LLM plans. Code executes. System controls.
 
 ### Core Capabilities
 
-- 🗣️ **5 DSL Adapters**: SQL, Shell, Docker, Kubernetes, DQL (Doctrine)
+- 🗣️ **6 DSL Adapters**: SQL, Shell, Docker, Kubernetes, DQL (Doctrine), Web Schema
 - 📁 **11 File Format Schemas**: Dockerfile, docker-compose, K8s manifests, GitHub workflows, .env, and more
 - 🛡️ **Safety Policies**: Allowlist-based action control, no eval/shell execution
 - 🔄 **Multi-step Plans**: Support for `foreach` loops and variable references between steps
+- 🌍 **Polish NLP**: Native Polish language support with lemmatization and fuzzy matching
+- 💾 **Smart Caching**: External dependencies cache for Playwright browsers
 
 ### New Architecture Components (v0.2.0)
 
@@ -86,6 +140,8 @@ LLM plans. Code executes. System controls.
 - ⚡ **Plan Executor**: Executes multi-step plans with tracing, retry, and error handling
 - 🤖 **LLM Planner**: Generates JSON plans constrained to allowed actions
 - 📊 **Result Aggregator**: Multiple output formats (text, table, JSON, markdown)
+- 🌐 **Web Schema Engine**: Browser automation with Playwright integration
+- 💾 **Cache Manager**: Smart caching for external dependencies
 
 ### Security Features
 

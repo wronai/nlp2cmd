@@ -1,0 +1,129 @@
+{
+  "summary": {
+    "total": 13,
+    "passed": 0,
+    "failed": 13,
+    "success_rate": 0.0,
+    "avg_confidence": 0.8555555555555556,
+    "domain_stats": {
+      "shell": {
+        "total": 8,
+        "passed": 0
+      },
+      "unknown": {
+        "total": 4,
+        "passed": 0
+      },
+      "sql": {
+        "total": 1,
+        "passed": 0
+      }
+    }
+  },
+  "results": [
+    {
+      "query": "wpisz tekst w wyszukiwarce github",
+      "expected": "browser/web_action",
+      "actual": "shell/unknown",
+      "command": "grep -r '*' .",
+      "confidence": 0.85,
+      "success": false
+    },
+    {
+      "query": "kliknij przycisk sign in na github",
+      "expected": "browser/web_action",
+      "actual": "shell/unknown",
+      "command": "sudo apt-get install {package}",
+      "confidence": 0.85,
+      "success": false
+    },
+    {
+      "query": "type text in github search",
+      "expected": "browser/web_action",
+      "actual": "shell/find",
+      "command": "find .",
+      "confidence": 0.85,
+      "success": false
+    },
+    {
+      "query": "click sign in button",
+      "expected": "browser/web_action",
+      "actual": "unknown/unknown",
+      "command": "# Unknown: could not detect domain for: click sign in button",
+      "confidence": 0.0,
+      "success": false
+    },
+    {
+      "query": "znajd\u017a pole feedback na github",
+      "expected": "browser/web_action",
+      "actual": "shell/find",
+      "command": "find .",
+      "confidence": 0.85,
+      "success": false
+    },
+    {
+      "query": "wype\u0142nij formularz na github",
+      "expected": "browser/web_action",
+      "actual": "shell/unknown",
+      "command": "df -h .",
+      "confidence": 0.85,
+      "success": false
+    },
+    {
+      "query": "przejd\u017a do github",
+      "expected": "browser/navigate",
+      "actual": "unknown/unknown",
+      "command": "# Unknown: could not detect domain for: przejd\u017a do github",
+      "confidence": 0.0,
+      "success": false
+    },
+    {
+      "query": "otw\u00f3rz stron\u0119 github",
+      "expected": "browser/navigate",
+      "actual": "shell/list_processes",
+      "command": "xdg-open 'https://google.com'",
+      "confidence": 0.9,
+      "success": false
+    },
+    {
+      "query": "kliknij link",
+      "expected": "browser/click",
+      "actual": "unknown/unknown",
+      "command": "# Unknown: could not detect domain for: kliknij link",
+      "confidence": 0.0,
+      "success": false
+    },
+    {
+      "query": "wype\u0142nij formularz",
+      "expected": "browser/fill_form",
+      "actual": "unknown/unknown",
+      "command": "# Unknown: could not detect domain for: wype\u0142nij formularz",
+      "confidence": 0.0,
+      "success": false
+    },
+    {
+      "query": "chc\u0119 co\u015b wyszuka\u0107 na stronie",
+      "expected": "browser/web_action",
+      "actual": "shell/unknown",
+      "command": "df -h .",
+      "confidence": 0.85,
+      "success": false
+    },
+    {
+      "query": "kliknij przycisk na stronie",
+      "expected": "browser/web_action",
+      "actual": "shell/unknown",
+      "command": "df -h .",
+      "confidence": 0.85,
+      "success": false
+    },
+    {
+      "query": "wpisz dane w formularzu",
+      "expected": "browser/web_action",
+      "actual": "sql/show",
+      "command": "SELECT * FROM unknown_table;",
+      "confidence": 0.85,
+      "success": false
+    }
+  ]
+}

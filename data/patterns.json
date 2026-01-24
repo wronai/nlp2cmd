@@ -267,12 +267,27 @@
     ],
     "text_wc": [
       "wc", "policz linie", "policz słowa", "count lines", "count words",
-      "ile linii", "ile słów", "word count", "line count", "zlicz linie"
+      "policz znaki", "count characters", "word count", "line count"
+    ]
+  },
+  "browser": {
+    "web_action": [
+      "wpisz tekst", "type text", "wypełnij pole", "fill field", "kliknij przycisk",
+      "click button", "wypełnij formularz", "fill form", "wpisz dane", "enter data",
+      "znajdź pole", "find field", "wybierz opcję", "select option", "zaznacz checkbox",
+      "check checkbox", "przejdź do", "navigate to", "kliknij link", "click link",
+      "otwórz stronę", "open page", "przejdź na stronę", "go to page", "wyszukaj na stronie",
+      "search on page", "znajdź na stronie", "find on page", "interakcja ze stroną", "website interaction"
     ],
-    "text_sort": [
-      "sort", "posortuj", "sortuj", "sort file", "sort lines",
-      "posortuj plik", "sortowanie", "uporządkuj"
+    "navigate": [
+      "przejdź do", "go to", "otwórz stronę", "open website", "wejdź na stronę", "enter website",
+      "nawiguj do", "navigate to", "idź do", "visit", "odwiedź stronę", "browse to",
+      "otwórz link", "open link", "kliknij url", "click url", "przejdź na stronę główną", "go to homepage"
     ],
+    "click": [
+      "kliknij", "click", "naciśnij", "press", "wybierz", "select", "kliknij przycisk",
+      "click button", "kliknij link", "click link", "kliknij element", "click element",
+      "aktywuj", "activate", "zaznacz", "check", "odblokuj", "unlock"
     "text_uniq": [
       "uniq", "unikalne", "unique", "usuń duplikaty", "remove duplicates",
       "deduplikacja", "dedupe", "distinct lines"
