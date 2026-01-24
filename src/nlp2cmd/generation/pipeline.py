@@ -16,6 +16,7 @@ import re
 import time
 
 from nlp2cmd.utils.data_files import data_file_write_path
+from nlp2cmd.core import ExecutionPlan
 
 from nlp2cmd.generation.keywords import KeywordIntentDetector, DetectionResult
 from nlp2cmd.generation.regex import RegexEntityExtractor, ExtractionResult
@@ -27,34 +28,38 @@ class PipelineResult:
     """Result of the complete pipeline."""
     
     # Input
-    input_text: str
+    input_text: str = ""
     
     # Detection
-    domain: str
-    intent: str
-    detection_confidence: float
+    domain: str = "unknown"
+    intent: str = "unknown"
+    confidence: float = 0.0
+    detection_confidence: float = 0.0
     
     # Extraction
-    entities: dict[str, Any]
+    entities: dict[str, Any] = field(default_factory=dict)
     
     # Generation
-    command: str
-    template_used: str
+    command: str = ""
+    template_used: str = ""
     
     # Metadata
-    success: bool
+    success: bool = False
     source: str = "rules"  # "rules" or "llm"
     latency_ms: float = 0.0
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if self.confidence == 0.0 and self.detection_confidence != 0.0:
+            self.confidence = self.detection_confidence
+        if self.detection_confidence == 0.0 and self.confidence != 0.0:
+            self.detection_confidence = self.confidence
     
-    def to_plan(self) -> dict[str, Any]:
+    def to_plan(self) -> ExecutionPlan:
         """Convert to execution plan format for adapters."""
-        return {
-            "intent": self.intent,
-            "entities": self.entities,
-            "confidence": self.detection_confidence,
-        }
+        conf = self.confidence if self.confidence != 0.0 else self.detection_confidence
+        return ExecutionPlan(intent=self.intent, entities=self.entities, confidence=conf, text=self.input_text)
 
 
 class RuleBasedPipeline:
@@ -132,9 +137,10 @@ class RuleBasedPipeline:
                 input_text=text,
                 domain='unknown',
                 intent='unknown',
+                confidence=0.0,
                 detection_confidence=0.0,
                 entities={},
-                command=f"# Could not detect domain for: {text}",
+                command=f"# Unknown: could not detect domain for: {text}",
                 template_used="",
                 success=False,
                 latency_ms=latency,
@@ -198,6 +204,7 @@ class RuleBasedPipeline:
             input_text=text,
             domain=detection.domain,
             intent=detection.intent,
+            confidence=detection.confidence,
             detection_confidence=detection.confidence,
             entities=merged_entities,
             command=template_result.command,
@@ -420,6 +427,13 @@ class RuleBasedPipeline:
                 if score >= 4:
                     return [text.strip()]
 
+        parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", text.strip()) if p.strip()]
+        if len(parts) >= 2:
+            return parts
+
+        if len(text) < 250:
+            return parts
+
         try:
             import spacy
 
@@ -434,10 +448,9 @@ class RuleBasedPipeline:
             if len(sents) >= 2:
                 return sents
         except Exception:
-            pass
+            return parts
 
-        parts = re.split(r"(?<=[.!?])\s+", text.strip())
-        return [p.strip() for p in parts if p.strip()]
+        return parts
 
     def _aggregate_detection(self, sentences: list[str]) -> Optional[dict[str, Any]]:
         if not sentences:
@@ -754,6 +767,7 @@ class PipelineMetrics:
     """Track pipeline metrics for evaluation."""
     
     def __init__(self):
+        self.latencies: list[float] = []
         self.total_requests = 0
         self.successful_requests = 0
         self.domain_counts: dict[str, int] = {}
@@ -779,6 +793,17 @@ class PipelineMetrics:
         
         if result.errors:
             self.errors.extend(result.errors)
+
+    def record_result(self, success: bool, latency: float) -> None:
+        self.total_requests += 1
+        if success:
+            self.successful_requests += 1
+        try:
+            latency_f = float(latency)
+        except Exception:
+            latency_f = 0.0
+        self.latencies.append(latency_f)
+        self.total_latency_ms += latency_f * 1000.0
     
     @property
     def success_rate(self) -> float:
@@ -812,6 +837,21 @@ class PipelineMetrics:
             "domain_distribution": self.domain_counts,
             "intent_distribution": self.intent_counts,
             "error_count": len(self.errors),
+        }
+
+    def generate_report(self) -> dict[str, Any]:
+        total = self.total_requests
+        success_rate = (self.successful_requests / total) if total else 0.0
+        avg_latency = (sum(self.latencies) / len(self.latencies)) if self.latencies else 0.0
+        min_latency = min(self.latencies) if self.latencies else 0.0
+        max_latency = max(self.latencies) if self.latencies else 0.0
+        return {
+            "total_processed": total,
+            "successful": self.successful_requests,
+            "success_rate": success_rate,
+            "avg_latency": avg_latency,
+            "min_latency": min_latency,
+            "max_latency": max_latency,
         }
 
 

@@ -308,6 +308,8 @@ class MockAdapter(BaseDSLAdapter):
     
     def generate(self, plan: ExecutionPlan) -> str:
         """Mock generate method."""
+        if plan is None:
+            raise TypeError("plan must not be None")
         return f"mock command for {plan.intent} with {plan.entities}"
     
     def check_safety(self, command: str) -> Dict[str, Any]:

@@ -17,7 +17,7 @@
     ],
     "update": [
       "zmień", "zaktualizuj", "update", "modify", "ustaw",
-      "set", "edit", "zmiana", "aktualizacja"
+      "set", "edit", "zmiana"
     ],
     "delete": [
       "usuń", "skasuj", "delete", "remove", "wymaż",
@@ -140,8 +140,9 @@
       "count folders", "how many folders", "number of folders"
     ],
     "list": [
-      "lista plików", "pokaż katalog", "ls", "dir", "wylistuj",
-      "zawartość katalogu", "directory contents", "folder contents",
+      "lista plików", "listę plików", "lista folderów", "listę folderów", "lista katalogów", "listę katalogów",
+      "pokaż katalog", "pokaż katalogi", "pokaż folder", "pokaż foldery", "ls", "dir", "wylistuj",
+      "zawartość katalogu", "zawartość folderu", "directory contents", "folder contents",
       "pokaż pliki", "listuj pliki", "wypisz pliki"
     ],
     "process": [
@@ -216,6 +217,28 @@
       "zabij proces", "uruchom proces", "zatrzymaj proces", "restartuj proces", "uruchom ponownie",
       "uruchom w tle", "uruchom skrypt", "zatrzymaj usługę", "uruchom usługę", "status usługi",
       "sprawdź status", "monitor systemowy", "htop", "top"
+    ],
+    "service_start": [
+      "uruchom usługę", "uruchom serwis", "uruchom service", "start service",
+      "systemctl start", "startuj usługę", "startuj serwis", "wystartuj usługę",
+      "uruchom usługę systemową", "startuj usługę systemową"
+    ],
+    "service_stop": [
+      "zatrzymaj usługę", "zatrzymaj serwis", "stop service",
+      "systemctl stop"
+    ],
+    "service_restart": [
+      "restartuj usługę", "restartuj serwis", "restart service",
+      "systemctl restart"
+    ],
+    "service_status": [
+      "status usługi", "status serwisu", "status service",
+      "systemctl status"
+    ],
+    "reboot": [
+      "reboot", "restart systemu", "restartuj system", "zrestartuj system",
+      "restart system", "uruchom ponownie system", "restartuj komputer",
+      "zrestartuj komputer", "startuj system", "uruchom system", "wystartuj system"
     ],
     "open_url": [
       "otwórz przeglądarkę", "open browser", "otwórz stronę", "open url", "open website",

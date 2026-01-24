@@ -11,6 +11,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
+import re
+
 
 @dataclass
 class ValidationResult:
@@ -332,11 +334,208 @@ class ShellValidator(BaseValidator):
 class DockerValidator(BaseValidator):
     """Docker command and Dockerfile validator."""
 
+    _IMAGE_RE = re.compile(
+        r"^(?:(?:[a-z0-9]+(?:[._-][a-z0-9]+)*)/)*[a-z0-9]+(?:[._-][a-z0-9]+)*(?::[A-Za-z0-9][A-Za-z0-9._-]{0,127})?$"
+    )
+
+    @staticmethod
+    def _iter_publish_ports(tokens: list[str]) -> list[int]:
+        ports: list[int] = []
+        i = 0
+        while i < len(tokens):
+            t = tokens[i]
+            if t in {"-p", "--publish"}:
+                if i + 1 < len(tokens):
+                    spec = tokens[i + 1]
+                    ports.extend(DockerValidator._parse_ports_from_spec(spec))
+                    i += 2
+                    continue
+            if t.startswith("--publish="):
+                spec = t.split("=", 1)[1]
+                ports.extend(DockerValidator._parse_ports_from_spec(spec))
+            i += 1
+        return ports
+
+    @staticmethod
+    def _parse_ports_from_spec(spec: str) -> list[int]:
+        # handle forms:
+        # - 8080:80
+        # - 127.0.0.1:8080:80
+        # - 8080:80/tcp
+        if not isinstance(spec, str) or not spec:
+            return []
+        cleaned = spec.split("/", 1)[0]
+        parts = cleaned.split(":")
+        numeric: list[int] = []
+        for p in parts:
+            if p.isdigit():
+                try:
+                    numeric.append(int(p))
+                except Exception:
+                    continue
+        return numeric
+
+    @classmethod
+    def _is_valid_image_name(cls, image: str) -> bool:
+        if not isinstance(image, str) or not image:
+            return False
+        if "@" in image:
+            return False
+        return cls._IMAGE_RE.match(image) is not None
+
+    @staticmethod
+    def _find_docker_image(tokens: list[str], *, subcommand: str) -> Optional[str]:
+        if not tokens:
+            return None
+        tokens_lower = [t.lower() for t in tokens]
+        if subcommand not in tokens_lower:
+            return None
+        idx = tokens_lower.index(subcommand)
+
+        if subcommand == "pull":
+            for t in tokens[idx + 1 :]:
+                if t.startswith("-"):
+                    continue
+                return t
+            return None
+
+        if subcommand != "run":
+            return None
+
+        opts_with_arg = {
+            "-p",
+            "--publish",
+            "-e",
+            "--env",
+            "-v",
+            "--volume",
+            "--entrypoint",
+            "--user",
+            "-u",
+            "--network",
+            "--name",
+            "--label",
+            "--memory",
+            "--cpus",
+            "--security-opt",
+        }
+        inline_prefixes = ("-p", "-e", "-v", "-u")
+        inline_equals_prefixes = (
+            "--publish=",
+            "--env=",
+            "--volume=",
+            "--entrypoint=",
+            "--user=",
+            "--network=",
+            "--name=",
+            "--label=",
+            "--memory=",
+            "--cpus=",
+            "--security-opt=",
+        )
+
+        i = idx + 1
+        while i < len(tokens):
+            t = tokens[i]
+            tl = tokens_lower[i]
+
+            if tl == "--":
+                i += 1
+                continue
+
+            if tl.startswith("-"):
+                if tl.startswith(inline_equals_prefixes):
+                    i += 1
+                    continue
+                if any(tl.startswith(p) and tl != p for p in inline_prefixes):
+                    i += 1
+                    continue
+                if tl in opts_with_arg:
+                    i += 2
+                    continue
+                i += 1
+                continue
+
+            return t
+        return None
+
     def validate(self, content: str) -> ValidationResult:
         """Validate Docker command or Dockerfile."""
         errors = []
         warnings = []
         suggestions = []
+
+        content_stripped = (content or "").strip()
+        content_lower = content_stripped.lower()
+
+        is_docker_cmd = (
+            content_lower.startswith("docker ")
+            or content_lower.startswith("docker-compose")
+            or content_lower.startswith("docker compose")
+        )
+        is_dockerfile = (
+            "\n" in content_stripped
+            and ("from " in content_lower or "cmd " in content_lower or "entrypoint " in content_lower)
+            and any(line.strip().lower().startswith("from ") for line in content_stripped.splitlines() if line.strip())
+        )
+        if not is_docker_cmd and not is_dockerfile:
+            return ValidationResult(
+                is_valid=False,
+                errors=["Not a docker command"],
+                warnings=[],
+                suggestions=["Prefix the command with 'docker' or provide a Dockerfile"],
+            )
+
+        tokens = content_stripped.split()
+        tokens_lower = [t.lower() for t in tokens]
+
+        # Root user warning
+        is_root_user = False
+        for i, t in enumerate(tokens_lower):
+            if t in {"--user", "-u"} and i + 1 < len(tokens_lower):
+                if tokens_lower[i + 1] == "root":
+                    is_root_user = True
+                    break
+            if t.startswith("--user=") and t.split("=", 1)[1] == "root":
+                is_root_user = True
+                break
+        if is_root_user:
+            warnings.append("Running container as root user")
+
+        # docker rm force warning
+        if content_lower.startswith("docker rm") and (" -f" in content_lower or " --force" in content_lower or "-f" in tokens_lower):
+            warnings.append("Force removal detected (-f/--force)")
+
+        # docker kill warning
+        if content_lower.startswith("docker kill"):
+            warnings.append("docker kill sends SIGKILL immediately")
+
+        # docker build context warning
+        if content_lower.startswith("docker build"):
+            # find last token that isn't a flag
+            context = None
+            for t in reversed(tokens[2:]):
+                if not t.startswith("-"):
+                    context = t
+                    break
+            if context == "/":
+                warnings.append("Build context is root directory")
+                suggestions.append("Use a narrower build context than '/'")
+
+        # Validate published ports
+        for port in self._iter_publish_ports(tokens):
+            if port < 1 or port > 65535:
+                errors.append(f"Invalid port: {port}")
+
+        # Validate image name for docker run / pull
+        if content_lower.startswith("docker run"):
+            image = self._find_docker_image(tokens, subcommand="run")
+            if image and not self._is_valid_image_name(image):
+                errors.append(f"Invalid image name: {image}")
+        elif content_lower.startswith("docker pull"):
+            image = self._find_docker_image(tokens, subcommand="pull")
+            if image and not self._is_valid_image_name(image):
+                errors.append(f"Invalid image name: {image}")
 
         # Check for privileged mode
         if "--privileged" in content:
@@ -351,7 +550,10 @@ class DockerValidator(BaseValidator):
         dangerous_mounts = ["-v /:/", "-v /etc:", "-v /var/run/docker.sock"]
         for mount in dangerous_mounts:
             if mount in content:
-                warnings.append(f"Potentially dangerous volume mount: {mount}")
+                if "docker.sock" in mount:
+                    warnings.append("Docker socket mount detected: /var/run/docker.sock")
+                else:
+                    warnings.append(f"Potentially dangerous volume mount: {mount}")
 
         # Check for missing image tag
         if "docker run" in content or "docker pull" in content:
@@ -386,24 +588,116 @@ class KubernetesValidator(BaseValidator):
         warnings = []
         suggestions = []
 
-        # Check for operations in system namespaces
-        for ns in self.BLOCKED_NAMESPACES:
-            if f"-n {ns}" in content or f"--namespace={ns}" in content:
-                warnings.append(f"Operating in system namespace: {ns}")
-                suggestions.append("Avoid modifying system namespaces")
+        content_stripped = (content or "").strip()
+        content_lower = content_stripped.lower()
 
-        # Check delete without confirmation
-        if "kubectl delete" in content:
-            if "--force" in content:
-                warnings.append("Force delete bypasses graceful termination")
-            if "-A" in content or "--all-namespaces" in content:
-                errors.append("Delete across all namespaces is very dangerous")
+        is_kubectl_cmd = content_lower.startswith("kubectl ")
+        is_manifest = (
+            "\n" in content_stripped
+            and re.search(r"^\s*apiVersion\s*:", content_stripped, flags=re.IGNORECASE | re.MULTILINE) is not None
+            and re.search(r"^\s*kind\s*:", content_stripped, flags=re.IGNORECASE | re.MULTILINE) is not None
+        )
+        if not is_kubectl_cmd and not is_manifest:
+            return ValidationResult(
+                is_valid=False,
+                errors=["Not a kubectl command"],
+                warnings=[],
+                suggestions=["Prefix the command with 'kubectl' or provide a Kubernetes YAML manifest"],
+            )
 
-        # Check missing namespace
-        if "kubectl" in content:
-            if "-n" not in content and "--namespace" not in content:
-                if "-A" not in content and "--all-namespaces" not in content:
-                    suggestions.append("Consider specifying namespace with -n")
+        tokens = content_stripped.split()
+        tokens_lower = [t.lower() for t in tokens]
+
+        is_delete = len(tokens_lower) >= 2 and tokens_lower[1] == "delete"
+        is_get = len(tokens_lower) >= 2 and tokens_lower[1] == "get"
+        is_logs = len(tokens_lower) >= 2 and tokens_lower[1] == "logs"
+        is_scale = len(tokens_lower) >= 2 and tokens_lower[1] == "scale"
+        is_port_forward = len(tokens_lower) >= 2 and tokens_lower[1] in {"port-forward", "portforward"}
+
+        # Extract namespace if present
+        namespace: Optional[str] = None
+        for i, t in enumerate(tokens_lower):
+            if t in {"-n", "--namespace"} and i + 1 < len(tokens_lower):
+                namespace = tokens_lower[i + 1]
+                break
+            if t.startswith("--namespace="):
+                namespace = t.split("=", 1)[1]
+                break
+
+        # Block delete in system namespaces
+        if is_delete and namespace in self.BLOCKED_NAMESPACES:
+            errors.append(f"Delete in system namespace is blocked: {namespace}")
+
+        # Warn about delete without explicit namespace (defaults to 'default')
+        if is_delete and not namespace and "--all-namespaces" not in tokens_lower and "-a" not in tokens_lower:
+            warnings.append("Deleting in default namespace; consider specifying -n")
+
+        # Force delete warning
+        if is_delete and ("--force" in tokens_lower or "--grace-period=0" in tokens_lower):
+            warnings.append("Force delete / grace period override detected")
+
+        # Cluster-admin operations warning
+        if "clusterrolebinding" in tokens_lower or "clusterrole" in tokens_lower:
+            warnings.append("Cluster-admin level operation detected")
+
+        # Validate kubectl get resource type
+        if is_get and len(tokens_lower) >= 3:
+            resource = tokens_lower[2]
+            allowed_resources = {
+                "pods", "pod", "deployments", "deployment", "services", "service", "svc",
+                "namespaces", "namespace", "ns", "nodes", "node", "ingress", "ingresses",
+                "configmap", "configmaps", "secret", "secrets", "crd", "crds", "crds.v1",
+                "pv", "pvs", "pvc", "pvcs", "events", "event", "jobs", "job",
+                "replicasets", "replicaset", "statefulsets", "statefulset", "daemonsets", "daemonset",
+            }
+            if resource not in allowed_resources and "/" not in resource:
+                errors.append(f"Invalid resource type: {resource}")
+
+        # apply -f file existence warning
+        if len(tokens_lower) >= 2 and tokens_lower[1] == "apply":
+            if "-f" in tokens_lower:
+                idx = tokens_lower.index("-f")
+                if idx + 1 < len(tokens):
+                    path = tokens[idx + 1]
+                    try:
+                        from pathlib import Path
+
+                        if path.endswith((".yml", ".yaml")) and not Path(path).expanduser().exists():
+                            warnings.append(f"File not found: {path}")
+                    except Exception:
+                        pass
+
+        if is_port_forward:
+            warnings.append("Port forward operation detected")
+
+        if is_logs and ("--all-namespaces" in tokens_lower or "-a" in tokens_lower):
+            warnings.append("Logs across all namespaces requested")
+
+        if "--watch" in tokens_lower:
+            warnings.append("Watch operation requested")
+
+        # Validate replicas for scale
+        if is_scale:
+            replicas_val: Optional[str] = None
+            for t in tokens_lower:
+                if t.startswith("--replicas="):
+                    replicas_val = t.split("=", 1)[1]
+                    break
+            if replicas_val is not None:
+                try:
+                    replicas_int = int(replicas_val)
+                    if replicas_int < 0:
+                        errors.append("Replica count cannot be negative")
+                except Exception:
+                    errors.append("Invalid replica count")
+
+        # Delete across all namespaces is dangerous
+        if is_delete and ("-a" in tokens_lower or "--all-namespaces" in tokens_lower or "-A" in tokens):
+            errors.append("Delete across all namespaces is very dangerous")
+
+        # General suggestion: specify namespace if missing
+        if is_kubectl_cmd and not namespace and "--all-namespaces" not in tokens_lower and "-a" not in tokens_lower and "-A" not in tokens:
+            suggestions.append("Consider specifying namespace with -n")
 
         return ValidationResult(
             is_valid=len(errors) == 0,

@@ -5,7 +5,8 @@ Test Langevin sampling for optimization problems.
 """
 
 import pytest
-import numpy as np
+
+np = pytest.importorskip("numpy")
 
 from nlp2cmd.generation.thermodynamic import (
     ThermodynamicGenerator,

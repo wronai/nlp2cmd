@@ -332,10 +332,12 @@ class ShellAdapter(BaseDSLAdapter):
                 cmd_parts.append(f"-size {size_op}{self._normalize_find_size_value(value)}")
             elif attr == "mtime":
                 # find(1): +N = older than N days, -N = newer than N days
-                time_op = "+" if op in [">", ">="] else "-" if op in ["<", "<="] else ""
                 days_val = value
                 if isinstance(value, str) and "_days" in value:
                     days_val = value.replace("_days", "")
+                time_op = "+" if op in [">", ">="] else "-" if op in ["<", "<="] else ""
+                if not time_op and isinstance(value, str) and value.endswith("_days"):
+                    time_op = "-"
                 cmd_parts.append(f"-mtime {time_op}{days_val}")
             elif attr == "name":
                 cmd_parts.append(f'-name "{value}"')
@@ -533,9 +535,10 @@ class ShellAdapter(BaseDSLAdapter):
         metric = entities.get("metric", "cpu")
         limit = entities.get("limit", 10)
         projection = entities.get("projection", [])
+        metric_lower = str(metric).lower()
         
         # Handle specific Polish patterns
-        if "cpu" in str(metric) or "pamięci" in str(metric) or "memory" in str(metric):
+        if "cpu" in metric_lower and "memory" not in metric_lower and "pamię" not in metric_lower:
             return "top -n 1"
         elif "procesy" in str(metric) or "działające" in str(metric):
             return "ps aux"

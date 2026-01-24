@@ -92,10 +92,12 @@ class DecisionRouter:
         Args:
             config: Router configuration
         """
+        config_provided = config is not None
         self.config = config or RouterConfig()
         self._intent_action_map: dict[str, str] = {}
         self._register_default_mappings()
-        self._load_config_from_data()
+        if not config_provided:
+            self._load_config_from_data()
     
     def _register_default_mappings(self) -> None:
         """Register default intent to action mappings."""

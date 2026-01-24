@@ -298,7 +298,7 @@ class TemplateGenerator:
         'list_all': "docker ps -a",
         'images': "docker images {flags}",
         'images_all': "docker images -a",
-        'run': "docker run {flags} {image} {command}",
+        'run': "docker run {flags} {ports} {image} {command}",
         'run_detached': "docker run -d {ports} {volumes} {env} --name {name} {image}",
         'stop': "docker stop {container}",
         'start': "docker start {container}",
@@ -760,7 +760,10 @@ class TemplateGenerator:
             order_parts = []
             for o in ordering:
                 if isinstance(o, dict):
-                    order_parts.append(f"{o.get('field', '')} {o.get('direction', 'ASC')}")
+                    direction = str(o.get('direction', 'ASC') or 'ASC').upper()
+                    if direction not in {'ASC', 'DESC'}:
+                        direction = 'ASC'
+                    order_parts.append(f"{o.get('field', '')} {direction}")
                 else:
                     order_parts.append(str(o))
             result['order'] = f"\nORDER BY {', '.join(order_parts)}"
@@ -790,8 +793,29 @@ class TemplateGenerator:
                 field = agg.get('field', '*')
                 agg_parts.append(f"{func}({field})")
             result['aggregations'] = ', '.join(agg_parts)
+        elif entities.get('aggregation'):
+            func = str(entities.get('aggregation') or 'count').upper()
+            col = '*'
+            cols = entities.get('columns')
+            if isinstance(cols, list) and cols:
+                col = str(cols[0])
+            elif isinstance(cols, str) and cols:
+                col = cols
+            if func == 'AVG':
+                result['aggregations'] = f"AVG({col})"
+            elif func == 'SUM':
+                result['aggregations'] = f"SUM({col})"
+            elif func == 'MIN':
+                result['aggregations'] = f"MIN({col})"
+            elif func == 'MAX':
+                result['aggregations'] = f"MAX({col})"
+            else:
+                result['aggregations'] = f"COUNT({col})"
         else:
             result['aggregations'] = 'COUNT(*)'
+
+        if intent == 'select' and (entities.get('aggregation') or aggregations):
+            result['columns'] = result.get('aggregations', result.get('columns', '*'))
         
         # SET clause for UPDATE
         values = entities.get('values', {})
@@ -1130,6 +1154,9 @@ class TemplateGenerator:
         # Logs
         result.setdefault('limit', '100')
         result['follow'] = '-f' if entities.get('follow') else ''
+        tail_lines = entities.get('tail_lines')
+        if intent == 'logs' and tail_lines and not result.get('flags'):
+            result['flags'] = f"--tail {tail_lines}"
         
         # Command
         result.setdefault('command', '')
@@ -1164,11 +1191,24 @@ class TemplateGenerator:
         result['output'] = f"-o {output}" if output else ''
         
         # Scale
-        result.setdefault('replicas', '1')
+        replica_count = entities.get('replica_count')
+        if replica_count is not None and str(replica_count).strip():
+            result['replicas'] = str(replica_count).strip()
+        else:
+            result.setdefault('replicas', '1')
         
         # Logs
-        result.setdefault('pod', entities.get('pod_name', ''))
-        result.setdefault('tail', '100')
+        pod_name = entities.get('pod_name') or entities.get('name') or entities.get('resource_name') or ''
+        if pod_name:
+            result['pod'] = str(pod_name)
+        else:
+            result.setdefault('pod', '')
+
+        tail_lines = entities.get('tail_lines')
+        if tail_lines is not None and str(tail_lines).strip():
+            result['tail'] = str(tail_lines).strip()
+        else:
+            result.setdefault('tail', '100')
         result['follow'] = '-f' if entities.get('follow') else ''
         result['container'] = f"-c {entities.get('container_name')}" if entities.get('container_name') else ''
         

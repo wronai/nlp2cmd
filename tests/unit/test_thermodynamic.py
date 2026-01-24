@@ -3,7 +3,8 @@ Tests for Thermodynamic Computing Module.
 """
 
 import pytest
-import numpy as np
+
+np = pytest.importorskip("numpy")
 
 from nlp2cmd.thermodynamic import (
     LangevinConfig,

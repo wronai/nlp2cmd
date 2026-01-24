@@ -17,17 +17,91 @@ import shlex
 from pathlib import Path
 from typing import Any, Optional
 
-import click
+try:
+    import click
+except Exception:  # pragma: no cover
+    class _ClickStub:
+        class Group:
+            def parse_args(self, ctx, args):
+                return args
+
+            def get_command(self, ctx, name):
+                return None
+
+        class Context:
+            pass
+
+        class Choice:
+            def __init__(self, choices):
+                self.choices = choices
+
+        class Path:
+            def __init__(
+                self,
+                exists: bool = False,
+                dir_okay: bool = True,
+                file_okay: bool = True,
+                path_type=None,
+            ):
+                self.exists = exists
+                self.dir_okay = dir_okay
+                self.file_okay = file_okay
+                self.path_type = path_type
+
+        @staticmethod
+        def _decorator(*_args, **_kwargs):
+            def _wrap(func):
+                return func
+
+            return _wrap
+
+        group = _decorator
+        option = _decorator
+        argument = _decorator
+        command = _decorator
+
+        @staticmethod
+        def pass_context(func):
+            return func
+
+    click = _ClickStub()
 
 try:
     from dotenv import load_dotenv
 except Exception:
     load_dotenv = None
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
-from rich.text import Text
-from rich.syntax import Syntax
+try:
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
+    from rich.text import Text
+    from rich.syntax import Syntax
+except Exception:  # pragma: no cover
+    class Console:  # type: ignore
+        def print(self, *args, **kwargs):
+            try:
+                builtins_print = __builtins__["print"] if isinstance(__builtins__, dict) else print
+                builtins_print(*args)
+            except Exception:
+                return
+
+        def input(self, *args, **kwargs):
+            return ""
+
+    class Panel:  # type: ignore
+        def __init__(self, renderable, *args, **kwargs):
+            self.renderable = renderable
+
+    class Table:  # type: ignore
+        def __init__(self, *args, **kwargs):
+            return
+
+    class Text(str):  # type: ignore
+        pass
+
+    class Syntax:  # type: ignore
+        def __init__(self, code, *args, **kwargs):
+            self.code = code
 from nlp2cmd.utils.yaml_compat import yaml
 
 from nlp2cmd import NLP2CMD
@@ -614,13 +688,18 @@ def _handle_run_query(
                 executable_indices: list[int] = []
                 for i, step in enumerate(steps, 1):
                     cmd = (step.command or "").strip()
-                    ok = bool(cmd) and not cmd.startswith("#")
+                    ok = bool(cmd) and not cmd.startswith("#") and step.domain != "sql"
                     if ok:
                         executable_indices.append(i)
                     console.print(f"  {i}. [{step.domain}/{step.intent}] {cmd}")
 
                 if not executable_indices:
-                    console.print("[red]✗ No executable steps could be derived[/red]")
+                    if any(s.domain == "sql" for s in steps):
+                        console.print(
+                            "[yellow]Only SQL steps were generated. Run Mode executes shell commands and will not execute SQL.[/yellow]"
+                        )
+                    else:
+                        console.print("[red]✗ No executable steps could be derived[/red]")
                     return
 
                 selected: list[int] = []
@@ -871,6 +950,32 @@ Rules:
         nlp = NLP2CMD(adapter=adapter)
         transform_result = nlp.transform(query)
         command = transform_result.command
+
+        detected_domain = dsl
+        detected_intent = getattr(getattr(transform_result, "plan", None), "intent", "unknown")
+        console.print(f"[dim]Detected: {detected_domain}/{detected_intent}[/dim]")
+
+    if detected_domain == "sql":
+        try:
+            console.print(
+                Panel(
+                    Syntax(command, "sql"),
+                    title="[yellow]SQL query[/yellow]",
+                    border_style="yellow",
+                )
+            )
+        except Exception:
+            console.print(
+                Panel(
+                    f"[bold]{command}[/bold]",
+                    title="[yellow]SQL query[/yellow]",
+                    border_style="yellow",
+                )
+            )
+        console.print(
+            "[yellow]Run Mode executes shell commands; SQL is not executed automatically. Run this query in your database client (psql/mysql/sqlite3) or use --dsl sql without --run.[/yellow]"
+        )
+        return
     
     # Step 2: Check if it's a browser command and detect typing actions
     is_browser_command = False

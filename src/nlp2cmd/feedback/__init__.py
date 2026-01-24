@@ -267,7 +267,7 @@ class FeedbackAnalyzer:
                     suggestions.append(f"💡 {rule.description}: {fixed}")
 
         # Check for ambiguous input
-        if self._is_ambiguous(original_input, context):
+        if feedback_type == FeedbackType.SUCCESS and self._is_ambiguous(original_input, context):
             feedback_type = FeedbackType.AMBIGUOUS_INPUT
             clarification_questions.extend(
                 self._generate_clarification_questions(original_input, dsl_type)

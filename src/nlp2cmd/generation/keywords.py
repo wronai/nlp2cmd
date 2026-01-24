@@ -243,6 +243,16 @@ class KeywordIntentDetector:
         return k in text_lower
 
     @staticmethod
+    def _normalize_text_lower(text_lower: str) -> str:
+        if not isinstance(text_lower, str) or not text_lower:
+            return text_lower
+        text_lower = re.sub(r"(?<![a-z0-9])doker(?![a-z0-9])", "docker", text_lower)
+        text_lower = re.sub(r"(?<![a-z0-9])dokcer(?![a-z0-9])", "docker", text_lower)
+        text_lower = re.sub(r"\bstartuj(?:cie|my|)?\b", "uruchom", text_lower)
+        text_lower = re.sub(r"\bwystartuj(?:cie|my|)?\b", "uruchom", text_lower)
+        return text_lower
+
+    @staticmethod
     def _normalize_intent(domain: str, intent: str, text_lower: str) -> str:
         if domain == 'sql':
             if intent in {'inner_join', 'left_join', 'right_join', 'full_join'}:
@@ -338,6 +348,18 @@ class KeywordIntentDetector:
                 intent="user_list",
                 confidence=0.9,
                 matched_keyword="system users",
+            )
+
+        if (
+            re.search(r"\b(lista|list)\b", text_lower)
+            and re.search(r"\b(folder\w*|katalog\w*|directory\w*|dir)\b", text_lower)
+            and not re.search(r"\b(tabel\w*|table|sql)\b", text_lower)
+        ):
+            return DetectionResult(
+                domain="shell",
+                intent="list",
+                confidence=0.85,
+                matched_keyword="list folders",
             )
 
         if re.search(r"\bfind\b", text_lower) and re.search(r"\bfiles?\b", text_lower):
@@ -521,6 +543,14 @@ class KeywordIntentDetector:
                         matched_keyword=kw,
                     )
 
+        if re.search(r"\b(uruchom|odpal|start|wystartuj|run|launch)\b", text_lower):
+            return DetectionResult(
+                domain='docker',
+                intent='list',
+                confidence=0.6,
+                matched_keyword='docker',
+            )
+
         return None
 
     def _detect_explicit_kubernetes(self, text_lower: str) -> Optional[DetectionResult]:
@@ -541,6 +571,8 @@ class KeywordIntentDetector:
                 )
             )
             or re.search(r"\b(zastosuj|apply)\b", text_lower) is not None
+            or re.search(r"\bskaluj\w*\b", text_lower) is not None
+            or re.search(r"\breplik\w*\b", text_lower) is not None
         )
         if not has_k8s_context:
             return None
@@ -657,6 +689,8 @@ class KeywordIntentDetector:
                     'cluster',
                 )
             ):
+                return True
+            if re.search(r"\bskaluj\w*\b", text_lower) or re.search(r"\breplik\w*\b", text_lower):
                 return True
             if re.search(r"\b(zastosuj|apply)\b", text_lower) and re.search(
                 r"\b(konfiguracj\w*|yaml|yml|manifest)\b",
@@ -795,7 +829,7 @@ class KeywordIntentDetector:
         Returns:
             DetectionResult with domain, intent, confidence
         """
-        text_lower = text.lower()
+        text_lower = self._normalize_text_lower(text.lower())
 
         fast_path = self._detect_fast_path(text_lower)
         if fast_path is not None:

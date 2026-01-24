@@ -53,6 +53,19 @@ except ImportError:  # pragma: no cover
 
                 setattr(self, key, value)
 
+        def __eq__(self, other: object) -> bool:
+            if not isinstance(other, self.__class__):
+                return False
+            return self.model_dump() == other.model_dump()
+
+        def __repr__(self) -> str:
+            data = self.model_dump()
+            inner = ", ".join(f"{k}={data[k]!r}" for k in data.keys())
+            return f"{self.__class__.__name__}({inner})"
+
+        def __str__(self) -> str:
+            return self.__repr__()
+
         def model_dump(self) -> dict[str, Any]:
             out: dict[str, Any] = {}
             annotations = getattr(self.__class__, "__annotations__", {})
@@ -198,7 +211,7 @@ class TransformResult:
     def to_dict(self) -> dict[str, Any]:
         """Convert result to dictionary."""
         return {
-            "status": self.status.value.upper(),
+            "status": self.status.value,
             "command": self.command,
             "plan": self.plan.model_dump(),
             "confidence": self.confidence,

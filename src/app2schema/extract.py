@@ -8,8 +8,14 @@ import unicodedata
 from pathlib import Path
 from typing import Any, Literal, Optional, Union
 
-import httpx
-from jsonschema import Draft7Validator
+try:
+    import httpx
+except Exception:  # pragma: no cover
+    httpx = None  # type: ignore
+try:
+    from jsonschema import Draft7Validator
+except Exception:  # pragma: no cover
+    Draft7Validator = None  # type: ignore
 
 from nlp2cmd.schema_extraction import (
     ExtractedSchema,
@@ -161,6 +167,25 @@ APP2SCHEMA_APPSPEC_JSON_SCHEMA_V1: dict[str, Any] = {
 
 
 def validate_appspec(payload: dict[str, Any]) -> None:
+    if Draft7Validator is None:
+        fmt = payload.get("format")
+        if fmt != "app2schema.appspec":
+            raise ValueError(f"Invalid appspec format: {fmt}")
+
+        version = payload.get("version")
+        if not isinstance(version, int) or version < 1:
+            raise ValueError(f"Invalid appspec version: {version}")
+
+        app = payload.get("app")
+        if not isinstance(app, dict):
+            raise ValueError("Invalid appspec app")
+
+        actions = payload.get("actions")
+        if not isinstance(actions, list):
+            raise ValueError("Invalid appspec actions")
+
+        return
+
     validator = Draft7Validator(APP2SCHEMA_APPSPEC_JSON_SCHEMA_V1)
     errors = sorted(validator.iter_errors(payload), key=lambda e: list(e.path))
     if errors:
@@ -230,6 +255,8 @@ def _extract_web_dom_schema(
                 base_url = str(page.url)
                 browser.close()
         else:
+            if httpx is None:
+                raise ImportError("httpx is required for web extraction")
             http = http_client or httpx.Client(follow_redirects=True, timeout=10.0)
             close_client = http_client is None
             try:
@@ -537,6 +564,9 @@ def discover_openapi_spec_url(
 ) -> Optional[str]:
     base_url = _normalize_base_url(base_url)
 
+    if httpx is None and client is None:
+        return None
+
     if any(base_url.endswith(ext) for ext in (".json", ".yaml", ".yml")):
         return base_url
 
@@ -551,6 +581,9 @@ def discover_openapi_spec_url(
         f"{base_url}/v3/api-docs.yaml",
         f"{base_url}/v3/api-docs.yml",
     ]
+
+    if httpx is None and client is None:
+        return None
 
     http = client or httpx.Client(follow_redirects=True, timeout=timeout_s)
     close_client = client is None
@@ -577,7 +610,7 @@ def discover_openapi_spec_url(
                     text = resp.text
                     if "openapi:" in text or "swagger:" in text:
                         return url
-            except httpx.HTTPError:
+            except Exception:
                 continue
 
         return None
@@ -595,11 +628,17 @@ def extract_schema(
 ) -> App2SchemaResult:
     target_str = str(target)
 
-    openapi_extractor = OpenAPISchemaExtractor(http_client=http_client)
+    openapi_extractor: Optional[OpenAPISchemaExtractor] = None
     shell_extractor = ShellHelpExtractor()
     python_extractor = PythonCodeExtractor()
     shell_script_extractor = ShellScriptExtractor()
     makefile_extractor = MakefileExtractor()
+
+    def _get_openapi_extractor() -> OpenAPISchemaExtractor:
+        nonlocal openapi_extractor
+        if openapi_extractor is None:
+            openapi_extractor = OpenAPISchemaExtractor(http_client=http_client)
+        return openapi_extractor
 
     def extract_python_package(dir_path: Path, max_files: int = 100) -> App2SchemaResult:
         py_files = [p for p in sorted(dir_path.rglob("*.py")) if "__pycache__" not in p.parts]
@@ -635,7 +674,7 @@ def extract_schema(
                 if discovered:
                     spec_url = discovered
 
-            schema = openapi_extractor.extract_from_url(spec_url)
+            schema = _get_openapi_extractor().extract_from_url(spec_url)
             return App2SchemaResult(
                 schemas=[schema],
                 detected_type=detected,
@@ -649,7 +688,7 @@ def extract_schema(
                 if (p / "__init__.py").exists() or any(p.glob("*.py")):
                     return extract_python_package(p)
             if p.suffix in {".json", ".yaml", ".yml"}:
-                schema = openapi_extractor.extract_from_file(p)
+                schema = _get_openapi_extractor().extract_from_file(p)
                 return App2SchemaResult(
                     schemas=[schema],
                     detected_type="openapi",

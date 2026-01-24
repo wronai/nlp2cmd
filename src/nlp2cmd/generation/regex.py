@@ -194,7 +194,7 @@ class RegexEntityExtractor:
     
     KUBERNETES_PATTERNS: dict[str, list[str]] = {
         'resource_type': [
-            r'\b(pod[sy]?|deployment[sy]?|service[sy]?|serwis[y]?|configmap[sy]?|secret[sy]?|ingress|namespace[sy]?|node[sy]?|pv|pvc)\b',
+            r'\b(pod(?:y|a)?|deployment[sy]?|service[sy]?|serwis[y]?|configmap[sy]?|secret[sy]?|ingress|namespace[sy]?|node[sy]?|pv|pvc)\b',
         ],
         'resource_name': [
             r'(?:pod[a]?|deployment[u]?|serwis[u]?)\s+[`"\']?(\w[\w\-]*)[`"\']?',
@@ -210,8 +210,8 @@ class RegexEntityExtractor:
             r'--replicas[=\s]+(\d+)',
         ],
         'selector': [
-            r'(?:label|etykiet[aą]|selector)\s+(\w+=\w+)',
-            r'-l\s+(\w+=\w+)',
+            r'(?:label|etykiet[aą]|selector|selektor(?:em|a)?)\s+([A-Za-z0-9_.\-]+=[A-Za-z0-9_.\-]+)',
+            r'-l\s+([A-Za-z0-9_.\-]+=[A-Za-z0-9_.\-]+)',
         ],
         'container_name': [
             r'(?:kontener|container)\s+[`"\']?(\w[\w\-]*)[`"\']?\s+w\s+(?:podzie|pod)',
@@ -422,6 +422,18 @@ class RegexEntityExtractor:
                 }]
             
             if 'aggregation' in entities:
+                canonical_map = {
+                    'policz': 'count',
+                    'count': 'count',
+                    'zsumuj': 'sum',
+                    'sum': 'sum',
+                    'średnia': 'avg',
+                    'avg': 'avg',
+                    'min': 'min',
+                    'max': 'max',
+                }
+                canonical = canonical_map.get(str(entities['aggregation']).lower(), 'count')
+                result['aggregation'] = canonical
                 agg_map = {
                     'count': 'COUNT',
                     'policz': 'COUNT',
@@ -433,7 +445,7 @@ class RegexEntityExtractor:
                     'max': 'MAX',
                 }
                 result['aggregations'] = [{
-                    'function': agg_map.get(entities['aggregation'].lower(), 'COUNT'),
+                    'function': agg_map.get(str(entities['aggregation']).lower(), 'COUNT'),
                     'field': '*',
                 }]
             
@@ -447,6 +459,18 @@ class RegexEntityExtractor:
                 if path.startswith('~'):
                     path = path.replace('~', '$HOME', 1)
                 result['path'] = path
+
+            # Backwards compatible: tests expect size as a string (e.g. "100MB")
+            if 'size' in entities and isinstance(entities.get('size'), dict):
+                parsed = entities.get('size') or {}
+                try:
+                    val = parsed.get('value')
+                    unit = parsed.get('unit')
+                    if val is not None and unit:
+                        result['size_parsed'] = parsed
+                        result['size'] = f"{val}{str(unit).upper()}"
+                except Exception:
+                    pass
             
             # Build find pattern
             if 'file_pattern' in entities:

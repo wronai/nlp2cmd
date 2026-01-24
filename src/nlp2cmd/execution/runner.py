@@ -17,10 +17,42 @@ from dataclasses import dataclass, field
 from typing import Any, Optional, Callable
 from pathlib import Path
 
-from rich.console import Console
-from rich.panel import Panel
-from rich.live import Live
-from rich.text import Text
+try:
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.live import Live
+    from rich.text import Text
+except Exception:  # pragma: no cover
+    class Console:  # type: ignore
+        def print(self, *args, **kwargs):
+            try:
+                builtins_print = __builtins__["print"] if isinstance(__builtins__, dict) else print
+                builtins_print(*args)
+            except Exception:
+                return
+
+        def input(self, *args, **kwargs):
+            return ""
+
+    class Panel:  # type: ignore
+        def __init__(self, renderable, *args, **kwargs):
+            self.renderable = renderable
+
+    class Text(str):  # type: ignore
+        pass
+
+    class Live:  # type: ignore
+        def __init__(self, *args, **kwargs):
+            return
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def update(self, *args, **kwargs):
+            return
 
 
 @dataclass

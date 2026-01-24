@@ -217,6 +217,28 @@
       "uruchom w tle", "uruchom skrypt", "zatrzymaj usługę", "uruchom usługę", "status usługi",
       "sprawdź status", "monitor systemowy", "htop", "top"
     ],
+    "service_start": [
+      "uruchom usługę", "uruchom serwis", "uruchom service", "start service",
+      "systemctl start", "startuj usługę", "startuj serwis", "wystartuj usługę",
+      "uruchom usługę systemową", "startuj usługę systemową"
+    ],
+    "service_stop": [
+      "zatrzymaj usługę", "zatrzymaj serwis", "stop service",
+      "systemctl stop"
+    ],
+    "service_restart": [
+      "restartuj usługę", "restartuj serwis", "restart service",
+      "systemctl restart"
+    ],
+    "service_status": [
+      "status usługi", "status serwisu", "status service",
+      "systemctl status"
+    ],
+    "reboot": [
+      "reboot", "restart systemu", "restartuj system", "zrestartuj system",
+      "restart system", "uruchom ponownie system", "restartuj komputer",
+      "zrestartuj komputer", "startuj system", "uruchom system", "wystartuj system"
+    ],
     "open_url": [
       "otwórz przeglądarkę", "open browser", "otwórz stronę", "open url", "open website",
       "otwórz link", "browse to", "navigate to", "go to url", "idź do strony",

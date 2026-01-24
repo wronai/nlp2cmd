@@ -7,6 +7,8 @@ import sys
 from pathlib import Path
 import tempfile
 import os
+import asyncio
+import inspect
 
 _repo_root = Path(__file__).resolve().parents[1]
 _src_path = _repo_root / "src"
@@ -118,6 +120,19 @@ def feedback_analyzer():
 def environment_analyzer():
     """Provide an EnvironmentAnalyzer instance."""
     return EnvironmentAnalyzer()
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "asyncio: mark test to run in an asyncio event loop")
+
+
+def pytest_pyfunc_call(pyfuncitem):
+    testfunction = pyfuncitem.obj
+    if inspect.iscoroutinefunction(testfunction):
+        funcargs = {arg: pyfuncitem.funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+        asyncio.run(testfunction(**funcargs))
+        return True
+    return None
 
 
 @pytest.fixture

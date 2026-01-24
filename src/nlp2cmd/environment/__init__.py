@@ -218,6 +218,12 @@ class EnvironmentAnalyzer:
 
             # Check if tool exists
             path = shutil.which(name)
+            if not path:
+                cmd = check.get("command")
+                if isinstance(cmd, list) and cmd:
+                    candidate = cmd[0]
+                    if isinstance(candidate, str) and candidate and candidate != name:
+                        path = shutil.which(candidate)
             if path:
                 info.available = True
                 info.path = path

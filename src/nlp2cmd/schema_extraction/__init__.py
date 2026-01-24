@@ -25,7 +25,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-import httpx
+try:
+    import httpx
+except Exception:  # pragma: no cover
+    httpx = None  # type: ignore
 from nlp2cmd.utils.yaml_compat import yaml
 try:
     from pydantic import BaseModel, Field
@@ -130,6 +133,8 @@ class OpenAPISchemaExtractor:
     """Extract command schemas from OpenAPI/Swagger specifications."""
     
     def __init__(self, http_client: Optional[httpx.Client] = None):
+        if httpx is None and http_client is None:
+            raise ImportError("httpx is required for OpenAPI schema extraction")
         self.client = http_client or httpx.Client()
     
     def extract_from_url(self, url: str) -> ExtractedSchema:

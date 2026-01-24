@@ -3,7 +3,7 @@
   "domain_boosters": {
     "sql": ["tabel", "tabela", "table", "kolumna", "column", "baz", "baza", "database", "sql", "where", "join", "tabeli", "z tabeli"],
     "shell": ["plik", "file", "katalog", "directory", "folder", "ścieżka", "path", "bash", "terminal", "znajdź", "skopiuj", "usuń", "utwórz", "zmień", "sprawdź", "pokaż", "uruchom", "zatrzymaj", "proces", "dysk", "sieć", "port", "backup", "logi", "test", "build", "debug"],
-    "docker": ["docker", "kontener", "container", "obraz", "image", "compose", "dockerfile"],
+    "docker": ["docker", "doker", "dokcer", "kontener", "container", "obraz", "image", "compose", "dockerfile"],
     "kubernetes": ["kubernetes", "k8s", "kubectl", "pod", "deployment", "namespace", "helm", "cluster", "node", "service"],
     "git": ["git", "repo", "repository", "commit", "branch", "gałąź", "merge", "push", "pull", "clone"],
     "dql": ["entity", "graph", "node", "edge", "relation"]
