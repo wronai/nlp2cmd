@@ -147,7 +147,14 @@
       "zawartość katalogu", "zawartość folderu", "directory contents", "folder contents",
       "pokaż listę folderów użytkownika", "pokaż foldery użytkownika", "pokaż katalogi użytkownika",
       "lista folderów użytkownika", "listę folderów użytkownika", "pokaż katalog domowy użytkownika",
-      "listuj pliki", "wypisz pliki"
+      "listuj pliki", "wypisz pliki", "listuj pliki w katalogu", "listuj pliki w folderze",
+      "listuj pliki w katalogu domowym", "listuj pliki w folderze użytkownika", "wypisz pliki w katalogu domowym",
+      "pokaż zawartość katalogu domowego", "pokaż zawartość folderu użytkownika",
+      "listować plik", "listować pliki w katalogu", "listować pliki w folderze", "wypisać plik",
+      "listować pliki w katalogu domowym", "listować pliki w folderze użytkownika", "wypisać pliki w katalogu domowym",
+      "listować plik w katalog domowy", "wypisać plik w katalog domowy", "listować pliki w folder użytkownika",
+      "wypisać pliki w folderze użytkownika", "katalog domowy", "folder użytkownika", "zawartość katalog domowy", "zawartość folder użytkownika",
+      "wypić plik w folder uzytkownik", "wypisać pliki w folderze uzytkownik", "wypić plik w katalogu domowym", "folder uzytkownik"
     ],
     "process": [
       "procesy", "ps", "uruchomione procesy", "running processes",

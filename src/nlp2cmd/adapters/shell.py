@@ -269,6 +269,7 @@ class ShellAdapter(BaseDSLAdapter):
         generators = {
             "file_search": self._generate_file_search,
             "find": self._generate_find,
+            "list": self._generate_list,
             "file_operation": self._generate_file_operation,
             "process_management": self._generate_process_management,
             "process_monitoring": self._generate_process_monitoring,
@@ -317,18 +318,36 @@ class ShellAdapter(BaseDSLAdapter):
             size_info = entities["size"]
             if "value" in size_info and "unit" in size_info:
                 unit = size_info['unit']
-                # Convert MB->M, GB->G, KB->K, etc.
+                # Convert MB->M, GB->G, KB->k, etc.
                 if unit.startswith('M') and len(unit) > 1:
                     unit = 'M'
                 elif unit.startswith('G') and len(unit) > 1:
                     unit = 'G'
                 elif unit.startswith('K') and len(unit) > 1:
-                    unit = 'K'
+                    unit = 'k'
                 elif unit.startswith('T') and len(unit) > 1:
                     unit = 'T'
                 cmd_parts.append(f"-size +{size_info['value']}{unit}")
         elif "size" in entities:
-            cmd_parts.append(f"-size +{entities['size']}")
+            size_str = entities["size"]
+            # Parse string like "10MB" and convert
+            import re
+            m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", size_str.strip())
+            if m:
+                value = m.group(1)
+                unit = m.group(2).upper()
+                # Convert MB->M, GB->G, KB->k, etc.
+                if unit.startswith('M') and len(unit) > 1:
+                    unit = 'M'
+                elif unit.startswith('G') and len(unit) > 1:
+                    unit = 'G'
+                elif unit.startswith('K') and len(unit) > 1:
+                    unit = 'k'
+                elif unit.startswith('T') and len(unit) > 1:
+                    unit = 'T'
+                cmd_parts.append(f"-size +{value}{unit}")
+            else:
+                cmd_parts.append(f"-size +{entities['size']}")
         
         # Add age/time filter
         if "age" in entities and isinstance(entities["age"], dict):
@@ -374,13 +393,13 @@ class ShellAdapter(BaseDSLAdapter):
             size_info = entities["size"]
             if "value" in size_info and "unit" in size_info:
                 unit = size_info['unit']
-                # Convert MB->M, GB->G, KB->K, etc.
+                # Convert MB->M, GB->G, KB->k, etc.
                 if unit.startswith('M') and len(unit) > 1:
                     unit = 'M'
                 elif unit.startswith('G') and len(unit) > 1:
                     unit = 'G'
                 elif unit.startswith('K') and len(unit) > 1:
-                    unit = 'K'
+                    unit = 'k'
                 elif unit.startswith('T') and len(unit) > 1:
                     unit = 'T'
                 cmd_parts.append(f"-size +{size_info['value']}{unit}")
@@ -394,13 +413,13 @@ class ShellAdapter(BaseDSLAdapter):
             if m:
                 value = m.group(1)
                 unit = m.group(2).upper()
-                # Convert MB->M, GB->G, KB->K, etc.
+                # Convert MB->M, GB->G, KB->k, etc.
                 if unit.startswith('M') and len(unit) > 1:
                     unit = 'M'
                 elif unit.startswith('G') and len(unit) > 1:
                     unit = 'G'
                 elif unit.startswith('K') and len(unit) > 1:
-                    unit = 'K'
+                    unit = 'k'
                 elif unit.startswith('T') and len(unit) > 1:
                     unit = 'T'
                 cmd_parts.append(f"-size +{value}{unit}")
@@ -1020,6 +1039,28 @@ class ShellAdapter(BaseDSLAdapter):
             ])
 
         return "\n".join(script_lines)
+
+    def _generate_list(self, entities: dict[str, Any]) -> str:
+        """Generate list command."""
+        path = entities.get("path", ".")
+        username = entities.get("username", "")
+        
+        # Handle user-specific paths
+        if username and "usera" in username.lower():
+            # Extract username from the username entity
+            if "usera" in username.lower():
+                # Default to current user home directory if just "usera"
+                return "ls -la ~"
+            else:
+                # Try to extract actual username
+                import re
+                m = re.search(r'(?:użytkownika|usera|user)\s+([a-zA-Z0-9_-]+)', username, re.IGNORECASE)
+                if m:
+                    user = m.group(1)
+                    return f"ls -la ~{user}"
+        
+        # Default list command
+        return f"ls -la {path}"
 
     def _generate_generic(self, entities: dict[str, Any]) -> str:
         """Generate generic command from entities."""

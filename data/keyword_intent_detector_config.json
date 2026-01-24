@@ -2,7 +2,7 @@
   "$schema": "keyword_intent_detector_config.v1",
   "domain_boosters": {
     "sql": ["tabel", "tabela", "table", "kolumna", "column", "baz", "baza", "database", "sql", "where", "join", "tabeli", "z tabeli"],
-    "shell": ["plik", "file", "katalog", "directory", "folder", "ścieżka", "path", "bash", "terminal", "znajdź", "skopiuj", "usuń", "utwórz", "zmień", "sprawdź", "pokaż", "uruchom", "zatrzymaj", "proces", "dysk", "sieć", "port", "backup", "logi", "test", "build", "debug"],
+    "shell": ["plik", "file", "katalog", "directory", "folder", "ścieżka", "path", "bash", "terminal", "znajdź", "skopiuj", "usuń", "utwórz", "zmień", "sprawdź", "pokaż", "uruchom", "zatrzymaj", "proces", "dysk", "sieć", "port", "backup", "logi", "test", "build", "debug", "listuj", "wypisz", "listować", "wypisać", "wypić"],
     "docker": ["docker", "doker", "dokcer", "kontener", "container", "obraz", "image", "compose", "dockerfile", "kerów", "kórów", "dkerów", "dkorów"],
     "kubernetes": ["kubernetes", "k8s", "kubectl", "pod", "deployment", "namespace", "helm", "cluster", "node", "service"],
     "git": ["git", "repo", "repository", "commit", "branch", "gałąź", "merge", "push", "pull", "clone"],

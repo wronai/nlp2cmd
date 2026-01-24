@@ -109,6 +109,20 @@ class RegexEntityExtractor:
             r'(?:pliki|plików|files?)\s+(?:użytkownika|usera|user)\b',
             r'(?:użytkownika|usera|user)\s+(?:pliki|plików|files?)',
         ],
+        'username': [
+            # Most specific patterns first
+            r'(?:show|pokaż|display|list)\s+(?:user|użytkownik)\s+(?:files|pliki|foldery|katalogi)\s+([a-zA-Z0-9_-]+)',
+            r'(?:user|użytkownik)\s+(?:files|pliki|foldery|katalogi)\s+([a-zA-Z0-9_-]+)',
+            # User + specific username
+            r'(?:użytkownika|usera|user)\s+([a-zA-Z0-9_-]+)',
+            r'(?:użytkownik|user)\s+([a-zA-Z0-9_-]+)',
+            # File/directory patterns with username
+            r'(?:foldery|pliki|katalogi|files?)\s+(?:użytkownika|usera|user)\s+([a-zA-Z0-9_-]+)',
+            r'(?:foldery|pliki|katalogi|files?)\s+(?:użytkownika|usera|user)\b',
+            # Generic user context (no specific username)
+            r'(?:foldery|pliki|katalogi|files?)\s+(?:użytkownika|usera|user)(?:\s|$)',
+            r'(?:użytkownika|usera|user)(?:\s|$)',
+        ],
         'file': [
             r'(?:plik|file|log(?:ach|i|ów)?|logs?)\s+[`"\']?((?:\./|\.\./|/)[\w\.\-/]+\.[A-Za-z0-9]{1,8})[`"\']?',
             r'[`"\']?((?:\./|\.\./|/)[\w\.\-/]+\.(?:log|txt|json|ya?ml|csv|tsv|py|sh|md))[`"\']?',
