@@ -62,7 +62,7 @@ class SemanticObjectFactory:
             SemanticPattern(
                 pattern=r"(?:foldery|pliki|katalogi|files?)\s+(?:użytkownika|usera|user|użytkownik)(?:\s|$)",
                 object_type=ObjectType.DIRECTORY,
-                property_mappings={'username': 'usera', 'path': '~'}
+                property_mappings={'username': '', 'path': '~'}
             ),
             
             # File-related patterns
