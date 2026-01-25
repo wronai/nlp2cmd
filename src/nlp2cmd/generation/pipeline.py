@@ -278,7 +278,7 @@ class RuleBasedPipeline:
         
         # If confidence is too low, return unknown command
         if detection.confidence < self.confidence_threshold:
-            command = f"# Unknown: could not detect domain for: {text}"
+            command = "# Unknown: could not detect domain for input"
             template_used = ""
         else:
             command = template_result.command
@@ -486,7 +486,7 @@ class RuleBasedPipeline:
         
         # If confidence is too low, return unknown command
         if detection.confidence < self.confidence_threshold:
-            command = f"# Unknown: could not detect domain for: {text}"
+            command = "# Unknown: could not detect domain for input"
             template_used = ""
         else:
             command = template_result.command

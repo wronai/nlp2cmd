@@ -3,8 +3,14 @@ E2E Test Fixtures and Configuration.
 """
 
 import os
+import sys
 import pytest
+from pathlib import Path
 from typing import Any, Generator
+
+# Add src to Python path for imports
+src_path = Path(__file__).parent.parent.parent / "src"
+sys.path.insert(0, str(src_path))
 
 from nlp2cmd import (
     DecisionRouter,
@@ -19,6 +25,34 @@ from nlp2cmd import (
     ResultAggregator,
     OutputFormat,
 )
+
+
+def pytest_configure(config):
+    """Configure pytest for E2E tests."""
+    config.addinivalue_line(
+        "markers", "e2e: mark test as end-to-end test"
+    )
+    config.addinivalue_line(
+        "markers", "slow: mark test as slow running"
+    )
+    config.addinivalue_line(
+        "markers", "integration: mark test as integration test"
+    )
+    config.addinivalue_line(
+        "markers", "service: mark test as service mode test"
+    )
+
+
+@pytest.fixture(scope="session")
+def e2e_config():
+    """E2E test configuration."""
+    return {
+        "default_host": "127.0.0.1",
+        "default_port": 8001,
+        "startup_timeout": 30,
+        "request_timeout": 10,
+        "test_env_file": "test_e2e.env"
+    }
 
 
 # =============================================================================
