@@ -1128,18 +1128,22 @@ class ShellAdapter(BaseDSLAdapter):
         username = entities.get("username", "")
         
         # Handle user-specific paths
-        if username and "usera" in username.lower():
-            # Extract username from the username entity
-            if "usera" in username.lower():
-                # Default to current user home directory if just "usera"
-                return "ls -la ~"
-            else:
-                # Try to extract actual username
-                import re
-                m = re.search(r'(?:użytkownika|usera|user)\s+([a-zA-Z0-9_-]+)', username, re.IGNORECASE)
-                if m:
-                    user = m.group(1)
-                    return f"ls -la ~{user}"
+        if username:
+            # Check for user-related keywords
+            user_keywords = ["użytkownika", "usera", "user", "użytkownik"]
+            if any(keyword in username.lower() for keyword in user_keywords):
+                # Default to current user home directory for generic user references
+                if username.lower() in ["użytkownika", "usera", "user", "użytkownik"]:
+                    return "find $HOME -type f"
+                else:
+                    # Try to extract actual username
+                    import re
+                    m = re.search(r'(?:użytkownika|usera|user)\s+([a-zA-Z0-9_-]+)', username, re.IGNORECASE)
+                    if m:
+                        user = m.group(1)
+                        return f"find ~{user} -type f"
+                    else:
+                        return "find $HOME -type f"
         
         # Default list command
         return f"ls -la {path}"

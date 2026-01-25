@@ -269,6 +269,21 @@ class RuleBasedPipeline:
         if template_result.missing_entities:
             warnings.append(f"Missing entities: {template_result.missing_entities}")
         
+        # Determine success based on template success, no errors, and confidence threshold
+        is_successful = (
+            template_result.success and 
+            len(errors) == 0 and 
+            detection.confidence >= self.confidence_threshold
+        )
+        
+        # If confidence is too low, return unknown command
+        if detection.confidence < self.confidence_threshold:
+            command = f"# Unknown: could not detect domain for: {text}"
+            template_used = ""
+        else:
+            command = template_result.command
+            template_used = template_result.template_used
+        
         latency = (time.time() - start_time) * 1000
         
         return PipelineResult(
@@ -278,9 +293,9 @@ class RuleBasedPipeline:
             confidence=detection.confidence,
             detection_confidence=detection.confidence,
             entities=merged_entities,
-            command=template_result.command,
-            template_used=template_result.template_used,
-            success=template_result.success and len(errors) == 0,
+            command=command,
+            template_used=template_used,
+            success=is_successful,
             source="rules",
             latency_ms=latency,
             errors=errors,
@@ -462,6 +477,21 @@ class RuleBasedPipeline:
         if template_result.missing_entities:
             warnings.append(f"Missing entities: {template_result.missing_entities}")
 
+        # Determine success based on template success, no errors, and confidence threshold
+        is_successful = (
+            template_result.success and 
+            len(errors) == 0 and 
+            detection.confidence >= self.confidence_threshold
+        )
+        
+        # If confidence is too low, return unknown command
+        if detection.confidence < self.confidence_threshold:
+            command = f"# Unknown: could not detect domain for: {text}"
+            template_used = ""
+        else:
+            command = template_result.command
+            template_used = template_result.template_used
+
         latency = (time.time() - start_time) * 1000
         return PipelineResult(
             input_text=text,
@@ -469,9 +499,9 @@ class RuleBasedPipeline:
             intent=detection.intent,
             detection_confidence=detection.confidence,
             entities=extraction.entities,
-            command=template_result.command,
-            template_used=template_result.template_used,
-            success=template_result.success and len(errors) == 0,
+            command=command,
+            template_used=template_used,
+            success=is_successful,
             source="rules",
             latency_ms=latency,
             errors=errors,

@@ -105,9 +105,15 @@ class RegexEntityExtractor:
             r'(?:do|from|to|z|in)\s+[`"\']?((?:\./|\.\./)[\w\.\-/]*|\.{1,2})[`"\']?',
             r'\s([/~][\w\.\-/]+)\s',
             r'\s((?:\./|\.\./)[\w\.\-/]*|\.{1,2})\s',
-            # User file patterns
+            # User file patterns - MOST SPECIFIC FIRST
             r'(?:pliki|plików|files?)\s+(?:użytkownika|usera|user)\b',
-            r'(?:użytkownika|usera|user)\s+(?:pliki|plików|files?)',
+            r'(?:użytkownika|usera|user)\s+(?:pliki|plików|files?)\b',
+            # Generic user home directory with capture group
+            r'(?:pliki|plików|files?)\s+(?:użytkownika|usera|user)\b',
+            r'(?:użytkownika|usera|user)\s+(?:pliki|plików|files?)\b',
+            # User home directory with capture group
+            r'((?:pliki|plików|files?)\s+(?:użytkownika|usera|user))',
+            r'((?:użytkownika|usera|user)\s+(?:pliki|plików|files?))',
         ],
         'username': [
             # Most specific patterns first
@@ -116,11 +122,9 @@ class RegexEntityExtractor:
             # User + specific username
             r'(?:użytkownika|usera|user)\s+([a-zA-Z0-9_-]+)',
             r'(?:użytkownik|user)\s+([a-zA-Z0-9_-]+)',
-            # File/directory patterns with username
+            # File/directory patterns with username - ONLY FOR SPECIFIC USERNAMES
             r'(?:foldery|pliki|katalogi|files?)\s+(?:użytkownika|usera|user)\s+([a-zA-Z0-9_-]+)',
-            r'(?:foldery|pliki|katalogi|files?)\s+(?:użytkownika|usera|user)\b',
-            # Generic user context (no specific username)
-            r'(?:foldery|pliki|katalogi|files?)\s+(?:użytkownika|usera|user)(?:\s|$)',
+            # Generic user context (no specific username) - ONLY IF NO PATH MATCH
             r'(?:użytkownika|usera|user)(?:\s|$)',
         ],
         'file': [
@@ -410,6 +414,10 @@ class RegexEntityExtractor:
         
         if entity_type == 'env_var' and len(groups) >= 2:
             return {'name': groups[0], 'value': groups[1]}
+        
+        if entity_type == 'path':
+            # For path patterns, return the first group (path value)
+            return groups[0] if groups else match.group(0)
         
         return groups[0]
     

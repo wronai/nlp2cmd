@@ -534,12 +534,24 @@ class KeywordIntentDetector:
 
     def _compute_sql_context(self, text_lower: str) -> tuple[bool, bool]:
         sql_boosters = self.domain_boosters.get('sql', [])
+        shell_boosters = self.domain_boosters.get('shell', [])
+        
+        # Check if this is clearly a file operation - if so, don't treat as SQL
+        file_context_keywords = ['plik', 'pliki', 'folder', 'foldery', 'katalog', 'katalogi', 'file', 'files']
+        has_file_context = any(keyword in text_lower for keyword in file_context_keywords)
+        
+        # If we have "pokaż" with file context, it's shell, not SQL
+        if 'pokaż' in text_lower or 'pokaz' in text_lower:
+            if has_file_context:
+                return False, False
+        
         sql_soft_context = bool(
             re.search(
                 r"\b(użytkown\w*|uzytkown\w*|rekord\w*|record\w*|tabel\w*|table\w*|dane\w*)\b",
                 text_lower,
             )
-        )
+        ) and not has_file_context
+        
         sql_context = any(b.lower() in text_lower for b in sql_boosters) or sql_soft_context
         sql_explicit = bool(re.search(r"\b(select|update|delete|insert|where|join|sql|table|tabela)\b", text_lower))
         return sql_context, sql_explicit
