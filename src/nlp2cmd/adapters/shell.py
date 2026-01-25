@@ -353,7 +353,7 @@ class ShellAdapter(BaseDSLAdapter):
                     cmd_parts.append(f"-mtime -{value}")
         # Add name pattern
         if "file_pattern" in entities:
-            cmd_parts.extend(["-name", f"*.{entities["file_pattern"]}"])
+            cmd_parts.extend(["-name", f"*.{entities['file_pattern']}"])
         
         # Add size filter
         if "size" in entities and isinstance(entities["size"], dict):
@@ -428,7 +428,7 @@ class ShellAdapter(BaseDSLAdapter):
         if "filename" in entities:
             cmd_parts.extend(["-name", f'"{entities["filename"]}"'])
         elif "file_pattern" in entities:
-            cmd_parts.extend(["-name", f"*.{entities["file_pattern"]}"])
+            cmd_parts.extend(["-name", f"*.{entities['file_pattern']}"])
         
         # Process filters list
         for filter_item in filters:
