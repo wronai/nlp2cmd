@@ -18,7 +18,13 @@ Key principle: LLM plans. Code executes. System controls.
 __version__ = "0.2.0"
 __author__ = "NLP2CMD Team"
 
-from nlp2cmd.core import NLP2CMD, TransformResult
+# Import core classes with fallback
+try:
+    from nlp2cmd.core import NLP2CMD, TransformResult
+except ImportError:
+    # Fallback if TOON integration causes import issues
+    NLP2CMD = None
+    TransformResult = None
 from nlp2cmd.adapters import (
     BaseDSLAdapter,
     AppSpecAdapter,

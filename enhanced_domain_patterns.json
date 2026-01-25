@@ -1,0 +1,106 @@
+{
+  "shell": {
+    "polish_patterns": [
+      "pokaż.*pliki?",
+      "lista.*plików?",
+      "znajdź.*pliki?",
+      "wyszukaj.*pliki?",
+      "usuń.*plik",
+      "skasuj.*plik",
+      "utwórz.*katalog",
+      "stwórz.*katalog",
+      "zmień.*nazwę",
+      "zmień.*nazwe",
+      "kopiuj.*plik",
+      "skopiuj.*plik",
+      "przenieś.*plik",
+      "przenies.*plik",
+      "pokaż.*procesy",
+      "lista.*procesów",
+      "zabij.*proces",
+      "zabij.*procesy",
+      "zatrzymaj.*proces",
+      "zatrzymaj.*usługę",
+      "uruchom.*usługę",
+      "start.*usługę",
+      "restart.*usługę",
+      "restartuj.*usługę",
+      "status.*usługi",
+      "sprawdź.*status",
+      "monitor.*system",
+      "monitor.*systemowy",
+      "sprawdź.*pamięć",
+      "pokaż.*pamięć",
+      "miejsce.*dysku",
+      "sprawdź.*dysk",
+      "adres.*IP",
+      "pokaż.*IP",
+      "ping.*",
+      "sprawdź.*porty",
+      "otwórz.*porty"
+    ],
+    "english_patterns": [
+      "ls",
+      "pwd",
+      "cd",
+      "mkdir",
+      "rm",
+      "cp",
+      "mv",
+      "ps",
+      "kill",
+      "top",
+      "free",
+      "ping",
+      "netstat"
+    ],
+    "weight": 1.0
+  },
+  "sql": {
+    "polish_patterns": [],
+    "english_patterns": [
+      "SELECT",
+      "INSERT",
+      "UPDATE",
+      "DELETE",
+      "CREATE",
+      "DROP",
+      "ALTER",
+      "FROM",
+      "WHERE",
+      "GROUP BY"
+    ],
+    "weight": 1.0
+  },
+  "docker": {
+    "polish_patterns": [],
+    "english_patterns": [
+      "docker",
+      "container",
+      "image",
+      "run",
+      "stop",
+      "start",
+      "ps",
+      "logs",
+      "exec",
+      "compose"
+    ],
+    "weight": 1.0
+  },
+  "kubernetes": {
+    "polish_patterns": [],
+    "english_patterns": [
+      "kubectl",
+      "pod",
+      "service",
+      "deployment",
+      "scale",
+      "apply",
+      "delete",
+      "describe",
+      "get"
+    ],
+    "weight": 1.0
+  }
+}

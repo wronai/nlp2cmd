@@ -117,7 +117,7 @@ except Exception:  # pragma: no cover
     class Syntax:  # type: ignore
         def __init__(self, code, *args, **kwargs):
             self.code = code
-from nlp2cmd.utils.yaml_compat import yaml
+from nlp2cmd.cli.display import display_command_result
 
 from nlp2cmd import NLP2CMD
 from nlp2cmd.adapters import (
@@ -140,33 +140,6 @@ from nlp2cmd.web_schema.form_data_loader import FormDataLoader
 
 
 console = Console()
-
-
-class NLP2CMDGroup(click.Group):
-    def parse_args(self, ctx: click.Context, args: list[str]):
-        if args:
-            first = args[0]
-            if not first.startswith("-") and self.get_command(ctx, first) is None:
-                text_parts: list[str] = []
-                option_parts: list[str] = []
-                seen_option = False
-                for a in args:
-                    if not seen_option and a.startswith("-"):
-                        seen_option = True
-                    if seen_option:
-                        option_parts.append(a)
-                    else:
-                        text_parts.append(a)
-
-                query_text = " ".join(text_parts).strip()
-
-                rewritten: list[str] = []
-                rewritten.extend(option_parts)
-                if query_text:
-                    rewritten.extend(["--query", query_text])
-                args = rewritten
-
-        return super().parse_args(ctx, args)
 
 
 def _system_beep() -> None:
@@ -296,26 +269,26 @@ class InteractiveSession:
 
     def process(self, user_input: str) -> FeedbackResult:
         """Process user input and return feedback."""
-        # Use ConceptualCommandGenerator for enhanced understanding
-        from nlp2cmd.concepts.conceptual_commands import ConceptualCommandGenerator
+        # Use fast RuleBasedPipeline for better performance
+        from nlp2cmd.generation.pipeline import RuleBasedPipeline
         
-        # Initialize conceptual generator
-        conceptual_generator = ConceptualCommandGenerator()
+        # Initialize fast pipeline
+        pipeline = RuleBasedPipeline()
         
-        # Generate command with conceptual understanding
+        # Generate command with rule-based pipeline
         with measure_resources():
-            conceptual_command = conceptual_generator.generate_command(user_input)
+            result = pipeline.process(user_input)
         
-        # Convert ConceptualCommand to expected format
-        if conceptual_command.command and not conceptual_command.command.startswith('#'):
-            # Create ExecutionPlan from ConceptualCommand
+        # Convert PipelineResult to expected format
+        if result.success and result.command and not result.command.startswith('#'):
+            # Create ExecutionPlan from PipelineResult
             from nlp2cmd.core import ExecutionPlan
             
             # Create a simple plan
             plan = ExecutionPlan(
-                intent=conceptual_command.intent,
-                entities={'objects': [obj.to_dict() for obj in conceptual_command.objects]},
-                confidence=conceptual_command.confidence,
+                intent=result.intent,
+                entities=result.entities,
+                confidence=result.confidence,
                 text=user_input
             )
             
@@ -327,41 +300,37 @@ class InteractiveSession:
                     self.status = status
                     self.errors = []
                     self.warnings = []
-                    # Add dependency warnings
-                    unsatisfied_deps = [d for d in dependencies if not d.satisfied and d.dependency.required]
+                    # Add dependency warnings (empty for pipeline)
+                    unsatisfied_deps = []  # Pipeline doesn't track dependencies
                     if unsatisfied_deps:
-                        self.warnings = [f"Missing dependency: {d.dependency.name}" for d in unsatisfied_deps]
+                        self.warnings = [f"Missing dependency: {d}" for d in unsatisfied_deps]
             
             mock_result = MockResult(
-                conceptual_command.command, 
+                result.command, 
                 plan, 
                 "success",
-                conceptual_command.dependencies
+                []  # No dependencies from pipeline
             )
             
             # Analyze feedback
             feedback = self.feedback_analyzer.analyze(
                 original_input=user_input,
-                generated_output=conceptual_command.command,
+                generated_output=result.command,
                 validation_errors=[],
                 validation_warnings=mock_result.warnings,
                 dsl_type=self.dsl,
                 context=self.context,
             )
             
-            # Add conceptual reasoning to feedback
+            # Add pipeline metadata to feedback
             feedback.metadata = {
-                'reasoning': conceptual_command.reasoning,
-                'objects': [obj.to_dict() for obj in conceptual_command.objects],
-                'dependencies': [
-                    {
-                        'name': dep.dependency.name,
-                        'type': dep.dependency.type.value,
-                        'satisfied': dep.satisfied
-                    }
-                    for dep in conceptual_command.dependencies
-                ],
-                'alternatives': conceptual_command.alternatives
+                'reasoning': f'Generated by RuleBasedPipeline with confidence {result.confidence:.2f}',
+                'entities': result.entities,
+                'domain': result.domain,
+                'intent': result.intent,
+                'detection_confidence': result.detection_confidence,
+                'template_used': result.template_used,
+                'source': result.source
             }
             
             # Store in history
@@ -380,12 +349,12 @@ class InteractiveSession:
                     self.errors = errors
                     self.status = "error"
             
-            mock_result = MockResult(conceptual_command.command, ["Command generation failed"])
+            mock_result = MockResult(result.command, result.errors)
             
             feedback = FeedbackResult(
                 type=FeedbackType.ERROR,
                 original_input=user_input,
-                generated_output=conceptual_command.command,
+                generated_output=result.command,
                 validation_errors=mock_result.errors,
                 validation_warnings=[],
                 dsl_type=self.dsl,
@@ -400,8 +369,9 @@ class InteractiveSession:
             
             return feedback
 
-    def display_feedback(self, feedback: FeedbackResult):
+    def display_feedback(self, feedback: FeedbackResult, include_explanation: bool = False):
         """Display feedback result with formatting."""
+        # Build output data
         out: dict[str, Any] = {
             "dsl": getattr(self, "dsl", None),
             "query": feedback.original_input,
@@ -414,46 +384,70 @@ class InteractiveSession:
             "clarification_questions": list(feedback.clarification_questions or []),
         }
 
+        # Add explanation metadata if requested
+        if include_explanation and feedback.metadata:
+            out["reasoning"] = feedback.metadata.get('reasoning', 'N/A')
+            out["domain"] = feedback.metadata.get('domain', 'N/A')
+            out["intent"] = feedback.metadata.get('intent', 'N/A')
+            out["detection_confidence"] = feedback.metadata.get('detection_confidence', 'N/A')
+            out["template_used"] = feedback.metadata.get('template_used', 'N/A')
+            out["source"] = feedback.metadata.get('source', 'N/A')
+            
+            # Add entities if available
+            entities = feedback.metadata.get('entities', {})
+            if entities:
+                out["extracted_entities"] = entities
+
         if feedback.auto_corrections:
             out["auto_corrections"] = dict(feedback.auto_corrections)
 
+        # Add metrics if available
         metrics_str = format_last_metrics()
         if metrics_str:
-            out["resource_metrics"] = metrics_str
             try:
                 from nlp2cmd.monitoring.token_costs import parse_metrics_string
 
                 metrics = parse_metrics_string(metrics_str)
                 if metrics:
+                    out["resource_metrics"] = {
+                        "time_ms": metrics.get("time_ms"),
+                        "cpu_percent": metrics.get("cpu_percent"),
+                        "memory_mb": metrics.get("memory_mb"),
+                        "energy_mj": metrics.get("energy_mj")
+                    }
                     out["resource_metrics_parsed"] = metrics
 
-                if (
-                    metrics.get("time_ms") is not None
-                    and metrics.get("cpu_percent") is not None
-                    and metrics.get("memory_mb") is not None
-                ):
-                    token_estimate = estimate_token_cost(
-                        metrics["time_ms"],
-                        metrics["cpu_percent"],
-                        metrics["memory_mb"],
-                        metrics.get("energy_mj"),
-                    )
-                    out["token_estimate"] = {
-                        "total": int(token_estimate.total_tokens_estimate),
-                        "input": int(token_estimate.input_tokens_estimate),
-                        "output": int(token_estimate.output_tokens_estimate),
-                        "cost_usd": float(token_estimate.estimated_cost_usd),
-                        "model_tier": token_estimate.equivalent_model_tier,
-                        "tokens_per_ms": float(token_estimate.tokens_per_millisecond),
-                        "tokens_per_mj": float(token_estimate.tokens_per_mj),
-                    }
+                    if (
+                        metrics.get("time_ms") is not None
+                        and metrics.get("cpu_percent") is not None
+                        and metrics.get("memory_mb") is not None
+                    ):
+                        token_estimate = estimate_token_cost(
+                            metrics["time_ms"],
+                            metrics["cpu_percent"],
+                            metrics["memory_mb"],
+                            metrics.get("energy_mj"),
+                        )
+                        out["token_estimate"] = {
+                            "total": int(token_estimate.total_tokens_estimate),
+                            "input": int(token_estimate.input_tokens_estimate),
+                            "output": int(token_estimate.output_tokens_estimate),
+                            "cost_usd": float(token_estimate.estimated_cost_usd),
+                            "model_tier": token_estimate.equivalent_model_tier,
+                            "tokens_per_ms": float(token_estimate.tokens_per_millisecond),
+                            "tokens_per_mj": float(token_estimate.tokens_per_mj),
+                        }
             except Exception:
                 pass
 
-        yaml_text = yaml.safe_dump(out, sort_keys=False, allow_unicode=True)
-        console.print("```yaml")
-        console.print(Syntax(yaml_text, "yaml", theme="monokai", line_numbers=False))
-        console.print("```")
+        # Use centralized display function
+        display_command_result(
+            command=out.get("generated_command", ""),
+            metadata=out,
+            metrics_str=metrics_str,
+            show_yaml=True,
+            title="NLP2CMD Result"
+        )
 
     def run(self):
         """Run interactive REPL."""
@@ -1383,7 +1377,7 @@ else:
         cache_group = None
 
 
-@click.group(cls=NLP2CMDGroup, invoke_without_command=True)
+@click.group(invoke_without_command=True)
 @click.option("-i", "--interactive", is_flag=True, help="Start interactive mode")
 @click.option(
     "-d", "--dsl",
@@ -1397,7 +1391,7 @@ else:
     help="Path to an app2schema.appspec JSON file (required for --dsl appspec)",
 )
 @click.option("-q", "--query", help="Single query to process")
-@click.option("-r", "--run", "run_query", help="Execute query immediately with interactive error recovery")
+@click.option("-r", "--run", is_flag=True, help="Execute query immediately with interactive error recovery")
 @click.option("--auto-repair", is_flag=True, help="Auto-apply repairs")
 @click.option("--explain", is_flag=True, help="Explain how the result was produced")
 @click.option("--execute-web", is_flag=True, help="Execute dom_dql.v1 actions via Playwright (requires playwright)")
@@ -1410,7 +1404,7 @@ def main(
     dsl: str,
     appspec: Optional[Path],
     query: Optional[str],
-    run_query: Optional[str],
+    run: bool,
     auto_repair: bool,
     explain: bool,
     execute_web: bool,
@@ -1428,9 +1422,9 @@ def main(
     ctx.obj["auto_repair"] = auto_repair
 
     if ctx.invoked_subcommand is None:
-        if run_query:
+        if run and query:
             _handle_run_query(
-                run_query,
+                query,
                 dsl=dsl,
                 appspec=appspec,
                 auto_confirm=auto_confirm,
@@ -1446,7 +1440,8 @@ def main(
                     appspec=str(appspec) if appspec else None,
                 )
                 feedback = session.process(query)
-                session.display_feedback(feedback)
+                session.display_feedback(feedback, include_explanation=explain)
+                
                 if execute_web:
                     try:
                         ir = NLP2CMD(adapter=AppSpecAdapter(appspec_path=str(appspec))).transform_ir(query)
@@ -1459,64 +1454,14 @@ def main(
                     except Exception as e:
                         console.print(f"\n❌ Web execution error: {e}")
             elif dsl == "auto":
-                with measure_resources():
-                    result = asyncio.run(HybridThermodynamicGenerator().generate(query, context={}))
-                    if result["source"] == "thermodynamic":
-                        tr = result["result"]
-                        console.print(tr.decoded_output or "")
-                        if explain:
-                            if tr.solution_quality:
-                                console.print(f"\n✅ Feasible: {tr.solution_quality.is_feasible}")
-                                if tr.solution_quality.constraint_violations:
-                                    console.print("\nViolations:")
-                                    for v in tr.solution_quality.constraint_violations:
-                                        console.print(f"  - {v}")
-                                console.print(f"\nExplanation: {tr.solution_quality.explanation}")
-                                console.print(f"Optimality gap (heuristic): {tr.solution_quality.optimality_gap:.2f}")
-                            console.print(f"\nEnergy: {tr.energy:.4f}")
-                            console.print(f"Entropy production: {tr.entropy_production:.4f}")
-                            if tr.sampler_steps is not None:
-                                console.print(f"Sampler steps: {tr.sampler_steps}")
-                            console.print(f"Samples: {tr.n_samples}")
-                            console.print(f"Converged: {tr.converged}")
-                            console.print(f"Latency: {tr.latency_ms:.1f}ms")
-                    else:
-                        hr = result["result"]
-                        console.print(hr.command)
-                        if explain:
-                            console.print(f"\nSource: {hr.source}")
-                            console.print(f"Domain: {hr.domain}")
-                            console.print(f"Confidence: {hr.confidence:.2f}")
-                            console.print(f"Latency: {hr.latency_ms:.1f}ms")
-                
-                # Show resource metrics for auto mode
-                metrics_str = format_last_metrics()
-                if metrics_str:
-                    console.print(f"\n📊 {metrics_str}")
-                    
-                    # Show token cost estimate
-                    try:
-                        from nlp2cmd.monitoring.token_costs import parse_metrics_string
-                        metrics = parse_metrics_string(metrics_str)
-                        
-                        if metrics.get("time_ms") is not None and metrics.get("cpu_percent") is not None and metrics.get("memory_mb") is not None:
-                            token_estimate = estimate_token_cost(
-                                metrics["time_ms"],
-                                metrics["cpu_percent"], 
-                                metrics["memory_mb"],
-                                metrics.get("energy_mj")
-                            )
-                            token_str = format_token_estimate(token_estimate)
-                            console.print(f"\n{token_str}")
-                    except Exception as e:
-                        console.print(f"\n[red]Token cost estimation failed: {e}[/red]")
-            else:
+                # Use InteractiveSession for auto mode to get consistent YAML format
                 session = InteractiveSession(
-                    dsl=dsl,
+                    dsl="auto",
                     auto_repair=auto_repair,
                 )
                 feedback = session.process(query)
-                session.display_feedback(feedback)
+                session.display_feedback(feedback, include_explanation=explain)
+                
                 if execute_web and dsl == "browser":
                     try:
                         adapter = BrowserAdapter()
@@ -1730,5 +1675,47 @@ if hasattr(click, 'Group'):
         pass
 
 
-if __name__ == "__main__":
+def cli_entry_point():
+    """Entry point that handles natural language queries before Click."""
+    import sys
+    
+    # Get command line arguments
+    args = sys.argv[1:]  # Skip the script name
+    
+    # Check if this looks like a natural language query
+    if (len(args) >= 2 and 
+        not args[0].startswith('-') and 
+        ' ' in args[0] and 
+        not any(arg.startswith('-') and '=' in arg for arg in args)):  # Avoid flags with values
+        
+        # Parse and rewrite args
+        text_parts = []
+        option_parts = []
+        seen_option = False
+        
+        for i, a in enumerate(args):
+            if not seen_option and a.startswith("-"):
+                seen_option = True
+            if seen_option:
+                option_parts.append(a)
+            else:
+                text_parts.append(a)
+        
+        query_text = " ".join(text_parts).strip()
+        
+        # Build new args
+        new_args = option_parts.copy()
+        
+        # If we have a query, add --query
+        if query_text:
+            new_args.extend(["--query", query_text])
+        
+        # Replace sys.argv
+        sys.argv[1:] = new_args
+    
+    # Call the main Click function
     main()
+
+
+if __name__ == "__main__":
+    cli_entry_point()

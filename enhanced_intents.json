@@ -1,0 +1,218 @@
+{
+  "shell": {
+    "file_operations": {
+      "english_patterns": [
+        "list",
+        "show",
+        "display",
+        "find",
+        "search",
+        "copy",
+        "move",
+        "delete",
+        "remove",
+        "create",
+        "make",
+        "rename",
+        "change"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {
+        "kopij": "copy",
+        "kopiuj": "copy",
+        "skopiuj": "copy",
+        "przenieś": "move",
+        "przenies": "move",
+        "usuń": "delete",
+        "skasuj": "delete",
+        "utwórz": "create",
+        "stwórz": "create",
+        "zmień": "rename",
+        "znajdź": "find",
+        "wyszukaj": "find",
+        "pokaż": "show",
+        "lista": "list",
+        "usun": "delete",
+        "utworz": "create",
+        "zmien": "rename"
+      }
+    },
+    "process_operations": {
+      "english_patterns": [
+        "process",
+        "kill",
+        "start",
+        "stop",
+        "restart",
+        "status",
+        "monitor",
+        "check",
+        "run"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {
+        "uruchom": "start",
+        "startuj": "start",
+        "zatrzymaj": "stop",
+        "zabij": "kill",
+        "restartuj": "restart",
+        "monitoruj": "monitor",
+        "sprawdź": "check"
+      }
+    },
+    "system_operations": {
+      "english_patterns": [
+        "memory",
+        "disk",
+        "space",
+        "network",
+        "ping",
+        "port",
+        "address",
+        "ip",
+        "connection"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {
+        "otwórz": "open"
+      }
+    }
+  },
+  "sql": {
+    "query_operations": {
+      "english_patterns": [
+        "select",
+        "show",
+        "get",
+        "find",
+        "search",
+        "list",
+        "display",
+        "retrieve"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {}
+    },
+    "modification_operations": {
+      "english_patterns": [
+        "insert",
+        "add",
+        "create",
+        "update",
+        "modify",
+        "delete",
+        "remove",
+        "drop"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {}
+    },
+    "aggregation_operations": {
+      "english_patterns": [
+        "count",
+        "sum",
+        "avg",
+        "min",
+        "max",
+        "group",
+        "aggregate",
+        "calculate"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {}
+    }
+  },
+  "docker": {
+    "container_operations": {
+      "english_patterns": [
+        "run",
+        "start",
+        "stop",
+        "restart",
+        "pause",
+        "unpause",
+        "kill",
+        "rm",
+        "remove"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {}
+    },
+    "management_operations": {
+      "english_patterns": [
+        "ps",
+        "list",
+        "show",
+        "logs",
+        "inspect",
+        "stats",
+        "top",
+        "exec",
+        "attach"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {}
+    },
+    "compose_operations": {
+      "english_patterns": [
+        "compose",
+        "up",
+        "down",
+        "build",
+        "pull",
+        "push",
+        "logs",
+        "ps",
+        "stop",
+        "start"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {}
+    }
+  },
+  "kubernetes": {
+    "pod_operations": {
+      "english_patterns": [
+        "pod",
+        "pods",
+        "get",
+        "describe",
+        "logs",
+        "exec",
+        "delete",
+        "create",
+        "apply"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {}
+    },
+    "deployment_operations": {
+      "english_patterns": [
+        "deployment",
+        "deployments",
+        "scale",
+        "rollout",
+        "restart",
+        "undo",
+        "history",
+        "status"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {}
+    },
+    "service_operations": {
+      "english_patterns": [
+        "service",
+        "services",
+        "expose",
+        "port-forward",
+        "proxy",
+        "get",
+        "describe",
+        "delete"
+      ],
+      "polish_patterns": [],
+      "polish_mappings": {}
+    }
+  }
+}

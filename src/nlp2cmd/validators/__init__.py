@@ -206,13 +206,13 @@ class SQLValidator(BaseValidator):
 
         # Check DELETE without WHERE
         if "DELETE FROM" in content_upper and "WHERE" not in content_upper:
-            warnings.append("DELETE without WHERE will affect all rows")
+            warnings.append("DELETE without WHERE clause will affect all rows")
             suggestions.append("Add WHERE clause to limit affected rows")
 
         # Check UPDATE without WHERE
         if "UPDATE" in content_upper and "SET" in content_upper:
             if "WHERE" not in content_upper:
-                warnings.append("UPDATE without WHERE will affect all rows")
+                warnings.append("UPDATE without WHERE clause will affect all rows")
                 suggestions.append("Add WHERE clause to limit affected rows")
 
         # Check DROP TABLE warning
@@ -239,6 +239,8 @@ class SQLValidator(BaseValidator):
         
         if has_aggregate and not has_group_by and 'WHERE' in content_upper:
             warnings.append("Aggregate function without GROUP BY may return unexpected results")
+        elif has_aggregate and not has_group_by:
+            warnings.append("Consider using GROUP BY with aggregate functions")
 
         # Check LIMIT clause
         if 'LIMIT' in content_upper:
@@ -252,7 +254,7 @@ class SQLValidator(BaseValidator):
             if join_type in content_upper:
                 # Basic check for JOIN condition
                 if ' ON ' not in content_upper and ' USING ' not in content_upper:
-                    errors.append(f"JOIN without ON or USING clause")
+                    errors.append(f"JOIN without condition - missing ON or USING clause")
                 break
 
         # Basic syntax check
@@ -327,12 +329,12 @@ class ShellValidator(BaseValidator):
 
         # Check for dangerous permission changes
         if "chmod" in content_lower and ("777" in content or "a+rwx" in content):
-            warnings.append("Dangerous permission change detected")
+            warnings.append("777 permissions change detected - security risk")
             suggestions.append("Consider more restrictive permissions")
 
         # Check for process killing
-        if "kill" in content_lower and ("-9" in content or "SIGKILL" in content_upper):
-            warnings.append("Force kill signal detected - consider graceful termination")
+        if "kill" in content_lower and ("-9" in content or "SIGKILL" in content):
+            warnings.append("kill -9 or SIGKILL detected - consider graceful termination")
             suggestions.append("Try SIGTERM (kill -15) first")
 
         # Check for system file modification

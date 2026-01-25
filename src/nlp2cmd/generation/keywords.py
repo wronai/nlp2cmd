@@ -519,7 +519,11 @@ class KeywordIntentDetector:
         has_run_word = bool(re.search(r"\b(run|start|launch|uruchom|odpal|wystartuj)\b", text_lower))
         has_port = bool(re.search(r"\bport\b\s*\d+|\bon\s+port\s+\d+|\bporcie\s+\d+", text_lower))
         has_common_image = any(img in text_lower for img in common_images)
-        if has_run_word and has_port and has_common_image:
+        
+        # Exclude shell service management context
+        has_service_context = bool(re.search(r"\b(usług|uslug|usluge|serwis|service|systemctl)\b", text_lower))
+        
+        if has_run_word and has_port and has_common_image and not has_service_context:
             return DetectionResult(
                 domain="docker",
                 intent="run_detached",
@@ -863,6 +867,32 @@ class KeywordIntentDetector:
             return best_match
         return None
 
+    def _detect_explicit_system_reboot(self, text_lower: str) -> Optional[DetectionResult]:
+        """
+        Explicit detection for system reboot commands.
+        This should be checked before general pattern matching to avoid conflicts.
+        """
+        reboot_patterns = [
+            r'\bstartuj\s+(?:system|systemu|komputer|sistem)\b',
+            r'\buruchom\s+(?:system|systemu|komputer|sistem)\b',
+            r'\brestartuj\s+(?:system|systemu|komputer|sistem)\b',
+            r'\bzrestartuj\s+(?:system|systemu|komputer|sistem)\b',
+            r'\bsystem\s+(?:uruchom|startuj|restartuj|zrestartuj)\b',
+            r'\bkomputer\s+(?:uruchom|startuj|restartuj|zrestartuj)\b',
+            r'\bsistem\s+(?:uruchom|startuj|restartuj|zrestartuj)\b',
+        ]
+        
+        for pattern in reboot_patterns:
+            if re.search(pattern, text_lower):
+                return DetectionResult(
+                    domain='shell',
+                    intent='reboot',
+                    confidence=0.95,
+                    matched_keyword='system reboot',
+                )
+        
+        return None
+
     def _detect_explicit_service_restart(self, text_lower: str) -> Optional[DetectionResult]:
         """
         Explicit detection for service restart commands.
@@ -969,6 +999,11 @@ class KeywordIntentDetector:
         k8s_explicit = self._detect_explicit_kubernetes(text_lower)
         if k8s_explicit is not None:
             return k8s_explicit
+
+        # Explicit system reboot detection before pattern matching
+        system_reboot = self._detect_explicit_system_reboot(text_lower)
+        if system_reboot is not None:
+            return system_reboot
 
         # Explicit service_restart detection before pattern matching
         service_restart = self._detect_explicit_service_restart(text_lower)

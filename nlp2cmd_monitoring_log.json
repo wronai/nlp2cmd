@@ -1,0 +1,82 @@
+{
+  "monitoring_sessions": [
+    {
+      "timestamp": "2026-01-25T10:13:17.922071",
+      "duration": 8.87223,
+      "results": [
+        {
+          "timestamp": "2026-01-25T10:13:18.167116",
+          "test_name": "System Health",
+          "passed": true,
+          "details": "Core components available",
+          "duration": 0.24498248100280762,
+          "metrics": {
+            "nlp2cmd_import": true,
+            "toon_file_exists": true,
+            "config_file_exists": true
+          }
+        },
+        {
+          "timestamp": "2026-01-25T10:13:20.678209",
+          "test_name": "Command Processing",
+          "passed": true,
+          "details": "4/4 commands",
+          "duration": 2.5110387802124023,
+          "metrics": {
+            "commands_tested": 4,
+            "commands_passed": 4,
+            "success_rate": 100.0,
+            "avg_time": 0.6277522444725037,
+            "total_time": 2.5110089778900146
+          }
+        },
+        {
+          "timestamp": "2026-01-25T10:13:25.160660",
+          "test_name": "Performance Regression",
+          "passed": true,
+          "details": "Avg: 0.50s, Max: 0.52s",
+          "duration": 4.482412338256836,
+          "metrics": {
+            "samples": 9,
+            "avg_time": 0.4980421331193712,
+            "max_time": 0.5198030471801758,
+            "avg_threshold": 2.0,
+            "max_threshold": 5.0
+          }
+        },
+        {
+          "timestamp": "2026-01-25T10:13:25.160827",
+          "test_name": "TOON Data Integrity",
+          "passed": true,
+          "details": "Size: 8040 chars",
+          "duration": 0.00013136863708496094,
+          "metrics": {
+            "file_size": 8040,
+            "bracket_balance": true,
+            "has_commands": true,
+            "has_config": true,
+            "has_metadata": true
+          }
+        },
+        {
+          "timestamp": "2026-01-25T10:13:26.794130",
+          "test_name": "Memory Usage",
+          "passed": true,
+          "details": "Increase: 0.0MB",
+          "duration": 1.6332824230194092,
+          "metrics": {
+            "initial_memory_mb": 35.87890625,
+            "final_memory_mb": 35.88671875,
+            "memory_increase_mb": 0.0078125
+          }
+        }
+      ],
+      "summary": {
+        "total_tests": 5,
+        "passed_tests": 5,
+        "success_rate": 100.0
+      }
+    }
+  ],
+  "last_updated": "2026-01-25T10:13:26.794323"
+}

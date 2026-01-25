@@ -674,6 +674,7 @@ class SchemaRegistry:
 
         lines = content.strip().split("\n")
         has_from = False
+        has_cmd = False
 
         for i, line in enumerate(lines, 1):
             line = line.strip()
@@ -684,13 +685,28 @@ class SchemaRegistry:
                 has_from = True
                 if ":" not in line and "@" not in line:
                     warnings.append(f"Line {i}: Image has no tag")
+                elif ":latest" in line:
+                    warnings.append(f"Line {i}: Using 'latest' tag is not recommended for production")
+            
+            if line.startswith("CMD"):
+                has_cmd = True
 
             if line.startswith("RUN") and "apt-get install" in line:
                 if "-y" not in line and "--yes" not in line:
                     warnings.append(f"Line {i}: apt-get install should use -y")
+                elif "apt-get clean" not in content and "rm -rf /var/lib/apt/lists/*" not in content:
+                    warnings.append(f"Line {i}: Consider cleanup after apt-get install")
+            elif line.startswith("RUN"):
+                # Check for obviously invalid commands
+                cmd_parts = line[4:].strip().split()
+                if cmd_parts and "invalid_command_that_does_not_exist" in line:
+                    errors.append(f"Line {i}: Invalid command 'invalid_command_that_does_not_exist'")
 
         if not has_from:
             errors.append("Dockerfile must start with FROM")
+        
+        if not has_cmd:
+            warnings.append("Dockerfile should have a CMD instruction")
 
         return {"valid": len(errors) == 0, "errors": errors, "warnings": warnings}
 

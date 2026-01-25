@@ -1,0 +1,60 @@
+{
+  "test_run": {
+    "start_time": "2026-01-25T10:11:13.977384",
+    "end_time": "2026-01-25T10:11:14.013672",
+    "total_tests": 7,
+    "passed_tests": 4,
+    "success_rate": 57.14285714285714
+  },
+  "results": [
+    {
+      "timestamp": "2026-01-25T10:11:13.977520",
+      "test_name": "TOON File Integrity",
+      "passed": true,
+      "details": "Size: 8040 chars",
+      "duration": 9.512901306152344e-05
+    },
+    {
+      "timestamp": "2026-01-25T10:11:13.977598",
+      "test_name": "Config File Integrity",
+      "passed": true,
+      "details": "116 test commands",
+      "duration": 4.410743713378906e-05
+    },
+    {
+      "timestamp": "2026-01-25T10:11:14.000253",
+      "test_name": "Python Imports",
+      "passed": false,
+      "details": "Import error: cannot import name 'NLP2CMD' from 'nlp2cmd.core' (/home/tom/github/wronai/nlp2cmd/src/nlp2cmd/core/__init__.py)",
+      "duration": 0.022643327713012695
+    },
+    {
+      "timestamp": "2026-01-25T10:11:14.000974",
+      "test_name": "Basic Functionality",
+      "passed": false,
+      "details": "No commands found",
+      "duration": 0.0006961822509765625
+    },
+    {
+      "timestamp": "2026-01-25T10:11:14.000999",
+      "test_name": "Command Availability",
+      "passed": false,
+      "details": "Missing: ['git', 'docker', 'kubectl', 'find', 'grep', 'ls', 'ps']",
+      "duration": 1.3589859008789062e-05
+    },
+    {
+      "timestamp": "2026-01-25T10:11:14.001013",
+      "test_name": "Performance Benchmarks",
+      "passed": true,
+      "details": "Load: 0.000s, Search: 0.000s, Access: 0.000s",
+      "duration": 8.344650268554688e-06
+    },
+    {
+      "timestamp": "2026-01-25T10:11:14.013604",
+      "test_name": "Memory Usage",
+      "passed": true,
+      "details": "Memory increase: 0.0MB",
+      "duration": 0.012584924697875977
+    }
+  ]
+}

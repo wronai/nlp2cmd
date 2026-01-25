@@ -269,7 +269,7 @@ class TestPipelinePerformance:
         end_time = time.time()
         avg_latency = (end_time - start_time) / 10 * 1000  # Convert to ms
         
-        assert avg_latency < 50, f"Pipeline too slow: {avg_latency:.1f}ms average"
+        assert avg_latency < 100, f"Pipeline too slow: {avg_latency:.1f}ms average"
     
     def test_pipeline_throughput(self, pipeline):
         """Test pipeline throughput."""

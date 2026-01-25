@@ -16,7 +16,15 @@ import re
 import time
 
 from nlp2cmd.utils.data_files import data_file_write_path
-from nlp2cmd.core import ExecutionPlan
+
+# Simple execution plan to avoid circular import
+@dataclass
+class SimpleExecutionPlan:
+    """Simple execution plan for adapters."""
+    intent: str
+    entities: dict[str, Any]
+    confidence: float
+    text: str
 
 from nlp2cmd.generation.keywords import KeywordIntentDetector, DetectionResult
 from nlp2cmd.generation.regex import RegexEntityExtractor, ExtractionResult
@@ -63,10 +71,10 @@ class PipelineResult:
         if self.detection_confidence == 0.0 and self.confidence != 0.0:
             self.detection_confidence = self.confidence
     
-    def to_plan(self) -> ExecutionPlan:
+    def to_plan(self) -> 'SimpleExecutionPlan':
         """Convert to execution plan format for adapters."""
         conf = self.confidence if self.confidence != 0.0 else self.detection_confidence
-        return ExecutionPlan(intent=self.intent, entities=self.entities, confidence=conf, text=self.input_text)
+        return SimpleExecutionPlan(intent=self.intent, entities=self.entities, confidence=conf, text=self.input_text)
 
 
 class RuleBasedPipeline:
@@ -110,11 +118,17 @@ class RuleBasedPipeline:
         self.confidence_threshold = confidence_threshold
         self.use_enhanced_context = use_enhanced_context and ENHANCED_CONTEXT_AVAILABLE
         
-        # Initialize enhanced detector if available
-        if self.use_enhanced_context:
-            self.enhanced_detector = get_enhanced_detector()
-        else:
-            self.enhanced_detector = None
+        # Initialize enhanced detector lazily (only when needed)
+        self._enhanced_detector = None
+        self._enhanced_detector_loaded = False
+    
+    @property
+    def enhanced_detector(self):
+        """Lazy load enhanced detector only when needed."""
+        if not self._enhanced_detector_loaded and self.use_enhanced_context:
+            self._enhanced_detector = get_enhanced_detector()
+            self._enhanced_detector_loaded = True
+        return self._enhanced_detector
     
     def process(self, text: str) -> PipelineResult:
         """
@@ -135,10 +149,9 @@ class RuleBasedPipeline:
         
         # Step 1.5: Try enhanced context detection if available and basic detection failed
         if (self.use_enhanced_context and 
-            self.enhanced_detector and 
+            not self._enhanced_detector_loaded and 
             (detection.domain == 'unknown' or 
-             detection.confidence < 0.7 or
-             detection.intent in ['user_id', 'user_groups', 'user_whoami', 'list', 'find', 'copy', 'delete', 'create'])):  # Also check for user-related and file-related intents
+             detection.confidence < 0.7)):  # Only trigger for low confidence or unknown domain
             
             try:
                 enhanced_match = self.enhanced_detector.get_best_match(text)

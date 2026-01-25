@@ -228,8 +228,8 @@ CMD ["bash"]
             errors = []
             warnings = []
             
-            # Custom rule: must contain "CUSTOM_MARKER"
-            if "CUSTOM_MARKER" not in content:
+            # Custom rule: must contain "CUSTOM_MARKER" (case-insensitive)
+            if "custom_marker" not in content.lower():
                 errors.append("Missing required CUSTOM_MARKER")
             
             # Custom warning: prefer uppercase

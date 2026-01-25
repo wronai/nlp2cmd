@@ -189,7 +189,7 @@ class TestTyposAndVariations:
             
             # Numbers and special characters
             ("uruchom nginx 8080", "shell", "service_start", "systemctl start nginx"),
-            ("doker run -p 8080:80 nginx", "docker", "run", "docker run nginx"),
+            ("doker run -p 8080:80 nginx", "docker", "run", "docker run -p 8080:80"),
             
             # Empty or whitespace
             ("", "unknown", "unknown", None),

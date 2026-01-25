@@ -1,0 +1,59 @@
+{
+  "shell": {
+    "base_weight": 1.0,
+    "polish_keywords": {
+      "plik": 2.0,
+      "katalog": 2.0,
+      "proces": 1.8,
+      "usługa": 1.8,
+      "system": 1.5,
+      "pamięć": 1.5,
+      "dysk": 1.5,
+      "port": 1.5,
+      "adres": 1.3
+    },
+    "file_operations": 2.5,
+    "process_operations": 2.0,
+    "system_operations": 1.8
+  },
+  "sql": {
+    "base_weight": 1.0,
+    "polish_keywords": {
+      "użytkownik": 2.0,
+      "klient": 2.0,
+      "produkt": 2.0,
+      "zamówienie": 2.0,
+      "transakcja": 2.0,
+      "pokaż": 0.8,
+      "lista": 0.8,
+      "znajdź": 0.8
+    },
+    "database_keywords": 2.0,
+    "query_keywords": 1.5
+  },
+  "docker": {
+    "base_weight": 1.0,
+    "polish_keywords": {
+      "kontener": 2.0,
+      "obraz": 2.0,
+      "uruchom": 1.8,
+      "zatrzymaj": 1.8,
+      "pokaż": 1.3,
+      "zaloguj": 2.0
+    },
+    "container_keywords": 2.5,
+    "image_keywords": 2.0
+  },
+  "kubernetes": {
+    "base_weight": 1.0,
+    "polish_keywords": {
+      "pod": 2.0,
+      "kontener": 1.8,
+      "usługa": 1.8,
+      "wdroż": 2.0,
+      "skaluj": 2.0,
+      "usuń": 1.8
+    },
+    "k8s_keywords": 2.5
+  }
+}

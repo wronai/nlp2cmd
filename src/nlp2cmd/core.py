@@ -534,8 +534,10 @@ class NLP2CMD:
                     try:
                         from nlp2cmd.nlp_light import SemanticShellBackend
                         self.nlp_backend = SemanticShellBackend(config={"dsl": adapter.DSL_NAME})
+                        import sys
                         print("[NLP2CMD] Using SemanticShellBackend for intelligent NLP processing", file=sys.stderr)
                     except Exception as e:
+                        import sys
                         print(f"[NLP2CMD] Failed to import SemanticShellBackend: {e}, falling back to RuleBasedBackend", file=sys.stderr)
                         self.nlp_backend = RuleBasedBackend(
                             rules={k: list(v.get("patterns", [])) for k, v in adapter.INTENTS.items()},
@@ -912,3 +914,30 @@ class NLP2CMD:
     def clear_history(self) -> None:
         """Clear transformation history."""
         self._history.clear()
+
+# Polish Language Support Integration
+try:
+    from .polish_support import get_polish_support
+    polish_support = get_polish_support()
+    POLISH_SUPPORT_ENABLED = True
+except ImportError:
+    polish_support = None
+    POLISH_SUPPORT_ENABLED = False
+
+# Enhanced domain detection with Polish support
+def enhanced_domain_detection(query, base_domain):
+    """Enhanced domain detection with Polish language support"""
+    if not POLISH_SUPPORT_ENABLED:
+        return base_domain
+    
+    # Use Polish support to enhance domain detection
+    return polish_support.enhance_domain_detection(query, base_domain)
+
+# Enhanced intent detection with Polish support
+def enhanced_intent_detection(query, base_intent):
+    """Enhanced intent detection with Polish language support"""
+    if not POLISH_SUPPORT_ENABLED:
+        return base_intent
+    
+    # Use Polish support to enhance intent detection
+    return polish_support.enhance_intent_detection(query, base_intent)

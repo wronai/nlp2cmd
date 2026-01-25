@@ -1,8 +1,8 @@
 {
   "$schema": "keyword_intent_detector_config.v1",
   "domain_boosters": {
-    "sql": ["tabel", "tabela", "table", "kolumna", "column", "baz", "baza", "database", "sql", "where", "join", "tabeli", "z tabeli"],
-    "shell": ["plik", "file", "katalog", "directory", "folder", "ścieżka", "path", "bash", "terminal", "znajdź", "skopiuj", "usuń", "utwórz", "zmień", "sprawdź", "pokaż", "uruchom", "zatrzymaj", "proces", "dysk", "sieć", "port", "backup", "logi", "test", "build", "debug", "listuj", "wypisz", "listować", "wypisać", "wypić"],
+    "sql": ["tabel", "tabela", "table", "kolumna", "column", "baz", "baza", "database", "sql", "where", "join", "tabeli", "z tabeli", "select", "insert", "update", "delete", "SELECT", "INSERT", "UPDATE", "DELETE"],
+    "shell": ["process", "reboot", "service_start", "service_restart", "service_stop", "service_status", "open_url", "search_web", "file_operation", "find", "archive", "disk", "system_maintenance", "development", "security", "process_management", "list"],
     "docker": ["docker", "doker", "dokcer", "kontener", "container", "obraz", "image", "compose", "dockerfile", "kerów", "kórów", "dkerów", "dkorów"],
     "kubernetes": ["kubernetes", "k8s", "kubectl", "pod", "deployment", "namespace", "helm", "cluster", "node", "service"],
     "git": ["git", "repo", "repository", "commit", "branch", "gałąź", "merge", "push", "pull", "clone"],
@@ -10,8 +10,8 @@
     "browser": ["przeglądark", "browser", "strona", "website", "kliknij", "click", "formularz", "form", "przycisk", "button", "link", "url", "google", "github", "amazon", "szukaj", "wyszukaj", "wpisz", "type"]
   },
   "priority_intents": {
-    "sql": ["delete", "update", "insert", "show_tables", "aggregate"],
-    "shell": ["service_start", "service_restart", "service_stop", "service_status", "open_url", "file_operation", "find", "archive", "process", "disk", "system_maintenance", "development", "security", "process_management", "list"],
+    "sql": ["delete", "update", "insert", "show_tables", "aggregate", "select"],
+    "shell": ["process", "reboot", "service_start", "service_restart", "service_stop", "service_status", "open_url", "search_web", "file_operation", "find", "archive", "disk", "system_maintenance", "development", "security", "process_management", "list"],
     "docker": ["stop", "prune", "build", "run", "list", "logs", "exec", "start", "remove"],
     "kubernetes": ["delete", "scale", "describe", "logs"],
     "git": ["reset", "revert", "merge", "rebase", "push", "commit", "stash"],

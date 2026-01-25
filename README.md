@@ -18,6 +18,20 @@ realizacja zadan w shell
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Production Ready](https://img.shields.io/badge/production%20ready-brightgreen.svg)](https://github.com/wronai/nlp2cmd)
 [![85%+ Success Rate](https://img.shields.io/badge/success%20rate-85%25%2B-brightgreen.svg)](https://github.com/wronai/nlp2cmd)
+[![PyPI Version](https://img.shields.io/pypi/v/nlp2cmd.svg)](https://pypi.org/project/nlp2cmd/)
+[![GitHub stars](https://img.shields.io/github/stars/wronai/nlp2cmd.svg)](https://github.com/wronai/nlp2cmd/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/wronai/nlp2cmd.svg)](https://github.com/wronai/nlp2cmd/network)
+[![GitHub issues](https://img.shields.io/github/issues/wronai/nlp2cmd.svg)](https://github.com/wronai/nlp2cmd/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/wronai/nlp2cmd.svg)](https://github.com/wronai/nlp2cmd/pulls)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://github.com/wronai/nlp2cmd/docs)
+[![Build Status](https://img.shields.io/github/workflow/status/wronai/nlp2cmd/CI)](https://github.com/wronai/nlp2cmd/actions)
+
+## 🔗 Related Projects
+
+| Project                                                        | Description                                                 |
+|----------------------------------------------------------------|------------------------------------------------------------|
+| **[NLP2CMD + App2Schema](https://github.com/wronai/nlp2cmd)** | Automatic schema generation from any applications, services  |
+
 
 **Natural Language to Domain-Specific Commands** - Production-ready framework for transforming natural language into DSL commands with full safety, validation, and observability.
 

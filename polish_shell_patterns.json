@@ -1,0 +1,45 @@
+{
+  "file_operations": [
+    "pokaż.*pliki?",
+    "lista.*plików?",
+    "znajdź.*pliki?",
+    "wyszukaj.*pliki?",
+    "usuń.*plik",
+    "skasuj.*plik",
+    "utwórz.*katalog",
+    "stwórz.*katalog",
+    "zmień.*nazwę",
+    "zmień.*nazwe",
+    "kopiuj.*plik",
+    "skopiuj.*plik",
+    "przenieś.*plik",
+    "przenies.*plik"
+  ],
+  "process_operations": [
+    "pokaż.*procesy",
+    "lista.*procesów",
+    "zabij.*proces",
+    "zabij.*procesy",
+    "zatrzymaj.*proces",
+    "zatrzymaj.*usługę",
+    "uruchom.*usługę",
+    "start.*usługę",
+    "restart.*usługę",
+    "restartuj.*usługę",
+    "status.*usługi",
+    "sprawdź.*status",
+    "monitor.*system",
+    "monitor.*systemowy"
+  ],
+  "system_operations": [
+    "sprawdź.*pamięć",
+    "pokaż.*pamięć",
+    "miejsce.*dysku",
+    "sprawdź.*dysk",
+    "adres.*IP",
+    "pokaż.*IP",
+    "ping.*",
+    "sprawdź.*porty",
+    "otwórz.*porty"
+  ]
+}

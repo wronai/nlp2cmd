@@ -42,13 +42,13 @@ class TestSQLValidator:
         """Test DELETE without WHERE generates warning."""
         result = validator.validate("DELETE FROM users")
         assert result.is_valid  # Still valid but with warning
-        assert any("without WHERE" in warning.lower() for warning in result.warnings)
+        assert any("without where" in warning.lower() for warning in result.warnings)
     
     def test_update_without_where_warning(self, validator):
         """Test UPDATE without WHERE generates warning."""
         result = validator.validate("UPDATE users SET name = 'test'")
         assert result.is_valid  # Still valid but with warning
-        assert any("without WHERE" in warning.lower() for warning in result.warnings)
+        assert any("without where" in warning.lower() for warning in result.warnings)
     
     def test_drop_table_warning(self, validator):
         """Test DROP TABLE generates warning."""
@@ -86,7 +86,7 @@ class TestSQLValidator:
         """Test JOIN syntax validation."""
         result = validator.validate("SELECT * FROM users JOIN orders")
         assert not result.is_valid
-        assert any("JOIN" in error.lower() and "condition" in error.lower() 
+        assert any("join" in error.lower() and "condition" in error.lower() 
                    for error in result.errors)
     
     def test_subquery_validation(self, validator):

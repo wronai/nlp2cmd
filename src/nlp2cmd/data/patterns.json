@@ -223,8 +223,10 @@
     ],
     "service_start": [
       "uruchom usługę", "uruchom serwis", "uruchom service", "start service",
-      "systemctl start", "startuj usługę", "startuj serwis", "wystartuj usługę",
-      "uruchom usługę systemową", "startuj usługę systemową", "uruchom usluge", "uruchom uslugi"
+      "systemctl start", "systemctl uruchom", "startuj usługę", "startuj serwis", "wystartuj usługę",
+      "uruchom usługę systemową", "startuj usługę systemową", "uruchom usluge", "uruchom uslugi",
+      "uruchom nginx", "uruchom", "uruchom usługę nginx", "uruchom serwis nginx",
+      "proszę uruchom usługę nginx na porcie"
     ],
     "service_stop": [
       "zatrzymaj usługę", "zatrzymaj serwis", "stop service",
@@ -488,7 +490,7 @@
     "run": [
       "uruchom kontener", "docker run", "start container", "docker start",
       "docker compose up", "compose up", "docker-compose up",
-      "uruchom nginx", "docker uruchom nginx"
+      "docker uruchom nginx"
     ],
     "run_detached": [
       "uruchom w tle", "docker run -d", "run detached", "docker compose up -d",

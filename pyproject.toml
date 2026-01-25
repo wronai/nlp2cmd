@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "nlp2cmd"
-version = "1.0.22"
+version = "1.0.28"
 description = "Natural Language to Domain-Specific Commands with Thermodynamic Optimization - Transform natural language into SQL, Shell, Docker, Kubernetes and solve optimization problems using Langevin dynamics"
 readme = "README.md"
 license = "Apache-2.0"
@@ -96,7 +96,7 @@ all = [
 ]
 
 [project.scripts]
-nlp2cmd = "nlp2cmd.cli.main:main"
+nlp2cmd = "nlp2cmd.cli.main:cli_entry_point"
 app2schema = "app2schema.cli:main"
 nlp2cmd-setup = "scripts.setup_external:main"
 

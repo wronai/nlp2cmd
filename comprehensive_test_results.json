@@ -1,9 +1,9 @@
 {
   "total_tests": 101,
-  "passed": 50,
-  "failed": 51,
-  "success_rate": 49.504950495049506,
-  "duration_seconds": 322.6647732257843,
+  "passed": 49,
+  "failed": 52,
+  "success_rate": 48.51485148514851,
+  "duration_seconds": 50.25576448440552,
   "results": [
     {
       "query": "pokaż pliki",
@@ -46,12 +46,12 @@
         "command_pattern": "ls -la ~"
       },
       "actual": {
-        "domain": "shell",
-        "intent": "list",
-        "command": "ls -la ~"
+        "domain": "sql",
+        "intent": "show",
+        "command": "SELECT * FROM unknown_table;"
       },
-      "success": true,
-      "status": "✅ PASS"
+      "success": false,
+      "status": "❌ FAIL"
     },
     {
       "query": "znajdź pliki .log",

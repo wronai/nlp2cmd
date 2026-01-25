@@ -938,7 +938,7 @@ class TemplateGenerator:
             # Detect operator for age from text
             text = entities.get('text', '')
             time_operator = '+'
-            if "ostatnich" in text.lower() or "last" in text.lower() or "recent" in text.lower():
+            if "ostatnich" in text.lower() or "ostatnie" in text.lower() or "last" in text.lower() or "recent" in text.lower():
                 time_operator = '-'  # newer files (last N days)
             elif "starsze" in text.lower() or "older" in text.lower():
                 time_operator = '+'  # older files
