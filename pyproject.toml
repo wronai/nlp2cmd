@@ -101,11 +101,11 @@ app2schema = "app2schema.cli:main"
 nlp2cmd-setup = "scripts.setup_external:main"
 
 [project.urls]
-Homepage = "https://github.com/example/nlp2cmd"
+Homepage = "https://github.com/wronai/nlp2cmd"
 Documentation = "https://nlp2cmd.readthedocs.io"
-Repository = "https://github.com/example/nlp2cmd"
-Issues = "https://github.com/example/nlp2cmd/issues"
-Changelog = "https://github.com/example/nlp2cmd/blob/main/CHANGELOG.md"
+Repository = "https://github.com/wronai/nlp2cmd"
+Issues = "https://github.com/wronai/nlp2cmd/issues"
+Changelog = "https://github.com/wronai/nlp2cmd/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/nlp2cmd", "src/app2schema"]

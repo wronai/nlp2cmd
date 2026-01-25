@@ -19,7 +19,7 @@ Please be respectful and constructive in all interactions. We welcome contributo
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/example/nlp2cmd.git
+git clone https://github.com/wronai/nlp2cmd.git
 cd nlp2cmd
 ```
 
@@ -78,7 +78,7 @@ mypy src
 
 ### Reporting Bugs
 
-1. Check if the bug is already reported in [Issues](https://github.com/example/nlp2cmd/issues)
+1. Check if the bug is already reported in [Issues](https://github.com/wronai/nlp2cmd/issues)
 2. If not, create a new issue with:
    - Clear title and description
    - Steps to reproduce
@@ -88,7 +88,7 @@ mypy src
 
 ### Suggesting Features
 
-1. Check existing [Feature Requests](https://github.com/example/nlp2cmd/labels/enhancement)
+1. Check existing [Feature Requests](https://github.com/wronai/nlp2cmd/labels/enhancement)
 2. Create a new issue with:
    - Clear description of the feature
    - Use cases and benefits
@@ -215,7 +215,7 @@ self.schemas["myformat"] = FileFormatSchema(
 
 ## Questions?
 
-- Create a [Discussion](https://github.com/example/nlp2cmd/discussions)
+- Create a [Discussion](https://github.com/wronai/nlp2cmd/discussions)
 - Ask in the issue tracker
 - Contact maintainers
 

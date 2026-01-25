@@ -13,7 +13,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/example/nlp2cmd.git
+git clone https://github.com/wronai/nlp2cmd.git
 cd nlp2cmd
 
 # Install with pip
