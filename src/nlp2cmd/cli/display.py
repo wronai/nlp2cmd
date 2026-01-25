@@ -2,17 +2,18 @@
 Display utilities for NLP2CMD CLI output formatting.
 
 This module provides centralized display functions for consistent formatting
-across all CLI commands and modes.
+across all CLI commands and modes with optimized syntax highlighting.
 """
 
 from rich.console import Console
-from rich.syntax import Syntax
-from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 from rich import box
 from typing import Any, Optional, Dict, List
 import yaml
+
+# Import syntax cache for performance optimization
+from .syntax_cache import get_cached_syntax
 
 console = Console()
 
@@ -37,8 +38,8 @@ def display_command_result(
     # Display command as bash markdown with syntax highlighting
     if command and command.strip():
         print(f"```bash")
-        # Use Rich Syntax for bash highlighting
-        syntax = Syntax(command.strip(), "bash", theme="monokai", line_numbers=False)
+        # Use cached syntax highlighting for better performance
+        syntax = get_cached_syntax(command.strip(), "bash", theme="monokai", line_numbers=False)
         console.print(syntax)
         print(f"```")
         print()
@@ -48,7 +49,7 @@ def display_command_result(
         # Format as YAML with syntax highlighting
         yaml_text = yaml.safe_dump(metadata, sort_keys=False, allow_unicode=True)
         print(f"```yaml")
-        yaml_syntax = Syntax(yaml_text.rstrip(), "yaml", theme="monokai", line_numbers=False)
+        yaml_syntax = get_cached_syntax(yaml_text.rstrip(), "yaml", theme="monokai", line_numbers=False)
         console.print(yaml_syntax)
         print(f"```")
     

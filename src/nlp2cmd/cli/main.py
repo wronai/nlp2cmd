@@ -118,6 +118,7 @@ except Exception:  # pragma: no cover
         def __init__(self, code, *args, **kwargs):
             self.code = code
 from nlp2cmd.cli.display import display_command_result
+from nlp2cmd.cli.syntax_cache import get_cached_syntax
 
 from nlp2cmd import NLP2CMD
 from nlp2cmd.adapters import (
@@ -450,8 +451,8 @@ class InteractiveSession:
     def run(self):
         """Run interactive REPL."""
         print("```bash")
-        # Use Rich Syntax for bash highlighting
-        syntax = Syntax("# NLP2CMD Interactive Mode\n# Type 'help' for commands, 'exit' to quit", "bash", theme="monokai", line_numbers=False)
+        # Use cached syntax highlighting for better performance
+        syntax = get_cached_syntax("# NLP2CMD Interactive Mode\n# Type 'help' for commands, 'exit' to quit", "bash", theme="monokai", line_numbers=False)
         console.print(syntax)
         print("```")
         print()
@@ -623,8 +624,8 @@ class InteractiveSession:
                 cmd = hints.get(pm)
                 if cmd:
                     print(f"```bash")
-                    # Use Rich Syntax for bash highlighting
-                    syntax = Syntax(cmd, "bash", theme="monokai", line_numbers=False)
+                    # Use cached syntax highlighting for better performance
+                    syntax = get_cached_syntax(cmd, "bash", theme="monokai", line_numbers=False)
                     console.print(syntax)
                     print(f"```")
                     print()
@@ -706,8 +707,8 @@ def _handle_run_query(
     from nlp2cmd.generation.pipeline import RuleBasedPipeline
     
     print(f"```bash")
-    # Use Rich Syntax for bash highlighting
-    syntax = Syntax(f"# 🚀 Run Mode: {query}", "bash", theme="monokai", line_numbers=False)
+    # Use cached syntax highlighting for better performance
+    syntax = get_cached_syntax(f"# 🚀 Run Mode: {query}", "bash", theme="monokai", line_numbers=False)
     console.print(syntax)
     print(f"```")
     print()
@@ -822,8 +823,8 @@ def _handle_run_query(
                     if not cmd or cmd.startswith("#"):
                         continue
                     print(f"```bash")
-                    # Use Rich Syntax for bash highlighting
-                    syntax = Syntax(f"# Step {n}/{len(steps)}: {step.domain}/{step.intent}\n {cmd}", "bash", theme="monokai", line_numbers=False)
+                    # Use cached syntax highlighting for better performance
+                    syntax = get_cached_syntax(f"# Step {n}/{len(steps)}: {step.domain}/{step.intent}\n {cmd}", "bash", theme="monokai", line_numbers=False)
                     console.print(syntax)
                     print(f"```")
                     print()
@@ -1075,8 +1076,8 @@ Rules:
 
     if detected_domain == "sql":
         print(f"```sql")
-        # Use Rich Syntax for SQL highlighting
-        syntax = Syntax(command, "sql", theme="monokai", line_numbers=False)
+        # Use cached syntax highlighting for better performance
+        syntax = get_cached_syntax(command, "sql", theme="monokai", line_numbers=False)
         console.print(syntax)
         print(f"```")
         print()

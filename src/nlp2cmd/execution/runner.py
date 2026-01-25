@@ -17,6 +17,9 @@ from dataclasses import dataclass, field
 from typing import Any, Optional, Callable
 from pathlib import Path
 
+# Import syntax cache for performance optimization
+from nlp2cmd.cli.syntax_cache import get_cached_syntax
+
 try:
     from rich.console import Console
     from rich.panel import Panel
@@ -320,8 +323,8 @@ class ExecutionRunner:
             return True
         
         print(f"```bash")
-        # Use Rich Syntax for bash highlighting
-        syntax = Syntax(command, "bash", theme="monokai", line_numbers=False)
+        # Use cached syntax highlighting for better performance
+        syntax = get_cached_syntax(command, "bash", theme="monokai", line_numbers=False)
         self.console.print(syntax)
         print(f"```")
         print()
@@ -466,8 +469,8 @@ If the command syntax was wrong, provide the corrected command.
                 
                 if suggestion:
                     print(f"```bash")
-                    # Use Rich Syntax for bash highlighting
-                    syntax = Syntax(f"# 💡 Suggested recovery:\n {suggestion}", "bash", theme="monokai", line_numbers=False)
+                    # Use cached syntax highlighting for better performance
+                    syntax = get_cached_syntax(f"# 💡 Suggested recovery:\n {suggestion}", "bash", theme="monokai", line_numbers=False)
                     self.console.print(syntax)
                     print(f"```")
                     print()
