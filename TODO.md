@@ -244,3 +244,15 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to this pr
 - **High Priority**: Core functionality, security, performance
 - **Medium Priority**: User experience, integrations, quality
 - **Low Priority**: Nice-to-have features, documentation, infrastructure
+
+
+
+
+użyj architektury  CQRS i event sourcing dla projektu, aby ułatwić procesowanie 
+
+użyj schematycznego zapisu z głebią w postaci prostego do zrozumienia przez LLM z nawiasami jak w template i prostym DSL z toon, jak w project.functions.toon, aby jak najwiecej kontekstu opakowac w optymalnej formie w jednym pliku,
+wszystko przenies do jendnego pliku toon co aktualnie jest w json i yamltylko podziel osobno schema i data oraz inne kategoria danych,
+aby ładowanie i parsowanie i dostep do danych był wspoldzielony na kategoria a wpisy były dostepne dla wszystkich w jednym pliku
+
+W celu uwtorzenia listy wszystkich mozliwych komend w systemie, 
+jak generowac schema dokaldniej na podstawie testowania samej komendy, w celu zapoznnia jej calego api struktury

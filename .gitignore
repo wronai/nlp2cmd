@@ -161,3 +161,6 @@ env-report.json
 .env.*.local
 secrets/
 credentials/
+
+# Separate projects
+webops/
