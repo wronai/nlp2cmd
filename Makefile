@@ -13,7 +13,8 @@
 #   make docker-up         - Start services
 #   make docker-test       - Run tests in Docker
 #   make docker-push       - Push Docker image to registry
-#   make push              - Complete release (bump version + build + push Docker + PyPI)
+#   make push              - Complete release (bump version + build + push Docker + PyPI + Git tag)
+#   make git-tag           - Create and push git tag for current version
 #   make bump-patch        - Bump patch version (X.Y.Z -> X.Y.Z+1)
 #   make bump-minor        - Bump minor version (X.Y.Z -> X.Y+1.0)
 #   make bump-major        - Bump major version (X.Y.Z -> X+1.0.0)
@@ -22,7 +23,7 @@
 
 .PHONY: help install setup-cache test test-unit test-e2e test-web-schema lint format clean \
         docker-build docker-up docker-down docker-test docker-e2e docker-push \
-        dev demo test-examples bump-patch bump-minor bump-major publish publish-test push
+        dev demo test-examples bump-patch bump-minor bump-major publish publish-test push git-tag
 
 # Default target
 .DEFAULT_GOAL := help
@@ -332,7 +333,7 @@ publish: build ## Publish to PyPI (with version bump)
 	@echo "$(YELLOW)Publishing to PyPI...$(NC)"
 	$(PYTHON) -m twine upload dist/*
 
-push: ## Complete release (bump version + build + push Docker + PyPI)
+push: ## Complete release (bump version + build + push Docker + PyPI + Git tag)
 	@echo "$(YELLOW)Starting complete release process...$(NC)"
 	@echo "$(YELLOW)1. Bumping patch version...$(NC)"
 	$(MAKE) bump-patch
@@ -342,18 +343,31 @@ push: ## Complete release (bump version + build + push Docker + PyPI)
 	$(PYTHON) -m twine upload dist/*
 	@echo "$(YELLOW)4. Building and pushing Docker image...$(NC)"
 	@if $(MAKE) docker-push; then \
+		echo "$(GREEN)Docker image pushed successfully!$(NC)"; \
+		echo "$(YELLOW)5. Creating and pushing git tag...$(NC)"; \
+		VERSION=$$($(PYTHON) -c "import toml; content = toml.load(open('pyproject.toml')); print(content['project']['version'])") && \
+		git tag v$$VERSION && \
+		git push origin v$$VERSION && \
 		echo "$(GREEN)🎉 Complete release finished successfully!$(NC)"; \
-		echo "$(GREEN)   - Package published to PyPI$(NC)"; \
-		echo "$(GREEN)   - Docker image pushed to registry$(NC)"; \
-		echo "$(GREEN)   - Version bumped automatically$(NC)"; \
+		echo "$(GREEN)   - Package published to PyPI ✓$(NC)"; \
+		echo "$(GREEN)   - Docker image pushed to registry ✓$(NC)"; \
+		echo "$(GREEN)   - Git tag v$$VERSION pushed ✓$(NC)"; \
+		echo "$(GREEN)   - Version bumped automatically ✓$(NC)"; \
 	else \
 		echo "$(YELLOW)⚠️  Partial release completed!$(NC)"; \
 		echo "$(YELLOW)   - Package published to PyPI ✓$(NC)"; \
 		echo "$(YELLOW)   - Docker push failed ✗$(NC)"; \
 		echo "$(YELLOW)   - Version bumped automatically ✓$(NC)"; \
-		echo "$(BLUE)To complete the Docker push later:$(NC)"; \
-		echo "$(BLUE)  docker login && make docker-push$(NC)"; \
+		echo "$(BLUE)To complete the Docker push and git tag later:$(NC)"; \
+		echo "$(BLUE)  docker login && make docker-push && make git-tag$(NC)"; \
 	fi
+
+git-tag: ## Create and push git tag for current version
+	@echo "$(YELLOW)Creating and pushing git tag...$(NC)"
+	@VERSION=$$($(PYTHON) -c "import toml; content = toml.load(open('pyproject.toml')); print(content['project']['version'])") && \
+	git tag v$$VERSION && \
+	git push origin v$$VERSION && \
+	echo "$(GREEN)Git tag v$$VERSION pushed successfully!$(NC)"
 
 # =============================================================================
 # Info

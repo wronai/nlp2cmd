@@ -69,7 +69,6 @@ nlp2cmd "pokaż pliki użytkownika większe niż 50GB"
 ```bash
 find $HOME -type f -size +50GB
 ```
-```
 
 ## 🎯 Key Features
 
