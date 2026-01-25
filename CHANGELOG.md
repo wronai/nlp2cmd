@@ -5,6 +5,61 @@ All notable changes to NLP2CMD will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.30] - 2025-01-25
+
+### 🎨 Major UI/UX Improvements
+- **Enhanced Output Format** - Replaced Rich panels with clean markdown-style codeblocks
+- **Syntax Highlighting** - Beautiful syntax highlighting for bash, SQL, and YAML codeblocks
+- **Clean Interface** - Removed complex Rich panels for minimal, readable output
+- **Monokai Theme** - Consistent dark theme across all syntax-highlighted content
+
+### 🌍 Enhanced CLI Experience
+- **Natural Language Queries** - Direct support for quotes natural language queries
+- **Polish Language Support** - Full Polish language support in CLI interface
+- **Improved CLI Entry Point** - Better handling of mixed arguments and options
+- **Clean Error Messages** - Simplified error reporting without Rich panels
+
+### 🔧 Technical Improvements
+- **Rich Syntax Integration** - Optimized Rich Syntax highlighting across all output types
+- **Better Error Handling** - Improved FeedbackType enum usage and error reporting
+- **Code Organization** - Cleaner separation of display logic from business logic
+- **Performance Optimizations** - Reduced overhead in CLI argument parsing
+
+### 📋 Output Format Examples
+
+#### Before (Rich Panels)
+```
+╭─────────────────────────────── NLP2CMD Result ───────────────────────────────╮
+│                                                                              │
+│ find . -type f -mtime -7                                                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+```
+
+#### After (Clean Codeblocks)
+```bash
+find . -type f -mtime -7                                                        
+```
+
+```yaml
+dsl: auto
+query: znajdź pliki zmodyfikowane ostatnie 7 dni
+status: success
+confidence: 1.0
+generated_command: find . -type f -mtime -7
+```
+
+### 🐛 Bug Fixes
+- Fixed CLI entry point to properly handle natural language queries with spaces
+- Corrected FeedbackType.ERROR to FeedbackType.SYNTAX_ERROR
+- Fixed parameter names in FeedbackResult constructor calls
+- Resolved build system issues with missing build package
+
+### ⚡ Performance
+- Faster CLI argument parsing with improved logic
+- Reduced Rich console overhead with targeted syntax highlighting
+- Optimized import statements for better startup time
+
 ## [Unreleased]
 
 ### 🎉 Major Features - Production Ready Release

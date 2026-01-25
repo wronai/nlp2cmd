@@ -310,7 +310,9 @@
       "wypi\u0107 plik w folder uzytkownik",
       "wypisa\u0107 pliki w folderze uzytkownik",
       "wypi\u0107 plik w katalogu domowym",
-      "folder uzytkownik"
+      "folder uzytkownik",
+      "foldery poka\u017c",
+      "poka\u017c foldery"
     ],
     "count_files": [
       "ile plik\u00f3w",
@@ -609,7 +611,13 @@
       "zatrzymaj us\u0142ug\u0119",
       "zatrzymaj serwis",
       "stop service",
-      "systemctl stop"
+      "systemctl stop",
+      "zatrzymaj",
+      "us\u0142ug\u0119 zatrzymaj",
+      "uslug\u0119 zatrzymaj",
+      "usluge zatrzymaj",
+      "nginx zatrzymaj",
+      "nginx zatrzymaj us\u0142ug\u0119"
     ],
     "service_restart": [
       "restartuj us\u0142ug\u0119",
@@ -639,7 +647,12 @@
       "zrestartuj komputer",
       "startuj system",
       "uruchom system",
-      "wystartuj system"
+      "wystartuj system",
+      "restartowanie systemu",
+      "restartowanie",
+      "restartuj",
+      "zrestartuj",
+      "restart"
     ],
     "open_url": [
       "otw\u00f3rz przegl\u0105dark\u0119",
@@ -1385,8 +1398,12 @@
       "docker container ls",
       "kontenery",
       "containers",
+      "kontenery poka\u017c",
+      "poka\u017c kontenery",
+      "list\u0119 kontener\u00f3w",
+      "kontener\u00f3w list\u0119",
+      "kontener\u00f3w",
       "lista do ker\u00f3w",
-      "list\u0119 do ker\u00f3w",
       "lista kontener\u00f3w",
       "list\u0119 kontener\u00f3w",
       "lista dker\u00f3w",
