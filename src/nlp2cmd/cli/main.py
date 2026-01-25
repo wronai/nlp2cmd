@@ -352,13 +352,11 @@ class InteractiveSession:
             mock_result = MockResult(result.command, result.errors)
             
             feedback = FeedbackResult(
-                type=FeedbackType.ERROR,
+                type=FeedbackType.SYNTAX_ERROR,
                 original_input=user_input,
                 generated_output=result.command,
-                validation_errors=mock_result.errors,
-                validation_warnings=[],
-                dsl_type=self.dsl,
-                context=self.context,
+                errors=mock_result.errors,
+                warnings=[],
             )
             
             self.history.append({
@@ -451,11 +449,12 @@ class InteractiveSession:
 
     def run(self):
         """Run interactive REPL."""
-        console.print(Panel.fit(
-            "[bold blue]NLP2CMD Interactive Mode[/bold blue]\n"
-            "Type 'help' for commands, 'exit' to quit",
-            border_style="blue",
-        ))
+        print("```bash")
+        # Use Rich Syntax for bash highlighting
+        syntax = Syntax("# NLP2CMD Interactive Mode\n# Type 'help' for commands, 'exit' to quit", "bash", theme="monokai", line_numbers=False)
+        console.print(syntax)
+        print("```")
+        print()
 
         # Show environment info
         env = self.context["environment"]
@@ -515,7 +514,7 @@ class InteractiveSession:
   Get users from database where city = 'Warsaw'
   Scale deployment nginx to 5 replicas
         """
-        console.print(Panel(help_text, title="Help", border_style="blue"))
+        console.print(help_text)
 
     def _handle_command(self, cmd: str):
         """Handle special commands."""
@@ -623,7 +622,12 @@ class InteractiveSession:
                 }
                 cmd = hints.get(pm)
                 if cmd:
-                    console.print(Panel(Syntax(cmd, "bash", theme="monokai", line_numbers=False), border_style="yellow"))
+                    print(f"```bash")
+                    # Use Rich Syntax for bash highlighting
+                    syntax = Syntax(cmd, "bash", theme="monokai", line_numbers=False)
+                    console.print(syntax)
+                    print(f"```")
+                    print()
                 else:
                     console.print(f"Install '{missing_tool}' using your system package manager or official docs.")
 
@@ -701,11 +705,12 @@ def _handle_run_query(
     """
     from nlp2cmd.generation.pipeline import RuleBasedPipeline
     
-    console.print(Panel(
-        f"[bold]{query}[/bold]",
-        title="[cyan]🚀 Run Mode[/cyan]",
-        border_style="cyan",
-    ))
+    print(f"```bash")
+    # Use Rich Syntax for bash highlighting
+    syntax = Syntax(f"# 🚀 Run Mode: {query}", "bash", theme="monokai", line_numbers=False)
+    console.print(syntax)
+    print(f"```")
+    print()
     
     # Step 0: Check for similar queries in history (disambiguation)
     if not auto_confirm:
@@ -816,11 +821,12 @@ def _handle_run_query(
                     cmd = (step.command or "").strip()
                     if not cmd or cmd.startswith("#"):
                         continue
-                    console.print(Panel(
-                        f"[bold]{cmd}[/bold]",
-                        title=f"[cyan]Step {n}/{len(steps)}: {step.domain}/{step.intent}[/cyan]",
-                        border_style="cyan",
-                    ))
+                    print(f"```bash")
+                    # Use Rich Syntax for bash highlighting
+                    syntax = Syntax(f"# Step {n}/{len(steps)}: {step.domain}/{step.intent}\n {cmd}", "bash", theme="monokai", line_numbers=False)
+                    console.print(syntax)
+                    print(f"```")
+                    print()
                     exec_result = runner.run_with_recovery(cmd, query)
                     if not exec_result.success and not auto_confirm:
                         cont = console.input("[yellow]Continue to next step? [y/N]: [/yellow]").strip().lower()
@@ -1068,22 +1074,12 @@ Rules:
         console.print(f"[dim]Detected: {detected_domain}/{detected_intent}[/dim]")
 
     if detected_domain == "sql":
-        try:
-            console.print(
-                Panel(
-                    Syntax(command, "sql"),
-                    title="[yellow]SQL query[/yellow]",
-                    border_style="yellow",
-                )
-            )
-        except Exception:
-            console.print(
-                Panel(
-                    f"[bold]{command}[/bold]",
-                    title="[yellow]SQL query[/yellow]",
-                    border_style="yellow",
-                )
-            )
+        print(f"```sql")
+        # Use Rich Syntax for SQL highlighting
+        syntax = Syntax(command, "sql", theme="monokai", line_numbers=False)
+        console.print(syntax)
+        print(f"```")
+        print()
         console.print(
             "[yellow]Run Mode executes shell commands; SQL is not executed automatically. Run this query in your database client (psql/mysql/sqlite3) or use --dsl sql without --run.[/yellow]"
         )
@@ -1683,23 +1679,37 @@ def cli_entry_point():
     args = sys.argv[1:]  # Skip the script name
     
     # Check if this looks like a natural language query
-    if (len(args) >= 2 and 
-        not args[0].startswith('-') and 
-        ' ' in args[0] and 
-        not any(arg.startswith('-') and '=' in arg for arg in args)):  # Avoid flags with values
+    # Look for text that contains spaces after flags
+    has_text_with_spaces = any(' ' in arg and not arg.startswith('-') for arg in args)
+    
+    # Also check if we have exactly one argument that contains spaces (single query)
+    is_single_query = len(args) == 1 and ' ' in args[0] and not args[0].startswith('-')
+    
+    # Check if --query flag is already present
+    has_query_flag = '--query' in args or '-q' in args
+    
+    if ((len(args) >= 2 and has_text_with_spaces and
+        not any(arg.startswith('-') and '=' in arg for arg in args) and  # Avoid flags with values
+        not has_query_flag) or  # Don't process if --query is already there
+        is_single_query):
         
         # Parse and rewrite args
         text_parts = []
         option_parts = []
-        seen_option = False
         
         for i, a in enumerate(args):
-            if not seen_option and a.startswith("-"):
-                seen_option = True
-            if seen_option:
+            if a.startswith("-"):
                 option_parts.append(a)
-            else:
+            elif ' ' in a:
+                # This looks like natural language text
                 text_parts.append(a)
+            else:
+                # Single word, could be option value or text
+                # If we don't have any text parts yet and this isn't a known option, treat it as text
+                if not text_parts and i == len(args) - 1:
+                    text_parts.append(a)
+                else:
+                    option_parts.append(a)
         
         query_text = " ".join(text_parts).strip()
         

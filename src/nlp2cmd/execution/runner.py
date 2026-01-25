@@ -22,6 +22,7 @@ try:
     from rich.panel import Panel
     from rich.live import Live
     from rich.text import Text
+    from rich.syntax import Syntax
 except Exception:  # pragma: no cover
     class Console:  # type: ignore
         def print(self, *args, **kwargs):
@@ -40,6 +41,10 @@ except Exception:  # pragma: no cover
 
     class Text(str):  # type: ignore
         pass
+
+    class Syntax:  # type: ignore
+        def __init__(self, code, *args, **kwargs):
+            self.code = code
 
     class Live:  # type: ignore
         def __init__(self, *args, **kwargs):
@@ -314,11 +319,12 @@ class ExecutionRunner:
         if self.auto_confirm:
             return True
         
-        self.console.print(Panel(
-            f"[bold]{command}[/bold]",
-            title="[yellow]Command to execute[/yellow]",
-            border_style="yellow",
-        ))
+        print(f"```bash")
+        # Use Rich Syntax for bash highlighting
+        syntax = Syntax(command, "bash", theme="monokai", line_numbers=False)
+        self.console.print(syntax)
+        print(f"```")
+        print()
         
         response = self.console.input("[yellow]Execute this command? [Y/n/e(dit)]: [/yellow]").strip().lower()
         
@@ -459,11 +465,12 @@ If the command syntax was wrong, provide the corrected command.
                 suggestion = self.get_recovery_suggestion(context)
                 
                 if suggestion:
-                    self.console.print(Panel(
-                        f"[cyan]{suggestion}[/cyan]",
-                        title="[yellow]💡 Suggested recovery[/yellow]",
-                        border_style="yellow",
-                    ))
+                    print(f"```bash")
+                    # Use Rich Syntax for bash highlighting
+                    syntax = Syntax(f"# 💡 Suggested recovery:\n {suggestion}", "bash", theme="monokai", line_numbers=False)
+                    self.console.print(syntax)
+                    print(f"```")
+                    print()
                     
                     if on_suggestion:
                         if on_suggestion(suggestion):

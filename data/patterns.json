@@ -2,713 +2,1663 @@
   "$schema": "patterns.v1",
   "sql": {
     "select": [
-      "pokaż", "wyświetl", "znajdź", "pobierz", "select", "get",
-      "show", "list", "fetch", "query", "retrieve",
-      "z tabeli", "from table", "wszystkich", "all records",
-      "dane z", "data from", "wszystkie rekordy", "all records", "wiersze", "rows"
+      "poka\u017c",
+      "wy\u015bwietl",
+      "znajd\u017a",
+      "pobierz",
+      "select",
+      "get",
+      "show",
+      "list",
+      "fetch",
+      "query",
+      "retrieve",
+      "z tabeli",
+      "from table",
+      "wszystkich",
+      "all records",
+      "dane z",
+      "data from",
+      "wszystkie rekordy",
+      "all records",
+      "wiersze",
+      "rows"
     ],
     "select_distinct": [
-      "unikalne", "distinct", "różne", "unique values", "bez duplikatów",
-      "without duplicates", "deduplikuj"
+      "unikalne",
+      "distinct",
+      "r\u00f3\u017cne",
+      "unique values",
+      "bez duplikat\u00f3w",
+      "without duplicates",
+      "deduplikuj"
     ],
     "insert": [
-      "dodaj", "wstaw", "insert", "create record", "add record",
-      "nowy rekord", "new record", "wprowadź", "enter"
+      "dodaj",
+      "wstaw",
+      "insert",
+      "create record",
+      "add record",
+      "nowy rekord",
+      "new record",
+      "wprowad\u017a",
+      "enter"
     ],
     "update": [
-      "zmień", "zaktualizuj", "update", "modify", "ustaw",
-      "set", "edit", "zmiana"
+      "zmie\u0144",
+      "zaktualizuj",
+      "update",
+      "modify",
+      "ustaw",
+      "set",
+      "edit",
+      "zmiana"
     ],
     "delete": [
-      "usuń", "skasuj", "delete", "remove", "wymaż",
-      "kasuj", "drop record", "usuń rekord", "skasuj rekord"
+      "usu\u0144",
+      "skasuj",
+      "delete",
+      "remove",
+      "wyma\u017c",
+      "kasuj",
+      "drop record",
+      "usu\u0144 rekord",
+      "skasuj rekord"
     ],
     "truncate": [
-      "truncate", "wyczyść tabelę", "clear table", "usuń wszystko z tabeli",
-      "opróżnij tabelę", "empty table"
+      "truncate",
+      "wyczy\u015b\u0107 tabel\u0119",
+      "clear table",
+      "usu\u0144 wszystko z tabeli",
+      "opr\u00f3\u017cnij tabel\u0119",
+      "empty table"
     ],
     "aggregate": [
-      "policz", "zsumuj", "średnia", "count", "sum", "avg",
-      "ile jest", "how many", "total", "suma", "średnio",
-      "grupuj", "group by", "pogrupuj", "min", "max", "minimum", "maksimum"
+      "policz",
+      "zsumuj",
+      "\u015brednia",
+      "count",
+      "sum",
+      "avg",
+      "ile jest",
+      "how many",
+      "total",
+      "suma",
+      "\u015brednio",
+      "grupuj",
+      "group by",
+      "pogrupuj",
+      "min",
+      "max",
+      "minimum",
+      "maksimum"
     ],
     "inner_join": [
-      "inner join", "join", "połącz tabele", "złącz tabele",
-      "join tables", "łączenie tabel", "relacja między"
+      "inner join",
+      "join",
+      "po\u0142\u0105cz tabele",
+      "z\u0142\u0105cz tabele",
+      "join tables",
+      "\u0142\u0105czenie tabel",
+      "relacja mi\u0119dzy"
     ],
     "left_join": [
-      "left join", "left outer join", "lewe złączenie",
-      "wszystkie z lewej", "all from left"
+      "left join",
+      "left outer join",
+      "lewe z\u0142\u0105czenie",
+      "wszystkie z lewej",
+      "all from left"
     ],
     "right_join": [
-      "right join", "right outer join", "prawe złączenie",
-      "wszystkie z prawej", "all from right"
+      "right join",
+      "right outer join",
+      "prawe z\u0142\u0105czenie",
+      "wszystkie z prawej",
+      "all from right"
     ],
     "full_join": [
-      "full join", "full outer join", "pełne złączenie",
-      "wszystkie z obu", "all from both"
+      "full join",
+      "full outer join",
+      "pe\u0142ne z\u0142\u0105czenie",
+      "wszystkie z obu",
+      "all from both"
     ],
     "create_table": [
-      "utwórz tabelę", "create table", "nowa tabela", "new table",
-      "stwórz tabelę", "zdefiniuj tabelę", "tabela sql", "sql table"
+      "utw\u00f3rz tabel\u0119",
+      "create table",
+      "nowa tabela",
+      "new table",
+      "stw\u00f3rz tabel\u0119",
+      "zdefiniuj tabel\u0119",
+      "tabela sql",
+      "sql table"
     ],
     "drop_table": [
-      "drop table", "usuń tabelę", "skasuj tabelę", "delete table",
-      "zniszcz tabelę"
+      "drop table",
+      "usu\u0144 tabel\u0119",
+      "skasuj tabel\u0119",
+      "delete table",
+      "zniszcz tabel\u0119"
     ],
     "alter_add_column": [
-      "alter table add", "dodaj kolumnę", "add column", "nowa kolumna",
-      "rozszerz tabelę"
+      "alter table add",
+      "dodaj kolumn\u0119",
+      "add column",
+      "nowa kolumna",
+      "rozszerz tabel\u0119"
     ],
     "alter_drop_column": [
-      "alter table drop", "usuń kolumnę", "drop column", "skasuj kolumnę"
+      "alter table drop",
+      "usu\u0144 kolumn\u0119",
+      "drop column",
+      "skasuj kolumn\u0119"
     ],
     "alter_rename_column": [
-      "rename column", "zmień nazwę kolumny", "przemianuj kolumnę"
+      "rename column",
+      "zmie\u0144 nazw\u0119 kolumny",
+      "przemianuj kolumn\u0119"
     ],
     "create_index": [
-      "create index", "utwórz indeks", "dodaj indeks", "new index",
-      "zindeksuj", "index on"
+      "create index",
+      "utw\u00f3rz indeks",
+      "dodaj indeks",
+      "new index",
+      "zindeksuj",
+      "index on"
     ],
     "drop_index": [
-      "drop index", "usuń indeks", "skasuj indeks", "delete index"
+      "drop index",
+      "usu\u0144 indeks",
+      "skasuj indeks",
+      "delete index"
     ],
     "create_view": [
-      "create view", "utwórz widok", "nowy widok", "zdefiniuj widok"
+      "create view",
+      "utw\u00f3rz widok",
+      "nowy widok",
+      "zdefiniuj widok"
     ],
     "drop_view": [
-      "drop view", "usuń widok", "skasuj widok"
+      "drop view",
+      "usu\u0144 widok",
+      "skasuj widok"
     ],
     "window_row_number": [
-      "row_number", "numer wiersza", "row number", "numeruj wiersze",
+      "row_number",
+      "numer wiersza",
+      "row number",
+      "numeruj wiersze",
       "ponumeruj"
     ],
     "window_rank": [
-      "rank", "ranking", "pozycja", "uszereguj", "dense_rank"
+      "rank",
+      "ranking",
+      "pozycja",
+      "uszereguj",
+      "dense_rank"
     ],
     "window_lag": [
-      "lag", "poprzednia wartość", "previous value", "wartość wcześniejsza"
+      "lag",
+      "poprzednia warto\u015b\u0107",
+      "previous value",
+      "warto\u015b\u0107 wcze\u015bniejsza"
     ],
     "window_lead": [
-      "lead", "następna wartość", "next value", "wartość późniejsza"
+      "lead",
+      "nast\u0119pna warto\u015b\u0107",
+      "next value",
+      "warto\u015b\u0107 p\u00f3\u017aniejsza"
     ],
     "begin": [
-      "begin", "start transaction", "rozpocznij transakcję"
+      "begin",
+      "start transaction",
+      "rozpocznij transakcj\u0119"
     ],
     "commit": [
-      "commit", "zatwierdź", "zatwierdź transakcję"
+      "commit",
+      "zatwierd\u017a",
+      "zatwierd\u017a transakcj\u0119"
     ],
     "rollback": [
-      "rollback", "cofnij", "wycofaj transakcję", "anuluj transakcję"
+      "rollback",
+      "cofnij",
+      "wycofaj transakcj\u0119",
+      "anuluj transakcj\u0119"
     ],
     "describe": [
-      "describe", "opisz tabelę", "struktura tabeli", "table structure",
-      "schema tabeli", "kolumny tabeli"
+      "describe",
+      "opisz tabel\u0119",
+      "struktura tabeli",
+      "table structure",
+      "schema tabeli",
+      "kolumny tabeli"
     ],
     "show_tables": [
-      "show tables", "pokaż tabele", "lista tabel", "list tables",
-      "jakie tabele", "what tables"
+      "show tables",
+      "poka\u017c tabele",
+      "lista tabel",
+      "list tables",
+      "jakie tabele",
+      "what tables"
     ],
     "show_databases": [
-      "show databases", "pokaż bazy", "lista baz", "list databases",
-      "jakie bazy", "what databases"
+      "show databases",
+      "poka\u017c bazy",
+      "lista baz",
+      "list databases",
+      "jakie bazy",
+      "what databases"
     ],
     "explain": [
-      "explain", "plan zapytania", "query plan", "analiza zapytania",
-      "optymalizacja", "performance"
+      "explain",
+      "plan zapytania",
+      "query plan",
+      "analiza zapytania",
+      "optymalizacja",
+      "performance"
     ]
   },
   "shell": {
     "list": [
-      "pokaż pliki użytkownika", "pokaż pliki usera", "pokaż plik usera", "pokaz plik user", "show user files",
-      "znajdź pliki użytkownika", "znajdź pliki usera", "find user files",
-      "szukaj plików użytkownika", "szukaj plików usera", "search user files",
-      "znajdź pliki w folderze użytkownika", "znajdź pliki w folderze usera",
-      "szukaj pliki w folderze użytkownika", "szukaj pliki w folderze usera",
-      "pokaz plik", "pokaz plika", "pokaż pliki", "pokaż plików",
-      "lista plików", "listę plików", "lista folderów", "listę folderów", "lista katalogów", "listę katalogów",
-      "pokaż katalog", "pokaż katalogi", "pokaż folder", "pokaż foldery", "ls", "dir", "wylistuj",
-      "zawartość katalogu", "zawartość folderu", "directory contents", "folder contents",
-      "pokaż listę folderów użytkownika", "pokaż foldery użytkownika", "pokaż katalogi użytkownika",
-      "lista folderów użytkownika", "listę folderów użytkownika", "pokaż katalog domowy użytkownika",
-      "listuj pliki", "wypisz pliki", "listuj pliki w katalogu", "listuj pliki w folderze",
-      "listuj pliki w katalogu domowym", "listuj pliki w folderze użytkownika", "wypisz pliki w katalogu domowym",
-      "pokaż zawartość katalogu domowego", "pokaż zawartość folderu użytkownika",
-      "listować plik", "listować pliki w katalogu", "listować pliki w folderze", "wypisać plik",
-      "listować pliki w katalogu domowym", "listować pliki w folderze użytkownika", "wypisać pliki w katalogu domowym",
-      "listować plik w katalog domowy", "wypisać plik w katalog domowy", "listować pliki w folder użytkownika",
-      "wypisać pliki w folderze użytkownika", "katalog domowy", "folder użytkownika", "zawartość katalog domowy", "zawartość folder użytkownika",
-      "wypić plik w folder uzytkownik", "wypisać pliki w folderze uzytkownik", "wypić plik w katalogu domowym", "folder uzytkownik",
-      "znajdź plik", "szukaj plik", "find files", "search files",
-      "locate", "wyszukaj", "gdzie jest", "where is",
-      "find python", "find log", "znajdź pliki z rozszerzeniem"
+      "lista plik\u00f3w",
+      "list\u0119 plik\u00f3w",
+      "lista folder\u00f3w",
+      "list\u0119 folder\u00f3w",
+      "lista katalog\u00f3w",
+      "list\u0119 katalog\u00f3w",
+      "poka\u017c katalog",
+      "poka\u017c katalogi",
+      "poka\u017c folder",
+      "poka\u017c foldery",
+      "ls",
+      "dir",
+      "wylistuj",
+      "zawarto\u015b\u0107 katalogu",
+      "zawarto\u015b\u0107 folderu",
+      "directory contents",
+      "folder contents",
+      "poka\u017c list\u0119 folder\u00f3w u\u017cytkownika",
+      "poka\u017c foldery u\u017cytkownika",
+      "poka\u017c katalogi u\u017cytkownika",
+      "lista folder\u00f3w u\u017cytkownika",
+      "list\u0119 folder\u00f3w u\u017cytkownika",
+      "poka\u017c katalog domowy u\u017cytkownika",
+      "listuj pliki",
+      "wypisz pliki",
+      "listuj pliki w katalogu",
+      "listuj pliki w folderze",
+      "listuj pliki w katalogu domowym",
+      "listuj pliki w folderze u\u017cytkownika",
+      "wypisz pliki w katalogu domowym",
+      "poka\u017c zawarto\u015b\u0107 katalogu domowego",
+      "poka\u017c zawarto\u015b\u0107 folderu u\u017cytkownika",
+      "listowa\u0107 plik",
+      "listowa\u0107 pliki w katalogu",
+      "listowa\u0107 pliki w folderze",
+      "wypisa\u0107 plik",
+      "listowa\u0107 pliki w katalogu domowym",
+      "listowa\u0107 pliki w folderze u\u017cytkownika",
+      "wypisa\u0107 pliki w katalogu domowym",
+      "listowa\u0107 plik w katalog domowy",
+      "wypisa\u0107 plik w katalog domowy",
+      "listowa\u0107 pliki w folder u\u017cytkownika",
+      "wypisa\u0107 pliki w folderze u\u017cytkownika",
+      "katalog domowy",
+      "folder u\u017cytkownika",
+      "zawarto\u015b\u0107 katalog domowy",
+      "zawarto\u015b\u0107 folder u\u017cytkownika",
+      "wypi\u0107 plik w folder uzytkownik",
+      "wypisa\u0107 pliki w folderze uzytkownik",
+      "wypi\u0107 plik w katalogu domowym",
+      "folder uzytkownik"
     ],
     "count_files": [
-      "ile plików", "ile jest plików", "ile plikow", "ile jest plikow",
-      "policz pliki", "zlicz pliki", "count files", "how many files",
+      "ile plik\u00f3w",
+      "ile jest plik\u00f3w",
+      "ile plikow",
+      "ile jest plikow",
+      "policz pliki",
+      "zlicz pliki",
+      "count files",
+      "how many files",
       "number of files"
     ],
     "count_dirs": [
-      "ile folderów", "ile jest folderów", "ile folderow", "ile jest folderow",
-      "ile katalogów", "ile jest katalogów", "ile katalogow", "ile jest katalogow",
-      "policz foldery", "zlicz foldery", "policz katalogi", "zlicz katalogi",
-      "count directories", "how many directories", "number of directories",
-      "count folders", "how many folders", "number of folders"
-    ],
-    "list": [
-      "lista plików", "listę plików", "lista folderów", "listę folderów", "lista katalogów", "listę katalogów",
-      "pokaż katalog", "pokaż katalogi", "pokaż folder", "pokaż foldery", "ls", "dir", "wylistuj",
-      "zawartość katalogu", "zawartość folderu", "directory contents", "folder contents",
-      "pokaż listę folderów użytkownika", "pokaż foldery użytkownika", "pokaż katalogi użytkownika",
-      "lista folderów użytkownika", "listę folderów użytkownika", "pokaż katalog domowy użytkownika",
-      "listuj pliki", "wypisz pliki", "listuj pliki w katalogu", "listuj pliki w folderze",
-      "listuj pliki w katalogu domowym", "listuj pliki w folderze użytkownika", "wypisz pliki w katalogu domowym",
-      "pokaż zawartość katalogu domowego", "pokaż zawartość folderu użytkownika",
-      "listować plik", "listować pliki w katalogu", "listować pliki w folderze", "wypisać plik",
-      "listować pliki w katalogu domowym", "listować pliki w folderze użytkownika", "wypisać pliki w katalogu domowym",
-      "listować plik w katalog domowy", "wypisać plik w katalog domowy", "listować pliki w folder użytkownika",
-      "wypisać pliki w folderze użytkownika", "katalog domowy", "folder użytkownika", "zawartość katalog domowy", "zawartość folder użytkownika",
-      "wypić plik w folder uzytkownik", "wypisać pliki w folderze uzytkownik", "wypić plik w katalogu domowym", "folder uzytkownik"
+      "ile folder\u00f3w",
+      "ile jest folder\u00f3w",
+      "ile folderow",
+      "ile jest folderow",
+      "ile katalog\u00f3w",
+      "ile jest katalog\u00f3w",
+      "ile katalogow",
+      "ile jest katalogow",
+      "policz foldery",
+      "zlicz foldery",
+      "policz katalogi",
+      "zlicz katalogi",
+      "count directories",
+      "how many directories",
+      "number of directories",
+      "count folders",
+      "how many folders",
+      "number of folders"
     ],
     "process": [
-      "procesy", "ps", "uruchomione procesy", "running processes",
-      "działające procesy", "top procesy", "cpu", "memory usage",
-      "użycie pamięci", "show processes", "pokaż procesy",
-      "sprawdź procesy", "procesy zużywające pamięć", "procesy zużywające cpu",
-      "znajdź procesy", "procesy użytkownika", "zombie procesy", "drzewo procesów",
-      "pokaż użycie cpu i pamięci", "monitor systemowy", "htop"
+      "procesy",
+      "ps",
+      "uruchomione procesy",
+      "running processes",
+      "dzia\u0142aj\u0105ce procesy",
+      "top procesy",
+      "cpu",
+      "memory usage",
+      "u\u017cycie pami\u0119ci",
+      "show processes",
+      "poka\u017c procesy",
+      "sprawd\u017a procesy",
+      "procesy zu\u017cywaj\u0105ce pami\u0119\u0107",
+      "procesy zu\u017cywaj\u0105ce cpu",
+      "znajd\u017a procesy",
+      "procesy u\u017cytkownika",
+      "zombie procesy",
+      "drzewo proces\u00f3w",
+      "poka\u017c u\u017cycie cpu i pami\u0119ci",
+      "monitor systemowy",
+      "htop"
     ],
     "file_operation": [
-      "kopiuj", "przenieś", "usuń plik", "copy", "move", "rm",
-      "skopiuj", "mv", "rename", "zmień nazwę",
-      "skopiuj plik", "przenieś plik", "usuń plik", "usuń wszystkie pliki",
-      "kopij", "kopjuj", "kopuj",
-      "utwórz katalog", "zmień nazwę pliku", "zmień nazwę pliku na",
-      "sprawdź rozmiar pliku", "rozmiar pliku", "du plik", "wielkość pliku",
-      "zainstaluj", "install", "apt install", "apt-get install", "dodaj", "pobierz",
-      "wget", "curl", "download", "pobierz plik"
+      "kopiuj",
+      "przenie\u015b",
+      "usu\u0144 plik",
+      "copy",
+      "move",
+      "rm",
+      "skopiuj",
+      "mv",
+      "rename",
+      "zmie\u0144 nazw\u0119",
+      "skopiuj plik",
+      "przenie\u015b plik",
+      "usu\u0144 plik",
+      "usu\u0144 wszystkie pliki",
+      "kopij",
+      "kopjuj",
+      "kopuj",
+      "utw\u00f3rz katalog",
+      "zmie\u0144 nazw\u0119 pliku",
+      "zmie\u0144 nazw\u0119 pliku na",
+      "sprawd\u017a rozmiar pliku",
+      "rozmiar pliku",
+      "du plik",
+      "wielko\u015b\u0107 pliku",
+      "zainstaluj",
+      "install",
+      "apt install",
+      "apt-get install",
+      "dodaj",
+      "pobierz",
+      "wget",
+      "curl",
+      "download",
+      "pobierz plik",
+      "tworzenie katalogu",
+      "tworzenie katalog",
+      "stw\u00f3rz katalog",
+      "utw\u00f3rz katalog"
     ],
     "disk": [
-      "miejsce na dysku", "disk space", "df", "du", "rozmiar",
-      "ile miejsca", "how much space", "wolne miejsce", "free space",
-      "pokaż dysk", "użycie dysku", "miejsce na dysku", "sprawdź miejsce na dysku",
-      "sprawdź dysk twardy", "dysk twardy", "zdrowie dysku", "defragmentacja"
+      "miejsce na dysku",
+      "disk space",
+      "df",
+      "du",
+      "rozmiar",
+      "ile miejsca",
+      "how much space",
+      "wolne miejsce",
+      "free space",
+      "poka\u017c dysk",
+      "u\u017cycie dysku",
+      "miejsce na dysku",
+      "sprawd\u017a miejsce na dysku",
+      "sprawd\u017a dysk twardy",
+      "dysk twardy",
+      "zdrowie dysku",
+      "defragmentacja"
     ],
     "network": [
-      "ping", "curl", "wget", "sieć", "network", "port",
-      "połączenie", "connection", "netstat",
-      "sprawdź połączenie", "testuj łączność", "pinguj", "sprawdź ping",
-      "pokaż adres ip", "adres ip", "ip address", "konfiguracja sieciowa",
-      "znajdź porty", "otwarte porty", "porty nasłuchujące", "aktywne połączenia",
-      "znajdź urządzenia", "skanuj sieć", "nmap", "prędkość internetu"
+      "ping",
+      "curl",
+      "wget",
+      "sie\u0107",
+      "network",
+      "port",
+      "po\u0142\u0105czenie",
+      "connection",
+      "netstat",
+      "sprawd\u017a po\u0142\u0105czenie",
+      "testuj \u0142\u0105czno\u015b\u0107",
+      "pinguj",
+      "sprawd\u017a ping",
+      "poka\u017c adres ip",
+      "adres ip",
+      "ip address",
+      "konfiguracja sieciowa",
+      "znajd\u017a porty",
+      "otwarte porty",
+      "porty nas\u0142uchuj\u0105ce",
+      "aktywne po\u0142\u0105czenia",
+      "znajd\u017a urz\u0105dzenia",
+      "skanuj sie\u0107",
+      "nmap",
+      "pr\u0119dko\u015b\u0107 internetu"
     ],
     "archive": [
-      "spakuj", "rozpakuj", "zip", "tar", "compress", "extract",
-      "archiwum", "archive", "unzip", "untar",
-      "utwórz backup", "skompresuj", "backup", "kopia zapasowa",
-      "skopiuj backup", "odtwórz z backupu", "integralność backupu", "status backupu",
-      "usuń stare backupi", "rozmiar backupu", "harmonogram backup"
+      "spakuj",
+      "rozpakuj",
+      "zip",
+      "tar",
+      "compress",
+      "extract",
+      "archiwum",
+      "archive",
+      "unzip",
+      "untar",
+      "utw\u00f3rz backup",
+      "skompresuj",
+      "backup",
+      "kopia zapasowa",
+      "skopiuj backup",
+      "odtw\u00f3rz z backupu",
+      "integralno\u015b\u0107 backupu",
+      "status backupu",
+      "usu\u0144 stare backupi",
+      "rozmiar backupu",
+      "harmonogram backup"
     ],
     "grep": [
-      "grep", "wyszukaj tekst", "find text", "szukaj w pliku",
-      "pattern", "wzorzec", "filtruj", "filter",
-      "znajdź błędy", "wyszukaj błędy", "grep error", "filtruj logi", "przeglądaj logi",
-      "wyszukaj linie", "linie z error", "linie z ERROR", "szukaj error"
+      "grep",
+      "wyszukaj tekst",
+      "find text",
+      "szukaj w pliku",
+      "pattern",
+      "wzorzec",
+      "filtruj",
+      "filter",
+      "znajd\u017a b\u0142\u0119dy",
+      "wyszukaj b\u0142\u0119dy",
+      "grep error",
+      "filtruj logi",
+      "przegl\u0105daj logi",
+      "wyszukaj linie",
+      "linie z error",
+      "linie z ERROR",
+      "szukaj error"
     ],
     "git_status": [
-      "git status", "status gita", "status git",
-      "pokaż status gita", "sprawdź status gita"
+      "git status",
+      "status gita",
+      "status git",
+      "poka\u017c status gita",
+      "sprawd\u017a status gita"
     ],
     "git_branch": [
-      "git branch", "aktualna gałąź", "aktualna galaz",
-      "gałąź gita", "galaz gita", "current branch"
+      "git branch",
+      "aktualna ga\u0142\u0105\u017a",
+      "aktualna galaz",
+      "ga\u0142\u0105\u017a gita",
+      "galaz gita",
+      "current branch"
     ],
     "system_maintenance": [
-      "aktualizacja", "upgrade", "czyszczenie", "maintenance", "update", "clean",
-      "czyść cache", "aktualizuj system", "uruchom aktualizację", "czyszczenie systemowe",
-      "sprawdź logi", "logi systemowe", "oczyszczanie plików tymczasowych", "usuń stare pliki",
-      "sprawdź cron", "status cron", "uruchom defragmentację"
+      "aktualizacja",
+      "upgrade",
+      "czyszczenie",
+      "maintenance",
+      "update",
+      "clean",
+      "czy\u015b\u0107 cache",
+      "aktualizuj system",
+      "uruchom aktualizacj\u0119",
+      "czyszczenie systemowe",
+      "sprawd\u017a logi",
+      "logi systemowe",
+      "oczyszczanie plik\u00f3w tymczasowych",
+      "usu\u0144 stare pliki",
+      "sprawd\u017a cron",
+      "status cron",
+      "uruchom defragmentacj\u0119"
     ],
     "development": [
-      "test", "build", "compile", "run", "debug", "lint", "version", "install",
-      "uruchom testy", "testy jednostkowe", "zbuduj projekt", "maven", "npm install",
-      "serwer deweloperski", "uruchom serwer", "debugger", "linter", "analiza kodu",
-      "logi aplikacji", "czyszczenie cache", "generuj dokumentację", "wersja node"
+      "test",
+      "build",
+      "compile",
+      "run",
+      "debug",
+      "lint",
+      "version",
+      "install",
+      "uruchom testy",
+      "testy jednostkowe",
+      "zbuduj projekt",
+      "maven",
+      "npm install",
+      "serwer deweloperski",
+      "uruchom serwer",
+      "debugger",
+      "linter",
+      "analiza kodu",
+      "logi aplikacji",
+      "czyszczenie cache",
+      "generuj dokumentacj\u0119",
+      "wersja node"
     ],
     "security": [
-      "bezpieczeństwo", "security", "who", "last", "ssh", "permissions", "firewall",
-      "kto jest zalogowany", "historia logowań", "sesje ssh", "uprawnienia pliku",
-      "pliki suid", "firewall rules", "logi bezpieczeństwa", "podejrzane procesy",
-      "zainstalowane pakiety", "użytkownicy systemu"
+      "bezpiecze\u0144stwo",
+      "security",
+      "who",
+      "last",
+      "ssh",
+      "permissions",
+      "firewall",
+      "kto jest zalogowany",
+      "historia logowa\u0144",
+      "sesje ssh",
+      "uprawnienia pliku",
+      "pliki suid",
+      "firewall rules",
+      "logi bezpiecze\u0144stwa",
+      "podejrzane procesy",
+      "zainstalowane pakiety",
+      "u\u017cytkownicy systemu"
     ],
     "process_management": [
-      "zabij proces", "uruchom proces", "zatrzymaj proces", "restartuj proces", "uruchom ponownie",
-      "uruchom w tle", "uruchom skrypt", "status usługi",
-      "sprawdź status", "monitor systemowy", "htop", "top"
+      "zabij proces",
+      "uruchom proces",
+      "zatrzymaj proces",
+      "restartuj proces",
+      "uruchom ponownie",
+      "uruchom w tle",
+      "uruchom skrypt",
+      "status us\u0142ugi",
+      "sprawd\u017a status",
+      "monitor systemowy",
+      "htop",
+      "top"
     ],
     "service_start": [
-      "uruchom usługę", "uruchom serwis", "uruchom service", "start service",
-      "systemctl start", "systemctl uruchom", "startuj usługę", "startuj serwis", "wystartuj usługę",
-      "uruchom usługę systemową", "startuj usługę systemową", "uruchom usluge", "uruchom uslugi",
-      "uruchom nginx", "uruchom", "uruchom usługę nginx", "uruchom serwis nginx",
-      "proszę uruchom usługę nginx na porcie"
+      "uruchom us\u0142ug\u0119",
+      "uruchom serwis",
+      "uruchom service",
+      "start service",
+      "systemctl start",
+      "systemctl uruchom",
+      "startuj us\u0142ug\u0119",
+      "startuj serwis",
+      "wystartuj us\u0142ug\u0119",
+      "uruchom us\u0142ug\u0119 systemow\u0105",
+      "startuj us\u0142ug\u0119 systemow\u0105",
+      "uruchom usluge",
+      "uruchom uslugi",
+      "uruchom nginx",
+      "uruchom",
+      "uruchom us\u0142ug\u0119 nginx",
+      "uruchom serwis nginx",
+      "prosz\u0119 uruchom us\u0142ug\u0119 nginx na porcie"
     ],
     "service_stop": [
-      "zatrzymaj usługę", "zatrzymaj serwis", "stop service",
+      "zatrzymaj us\u0142ug\u0119",
+      "zatrzymaj serwis",
+      "stop service",
       "systemctl stop"
     ],
     "service_restart": [
-      "restartuj usługę", "restartuj serwis", "restart service",
-      "systemctl restart", "zrestartuj usługę", "restartuj usługe",
-      "restart usługę", "restart serwis", "restart nginx"
+      "restartuj us\u0142ug\u0119",
+      "restartuj serwis",
+      "restart service",
+      "systemctl restart",
+      "zrestartuj us\u0142ug\u0119",
+      "restartuj us\u0142uge",
+      "restart us\u0142ug\u0119",
+      "restart serwis",
+      "restart nginx"
     ],
     "service_status": [
-      "status usługi", "status serwisu", "status service",
+      "status us\u0142ugi",
+      "status serwisu",
+      "status service",
       "systemctl status"
     ],
     "reboot": [
-      "reboot", "restart systemu", "restartuj system", "zrestartuj system",
-      "restart system", "uruchom ponownie system", "restartuj komputer",
-      "zrestartuj komputer", "startuj system", "uruchom system", "wystartuj system"
+      "reboot",
+      "restart systemu",
+      "restartuj system",
+      "zrestartuj system",
+      "restart system",
+      "uruchom ponownie system",
+      "restartuj komputer",
+      "zrestartuj komputer",
+      "startuj system",
+      "uruchom system",
+      "wystartuj system"
     ],
     "open_url": [
-      "otwórz przeglądarkę", "open browser", "otwórz stronę", "open url", "open website",
-      "otwórz link", "browse to", "navigate to", "go to url", "idź do strony",
-      "wejdź na stronę", "przeglądarka", "browser", "xdg-open", "open link",
-      "otwórz youtube", "go to youtube", "go to facebook", "youtube.com", "facebook.com"
+      "otw\u00f3rz przegl\u0105dark\u0119",
+      "open browser",
+      "otw\u00f3rz stron\u0119",
+      "open url",
+      "open website",
+      "otw\u00f3rz link",
+      "browse to",
+      "navigate to",
+      "go to url",
+      "id\u017a do strony",
+      "wejd\u017a na stron\u0119",
+      "przegl\u0105darka",
+      "browser",
+      "xdg-open",
+      "open link",
+      "otw\u00f3rz youtube",
+      "go to youtube",
+      "go to facebook",
+      "youtube.com",
+      "facebook.com"
     ],
     "google_search": [
-      "wyszukaj w google", "google search", "szukaj w google", "search google",
-      "wyszukaj w google", "znajdź w google", "google python", "google tutorial",
-      "wyszukaj w google", "wpisz w google", "szukaj w google", "google search",
-      "wyszukaj python tutorial w google", "znajdź w google", "przeszukaj google"
+      "wyszukaj w google",
+      "google search",
+      "szukaj w google",
+      "search google",
+      "wyszukaj w google",
+      "znajd\u017a w google",
+      "google python",
+      "google tutorial",
+      "wyszukaj w google",
+      "wpisz w google",
+      "szukaj w google",
+      "google search",
+      "wyszukaj python tutorial w google",
+      "znajd\u017a w google",
+      "przeszukaj google"
     ],
     "github_search": [
-      "znajdź repozytorium na github", "wyszukaj na github", "github search",
-      "znajdź użytkownika github", "sprawdź repozytorium github", "github find",
-      "wyszukaj użytkownika github", "github repo search", "github code search",
-      "sprawdź repozytorium nlp2cmd na github", "znajdź projekt github"
+      "znajd\u017a repozytorium na github",
+      "wyszukaj na github",
+      "github search",
+      "znajd\u017a u\u017cytkownika github",
+      "sprawd\u017a repozytorium github",
+      "github find",
+      "wyszukaj u\u017cytkownika github",
+      "github repo search",
+      "github code search",
+      "sprawd\u017a repozytorium nlp2cmd na github",
+      "znajd\u017a projekt github"
     ],
     "amazon_search": [
-      "szukaj na amazon", "amazon search", "wyszukaj na amazon", "search amazon",
-      "znajdź produkt na amazon", "amazon find", "wyszukaj książki amazon",
-      "znajdź książkę o nlp na amazon", "amazon book search", "amazon product search",
-      "szukaj produktów amazon", "przeszukaj amazon"
+      "szukaj na amazon",
+      "amazon search",
+      "wyszukaj na amazon",
+      "search amazon",
+      "znajd\u017a produkt na amazon",
+      "amazon find",
+      "wyszukaj ksi\u0105\u017cki amazon",
+      "znajd\u017a ksi\u0105\u017ck\u0119 o nlp na amazon",
+      "amazon book search",
+      "amazon product search",
+      "szukaj produkt\u00f3w amazon",
+      "przeszukaj amazon"
     ],
     "text_head": [
-      "head", "pokaż początek", "pierwsze linie", "first lines", "top lines",
-      "początek pliku", "head file", "pokaż pierwsze"
+      "head",
+      "poka\u017c pocz\u0105tek",
+      "pierwsze linie",
+      "first lines",
+      "top lines",
+      "pocz\u0105tek pliku",
+      "head file",
+      "poka\u017c pierwsze"
     ],
     "text_tail": [
-      "tail", "pokaż koniec", "ostatnie linie", "last lines", "bottom lines",
-      "koniec pliku", "tail file", "pokaż ostatnie", "follow log"
+      "tail",
+      "poka\u017c koniec",
+      "ostatnie linie",
+      "last lines",
+      "bottom lines",
+      "koniec pliku",
+      "tail file",
+      "poka\u017c ostatnie",
+      "follow log"
     ],
     "text_wc": [
-      "wc", "policz linie", "policz słowa", "count lines", "count words",
-      "policz znaki", "count characters", "word count", "line count"
+      "wc",
+      "policz linie",
+      "policz s\u0142owa",
+      "count lines",
+      "count words",
+      "policz znaki",
+      "count characters",
+      "word count",
+      "line count"
+    ],
+    "find": [
+      "znajd\u017a",
+      "znajdz",
+      "find",
+      "szukaj",
+      "wyszukaj",
+      "locate",
+      "gdzie jest",
+      "znajd\u017a plik",
+      "znajd\u017a pliki",
+      "find file",
+      "find files",
+      "szukaj pliku",
+      "znajd\u017a pliki konfiguracyjne",
+      "znajd\u017a plik konfiguracyjny",
+      "znajd\u017a *.py",
+      "znajd\u017a pliki *.py",
+      "find *.py",
+      "search files",
+      "search file",
+      "locate file",
+      "locate files"
     ]
   },
   "browser": {
     "web_action": [
-      "wpisz tekst", "type text", "wypełnij pole", "fill field", "kliknij przycisk",
-      "click button", "wypełnij formularz", "fill form", "wpisz dane", "enter data",
-      "znajdź pole", "find field", "wybierz opcję", "select option", "zaznacz checkbox",
-      "check checkbox", "przejdź do", "navigate to", "kliknij link", "click link",
-      "otwórz stronę", "open page", "przejdź na stronę", "go to page", "wyszukaj na stronie",
-      "search on page", "znajdź na stronie", "find on page", "interakcja ze stroną", "website interaction",
-      "wyszukaj w google", "google search", "szukaj w google", "search google",
-      "znajdź repozytorium na github", "wyszukaj na github", "github search",
-      "szukaj na amazon", "amazon search", "wyszukaj na amazon", "search amazon",
-      "szukać na amazon", "szukać w google", "szukać na github",
-      "znajdź na amazon", "znajdź w google", "znajdź na github"
+      "wpisz tekst",
+      "type text",
+      "wype\u0142nij pole",
+      "fill field",
+      "kliknij przycisk",
+      "click button",
+      "wype\u0142nij formularz",
+      "fill form",
+      "wpisz dane",
+      "enter data",
+      "znajd\u017a pole",
+      "find field",
+      "wybierz opcj\u0119",
+      "select option",
+      "zaznacz checkbox",
+      "check checkbox",
+      "przejd\u017a do",
+      "navigate to",
+      "kliknij link",
+      "click link",
+      "otw\u00f3rz stron\u0119",
+      "open page",
+      "przejd\u017a na stron\u0119",
+      "go to page",
+      "wyszukaj na stronie",
+      "search on page",
+      "znajd\u017a na stronie",
+      "find on page",
+      "interakcja ze stron\u0105",
+      "website interaction",
+      "wyszukaj w google",
+      "google search",
+      "szukaj w google",
+      "search google",
+      "znajd\u017a repozytorium na github",
+      "wyszukaj na github",
+      "github search",
+      "szukaj na amazon",
+      "amazon search",
+      "wyszukaj na amazon",
+      "search amazon",
+      "szuka\u0107 na amazon",
+      "szuka\u0107 w google",
+      "szuka\u0107 na github",
+      "znajd\u017a na amazon",
+      "znajd\u017a w google",
+      "znajd\u017a na github"
     ],
     "navigate": [
-      "przejdź do", "go to", "otwórz stronę", "open website", "wejdź na stronę", "enter website",
-      "nawiguj do", "navigate to", "idź do", "visit", "odwiedź stronę", "browse to",
-      "otwórz link", "open link", "kliknij url", "click url", "przejdź na stronę główną", "go to homepage"
+      "przejd\u017a do",
+      "go to",
+      "otw\u00f3rz stron\u0119",
+      "open website",
+      "wejd\u017a na stron\u0119",
+      "enter website",
+      "nawiguj do",
+      "navigate to",
+      "id\u017a do",
+      "visit",
+      "odwied\u017a stron\u0119",
+      "browse to",
+      "otw\u00f3rz link",
+      "open link",
+      "kliknij url",
+      "click url",
+      "przejd\u017a na stron\u0119 g\u0142\u00f3wn\u0105",
+      "go to homepage"
     ],
     "click": [
-      "kliknij", "click", "naciśnij", "press", "wybierz", "select", "kliknij przycisk",
-      "click button", "kliknij link", "click link", "kliknij element", "click element",
-      "aktywuj", "activate", "zaznacz", "check", "odblokuj", "unlock"
+      "kliknij",
+      "click",
+      "naci\u015bnij",
+      "press",
+      "wybierz",
+      "select",
+      "kliknij przycisk",
+      "click button",
+      "kliknij link",
+      "click link",
+      "kliknij element",
+      "click element",
+      "aktywuj",
+      "activate",
+      "zaznacz",
+      "check",
+      "odblokuj",
+      "unlock"
     ],
     "fill_form": [
-      "wypełnij formularz", "fill form", "wypełlij dane", "fill data", "wpisz informacje",
-      "enter information", "uzupełnij pola", "complete fields", "wypełlij rejestrację",
-      "fill registration", "podaj dane", "provide data", "zarejestruj się", "register"
+      "wype\u0142nij formularz",
+      "fill form",
+      "wype\u0142lij dane",
+      "fill data",
+      "wpisz informacje",
+      "enter information",
+      "uzupe\u0142nij pola",
+      "complete fields",
+      "wype\u0142lij rejestracj\u0119",
+      "fill registration",
+      "podaj dane",
+      "provide data",
+      "zarejestruj si\u0119",
+      "register"
     ]
   },
   "utility": {
     "text_uniq": [
-      "uniq", "unikalne", "unique", "usuń duplikaty", "remove duplicates",
-      "deduplikacja", "dedupe", "distinct lines"
+      "uniq",
+      "unikalne",
+      "unique",
+      "usu\u0144 duplikaty",
+      "remove duplicates",
+      "deduplikacja",
+      "dedupe",
+      "distinct lines"
     ],
     "text_cut": [
-      "cut", "wytnij kolumnę", "cut column", "extract column", "field",
-      "wyciągnij pole", "extract field", "awk print"
+      "cut",
+      "wytnij kolumn\u0119",
+      "cut column",
+      "extract column",
+      "field",
+      "wyci\u0105gnij pole",
+      "extract field",
+      "awk print"
     ],
     "text_sed": [
-      "sed", "zamień tekst", "replace text", "substitute", "find replace",
-      "podmień", "search replace", "edytuj w miejscu"
+      "sed",
+      "zamie\u0144 tekst",
+      "replace text",
+      "substitute",
+      "find replace",
+      "podmie\u0144",
+      "search replace",
+      "edytuj w miejscu"
     ],
     "text_tr": [
-      "tr", "transliteruj", "translate chars", "zamień znaki",
-      "uppercase", "lowercase", "małe litery", "wielkie litery"
+      "tr",
+      "transliteruj",
+      "translate chars",
+      "zamie\u0144 znaki",
+      "uppercase",
+      "lowercase",
+      "ma\u0142e litery",
+      "wielkie litery"
     ],
     "text_diff": [
-      "diff", "porównaj pliki", "compare files", "różnice", "differences",
-      "różnica między", "porównanie plików"
+      "diff",
+      "por\u00f3wnaj pliki",
+      "compare files",
+      "r\u00f3\u017cnice",
+      "differences",
+      "r\u00f3\u017cnica mi\u0119dzy",
+      "por\u00f3wnanie plik\u00f3w"
     ],
     "text_cat": [
-      "cat", "wyświetl plik", "show file", "display file",
-      "zawartość pliku", "file content", "odczytaj plik"
+      "cat",
+      "wy\u015bwietl plik",
+      "show file",
+      "display file",
+      "zawarto\u015b\u0107 pliku",
+      "file content",
+      "odczytaj plik"
     ],
     "text_less": [
-      "less", "more", "przeglądaj plik", "browse file", "page through",
-      "pager", "scroll file"
+      "less",
+      "more",
+      "przegl\u0105daj plik",
+      "browse file",
+      "page through",
+      "pager",
+      "scroll file"
     ],
     "perm_chmod": [
-      "chmod", "uprawnienia", "permissions", "zmień uprawnienia",
-      "change permissions", "executable", "wykonywalny", "read write"
+      "chmod",
+      "uprawnienia",
+      "permissions",
+      "zmie\u0144 uprawnienia",
+      "change permissions",
+      "executable",
+      "wykonywalny",
+      "read write"
     ],
     "perm_chown": [
-      "chown", "właściciel", "owner", "zmień właściciela", "change owner",
-      "ownership", "grupa", "group"
+      "chown",
+      "w\u0142a\u015bciciel",
+      "owner",
+      "zmie\u0144 w\u0142a\u015bciciela",
+      "change owner",
+      "ownership",
+      "grupa",
+      "group"
     ],
     "user_whoami": [
-      "whoami", "kto jestem", "current user", "aktualny użytkownik",
-      "moja nazwa", "my username"
+      "whoami",
+      "kto jestem",
+      "current user",
+      "aktualny u\u017cytkownik",
+      "moja nazwa",
+      "my username"
     ],
     "user_id": [
-      "user id", "uid", "gid", "groups", "grupy użytkownika"
+      "user id",
+      "uid",
+      "gid",
+      "groups",
+      "grupy u\u017cytkownika"
     ],
     "user_list": [
-      "użytkownicy", "users", "lista użytkowników", "list users",
-      "konta", "accounts", "passwd"
+      "u\u017cytkownicy",
+      "users",
+      "lista u\u017cytkownik\u00f3w",
+      "list users",
+      "konta",
+      "accounts",
+      "passwd"
     ],
     "ssh_connect": [
-      "ssh", "połącz ssh", "ssh connect", "remote shell",
-      "zaloguj ssh", "ssh login", "połącz z serwerem"
+      "ssh",
+      "po\u0142\u0105cz ssh",
+      "ssh connect",
+      "remote shell",
+      "zaloguj ssh",
+      "ssh login",
+      "po\u0142\u0105cz z serwerem"
     ],
     "ssh_copy": [
-      "scp", "kopiuj ssh", "ssh copy", "remote copy", "scp file",
-      "prześlij plik", "transfer file", "kopiuj na serwer"
+      "scp",
+      "kopiuj ssh",
+      "ssh copy",
+      "remote copy",
+      "scp file",
+      "prze\u015blij plik",
+      "transfer file",
+      "kopiuj na serwer"
     ],
     "ssh_keygen": [
-      "ssh-keygen", "generuj klucz", "generate key", "ssh key",
-      "klucz ssh", "para kluczy", "key pair"
+      "ssh-keygen",
+      "generuj klucz",
+      "generate key",
+      "ssh key",
+      "klucz ssh",
+      "para kluczy",
+      "key pair"
     ],
     "env_show": [
-      "env", "printenv", "zmienne środowiskowe", "environment variables",
-      "pokaż zmienne", "show env", "echo $"
+      "env",
+      "printenv",
+      "zmienne \u015brodowiskowe",
+      "environment variables",
+      "poka\u017c zmienne",
+      "show env",
+      "echo $"
     ],
     "env_export": [
-      "export", "ustaw zmienną", "set variable", "set env",
-      "zmienna środowiskowa", "environment variable"
+      "export",
+      "ustaw zmienn\u0105",
+      "set variable",
+      "set env",
+      "zmienna \u015brodowiskowa",
+      "environment variable"
     ],
     "cron_list": [
-      "crontab -l", "pokaż cron", "list cron", "scheduled tasks",
-      "zaplanowane zadania", "cron jobs", "harmonogram"
+      "crontab -l",
+      "poka\u017c cron",
+      "list cron",
+      "scheduled tasks",
+      "zaplanowane zadania",
+      "cron jobs",
+      "harmonogram"
     ],
     "cron_edit": [
-      "crontab -e", "edytuj cron", "edit cron", "add cron",
-      "dodaj zadanie", "schedule task", "zaplanuj"
+      "crontab -e",
+      "edytuj cron",
+      "edit cron",
+      "add cron",
+      "dodaj zadanie",
+      "schedule task",
+      "zaplanuj"
     ],
     "sys_uname": [
-      "uname", "wersja systemu", "system version", "kernel version",
-      "wersja kernela", "os version", "linux version"
+      "uname",
+      "wersja systemu",
+      "system version",
+      "kernel version",
+      "wersja kernela",
+      "os version",
+      "linux version"
     ],
     "sys_uptime": [
-      "uptime", "czas działania", "system uptime", "jak długo działa",
-      "server uptime", "czas od restartu"
+      "uptime",
+      "czas dzia\u0142ania",
+      "system uptime",
+      "jak d\u0142ugo dzia\u0142a",
+      "server uptime",
+      "czas od restartu"
     ],
     "sys_hostname": [
-      "hostname", "nazwa hosta", "host name", "nazwa serwera",
-      "server name", "machine name"
+      "hostname",
+      "nazwa hosta",
+      "host name",
+      "nazwa serwera",
+      "server name",
+      "machine name"
     ],
     "sys_date": [
-      "date", "data", "czas", "time", "current date", "aktualna data",
-      "jaki jest czas", "what time"
+      "date",
+      "data",
+      "czas",
+      "time",
+      "current date",
+      "aktualna data",
+      "jaki jest czas",
+      "what time"
     ],
     "sys_cal": [
-      "cal", "kalendarz", "calendar", "pokaż kalendarz", "show calendar",
-      "miesiąc", "month"
+      "cal",
+      "kalendarz",
+      "calendar",
+      "poka\u017c kalendarz",
+      "show calendar",
+      "miesi\u0105c",
+      "month"
     ],
     "sys_free": [
-      "free", "pamięć", "memory", "ram", "użycie pamięci", "memory usage",
-      "wolna pamięć", "free memory", "available memory"
+      "free",
+      "pami\u0119\u0107",
+      "memory",
+      "ram",
+      "u\u017cycie pami\u0119ci",
+      "memory usage",
+      "wolna pami\u0119\u0107",
+      "free memory",
+      "available memory"
     ],
     "sys_lscpu": [
-      "lscpu", "cpu info", "informacje o cpu", "procesor",
-      "processor info", "cpu details", "ile rdzeni", "cores"
+      "lscpu",
+      "cpu info",
+      "informacje o cpu",
+      "procesor",
+      "processor info",
+      "cpu details",
+      "ile rdzeni",
+      "cores"
     ],
     "sys_lsblk": [
-      "lsblk", "block devices", "dyski", "partitions", "partycje",
-      "urządzenia blokowe", "storage devices"
+      "lsblk",
+      "block devices",
+      "dyski",
+      "partitions",
+      "partycje",
+      "urz\u0105dzenia blokowe",
+      "storage devices"
     ],
     "sys_mount": [
-      "mount", "zamontowane", "mounted", "punkty montowania",
-      "mount points", "filesystems"
+      "mount",
+      "zamontowane",
+      "mounted",
+      "punkty montowania",
+      "mount points",
+      "filesystems"
     ],
     "history": [
-      "history", "historia", "poprzednie komendy", "previous commands",
-      "command history", "historia poleceń"
+      "history",
+      "historia",
+      "poprzednie komendy",
+      "previous commands",
+      "command history",
+      "historia polece\u0144"
     ],
     "alias_list": [
-      "alias", "aliasy", "aliases", "pokaż aliasy", "list aliases"
+      "alias",
+      "aliasy",
+      "aliases",
+      "poka\u017c aliasy",
+      "list aliases"
     ],
     "watch": [
-      "watch", "obserwuj", "monitor", "powtarzaj", "repeat command",
-      "co sekundę", "every second"
+      "watch",
+      "obserwuj",
+      "monitor",
+      "powtarzaj",
+      "repeat command",
+      "co sekund\u0119",
+      "every second"
     ],
     "download_wget": [
-      "wget", "pobierz plik", "download file", "pobierz z url",
-      "download from url", "fetch file"
+      "wget",
+      "pobierz plik",
+      "download file",
+      "pobierz z url",
+      "download from url",
+      "fetch file"
     ],
     "download_curl": [
-      "curl", "pobierz curl", "curl download", "api request",
-      "http request", "rest api", "pobierz dane"
+      "curl",
+      "pobierz curl",
+      "curl download",
+      "api request",
+      "http request",
+      "rest api",
+      "pobierz dane"
     ],
     "json_jq": [
-      "jq", "parsuj json", "parse json", "json query", "extract json",
-      "filtruj json", "json filter", "pretty print json"
+      "jq",
+      "parsuj json",
+      "parse json",
+      "json query",
+      "extract json",
+      "filtruj json",
+      "json filter",
+      "pretty print json"
     ],
     "xargs": [
-      "xargs", "parallel", "równolegle", "for each", "dla każdego",
-      "batch process", "przetwarzaj wsadowo"
+      "xargs",
+      "parallel",
+      "r\u00f3wnolegle",
+      "for each",
+      "dla ka\u017cdego",
+      "batch process",
+      "przetwarzaj wsadowo"
     ],
     "git_add": [
-      "git add", "dodaj do gita", "dodaj do indeksu", "stage changes",
-      "dodaj pliki", "stage files"
+      "git add",
+      "dodaj do gita",
+      "dodaj do indeksu",
+      "stage changes",
+      "dodaj pliki",
+      "stage files"
     ],
     "git_commit": [
-      "git commit", "zatwierdź zmiany", "commit changes", "zapisz zmiany",
-      "zatwierdź", "commit", "zapisz"
+      "git commit",
+      "zatwierd\u017a zmiany",
+      "commit changes",
+      "zapisz zmiany",
+      "zatwierd\u017a",
+      "commit",
+      "zapisz"
     ],
     "git_push": [
-      "git push", "wyślij zmiany", "push changes", "wyślij na serwer",
-      "opublikuj zmiany", "push"
+      "git push",
+      "wy\u015blij zmiany",
+      "push changes",
+      "wy\u015blij na serwer",
+      "opublikuj zmiany",
+      "push"
     ],
     "git_pull": [
-      "git pull", "pobierz zmiany", "pull changes", "pobierz z serwera",
-      "aktualizuj repo", "pull", "aktualizuj"
+      "git pull",
+      "pobierz zmiany",
+      "pull changes",
+      "pobierz z serwera",
+      "aktualizuj repo",
+      "pull",
+      "aktualizuj"
     ],
     "git_checkout": [
-      "git checkout", "przełącz gałąź", "switch branch", "zmień gałąź",
-      "checkout", "przełącz", "zmień branch"
+      "git checkout",
+      "prze\u0142\u0105cz ga\u0142\u0105\u017a",
+      "switch branch",
+      "zmie\u0144 ga\u0142\u0105\u017a",
+      "checkout",
+      "prze\u0142\u0105cz",
+      "zmie\u0144 branch"
     ],
     "git_merge": [
-      "git merge", "scal gałęzie", "merge branches", "scal zmiany",
-      "merge", "scal"
+      "git merge",
+      "scal ga\u0142\u0119zie",
+      "merge branches",
+      "scal zmiany",
+      "merge",
+      "scal"
     ],
     "git_log": [
-      "git log", "historia zmian", "commit history", "pokaż historię",
-      "log", "historia commitów"
+      "git log",
+      "historia zmian",
+      "commit history",
+      "poka\u017c histori\u0119",
+      "log",
+      "historia commit\u00f3w"
     ],
     "git_diff": [
-      "git diff", "pokaż różnice", "show differences", "różnice w plikach",
-      "diff", "porównaj zmiany"
+      "git diff",
+      "poka\u017c r\u00f3\u017cnice",
+      "show differences",
+      "r\u00f3\u017cnice w plikach",
+      "diff",
+      "por\u00f3wnaj zmiany"
     ],
     "git_reset": [
-      "git reset", "cofnij commit", "reset commit", "undo commit",
-      "anuluj zmiany", "reset head"
+      "git reset",
+      "cofnij commit",
+      "reset commit",
+      "undo commit",
+      "anuluj zmiany",
+      "reset head"
     ],
     "clone": [
-      "git clone", "sklonuj repo", "clone repository", "pobierz repo",
-      "download repo", "skopiuj repo"
+      "git clone",
+      "sklonuj repo",
+      "clone repository",
+      "pobierz repo",
+      "download repo",
+      "skopiuj repo"
     ],
     "remote": [
-      "git remote", "zdalne repo", "remote repos", "pokaż remote",
-      "list remotes", "origin"
+      "git remote",
+      "zdalne repo",
+      "remote repos",
+      "poka\u017c remote",
+      "list remotes",
+      "origin"
     ],
     "tag": [
-      "git tag", "tagi", "tags", "utwórz tag", "create tag",
-      "pokaż tagi", "list tags", "wersja"
+      "git tag",
+      "tagi",
+      "tags",
+      "utw\u00f3rz tag",
+      "create tag",
+      "poka\u017c tagi",
+      "list tags",
+      "wersja"
     ],
     "blame": [
-      "git blame", "kto zmienił", "who changed", "blame file",
-      "autor linii", "line author"
+      "git blame",
+      "kto zmieni\u0142",
+      "who changed",
+      "blame file",
+      "autor linii",
+      "line author"
     ],
     "show": [
-      "git show", "pokaż commit", "show commit", "szczegóły commita",
+      "git show",
+      "poka\u017c commit",
+      "show commit",
+      "szczeg\u00f3\u0142y commita",
       "commit details"
     ],
     "cherry_pick": [
-      "git cherry-pick", "cherry pick", "wybierz commit",
-      "pick commit", "przenieś commit"
+      "git cherry-pick",
+      "cherry pick",
+      "wybierz commit",
+      "pick commit",
+      "przenie\u015b commit"
     ],
     "fetch": [
-      "git fetch", "pobierz", "fetch remote", "fetch origin",
+      "git fetch",
+      "pobierz",
+      "fetch remote",
+      "fetch origin",
       "pobierz bez merge"
     ],
     "clean": [
-      "git clean", "wyczyść repo", "clean untracked", "usuń nieśledzone",
+      "git clean",
+      "wyczy\u015b\u0107 repo",
+      "clean untracked",
+      "usu\u0144 nie\u015bledzone",
       "remove untracked"
     ]
   },
   "docker": {
     "run": [
-      "uruchom kontener", "docker run", "start container", "docker start",
-      "docker compose up", "compose up", "docker-compose up",
+      "uruchom kontener",
+      "docker run",
+      "start container",
+      "docker start",
+      "docker compose up",
+      "compose up",
+      "docker-compose up",
       "docker uruchom nginx"
     ],
     "run_detached": [
-      "uruchom w tle", "docker run -d", "run detached", "docker compose up -d",
-      "compose up -d", "docker-compose up -d"
+      "uruchom w tle",
+      "docker run -d",
+      "run detached",
+      "docker compose up -d",
+      "compose up -d",
+      "docker-compose up -d"
     ],
     "stop": [
-      "zatrzymaj kontener", "docker stop", "stop container", "docker compose stop",
-      "compose stop", "docker-compose stop"
+      "zatrzymaj kontener",
+      "docker stop",
+      "stop container",
+      "docker compose stop",
+      "compose stop",
+      "docker-compose stop"
     ],
     "start": [
-      "uruchom kontener", "docker start", "start container", "docker compose start",
-      "compose start", "docker-compose start"
+      "uruchom kontener",
+      "docker start",
+      "start container",
+      "docker compose start",
+      "compose start",
+      "docker-compose start"
     ],
     "restart": [
-      "restartuj kontener", "docker restart", "restart container", "docker compose restart",
-      "compose restart", "docker-compose restart"
+      "restartuj kontener",
+      "docker restart",
+      "restart container",
+      "docker compose restart",
+      "compose restart",
+      "docker-compose restart"
     ],
     "remove": [
-      "usuń kontener", "docker rm", "remove container", "docker compose rm",
-      "compose rm", "docker-compose rm", "docker compose down", "compose down"
+      "usu\u0144 kontener",
+      "docker rm",
+      "remove container",
+      "docker compose rm",
+      "compose rm",
+      "docker-compose rm",
+      "docker compose down",
+      "compose down"
     ],
     "list": [
-      "pokaż kontenery", "docker ps", "list containers", "docker container ls",
-      "kontenery", "containers", "lista do kerów", "listę do kerów", "lista kontenerów", "listę kontenerów",
-      "lista dkerów", "listę dkerów", "lista dkorów", "listę dkorów",
-      "sprawdź czy kontener działa", "sprawdz kontener", "pokaz kontener", "status kontenera"
+      "poka\u017c kontenery",
+      "docker ps",
+      "list containers",
+      "docker container ls",
+      "kontenery",
+      "containers",
+      "lista do ker\u00f3w",
+      "list\u0119 do ker\u00f3w",
+      "lista kontener\u00f3w",
+      "list\u0119 kontener\u00f3w",
+      "lista dker\u00f3w",
+      "list\u0119 dker\u00f3w",
+      "lista dkor\u00f3w",
+      "list\u0119 dkor\u00f3w",
+      "sprawd\u017a czy kontener dzia\u0142a",
+      "sprawdz kontener",
+      "pokaz kontener",
+      "status kontenera"
     ],
     "list_all": [
-      "pokaż wszystkie kontenery", "docker ps -a", "list all containers",
-      "wszystkie kontenery", "all containers"
+      "poka\u017c wszystkie kontenery",
+      "docker ps -a",
+      "list all containers",
+      "wszystkie kontenery",
+      "all containers"
     ],
     "logs": [
-      "pokaż logi", "docker logs", "show logs", "logi kontenera",
-      "container logs", "docker compose logs", "compose logs"
+      "poka\u017c logi",
+      "docker logs",
+      "show logs",
+      "logi kontenera",
+      "container logs",
+      "docker compose logs",
+      "compose logs"
     ],
     "exec": [
-      "docker exec", "exec w kontenerze", "execute in container", "wejdź do kontenera",
-      "shell kontenera", "container shell"
+      "docker exec",
+      "exec w kontenerze",
+      "execute in container",
+      "wejd\u017a do kontenera",
+      "shell kontenera",
+      "container shell"
     ],
     "build": [
-      "zbuduj obraz", "docker build", "build image", "docker compose build",
-      "compose build", "docker-compose build"
+      "zbuduj obraz",
+      "docker build",
+      "build image",
+      "docker compose build",
+      "compose build",
+      "docker-compose build"
     ],
     "prune": [
-      "docker prune", "czyść docker", "cleanup docker", "usuń nieużywane",
-      "remove unused", "system prune"
+      "docker prune",
+      "czy\u015b\u0107 docker",
+      "cleanup docker",
+      "usu\u0144 nieu\u017cywane",
+      "remove unused",
+      "system prune"
     ],
     "pull": [
-      "docker pull", "pobierz obraz", "pull image", "ściągnij obraz",
+      "docker pull",
+      "pobierz obraz",
+      "pull image",
+      "\u015bci\u0105gnij obraz",
       "download image"
     ],
     "push": [
-      "docker push", "wyślij obraz", "push image", "opublikuj obraz",
+      "docker push",
+      "wy\u015blij obraz",
+      "push image",
+      "opublikuj obraz",
       "publish image"
     ],
     "images": [
-      "pokaż obrazy", "docker images", "list images", "docker image ls",
-      "obrazy", "images"
+      "poka\u017c obrazy",
+      "docker images",
+      "list images",
+      "docker image ls",
+      "obrazy",
+      "images"
     ],
     "network": [
-      "docker network", "sieci docker", "docker networks", "container network",
-      "kontener sieci", "docker network ls", "docker network create"
+      "docker network",
+      "sieci docker",
+      "docker networks",
+      "container network",
+      "kontener sieci",
+      "docker network ls",
+      "docker network create"
     ],
     "volume": [
-      "docker volume", "wolumeny docker", "docker volumes", "container volume",
-      "kontener wolumen", "docker volume ls", "docker volume create"
+      "docker volume",
+      "wolumeny docker",
+      "docker volumes",
+      "container volume",
+      "kontener wolumen",
+      "docker volume ls",
+      "docker volume create"
     ],
     "compose": [
-      "docker compose", "compose", "docker-compose", "compose file",
-      "docker-compose.yml", "compose config", "compose ps"
+      "docker compose",
+      "compose",
+      "docker-compose",
+      "compose file",
+      "docker-compose.yml",
+      "compose config",
+      "compose ps"
     ],
     "inspect": [
-      "docker inspect", "inspekcja kontenera", "inspect container",
-      "szczegóły kontenera", "container details"
+      "docker inspect",
+      "inspekcja kontenera",
+      "inspect container",
+      "szczeg\u00f3\u0142y kontenera",
+      "container details"
     ],
     "stats": [
-      "docker stats", "statystyki kontenera", "container stats",
-      "zużycie zasobów", "resource usage"
+      "docker stats",
+      "statystyki kontenera",
+      "container stats",
+      "zu\u017cycie zasob\u00f3w",
+      "resource usage"
     ]
   },
   "kubernetes": {
     "get": [
-      "pokaż", "kubectl get", "kubectl show", "list", "lista",
-      "pokaż zasoby", "show resources", "kubectl get pods"
+      "poka\u017c",
+      "kubectl get",
+      "kubectl show",
+      "list",
+      "lista",
+      "poka\u017c zasoby",
+      "show resources",
+      "kubectl get pods"
     ],
     "describe": [
-      "opisz", "kubectl describe", "szczegóły", "details",
-      "opisz pod", "describe pod", "kubectl describe pod"
+      "opisz",
+      "kubectl describe",
+      "szczeg\u00f3\u0142y",
+      "details",
+      "opisz pod",
+      "describe pod",
+      "kubectl describe pod"
     ],
     "logs": [
-      "pokaż logi", "kubectl logs", "logi poda", "pod logs",
-      "container logs", "kubectl logs pod"
+      "poka\u017c logi",
+      "kubectl logs",
+      "logi poda",
+      "pod logs",
+      "container logs",
+      "kubectl logs pod"
     ],
     "apply": [
-      "kubectl apply", "zastosuj", "apply yaml", "deploy",
-      "wdrożenie", "kubectl apply -f"
+      "kubectl apply",
+      "zastosuj",
+      "apply yaml",
+      "deploy",
+      "wdro\u017cenie",
+      "kubectl apply -f"
     ],
     "delete": [
-      "usuń", "kubectl delete", "kasuj", "remove",
-      "usuń pod", "delete pod", "kubectl delete pod"
+      "usu\u0144",
+      "kubectl delete",
+      "kasuj",
+      "remove",
+      "usu\u0144 pod",
+      "delete pod",
+      "kubectl delete pod"
     ],
     "create": [
-      "utwórz", "kubectl create", "stwórz", "create",
-      "utwórz zasób", "create resource", "kubectl create -f"
+      "utw\u00f3rz",
+      "kubectl create",
+      "stw\u00f3rz",
+      "create",
+      "utw\u00f3rz zas\u00f3b",
+      "create resource",
+      "kubectl create -f"
     ],
     "edit": [
-      "edytuj", "kubectl edit", "zmień", "modify",
-      "edytuj zasób", "edit resource", "kubectl edit deployment"
+      "edytuj",
+      "kubectl edit",
+      "zmie\u0144",
+      "modify",
+      "edytuj zas\u00f3b",
+      "edit resource",
+      "kubectl edit deployment"
     ],
     "scale": [
-      "skaluj", "kubectl scale", "zmień liczbę replik", "scale replicas",
-      "skaluj deployment", "scale deployment", "kubectl scale deployment"
+      "skaluj",
+      "kubectl scale",
+      "zmie\u0144 liczb\u0119 replik",
+      "scale replicas",
+      "skaluj deployment",
+      "scale deployment",
+      "kubectl scale deployment"
     ],
     "rollout": [
-      "kubectl rollout", "wdrożenie", "deployment rollout",
-      "rollout status", "rollout history", "rollout undo"
+      "kubectl rollout",
+      "wdro\u017cenie",
+      "deployment rollout",
+      "rollout status",
+      "rollout history",
+      "rollout undo"
     ],
     "exec": [
-      "kubectl exec", "exec w podzie", "execute in pod", "wejdź do poda",
-      "shell poda", "pod shell", "kubectl exec -it"
+      "kubectl exec",
+      "exec w podzie",
+      "execute in pod",
+      "wejd\u017a do poda",
+      "shell poda",
+      "pod shell",
+      "kubectl exec -it"
     ],
     "port_forward": [
-      "kubectl port-forward", "przekieruj port", "port forward",
-      "forward port", "kubectl port-forward pod"
+      "kubectl port-forward",
+      "przekieruj port",
+      "port forward",
+      "forward port",
+      "kubectl port-forward pod"
     ],
     "config": [
-      "kubectl config", "konfiguracja kubectl", "kubeconfig",
-      "kontekst", "context", "kubectl config use-context"
+      "kubectl config",
+      "konfiguracja kubectl",
+      "kubeconfig",
+      "kontekst",
+      "context",
+      "kubectl config use-context"
     ],
     "top": [
-      "kubectl top", "zużycie zasobów", "resource usage",
-      "top pods", "top nodes", "metrics"
+      "kubectl top",
+      "zu\u017cycie zasob\u00f3w",
+      "resource usage",
+      "top pods",
+      "top nodes",
+      "metrics"
     ],
     "cp": [
-      "kubectl cp", "kopiuj pliki", "copy files",
-      "kubectl cp pod", "copy from pod"
+      "kubectl cp",
+      "kopiuj pliki",
+      "copy files",
+      "kubectl cp pod",
+      "copy from pod"
     ],
     "proxy": [
-      "kubectl proxy", "proxy kubernetes", "api proxy",
+      "kubectl proxy",
+      "proxy kubernetes",
+      "api proxy",
       "kubectl proxy --port"
     ],
     "auth": [
-      "kubectl auth", "autoryzacja", "authorization",
-      "kubectl auth can-i", "rbac", "permissions"
+      "kubectl auth",
+      "autoryzacja",
+      "authorization",
+      "kubectl auth can-i",
+      "rbac",
+      "permissions"
     ],
     "version": [
-      "kubectl version", "wersja kubectl", "kubernetes version",
-      "wersja k8s", "cluster version"
+      "kubectl version",
+      "wersja kubectl",
+      "kubernetes version",
+      "wersja k8s",
+      "cluster version"
     ],
     "cluster_info": [
-      "kubectl cluster-info", "informacje o klastrze", "cluster info",
+      "kubectl cluster-info",
+      "informacje o klastrze",
+      "cluster info",
       "kubectl cluster-info dump"
     ]
   },
   "dql": {
     "query": [
-      "znajdź entity", "entity query", "dql", "graph query",
-      "relacje", "relations", "powiązania", "connections"
+      "znajd\u017a entity",
+      "entity query",
+      "dql",
+      "graph query",
+      "relacje",
+      "relations",
+      "powi\u0105zania",
+      "connections"
     ]
   }
 }

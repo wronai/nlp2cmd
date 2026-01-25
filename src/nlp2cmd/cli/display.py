@@ -25,7 +25,7 @@ def display_command_result(
     title: Optional[str] = None
 ) -> None:
     """
-    Display command result with consistent formatting.
+    Display command result with simple YAML format and bash markdown.
     
     Args:
         command: Generated command to display
@@ -34,28 +34,27 @@ def display_command_result(
         show_yaml: Whether to show YAML format
         title: Optional title for the display
     """
-    # Always show the command first
-    if title:
-        console.print(Panel(
-            command,
-            title=title,
-            border_style="cyan",
-            padding=(1, 1)
-        ))
-    else:
-        console.print(f"[bold cyan]{command}[/bold cyan]")
+    # Display command as bash markdown with syntax highlighting
+    if command and command.strip():
+        print(f"```bash")
+        # Use Rich Syntax for bash highlighting
+        syntax = Syntax(command.strip(), "bash", theme="monokai", line_numbers=False)
+        console.print(syntax)
+        print(f"```")
+        print()
     
     # Show metadata if provided and YAML format requested
     if metadata and show_yaml:
-        # Format as YAML
+        # Format as YAML with syntax highlighting
         yaml_text = yaml.safe_dump(metadata, sort_keys=False, allow_unicode=True)
-        console.print("```yaml")
-        console.print(Syntax(yaml_text, "yaml", theme="monokai", line_numbers=False))
-        console.print("```")
+        print(f"```yaml")
+        yaml_syntax = Syntax(yaml_text.rstrip(), "yaml", theme="monokai", line_numbers=False)
+        console.print(yaml_syntax)
+        print(f"```")
     
     # Show metrics separately if not in YAML
     elif metrics_str and not show_yaml:
-        console.print(f"\n📊 {metrics_str}")
+        print(f"\n📊 {metrics_str}")
 
 
 def display_table(

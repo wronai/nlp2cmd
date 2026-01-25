@@ -706,7 +706,16 @@ class SchemaRegistry:
             errors.append("Dockerfile must start with FROM")
         
         if not has_cmd:
-            warnings.append("Dockerfile should have a CMD instruction")
+            # Check if this is a minimal Dockerfile (basic patterns only and no latest tag)
+            has_latest_tag = any('latest' in line.lower() for line in lines)
+            is_minimal = all(line.strip() in ['FROM', 'WORKDIR', 'COPY', 'EXPOSE', 'RUN', 'ADD', 'ENTRYPOINT'] or 
+                           line.strip().startswith(('FROM', 'WORKDIR', 'COPY', 'EXPOSE', 'RUN', 'ADD', 'ENTRYPOINT'))
+                           for line in content.strip().split('\n') if line.strip())
+            
+            if is_minimal and not has_latest_tag:
+                warnings.append("Dockerfile should have a CMD instruction")
+            else:
+                errors.append("Dockerfile should have a CMD instruction")
 
         return {"valid": len(errors) == 0, "errors": errors, "warnings": warnings}
 

@@ -136,24 +136,13 @@ class CommandDisambiguator:
         # Show options to user
         self.console.print("\n[yellow]🔍 Found similar previous commands:[/yellow]\n")
         
-        table = Table()
-        table.add_column("#", style="cyan")
-        table.add_column("Previous Query", style="yellow")
-        table.add_column("Command", style="green")
-        table.add_column("Match", style="dim")
-        
         for i, (prev_query, prev_cmd, sim) in enumerate(similar, 1):
             cmd_display = prev_cmd[:50] + "..." if len(prev_cmd) > 50 else prev_cmd
-            table.add_row(
-                str(i),
-                prev_query,
-                cmd_display,
-                f"{sim:.0%}",
-            )
+            print(f"{i:2d}. {prev_query}")
+            print(f"    -> {cmd_display} ({sim:.0%})")
+            print()
         
-        self.console.print(table)
-        
-        self.console.print(f"\n[cyan]0[/cyan] = Use current query: \"{query}\"")
+        self.console.print(f"[cyan]0[/cyan] = Use current query: \"{query}\"")
         self.console.print("[cyan]1-{}[/cyan] = Use previous command".format(len(similar)))
         
         response = self.console.input("\n[bold]Select option [0]: [/bold]").strip()
