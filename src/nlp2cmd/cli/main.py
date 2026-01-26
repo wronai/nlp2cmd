@@ -13,6 +13,7 @@ import shlex
 import sys
 import select
 import asyncio
+import time
 from contextlib import nullcontext
 from pathlib import Path
 from typing import Any, Optional, TYPE_CHECKING
@@ -1551,6 +1552,9 @@ def main(
     version: bool,
 ):
     """NLP2CMD - Natural Language to Domain-Specific Commands."""
+    # Start timing from the very beginning
+    script_start_time = time.time()
+    
     if load_dotenv is not None:
         try:
             load_dotenv()
@@ -1559,6 +1563,7 @@ def main(
     ctx.ensure_object(dict)
     ctx.obj["dsl"] = dsl
     ctx.obj["auto_repair"] = auto_repair
+    ctx.obj["script_start_time"] = script_start_time
 
     if ctx.invoked_subcommand is None:
         if version:
@@ -1681,6 +1686,13 @@ def main(
                         }
                     )
 
+                # Calculate total execution time
+                script_start_time = ctx.obj.get("script_start_time", time.time())
+                total_time_ms = (time.time() - script_start_time) * 1000
+                
+                # Add total execution time to output
+                out["total_execution_time_ms"] = round(total_time_ms, 1)
+                
                 display_command_result(
                     command=out.get("generated_command", "") or "",
                     metadata=out,

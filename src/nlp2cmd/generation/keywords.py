@@ -29,6 +29,40 @@ def _get_polish_support():
             _polish_support = False  # Mark as unavailable
     return _polish_support if _polish_support else None
 
+# Lazy import for multilingual fuzzy schema matcher
+_fuzzy_schema_matcher = None
+
+def _get_fuzzy_schema_matcher():
+    """Lazy load FuzzySchemaMatcher with multilingual phrases."""
+    global _fuzzy_schema_matcher
+    if _fuzzy_schema_matcher is None:
+        try:
+            from nlp2cmd.generation.fuzzy_schema_matcher import FuzzySchemaMatcher
+            from pathlib import Path
+            
+            # Try to load multilingual phrases schema
+            schema_paths = [
+                Path(__file__).parent.parent.parent.parent / "data" / "multilingual_phrases.json",
+                Path("data/multilingual_phrases.json"),
+                Path("multilingual_phrases.json"),
+            ]
+            
+            matcher = FuzzySchemaMatcher()
+            for path in schema_paths:
+                if path.exists():
+                    matcher.load_schema(path)
+                    break
+            
+            # If no schema loaded, use default phrases
+            if not matcher.phrases:
+                from nlp2cmd.generation.fuzzy_schema_matcher import create_multilingual_matcher
+                matcher = create_multilingual_matcher()
+            
+            _fuzzy_schema_matcher = matcher
+        except ImportError:
+            _fuzzy_schema_matcher = False
+    return _fuzzy_schema_matcher if _fuzzy_schema_matcher else None
+
 @staticmethod
 def _normalize_polish_text(text: str) -> str:
     """Normalize Polish diacritics to handle typos."""
@@ -341,6 +375,11 @@ class KeywordIntentDetector:
         text_lower = text_lower.replace('ó', 'o').replace('Ó', 'O')
         text_lower = text_lower.replace('ź', 'z').replace('Ź', 'Z')
         text_lower = text_lower.replace('ż', 'z').replace('Ż', 'Z')
+
+        text_lower = re.sub(r"\blist\s+aplik", "lista plik", text_lower)
+        text_lower = re.sub(r"\blist\s+a\s+plik", "lista plik", text_lower)
+        text_lower = re.sub(r"\blisty\s+plik", "lista plik", text_lower)
+        text_lower = re.sub(r"\bliste\s+plik", "lista plik", text_lower)
         
         text_lower = re.sub(r"(?<![a-z0-9])doker(?![a-z0-9])", "docker", text_lower)
         text_lower = re.sub(r"(?<![a-z0-9])dokcer(?![a-z0-9])", "docker", text_lower)
@@ -1070,6 +1109,18 @@ class KeywordIntentDetector:
         return result
 
     def _detect_normalized(self, text_lower: str) -> DetectionResult:
+        # Try multilingual schema matching first for high-confidence matches
+        schema_matcher = _get_fuzzy_schema_matcher()
+        if schema_matcher:
+            schema_result = schema_matcher.match(text_lower)
+            if schema_result and schema_result.matched and schema_result.confidence >= 0.85:
+                return DetectionResult(
+                    domain=schema_result.domain,
+                    intent=schema_result.intent,
+                    confidence=schema_result.confidence,
+                    matched_keyword=schema_result.phrase,
+                )
+        
         fast_path = self._detect_fast_path(text_lower)
         if fast_path is not None:
             return fast_path
@@ -1116,6 +1167,18 @@ class KeywordIntentDetector:
             fuzzy_match = self._detect_best_from_fuzzy(text_lower)
             if fuzzy_match is not None:
                 return fuzzy_match
+
+        # Fallback: Try multilingual fuzzy schema matching
+        schema_matcher = _get_fuzzy_schema_matcher()
+        if schema_matcher:
+            schema_result = schema_matcher.match(text_lower)
+            if schema_result and schema_result.matched:
+                return DetectionResult(
+                    domain=schema_result.domain,
+                    intent=schema_result.intent,
+                    confidence=schema_result.confidence,
+                    matched_keyword=schema_result.phrase,
+                )
 
         return DetectionResult(
             domain='unknown',
