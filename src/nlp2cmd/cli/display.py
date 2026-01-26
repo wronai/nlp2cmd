@@ -46,8 +46,12 @@ def display_command_result(
     
     # Show metadata if provided and YAML format requested
     if metadata and show_yaml:
+        meta = dict(metadata)
+        meta.setdefault("resource_metrics", None)
+        meta.setdefault("resource_metrics_parsed", None)
+        meta.setdefault("token_estimate", None)
         # Format as YAML with syntax highlighting
-        yaml_text = yaml.safe_dump(metadata, sort_keys=False, allow_unicode=True)
+        yaml_text = yaml.safe_dump(meta, sort_keys=False, allow_unicode=True)
         print(f"```yaml")
         yaml_syntax = get_cached_syntax(yaml_text.rstrip(), "yaml", theme="monokai", line_numbers=False)
         console.print(yaml_syntax)
