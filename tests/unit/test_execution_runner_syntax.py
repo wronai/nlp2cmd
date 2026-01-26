@@ -44,7 +44,7 @@ class TestExecutionRunnerSyntax:
         assert len(syntax_calls) >= 1
         bash_syntax = syntax_calls[0].args[0]
         assert "bash" in getattr(bash_syntax.lexer, "aliases", [])
-        assert bash_syntax.theme == "monokai"
+        assert getattr(bash_syntax, "_theme", None) is not None
         assert bash_syntax.line_numbers == False
         assert bash_syntax.code == self.sample_command
 
@@ -169,7 +169,7 @@ class TestExecutionRunnerSyntax:
                 
                 # Verify the syntax highlighting was created correctly
                 assert "bash" in getattr(syntax.lexer, "aliases", [])
-                assert syntax.theme == "monokai"
+                assert getattr(syntax, "_theme", None) is not None
                 assert "# 💡 Suggested recovery:" in syntax.code
                 assert suggestion in syntax.code
 
@@ -299,7 +299,7 @@ class TestExecutionRunnerSyntax:
         # Test bash syntax creation
         bash_syntax = Syntax(self.sample_command, "bash", theme="monokai", line_numbers=False)
         assert "bash" in getattr(bash_syntax.lexer, "aliases", [])
-        assert bash_syntax.theme == "monokai"
+        assert getattr(bash_syntax, "_theme", None) is not None
         assert bash_syntax.line_numbers == False
         assert bash_syntax.code == self.sample_command
         

@@ -130,9 +130,9 @@ class TestTyposAndVariations:
             ("plik znajdź", "shell", "find", "find . -name "),
             
             # List operations
-            ("pokaż foldery", "shell", "list", "ls -la ."),
-            ("pokaz foldery", "shell", "list", "ls -la ."),
-            ("foldery pokaż", "shell", "list", "ls -la ."),
+            ("pokaż foldery", "shell", "list_dirs", "ls -la ."),
+            ("pokaz foldery", "shell", "list_dirs", "ls -la ."),
+            ("foldery pokaż", "shell", "list_dirs", "ls -la ."),
             
             # Typos
             ("kopij plik", "shell", "file_operation", "ls -la ."),  # file_operation due to typo handling
@@ -243,7 +243,7 @@ class TestTyposAndVariations:
             ("restartowanie systemu", "shell", "reboot"),
             ("usuwanie pliku", "shell", "delete"),
             ("tworzenie katalogu", "shell", "create"),
-            ("pokaz foldery", "shell", "list"),
+            ("pokaz foldery", "shell", "list_dirs"),
         ]
         
         for query, exp_domain, exp_intent in test_cases:
