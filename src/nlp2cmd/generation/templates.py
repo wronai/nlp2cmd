@@ -874,11 +874,25 @@ class TemplateGenerator:
             result['set_clause'] = ''
         
         return result
-    
+
+    def _get_user_home_dir(self, username: str) -> str:
+        if os.name != "posix":
+            return f"~{username}"
+
+        if username == "root":
+            return "/root"
+
+        try:
+            import pwd  # noqa: WPS433
+
+            return pwd.getpwnam(username).pw_dir
+        except Exception:
+            return f"/home/{username}"
+
     def _prepare_shell_entities(self, intent: str, entities: dict[str, Any]) -> dict[str, Any]:
         """Prepare shell entities."""
         result = entities.copy()
-        
+
         # Path default - handle user directory
         if 'user' in entities and entities['user'] == 'current':
             result.setdefault('path', '~')  # User home directory
@@ -891,7 +905,7 @@ class TemplateGenerator:
                 # These are not actual usernames but generic user references
                 result['path'] = '~'  # Default to current user home
             else:
-                result['path'] = f'~{username}'  # Specific user home
+                result['path'] = self._get_user_home_dir(str(username))
         else:
             # Check if query suggests user context without explicit username
             text_lower = str(entities.get('text') or '').lower()

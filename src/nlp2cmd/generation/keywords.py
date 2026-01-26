@@ -66,9 +66,17 @@ def _get_fuzzy_schema_matcher():
 # Lazy import for ML intent classifier (TF-IDF + SVM)
 _ml_classifier = None
 
+_ENABLE_ML_CLASSIFIER = str(
+    os.environ.get("NLP2CMD_ENABLE_ML_CLASSIFIER")
+    or os.environ.get("NLP2CMD_ENABLE_HEAVY_NLP")
+    or ""
+).strip().lower() in {"1", "true", "yes", "y", "on"}
+
 def _get_ml_classifier():
     """Lazy load ML intent classifier for high-accuracy predictions."""
     global _ml_classifier
+    if not _ENABLE_ML_CLASSIFIER:
+        return None
     if _ml_classifier is None:
         try:
             from nlp2cmd.generation.ml_intent_classifier import get_ml_classifier
@@ -82,9 +90,17 @@ def _get_ml_classifier():
 # Lazy import for semantic matcher (sentence embeddings) - use optimized version
 _semantic_matcher = None
 
+_ENABLE_SEMANTIC_MATCHING = str(
+    os.environ.get("NLP2CMD_ENABLE_SEMANTIC_MATCHING")
+    or os.environ.get("NLP2CMD_ENABLE_HEAVY_NLP")
+    or ""
+).strip().lower() in {"1", "true", "yes", "y", "on"}
+
 def _get_semantic_matcher():
     """Lazy load optimized semantic matcher for embedding-based similarity."""
     global _semantic_matcher
+    if not _ENABLE_SEMANTIC_MATCHING:
+        return None
     if _semantic_matcher is None:
         try:
             # Try optimized version first
@@ -1198,18 +1214,6 @@ class KeywordIntentDetector:
                 matched_keyword=f"ml:{ml_result.method}",
             )
         
-        # Semantic matching fallback for typos and paraphrases (slower but more accurate)
-        semantic_matcher = _get_semantic_matcher()
-        if semantic_matcher:
-            semantic_result = semantic_matcher.match(text_lower)
-            if semantic_result and semantic_result.confidence >= 0.75:
-                return DetectionResult(
-                    domain=semantic_result.domain,
-                    intent=semantic_result.intent,
-                    confidence=semantic_result.confidence,
-                    matched_keyword=f"semantic:{semantic_result.matched_phrase}",
-                )
-        
         fast_path = self._detect_fast_path(text_lower)
         if fast_path is not None:
             return fast_path
@@ -1267,6 +1271,22 @@ class KeywordIntentDetector:
                     intent=schema_result.intent,
                     confidence=schema_result.confidence,
                     matched_keyword=schema_result.phrase,
+                )
+
+        # Semantic matching fallback for typos and paraphrases (slower).
+        # Keep it last so it can't override deterministic keyword/pattern matching.
+        semantic_matcher = _get_semantic_matcher()
+        if semantic_matcher:
+            try:
+                semantic_result = semantic_matcher.match(text_lower)
+            except Exception:
+                semantic_result = None
+            if semantic_result and semantic_result.confidence >= 0.9:
+                return DetectionResult(
+                    domain=semantic_result.domain,
+                    intent=semantic_result.intent,
+                    confidence=semantic_result.confidence,
+                    matched_keyword=f"semantic:{semantic_result.matched_phrase}",
                 )
 
         return DetectionResult(

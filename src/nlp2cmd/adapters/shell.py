@@ -301,6 +301,38 @@ class ShellAdapter(BaseDSLAdapter):
             environment_variables=ctx.get("environment_variables", {}),
         )
 
+    def _resolve_user_home_path(self, path: Any) -> Any:
+        if not isinstance(path, str):
+            return path
+
+        path_str = path.strip()
+        if not path_str.startswith("~"):
+            return path
+
+        if path_str == "~" or path_str.startswith("~/"):
+            return path
+
+        m = re.match(r"^~([a-zA-Z0-9_-]+)(/.*)?$", path_str)
+        if not m:
+            return path
+
+        user = m.group(1)
+        rest = m.group(2) or ""
+
+        if str(self.env.os).lower() != "linux":
+            return path
+
+        if user == "root":
+            return f"/root{rest}"
+
+        try:
+            import pwd  # noqa: WPS433
+
+            home = pwd.getpwnam(user).pw_dir
+            return f"{home}{rest}"
+        except Exception:
+            return f"/home/{user}{rest}"
+
     def generate(self, plan: dict[str, Any]) -> str:
         """Generate shell command from execution plan."""
         intent = plan.get("intent", "")
@@ -1279,7 +1311,8 @@ class ShellAdapter(BaseDSLAdapter):
             # Handle user-specific paths
             if "user" in str(path).lower():
                 path = "~"
-            
+
+            path = self._resolve_user_home_path(path)
             return f"find {path} -maxdepth 1 -type d"
         
         # Handle user home directory explicitly
@@ -1299,7 +1332,8 @@ class ShellAdapter(BaseDSLAdapter):
                     m = re.search(r'(?:użytkownika|usera|user)\s+([a-zA-Z0-9_-]+)', username, re.IGNORECASE)
                     if m:
                         user = m.group(1)
-                        return f"ls -la ~{user}"
+                        user_home = self._resolve_user_home_path(f"~{user}")
+                        return f"ls -la {user_home}"
                     else:
                         return "ls -la ~"
         
@@ -1313,6 +1347,7 @@ class ShellAdapter(BaseDSLAdapter):
         # Check if we're listing folders based on target or full text
         text = entities.get("text", "")
         if (target and "folder" in target.lower()) or (full_text and "folder" in full_text.lower()) or "folders" in str(full_text).lower() or "folders" in str(text).lower():
+            path = self._resolve_user_home_path(path)
             return f"find {path} -maxdepth 1 -type d"
         
         return f"ls -la {path}"
@@ -1333,7 +1368,8 @@ class ShellAdapter(BaseDSLAdapter):
         # Handle user-specific paths
         if "user" in full_text.lower():
             path = "~"
-        
+
+        path = self._resolve_user_home_path(path)
         return f"find {path} -maxdepth 1 -type d"
 
     def _generate_generic(self, entities: dict[str, Any]) -> str:
