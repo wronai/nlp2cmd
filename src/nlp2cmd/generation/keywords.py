@@ -289,6 +289,8 @@ class KeywordIntentDetector:
         k = (kw or "").strip().lower()
         if not k:
             return False
+        if k in {"fold"}:
+            return re.search(rf"(?<![a-z0-9]){re.escape(k)}(?![a-z0-9])", text_lower) is not None
         if k == "deploy":
             return re.search(r"(?<![a-z0-9])deploy(?![a-z0-9])", text_lower) is not None
         if len(k) <= 3 and re.fullmatch(r"[a-z0-9]+", k):
@@ -1179,6 +1181,10 @@ class KeywordIntentDetector:
         for domain, intents in self.patterns.items():
             for intent, keywords in intents.items():
                 for keyword in keywords:
+                    # Avoid false positives for very short keywords (e.g. "fg") when
+                    # matching arbitrary strings like "abcdefg".
+                    if isinstance(keyword, str) and len(keyword.strip()) < 3:
+                        continue
                     all_keywords.append((keyword.lower(), domain, intent, intent))
         
         if not all_keywords:
