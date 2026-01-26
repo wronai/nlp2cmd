@@ -371,7 +371,6 @@ class ShellAdapter(BaseDSLAdapter):
         elif "size" in entities:
             size_str = entities["size"]
             # Parse string like "10MB" and convert
-            import re
             m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", size_str.strip())
             if m:
                 value = m.group(1)
@@ -489,7 +488,6 @@ class ShellAdapter(BaseDSLAdapter):
         elif "size" in entities and isinstance(entities["size"], str):
             size_str = entities["size"]
             # Parse string like "10MB" and convert
-            import re
             m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", size_str.strip())
             if m:
                 value = m.group(1)
@@ -1171,7 +1169,6 @@ class ShellAdapter(BaseDSLAdapter):
                     return "ls -la ~"
                 else:
                     # Try to extract actual username
-                    import re
                     m = re.search(r'(?:użytkownika|usera|user)\s+([a-zA-Z0-9_-]+)', username, re.IGNORECASE)
                     if m:
                         user = m.group(1)

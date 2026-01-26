@@ -17,6 +17,8 @@ import shlex
 from pathlib import Path
 from typing import Any, Optional
 
+from nlp2cmd.execution import ExecutionRunner
+
 try:
     import click
 except Exception:  # pragma: no cover
@@ -823,15 +825,14 @@ def _handle_run_query(
     """
     from nlp2cmd.generation.pipeline import RuleBasedPipeline
     from nlp2cmd.adapters import (
-        DockerAdapter,
-        DQLAdapter,
-        KubernetesAdapter,
-        ShellAdapter,
         SQLAdapter,
+        ShellAdapter,
+        DockerAdapter,
+        KubernetesAdapter,
+        DQLAdapter,
         AppSpecAdapter,
         BrowserAdapter,
     )
-    from nlp2cmd.execution import ExecutionRunner
     
     print(f"```bash")
     # Use cached syntax highlighting for better performance

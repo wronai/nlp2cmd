@@ -97,6 +97,14 @@ class ExecutionRunner:
     - LLM integration for suggesting recovery commands
     - Interactive confirmation before execution
     """
+
+    @property
+    def console(self) -> Console:
+        return self._console
+
+    @console.setter
+    def console(self, value: Console) -> None:
+        self._console = value
     
     def __init__(
         self,
@@ -114,7 +122,7 @@ class ExecutionRunner:
             max_retries: Maximum number of retry attempts
             llm_client: Optional LLM client for error recovery suggestions
         """
-        self.console = console or Console()
+        self._console = console or Console()
         self.auto_confirm = auto_confirm
         self.max_retries = max_retries
         self.llm_client = llm_client
@@ -320,15 +328,15 @@ class ExecutionRunner:
         Returns:
             True if user confirms, False otherwise
         """
-        if self.auto_confirm:
-            return True
-        
         print(f"```bash")
         # Use cached syntax highlighting for better performance
         syntax = get_cached_syntax(command, "bash", theme="monokai", line_numbers=False)
         self.console.print(syntax)
         print(f"```")
         print()
+
+        if self.auto_confirm:
+            return True
         
         response = self.console.input("[yellow]Execute this command? [Y/n/e(dit)]: [/yellow]").strip().lower()
         

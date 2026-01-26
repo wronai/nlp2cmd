@@ -43,7 +43,7 @@ class TestExecutionRunnerSyntax:
         
         assert len(syntax_calls) >= 1
         bash_syntax = syntax_calls[0].args[0]
-        assert bash_syntax.lexer == "bash"
+        assert "bash" in getattr(bash_syntax.lexer, "aliases", [])
         assert bash_syntax.theme == "monokai"
         assert bash_syntax.line_numbers == False
         assert bash_syntax.code == self.sample_command
@@ -136,7 +136,7 @@ class TestExecutionRunnerSyntax:
         
         bash_syntax = syntax_calls[0].args[0]
         assert bash_syntax.code == complex_command
-        assert bash_syntax.lexer == "bash"
+        assert "bash" in getattr(bash_syntax.lexer, "aliases", [])
 
     @patch('builtins.print')
     @patch.object(ExecutionRunner, 'console')
@@ -168,7 +168,7 @@ class TestExecutionRunnerSyntax:
                 print()
                 
                 # Verify the syntax highlighting was created correctly
-                assert syntax.lexer == "bash"
+                assert "bash" in getattr(syntax.lexer, "aliases", [])
                 assert syntax.theme == "monokai"
                 assert "# 💡 Suggested recovery:" in syntax.code
                 assert suggestion in syntax.code
@@ -186,7 +186,7 @@ class TestExecutionRunnerSyntax:
         print()
         
         # Should handle multi-line suggestion correctly
-        assert syntax.lexer == "bash"
+        assert "bash" in getattr(syntax.lexer, "aliases", [])
         assert "# 💡 Suggested recovery:" in syntax.code
         assert "# Install missing package" in syntax.code
         assert "sudo apt-get install tool" in syntax.code
@@ -298,7 +298,7 @@ class TestExecutionRunnerSyntax:
         
         # Test bash syntax creation
         bash_syntax = Syntax(self.sample_command, "bash", theme="monokai", line_numbers=False)
-        assert bash_syntax.lexer == "bash"
+        assert "bash" in getattr(bash_syntax.lexer, "aliases", [])
         assert bash_syntax.theme == "monokai"
         assert bash_syntax.line_numbers == False
         assert bash_syntax.code == self.sample_command
@@ -306,7 +306,7 @@ class TestExecutionRunnerSyntax:
         # Test recovery suggestion syntax creation
         suggestion = "sudo apt-get install tool"
         recovery_syntax = Syntax(f"# 💡 Suggested recovery:\n {suggestion}", "bash", theme="monokai", line_numbers=False)
-        assert recovery_syntax.lexer == "bash"
+        assert "bash" in getattr(recovery_syntax.lexer, "aliases", [])
         assert "# 💡 Suggested recovery:" in recovery_syntax.code
         assert suggestion in recovery_syntax.code
 
