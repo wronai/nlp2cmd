@@ -344,6 +344,8 @@ class ShellAdapter(BaseDSLAdapter):
             "disk": self._generate_disk,
             "archive": self._generate_archive,
             "text_processing": self._generate_text_processing,
+            "search": self._generate_text_processing,  # grep alias
+            "grep": self._generate_text_processing,  # grep alias
             "system_maintenance": self._generate_system_maintenance,
             "development": self._generate_development,
             "security": self._generate_security,
@@ -358,6 +360,10 @@ class ShellAdapter(BaseDSLAdapter):
             "text_file_ops": self._generate_text_file_ops,
             "checksum": self._generate_checksum,
             "terminal_session": self._generate_terminal_session,
+            "cat": self._generate_cat,
+            "head": self._generate_head_tail,
+            "tail": self._generate_head_tail,
+            "wc": self._generate_wc,
         }
 
         generator = generators.get(intent)
@@ -1823,6 +1829,80 @@ class ShellAdapter(BaseDSLAdapter):
             "allowed": True,
             "requires_confirmation": requires_confirmation,
         }
+
+    def _generate_cat(self, entities: dict[str, Any]) -> str:
+        """Generate cat command for viewing file contents."""
+        file = entities.get("file", entities.get("path", entities.get("filename", "")))
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        # Extract file path from full text if not in entities
+        if not file and full_text:
+            import re
+            # Match common file patterns
+            match = re.search(r'([/\w.-]+\.\w+)', full_text)
+            if match:
+                file = match.group(1)
+        
+        if file:
+            return f"cat {shlex.quote(file)}"
+        return "cat"
+
+    def _generate_head_tail(self, entities: dict[str, Any]) -> str:
+        """Generate head or tail command."""
+        action = entities.get("action", "head")
+        file = entities.get("file", entities.get("path", ""))
+        lines = entities.get("lines", entities.get("count", "10"))
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        # Determine head or tail from full text
+        if "tail" in full_text or "ostatni" in full_text or "końc" in full_text:
+            cmd = "tail"
+        elif "head" in full_text or "pierwsz" in full_text or "począt" in full_text:
+            cmd = "head"
+        else:
+            cmd = action if action in ("head", "tail") else "head"
+        
+        # Extract file from full text if not in entities
+        if not file and full_text:
+            import re
+            match = re.search(r'([/\w.-]+\.\w+)', full_text)
+            if match:
+                file = match.group(1)
+        
+        # Extract line count from full text
+        if full_text:
+            import re
+            match = re.search(r'(\d+)\s*(lini|line)', full_text)
+            if match:
+                lines = match.group(1)
+        
+        if file:
+            return f"{cmd} -n {lines} {shlex.quote(file)}"
+        return f"{cmd} -n {lines}"
+
+    def _generate_wc(self, entities: dict[str, Any]) -> str:
+        """Generate wc command for counting lines/words/chars."""
+        file = entities.get("file", entities.get("path", ""))
+        mode = entities.get("mode", "lines")
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        # Extract file from full text if not in entities
+        if not file and full_text:
+            import re
+            match = re.search(r'([/\w.-]+\.\w+)', full_text)
+            if match:
+                file = match.group(1)
+        
+        # Determine counting mode
+        flag = "-l"  # default: lines
+        if "słow" in full_text or "word" in full_text:
+            flag = "-w"
+        elif "znak" in full_text or "char" in full_text or "byte" in full_text:
+            flag = "-c"
+        
+        if file:
+            return f"wc {flag} {shlex.quote(file)}"
+        return f"wc {flag}"
 
     def check_tool_availability(self, command: str) -> dict[str, Any]:
         """Check if required tools are available."""

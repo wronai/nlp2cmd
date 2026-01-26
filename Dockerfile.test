@@ -1,0 +1,47 @@
+# Dockerfile for safe testing of nlp2cmd Linux commands
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install essential Linux tools for testing
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    coreutils findutils grep sed gawk less \
+    tree file \
+    gzip bzip2 xz-utils zip unzip tar rsync \
+    htop procps psmisc \
+    sysstat \
+    iproute2 iputils-ping traceroute dnsutils netcat-openbsd curl wget \
+    apt-utils passwd \
+    pciutils usbutils \
+    screen tmux \
+    nano vim-tiny \
+    jq \
+    python3 python3-pip python3-venv \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create test user
+RUN useradd -m -s /bin/bash testuser && \
+    echo "testuser:testpass" | chpasswd
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files
+COPY . /app/
+
+# Install nlp2cmd
+RUN pip3 install --no-cache-dir -e .
+
+# Create test directories and files
+RUN mkdir -p /app/test_data && \
+    echo "Test file content line 1" > /app/test_data/test.txt && \
+    echo "Test file content line 2" >> /app/test_data/test.txt && \
+    echo "Test file content line 3" >> /app/test_data/test.txt && \
+    echo '{"name": "test", "value": 123}' > /app/test_data/test.json && \
+    dd if=/dev/zero of=/app/test_data/large_file.bin bs=1M count=10 2>/dev/null
+
+# Default command - run interactive shell
+CMD ["/bin/bash"]
