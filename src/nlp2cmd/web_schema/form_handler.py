@@ -17,6 +17,7 @@ from rich.table import Table
 from rich.panel import Panel
 
 from nlp2cmd.web_schema.form_data_loader import FormDataLoader
+from nlp2cmd.cli.markdown_output import print_markdown_block
 
 
 @dataclass
@@ -48,8 +49,16 @@ class FormHandler:
     Handles form detection and interactive filling.
     """
     
-    def __init__(self, console: Optional[Console] = None):
+    def __init__(self, console: Optional[Console] = None, *, use_markdown: bool = False):
         self.console = console or Console()
+        self.use_markdown = use_markdown
+    
+    def _print(self, renderable: Any, *, language: str = "text") -> None:
+        """Helper to optionally wrap output in markdown code blocks."""
+        if self.use_markdown:
+            print_markdown_block(renderable, language=language, console=self.console)
+        else:
+            self.console.print(renderable)
     
     def detect_form_fields(self, page) -> list[FormField]:
         """
@@ -65,11 +74,11 @@ class FormHandler:
         
         # Debug: Show all input fields found
         all_inputs = page.query_selector_all('input')
-        self.console.print(f"[dim]Found {len(all_inputs)} total input elements[/dim]")
+        self._print(f"Found {len(all_inputs)} total input elements", language="text")
         
         # Detect input fields
         inputs = page.query_selector_all('input:not([type="hidden"]):not([type="submit"]):not([type="button"])')
-        self.console.print(f"[dim]Found {len(inputs)} visible input fields[/dim]")
+        self._print(f"Found {len(inputs)} visible input fields", language="text")
         
         for inp in inputs:
             try:
@@ -80,7 +89,10 @@ class FormHandler:
                 required = inp.get_attribute('required') is not None
                 
                 # Debug output
-                self.console.print(f"[dim]Input: type={inp_type}, name={name}, id={inp_id}, placeholder={placeholder}[/dim]")
+                self._print(
+                    f"Input: type={inp_type}, name={name}, id={inp_id}, placeholder={placeholder}",
+                    language="text",
+                )
                 
                 # Try to find label
                 label = None
@@ -111,7 +123,7 @@ class FormHandler:
         
         # Detect textareas
         textareas = page.query_selector_all('textarea')
-        self.console.print(f"[dim]Found {len(textareas)} textarea fields[/dim]")
+        self._print(f"Found {len(textareas)} textarea fields", language="text")
         
         for ta in textareas:
             try:
@@ -121,7 +133,7 @@ class FormHandler:
                 required = ta.get_attribute('required') is not None
                 
                 # Debug output
-                self.console.print(f"[dim]Textarea: name={name}, id={ta_id}, placeholder={placeholder}[/dim]")
+                self._print(f"Textarea: name={name}, id={ta_id}, placeholder={placeholder}", language="text")
                 
                 # Try to find label
                 label = None
@@ -152,7 +164,7 @@ class FormHandler:
         
         # Detect contenteditable divs (often used as rich text editors)
         content_editables = page.query_selector_all('[contenteditable="true"]')
-        self.console.print(f"[dim]Found {len(content_editables)} contenteditable fields[/dim]")
+        self._print(f"Found {len(content_editables)} contenteditable fields", language="text")
         
         for ce in content_editables:
             try:
@@ -160,7 +172,7 @@ class FormHandler:
                 ce_class = ce.get_attribute('class')
                 
                 # Debug output
-                self.console.print(f"[dim]ContentEditable: id={ce_id}, class={ce_class}[/dim]")
+                self._print(f"ContentEditable: id={ce_id}, class={ce_class}", language="text")
                 
                 # Try to find label by looking for preceding text or label
                 label = None
@@ -191,7 +203,7 @@ class FormHandler:
         
         # Detect divs with form-like attributes (common in custom form builders)
         div_inputs = page.query_selector_all('div[role="textbox"], div[data-input], div[data-field]')
-        self.console.print(f"[dim]Found {len(div_inputs)} div-based input fields[/dim]")
+        self._print(f"Found {len(div_inputs)} div-based input fields", language="text")
         
         for div in div_inputs:
             try:
@@ -201,7 +213,10 @@ class FormHandler:
                 data_field = div.get_attribute('data-field')
                 
                 # Debug output
-                self.console.print(f"[dim]DivInput: id={div_id}, role={div_role}, data-input={data_input}, data-field={data_field}[/dim]")
+                self._print(
+                    f"DivInput: id={div_id}, role={div_role}, data-input={data_input}, data-field={data_field}",
+                    language="text",
+                )
                 
                 # Generate selector
                 if div_id:
@@ -307,7 +322,7 @@ class FormHandler:
         # Skip internal/hidden-like fields
         skip_fields = loader.get_skip_fields()
         
-        self.console.print("\n[cyan]📋 Auto-filling form fields:[/cyan]\n")
+        self._print("📋 Auto-filling form fields:", language="text")
         
         table = Table()
         table.add_column("Field", style="yellow")
@@ -366,10 +381,10 @@ class FormHandler:
                 )
         
         if form_data.fields:
-            self.console.print(table)
+            self._print(table)
         else:
-            self.console.print("[yellow]No matching data found in .env or data/ files[/yellow]")
-            self.console.print("[dim]Create .env with FORM_NAME, FORM_EMAIL, etc. or data/form_data.json[/dim]")
+            self._print("No matching data found in .env or data/ files", language="text")
+            self._print("Create .env with FORM_NAME, FORM_EMAIL, etc. or data/form_data.json", language="text")
         
         return form_data
     
