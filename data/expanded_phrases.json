@@ -1,0 +1,373 @@
+{
+  "version": "2.0",
+  "description": "Expanded multilingual phrase database for NLP2CMD - comprehensive shell, docker, sql, git commands",
+  "metadata": {
+    "total_languages": 5,
+    "supported_languages": ["en", "pl", "de", "fr", "es"],
+    "domains": ["shell", "docker", "sql", "git", "kubernetes", "network"]
+  },
+  "phrases": [
+    {"phrase": "list files", "domain": "shell", "intent": "list", "language": "en", "aliases": ["show files", "display files", "ls", "dir", "directory listing", "what files", "see files"]},
+    {"phrase": "lista plików", "domain": "shell", "intent": "list", "language": "pl", "aliases": ["pokaż pliki", "wyświetl pliki", "listuj pliki", "lista plikow", "pokaz pliki", "jakie pliki"]},
+    {"phrase": "liste dateien", "domain": "shell", "intent": "list", "language": "de", "aliases": ["dateien anzeigen", "verzeichnis auflisten", "zeige dateien"]},
+    {"phrase": "lister fichiers", "domain": "shell", "intent": "list", "language": "fr", "aliases": ["afficher fichiers", "montrer fichiers", "voir fichiers"]},
+    {"phrase": "listar archivos", "domain": "shell", "intent": "list", "language": "es", "aliases": ["mostrar archivos", "ver archivos", "enseñar archivos"]},
+    
+    {"phrase": "list all files", "domain": "shell", "intent": "list_all", "language": "en", "aliases": ["show all files", "ls -la", "ls -a", "list hidden files", "show hidden"]},
+    {"phrase": "pokaż wszystkie pliki", "domain": "shell", "intent": "list_all", "language": "pl", "aliases": ["lista wszystkich plików", "ukryte pliki", "pokaż ukryte"]},
+    
+    {"phrase": "list directories", "domain": "shell", "intent": "list_dirs", "language": "en", "aliases": ["show directories", "show folders", "list folders", "only directories"]},
+    {"phrase": "pokaż katalogi", "domain": "shell", "intent": "list_dirs", "language": "pl", "aliases": ["lista katalogów", "pokaż foldery", "tylko katalogi"]},
+    
+    {"phrase": "find file", "domain": "shell", "intent": "find", "language": "en", "aliases": ["search file", "locate file", "look for file", "where is file", "find files"]},
+    {"phrase": "znajdź plik", "domain": "shell", "intent": "find", "language": "pl", "aliases": ["szukaj pliku", "wyszukaj plik", "znajdz plik", "szukaj plik", "gdzie jest plik"]},
+    {"phrase": "datei finden", "domain": "shell", "intent": "find", "language": "de", "aliases": ["datei suchen", "suche datei", "wo ist datei"]},
+    {"phrase": "chercher fichier", "domain": "shell", "intent": "find", "language": "fr", "aliases": ["trouver fichier", "rechercher fichier"]},
+    {"phrase": "buscar archivo", "domain": "shell", "intent": "find", "language": "es", "aliases": ["encontrar archivo", "localizar archivo"]},
+    
+    {"phrase": "find by size", "domain": "shell", "intent": "find_size", "language": "en", "aliases": ["files larger than", "files bigger than", "files smaller than", "find large files"]},
+    {"phrase": "znajdź po rozmiarze", "domain": "shell", "intent": "find_size", "language": "pl", "aliases": ["pliki większe niż", "pliki mniejsze niż", "duże pliki"]},
+    
+    {"phrase": "find by date", "domain": "shell", "intent": "find_date", "language": "en", "aliases": ["files modified", "files created", "recent files", "old files", "files older than"]},
+    {"phrase": "znajdź po dacie", "domain": "shell", "intent": "find_date", "language": "pl", "aliases": ["ostatnio zmodyfikowane", "nowe pliki", "stare pliki"]},
+    
+    {"phrase": "delete file", "domain": "shell", "intent": "delete", "language": "en", "aliases": ["remove file", "rm", "erase file", "delete files", "remove files"]},
+    {"phrase": "usuń plik", "domain": "shell", "intent": "delete", "language": "pl", "aliases": ["skasuj plik", "usun plik", "kasuj plik", "wymaż plik", "usun pliki"]},
+    {"phrase": "datei löschen", "domain": "shell", "intent": "delete", "language": "de", "aliases": ["datei entfernen", "lösche datei"]},
+    {"phrase": "supprimer fichier", "domain": "shell", "intent": "delete", "language": "fr", "aliases": ["effacer fichier", "enlever fichier"]},
+    {"phrase": "eliminar archivo", "domain": "shell", "intent": "delete", "language": "es", "aliases": ["borrar archivo", "quitar archivo"]},
+    
+    {"phrase": "copy file", "domain": "shell", "intent": "copy", "language": "en", "aliases": ["cp", "duplicate file", "copy files", "make copy"]},
+    {"phrase": "kopiuj plik", "domain": "shell", "intent": "copy", "language": "pl", "aliases": ["skopiuj plik", "kopia pliku", "kopiuj pliki", "zrób kopię"]},
+    {"phrase": "datei kopieren", "domain": "shell", "intent": "copy", "language": "de", "aliases": ["kopiere datei", "kopie erstellen"]},
+    
+    {"phrase": "move file", "domain": "shell", "intent": "move", "language": "en", "aliases": ["mv", "rename file", "move files", "relocate file"]},
+    {"phrase": "przenieś plik", "domain": "shell", "intent": "move", "language": "pl", "aliases": ["move plik", "mv", "przeniesienie pliku", "zmień nazwę"]},
+    {"phrase": "datei verschieben", "domain": "shell", "intent": "move", "language": "de", "aliases": ["verschiebe datei", "datei umbenennen"]},
+    
+    {"phrase": "create directory", "domain": "shell", "intent": "mkdir", "language": "en", "aliases": ["make directory", "mkdir", "new directory", "create folder", "make folder"]},
+    {"phrase": "utwórz katalog", "domain": "shell", "intent": "mkdir", "language": "pl", "aliases": ["stwórz katalog", "mkdir", "nowy katalog", "utwórz folder", "nowy folder"]},
+    {"phrase": "verzeichnis erstellen", "domain": "shell", "intent": "mkdir", "language": "de", "aliases": ["ordner erstellen", "mkdir"]},
+    
+    {"phrase": "show file content", "domain": "shell", "intent": "cat", "language": "en", "aliases": ["cat", "display file", "read file", "view file", "show content"]},
+    {"phrase": "pokaż zawartość pliku", "domain": "shell", "intent": "cat", "language": "pl", "aliases": ["cat", "wyświetl plik", "czytaj plik", "zawartość pliku"]},
+    
+    {"phrase": "show last lines", "domain": "shell", "intent": "tail", "language": "en", "aliases": ["tail", "last lines", "end of file", "show tail"]},
+    {"phrase": "pokaż ostatnie linie", "domain": "shell", "intent": "tail", "language": "pl", "aliases": ["tail", "ostatnie linie", "koniec pliku"]},
+    
+    {"phrase": "show first lines", "domain": "shell", "intent": "head", "language": "en", "aliases": ["head", "first lines", "beginning of file", "show head"]},
+    {"phrase": "pokaż pierwsze linie", "domain": "shell", "intent": "head", "language": "pl", "aliases": ["head", "pierwsze linie", "początek pliku"]},
+    
+    {"phrase": "follow log", "domain": "shell", "intent": "tail_follow", "language": "en", "aliases": ["tail -f", "watch log", "monitor log", "follow file"]},
+    {"phrase": "śledź log", "domain": "shell", "intent": "tail_follow", "language": "pl", "aliases": ["tail -f", "obserwuj log", "monitoruj log"]},
+    
+    {"phrase": "search in file", "domain": "shell", "intent": "grep", "language": "en", "aliases": ["grep", "find text", "search text", "look for text", "find in file"]},
+    {"phrase": "szukaj w pliku", "domain": "shell", "intent": "grep", "language": "pl", "aliases": ["grep", "znajdź tekst", "wyszukaj tekst", "szukaj tekstu"]},
+    {"phrase": "in datei suchen", "domain": "shell", "intent": "grep", "language": "de", "aliases": ["grep", "text finden", "text suchen"]},
+    
+    {"phrase": "search recursive", "domain": "shell", "intent": "grep_recursive", "language": "en", "aliases": ["grep -r", "search all files", "find in all", "recursive search"]},
+    {"phrase": "szukaj rekurencyjnie", "domain": "shell", "intent": "grep_recursive", "language": "pl", "aliases": ["grep -r", "szukaj we wszystkich", "rekursywne wyszukiwanie"]},
+    
+    {"phrase": "count lines", "domain": "shell", "intent": "wc_lines", "language": "en", "aliases": ["wc -l", "how many lines", "line count", "number of lines"]},
+    {"phrase": "policz linie", "domain": "shell", "intent": "wc_lines", "language": "pl", "aliases": ["wc -l", "ile linii", "liczba linii"]},
+    
+    {"phrase": "count words", "domain": "shell", "intent": "wc_words", "language": "en", "aliases": ["wc -w", "how many words", "word count"]},
+    {"phrase": "policz słowa", "domain": "shell", "intent": "wc_words", "language": "pl", "aliases": ["wc -w", "ile słów", "liczba słów"]},
+    
+    {"phrase": "sort file", "domain": "shell", "intent": "sort", "language": "en", "aliases": ["sort", "sort lines", "order file", "alphabetical sort"]},
+    {"phrase": "sortuj plik", "domain": "shell", "intent": "sort", "language": "pl", "aliases": ["sort", "sortuj linie", "uporządkuj plik"]},
+    
+    {"phrase": "unique lines", "domain": "shell", "intent": "uniq", "language": "en", "aliases": ["uniq", "remove duplicates", "deduplicate", "unique values"]},
+    {"phrase": "unikalne linie", "domain": "shell", "intent": "uniq", "language": "pl", "aliases": ["uniq", "usuń duplikaty", "deduplikuj"]},
+    
+    {"phrase": "replace text", "domain": "shell", "intent": "sed", "language": "en", "aliases": ["sed", "find and replace", "substitute", "change text"]},
+    {"phrase": "zamień tekst", "domain": "shell", "intent": "sed", "language": "pl", "aliases": ["sed", "znajdź i zamień", "podstaw", "zmień tekst"]},
+    
+    {"phrase": "show processes", "domain": "shell", "intent": "list_processes", "language": "en", "aliases": ["ps aux", "list processes", "running processes", "process list", "what is running"]},
+    {"phrase": "pokaż procesy", "domain": "shell", "intent": "list_processes", "language": "pl", "aliases": ["ps aux", "lista procesów", "uruchomione procesy", "co działa"]},
+    {"phrase": "prozesse anzeigen", "domain": "shell", "intent": "list_processes", "language": "de", "aliases": ["ps aux", "prozessliste", "laufende prozesse"]},
+    
+    {"phrase": "show memory processes", "domain": "shell", "intent": "process_memory", "language": "en", "aliases": ["memory usage", "top memory", "processes by memory", "ram usage"]},
+    {"phrase": "pokaż procesy pamięci", "domain": "shell", "intent": "process_memory", "language": "pl", "aliases": ["użycie pamięci", "top pamięć", "procesy według pamięci", "użycie ram"]},
+    
+    {"phrase": "show cpu processes", "domain": "shell", "intent": "process_cpu", "language": "en", "aliases": ["cpu usage", "top cpu", "processes by cpu", "cpu intensive"]},
+    {"phrase": "pokaż procesy cpu", "domain": "shell", "intent": "process_cpu", "language": "pl", "aliases": ["użycie cpu", "top cpu", "procesy według cpu"]},
+    
+    {"phrase": "kill process", "domain": "shell", "intent": "process_kill", "language": "en", "aliases": ["kill", "terminate process", "stop process", "kill -9", "force kill"]},
+    {"phrase": "zabij proces", "domain": "shell", "intent": "process_kill", "language": "pl", "aliases": ["kill", "zakończ proces", "zatrzymaj proces", "kill -9"]},
+    {"phrase": "prozess beenden", "domain": "shell", "intent": "process_kill", "language": "de", "aliases": ["kill", "prozess abbrechen"]},
+    
+    {"phrase": "monitor processes", "domain": "shell", "intent": "process_monitor", "language": "en", "aliases": ["top", "htop", "monitor", "process monitor", "system monitor"]},
+    {"phrase": "monitoruj procesy", "domain": "shell", "intent": "process_monitor", "language": "pl", "aliases": ["top", "htop", "monitor", "monitor systemu"]},
+    
+    {"phrase": "find process", "domain": "shell", "intent": "process_find", "language": "en", "aliases": ["pgrep", "search process", "which process", "process grep"]},
+    {"phrase": "znajdź proces", "domain": "shell", "intent": "process_find", "language": "pl", "aliases": ["pgrep", "szukaj procesu", "który proces"]},
+    
+    {"phrase": "disk usage", "domain": "shell", "intent": "disk_usage", "language": "en", "aliases": ["df -h", "disk space", "free space", "storage", "how much space"]},
+    {"phrase": "użycie dysku", "domain": "shell", "intent": "disk_usage", "language": "pl", "aliases": ["df -h", "miejsce na dysku", "wolne miejsce", "ile miejsca"]},
+    {"phrase": "speicherplatz", "domain": "shell", "intent": "disk_usage", "language": "de", "aliases": ["df -h", "festplattenplatz", "freier speicher"]},
+    
+    {"phrase": "directory size", "domain": "shell", "intent": "dir_size", "language": "en", "aliases": ["du -sh", "folder size", "how big", "size of directory"]},
+    {"phrase": "rozmiar katalogu", "domain": "shell", "intent": "dir_size", "language": "pl", "aliases": ["du -sh", "rozmiar folderu", "jak duży"]},
+    
+    {"phrase": "memory usage", "domain": "shell", "intent": "memory_usage", "language": "en", "aliases": ["free -h", "ram usage", "available memory", "memory status"]},
+    {"phrase": "użycie pamięci", "domain": "shell", "intent": "memory_usage", "language": "pl", "aliases": ["free -h", "ram", "dostępna pamięć", "status pamięci"]},
+    
+    {"phrase": "start service", "domain": "shell", "intent": "service_start", "language": "en", "aliases": ["systemctl start", "start daemon", "enable service", "run service"]},
+    {"phrase": "uruchom usługę", "domain": "shell", "intent": "service_start", "language": "pl", "aliases": ["systemctl start", "start serwis", "włącz usługę", "uruchom serwis"]},
+    {"phrase": "dienst starten", "domain": "shell", "intent": "service_start", "language": "de", "aliases": ["systemctl start", "service starten"]},
+    
+    {"phrase": "stop service", "domain": "shell", "intent": "service_stop", "language": "en", "aliases": ["systemctl stop", "stop daemon", "disable service", "halt service"]},
+    {"phrase": "zatrzymaj usługę", "domain": "shell", "intent": "service_stop", "language": "pl", "aliases": ["systemctl stop", "stop serwis", "wyłącz usługę"]},
+    {"phrase": "dienst stoppen", "domain": "shell", "intent": "service_stop", "language": "de", "aliases": ["systemctl stop", "service stoppen"]},
+    
+    {"phrase": "restart service", "domain": "shell", "intent": "service_restart", "language": "en", "aliases": ["systemctl restart", "restart daemon", "reload service"]},
+    {"phrase": "zrestartuj usługę", "domain": "shell", "intent": "service_restart", "language": "pl", "aliases": ["systemctl restart", "restart serwis", "przeładuj usługę"]},
+    {"phrase": "dienst neustarten", "domain": "shell", "intent": "service_restart", "language": "de", "aliases": ["systemctl restart", "service neustarten"]},
+    
+    {"phrase": "service status", "domain": "shell", "intent": "service_status", "language": "en", "aliases": ["systemctl status", "check service", "is service running"]},
+    {"phrase": "status usługi", "domain": "shell", "intent": "service_status", "language": "pl", "aliases": ["systemctl status", "sprawdź usługę", "czy usługa działa"]},
+    
+    {"phrase": "run application", "domain": "shell", "intent": "run_application", "language": "en", "aliases": ["start app", "launch application", "execute app", "run program"]},
+    {"phrase": "uruchom aplikację", "domain": "shell", "intent": "run_application", "language": "pl", "aliases": ["start aplikacji", "urucham aplikację", "wykonaj program"]},
+    {"phrase": "anwendung starten", "domain": "shell", "intent": "run_application", "language": "de", "aliases": ["programm ausführen", "app starten"]},
+    
+    {"phrase": "npm start", "domain": "shell", "intent": "npm_start", "language": "en", "aliases": ["run npm", "start npm project", "npm run start", "node start"]},
+    {"phrase": "uruchom npm", "domain": "shell", "intent": "npm_start", "language": "pl", "aliases": ["npm start", "start npm", "uruchom projekt npm"]},
+    
+    {"phrase": "npm install", "domain": "shell", "intent": "npm_install", "language": "en", "aliases": ["install dependencies", "npm i", "install packages", "npm install"]},
+    {"phrase": "npm install", "domain": "shell", "intent": "npm_install", "language": "pl", "aliases": ["zainstaluj zależności", "npm i", "zainstaluj pakiety"]},
+    
+    {"phrase": "run python", "domain": "shell", "intent": "run_python", "language": "en", "aliases": ["python script", "execute python", "run py", "python3"]},
+    {"phrase": "uruchom python", "domain": "shell", "intent": "run_python", "language": "pl", "aliases": ["skrypt python", "wykonaj python", "uruchom skrypt python"]},
+    
+    {"phrase": "pip install", "domain": "shell", "intent": "pip_install", "language": "en", "aliases": ["install python package", "pip3 install", "install module"]},
+    {"phrase": "pip install", "domain": "shell", "intent": "pip_install", "language": "pl", "aliases": ["zainstaluj pakiet python", "pip3 install"]},
+    
+    {"phrase": "start server", "domain": "shell", "intent": "start_server", "language": "en", "aliases": ["run server", "launch server", "server start", "start web server"]},
+    {"phrase": "uruchom serwer", "domain": "shell", "intent": "start_server", "language": "pl", "aliases": ["start serwer", "uruchom web serwer", "odpal serwer"]},
+    
+    {"phrase": "shutdown system", "domain": "shell", "intent": "system_shutdown", "language": "en", "aliases": ["power off", "turn off", "halt system", "shutdown now"]},
+    {"phrase": "wyłącz system", "domain": "shell", "intent": "system_shutdown", "language": "pl", "aliases": ["shutdown", "zamknij system", "wyłącz komputer"]},
+    
+    {"phrase": "reboot system", "domain": "shell", "intent": "system_reboot", "language": "en", "aliases": ["restart computer", "reboot", "restart system"]},
+    {"phrase": "zrestartuj system", "domain": "shell", "intent": "system_reboot", "language": "pl", "aliases": ["reboot", "restart komputera", "uruchom ponownie"]},
+    
+    {"phrase": "system info", "domain": "shell", "intent": "system_info", "language": "en", "aliases": ["uname -a", "system information", "os info", "kernel version"]},
+    {"phrase": "informacje o systemie", "domain": "shell", "intent": "system_info", "language": "pl", "aliases": ["uname -a", "info systemu", "wersja kernela"]},
+    
+    {"phrase": "uptime", "domain": "shell", "intent": "uptime", "language": "en", "aliases": ["system uptime", "how long running", "server uptime"]},
+    {"phrase": "czas działania", "domain": "shell", "intent": "uptime", "language": "pl", "aliases": ["uptime", "jak długo działa", "czas pracy"]},
+    
+    {"phrase": "create archive", "domain": "shell", "intent": "archive_create", "language": "en", "aliases": ["tar -czvf", "compress", "zip", "create zip", "make archive"]},
+    {"phrase": "utwórz archiwum", "domain": "shell", "intent": "archive_create", "language": "pl", "aliases": ["tar -czvf", "skompresuj", "zip", "zrób archiwum"]},
+    
+    {"phrase": "extract archive", "domain": "shell", "intent": "archive_extract", "language": "en", "aliases": ["tar -xzvf", "unzip", "uncompress", "extract zip"]},
+    {"phrase": "rozpakuj archiwum", "domain": "shell", "intent": "archive_extract", "language": "pl", "aliases": ["tar -xzvf", "unzip", "wypakuj", "rozpakuj zip"]},
+    
+    {"phrase": "change permissions", "domain": "shell", "intent": "chmod", "language": "en", "aliases": ["chmod", "set permissions", "make executable", "change mode"]},
+    {"phrase": "zmień uprawnienia", "domain": "shell", "intent": "chmod", "language": "pl", "aliases": ["chmod", "ustaw uprawnienia", "zrób wykonywalny"]},
+    
+    {"phrase": "change owner", "domain": "shell", "intent": "chown", "language": "en", "aliases": ["chown", "set owner", "change ownership"]},
+    {"phrase": "zmień właściciela", "domain": "shell", "intent": "chown", "language": "pl", "aliases": ["chown", "ustaw właściciela"]},
+    
+    {"phrase": "current directory", "domain": "shell", "intent": "pwd", "language": "en", "aliases": ["pwd", "where am i", "current path", "working directory"]},
+    {"phrase": "bieżący katalog", "domain": "shell", "intent": "pwd", "language": "pl", "aliases": ["pwd", "gdzie jestem", "aktualna ścieżka"]},
+    
+    {"phrase": "current user", "domain": "shell", "intent": "whoami", "language": "en", "aliases": ["whoami", "who am i", "current username"]},
+    {"phrase": "aktualny użytkownik", "domain": "shell", "intent": "whoami", "language": "pl", "aliases": ["whoami", "kim jestem", "nazwa użytkownika"]},
+    
+    {"phrase": "environment variables", "domain": "shell", "intent": "env", "language": "en", "aliases": ["env", "printenv", "show env", "environment"]},
+    {"phrase": "zmienne środowiskowe", "domain": "shell", "intent": "env", "language": "pl", "aliases": ["env", "printenv", "pokaż zmienne"]},
+    
+    {"phrase": "set variable", "domain": "shell", "intent": "export", "language": "en", "aliases": ["export", "set env", "environment variable"]},
+    {"phrase": "ustaw zmienną", "domain": "shell", "intent": "export", "language": "pl", "aliases": ["export", "ustaw env"]},
+    
+    {"phrase": "command history", "domain": "shell", "intent": "history", "language": "en", "aliases": ["history", "previous commands", "command log"]},
+    {"phrase": "historia poleceń", "domain": "shell", "intent": "history", "language": "pl", "aliases": ["history", "poprzednie polecenia"]},
+    
+    {"phrase": "clear screen", "domain": "shell", "intent": "clear", "language": "en", "aliases": ["clear", "cls", "clean screen"]},
+    {"phrase": "wyczyść ekran", "domain": "shell", "intent": "clear", "language": "pl", "aliases": ["clear", "cls", "czyść ekran"]},
+    
+    {"phrase": "ping", "domain": "shell", "intent": "network_ping", "language": "en", "aliases": ["ping host", "check connection", "test connection", "network test"]},
+    {"phrase": "ping", "domain": "shell", "intent": "network_ping", "language": "pl", "aliases": ["ping host", "sprawdź połączenie", "test sieci"]},
+    
+    {"phrase": "show ip", "domain": "shell", "intent": "network_ip", "language": "en", "aliases": ["ip addr", "ifconfig", "my ip", "ip address", "network interface"]},
+    {"phrase": "pokaż ip", "domain": "shell", "intent": "network_ip", "language": "pl", "aliases": ["ip addr", "ifconfig", "moje ip", "adres ip"]},
+    
+    {"phrase": "network connections", "domain": "shell", "intent": "network_connections", "language": "en", "aliases": ["netstat", "ss", "open ports", "listening ports"]},
+    {"phrase": "połączenia sieciowe", "domain": "shell", "intent": "network_connections", "language": "pl", "aliases": ["netstat", "ss", "otwarte porty"]},
+    
+    {"phrase": "dns lookup", "domain": "shell", "intent": "dns_lookup", "language": "en", "aliases": ["nslookup", "dig", "resolve domain", "dns query"]},
+    {"phrase": "zapytanie dns", "domain": "shell", "intent": "dns_lookup", "language": "pl", "aliases": ["nslookup", "dig", "rozwiąż domenę"]},
+    
+    {"phrase": "traceroute", "domain": "shell", "intent": "traceroute", "language": "en", "aliases": ["trace route", "network path", "route to host"]},
+    {"phrase": "traceroute", "domain": "shell", "intent": "traceroute", "language": "pl", "aliases": ["śledź trasę", "ścieżka sieciowa"]},
+    
+    {"phrase": "download file", "domain": "shell", "intent": "download", "language": "en", "aliases": ["wget", "curl", "fetch file", "get file"]},
+    {"phrase": "pobierz plik", "domain": "shell", "intent": "download", "language": "pl", "aliases": ["wget", "curl", "ściągnij plik"]},
+    
+    {"phrase": "ssh connect", "domain": "shell", "intent": "ssh", "language": "en", "aliases": ["ssh", "remote login", "connect to server", "secure shell"]},
+    {"phrase": "połącz ssh", "domain": "shell", "intent": "ssh", "language": "pl", "aliases": ["ssh", "zdalne logowanie", "połącz z serwerem"]},
+    
+    {"phrase": "scp copy", "domain": "shell", "intent": "scp", "language": "en", "aliases": ["scp", "secure copy", "copy to remote", "remote copy"]},
+    {"phrase": "kopiuj scp", "domain": "shell", "intent": "scp", "language": "pl", "aliases": ["scp", "bezpieczna kopia", "kopiuj zdalnie"]},
+    
+    {"phrase": "rsync", "domain": "shell", "intent": "rsync", "language": "en", "aliases": ["rsync", "sync files", "synchronize", "backup sync"]},
+    {"phrase": "rsync", "domain": "shell", "intent": "rsync", "language": "pl", "aliases": ["rsync", "synchronizuj pliki", "synchronizacja"]},
+    
+    {"phrase": "cron list", "domain": "shell", "intent": "cron_list", "language": "en", "aliases": ["crontab -l", "show cron jobs", "scheduled tasks"]},
+    {"phrase": "lista cron", "domain": "shell", "intent": "cron_list", "language": "pl", "aliases": ["crontab -l", "pokaż zadania cron", "zaplanowane zadania"]},
+    
+    {"phrase": "edit cron", "domain": "shell", "intent": "cron_edit", "language": "en", "aliases": ["crontab -e", "add cron job", "schedule task"]},
+    {"phrase": "edytuj cron", "domain": "shell", "intent": "cron_edit", "language": "pl", "aliases": ["crontab -e", "dodaj zadanie cron"]},
+    
+    {"phrase": "docker run", "domain": "docker", "intent": "docker_run", "language": "en", "aliases": ["run container", "start container", "docker start", "create container"]},
+    {"phrase": "uruchom kontener", "domain": "docker", "intent": "docker_run", "language": "pl", "aliases": ["docker run", "start kontenera", "stwórz kontener"]},
+    {"phrase": "container starten", "domain": "docker", "intent": "docker_run", "language": "de", "aliases": ["docker run", "container ausführen"]},
+    
+    {"phrase": "docker stop", "domain": "docker", "intent": "docker_stop", "language": "en", "aliases": ["stop container", "halt container", "docker halt"]},
+    {"phrase": "zatrzymaj kontener", "domain": "docker", "intent": "docker_stop", "language": "pl", "aliases": ["docker stop", "stop kontenera"]},
+    
+    {"phrase": "docker ps", "domain": "docker", "intent": "docker_list", "language": "en", "aliases": ["list containers", "running containers", "show containers"]},
+    {"phrase": "pokaż kontenery", "domain": "docker", "intent": "docker_list", "language": "pl", "aliases": ["docker ps", "lista kontenerów", "uruchomione kontenery"]},
+    
+    {"phrase": "docker images", "domain": "docker", "intent": "docker_images", "language": "en", "aliases": ["list images", "show images", "docker image ls"]},
+    {"phrase": "pokaż obrazy", "domain": "docker", "intent": "docker_images", "language": "pl", "aliases": ["docker images", "lista obrazów"]},
+    
+    {"phrase": "docker build", "domain": "docker", "intent": "docker_build", "language": "en", "aliases": ["build image", "create image", "docker image build"]},
+    {"phrase": "zbuduj obraz", "domain": "docker", "intent": "docker_build", "language": "pl", "aliases": ["docker build", "stwórz obraz"]},
+    
+    {"phrase": "docker logs", "domain": "docker", "intent": "docker_logs", "language": "en", "aliases": ["container logs", "show logs", "docker log"]},
+    {"phrase": "logi kontenera", "domain": "docker", "intent": "docker_logs", "language": "pl", "aliases": ["docker logs", "pokaż logi"]},
+    
+    {"phrase": "docker exec", "domain": "docker", "intent": "docker_exec", "language": "en", "aliases": ["exec container", "run in container", "container shell"]},
+    {"phrase": "wykonaj w kontenerze", "domain": "docker", "intent": "docker_exec", "language": "pl", "aliases": ["docker exec", "uruchom w kontenerze"]},
+    
+    {"phrase": "docker pull", "domain": "docker", "intent": "docker_pull", "language": "en", "aliases": ["pull image", "download image", "get image"]},
+    {"phrase": "pobierz obraz", "domain": "docker", "intent": "docker_pull", "language": "pl", "aliases": ["docker pull", "ściągnij obraz"]},
+    
+    {"phrase": "docker push", "domain": "docker", "intent": "docker_push", "language": "en", "aliases": ["push image", "upload image", "publish image"]},
+    {"phrase": "wyślij obraz", "domain": "docker", "intent": "docker_push", "language": "pl", "aliases": ["docker push", "opublikuj obraz"]},
+    
+    {"phrase": "docker compose up", "domain": "docker", "intent": "docker_compose_up", "language": "en", "aliases": ["compose up", "start compose", "docker-compose up"]},
+    {"phrase": "docker compose up", "domain": "docker", "intent": "docker_compose_up", "language": "pl", "aliases": ["compose up", "uruchom compose"]},
+    
+    {"phrase": "docker compose down", "domain": "docker", "intent": "docker_compose_down", "language": "en", "aliases": ["compose down", "stop compose", "docker-compose down"]},
+    {"phrase": "docker compose down", "domain": "docker", "intent": "docker_compose_down", "language": "pl", "aliases": ["compose down", "zatrzymaj compose"]},
+    
+    {"phrase": "docker network", "domain": "docker", "intent": "docker_network", "language": "en", "aliases": ["list networks", "docker network ls", "show networks"]},
+    {"phrase": "sieci docker", "domain": "docker", "intent": "docker_network", "language": "pl", "aliases": ["docker network", "lista sieci"]},
+    
+    {"phrase": "docker volume", "domain": "docker", "intent": "docker_volume", "language": "en", "aliases": ["list volumes", "docker volume ls", "show volumes"]},
+    {"phrase": "wolumeny docker", "domain": "docker", "intent": "docker_volume", "language": "pl", "aliases": ["docker volume", "lista wolumenów"]},
+    
+    {"phrase": "docker prune", "domain": "docker", "intent": "docker_prune", "language": "en", "aliases": ["cleanup docker", "remove unused", "docker system prune"]},
+    {"phrase": "wyczyść docker", "domain": "docker", "intent": "docker_prune", "language": "pl", "aliases": ["docker prune", "usuń nieużywane"]},
+    
+    {"phrase": "git status", "domain": "git", "intent": "git_status", "language": "en", "aliases": ["status", "git st", "check status", "what changed"]},
+    {"phrase": "git status", "domain": "git", "intent": "git_status", "language": "pl", "aliases": ["status", "sprawdź status", "co się zmieniło"]},
+    
+    {"phrase": "git add", "domain": "git", "intent": "git_add", "language": "en", "aliases": ["stage files", "add to staging", "git add ."]},
+    {"phrase": "git add", "domain": "git", "intent": "git_add", "language": "pl", "aliases": ["dodaj do staging", "git add .", "dodaj pliki"]},
+    
+    {"phrase": "git commit", "domain": "git", "intent": "git_commit", "language": "en", "aliases": ["commit changes", "save changes", "git ci"]},
+    {"phrase": "git commit", "domain": "git", "intent": "git_commit", "language": "pl", "aliases": ["zatwierdź zmiany", "zapisz zmiany"]},
+    
+    {"phrase": "git push", "domain": "git", "intent": "git_push", "language": "en", "aliases": ["push changes", "upload commits", "push to remote"]},
+    {"phrase": "git push", "domain": "git", "intent": "git_push", "language": "pl", "aliases": ["wyślij zmiany", "prześlij commity"]},
+    
+    {"phrase": "git pull", "domain": "git", "intent": "git_pull", "language": "en", "aliases": ["pull changes", "fetch and merge", "update from remote"]},
+    {"phrase": "git pull", "domain": "git", "intent": "git_pull", "language": "pl", "aliases": ["pobierz zmiany", "zaktualizuj z remote"]},
+    
+    {"phrase": "git clone", "domain": "git", "intent": "git_clone", "language": "en", "aliases": ["clone repository", "clone repo", "git clone url"]},
+    {"phrase": "git clone", "domain": "git", "intent": "git_clone", "language": "pl", "aliases": ["sklonuj repozytorium", "klonuj repo"]},
+    
+    {"phrase": "git branch", "domain": "git", "intent": "git_branch", "language": "en", "aliases": ["list branches", "show branches", "current branch"]},
+    {"phrase": "git branch", "domain": "git", "intent": "git_branch", "language": "pl", "aliases": ["lista gałęzi", "pokaż gałęzie", "aktualna gałąź"]},
+    
+    {"phrase": "git checkout", "domain": "git", "intent": "git_checkout", "language": "en", "aliases": ["switch branch", "checkout branch", "change branch"]},
+    {"phrase": "git checkout", "domain": "git", "intent": "git_checkout", "language": "pl", "aliases": ["zmień gałąź", "przełącz gałąź"]},
+    
+    {"phrase": "git merge", "domain": "git", "intent": "git_merge", "language": "en", "aliases": ["merge branch", "combine branches"]},
+    {"phrase": "git merge", "domain": "git", "intent": "git_merge", "language": "pl", "aliases": ["scal gałąź", "połącz gałęzie"]},
+    
+    {"phrase": "git log", "domain": "git", "intent": "git_log", "language": "en", "aliases": ["show log", "commit history", "git history"]},
+    {"phrase": "git log", "domain": "git", "intent": "git_log", "language": "pl", "aliases": ["pokaż log", "historia commitów"]},
+    
+    {"phrase": "git diff", "domain": "git", "intent": "git_diff", "language": "en", "aliases": ["show diff", "show changes", "compare"]},
+    {"phrase": "git diff", "domain": "git", "intent": "git_diff", "language": "pl", "aliases": ["pokaż różnice", "pokaż zmiany", "porównaj"]},
+    
+    {"phrase": "git stash", "domain": "git", "intent": "git_stash", "language": "en", "aliases": ["stash changes", "save work", "temporary save"]},
+    {"phrase": "git stash", "domain": "git", "intent": "git_stash", "language": "pl", "aliases": ["schowaj zmiany", "tymczasowo zapisz"]},
+    
+    {"phrase": "git reset", "domain": "git", "intent": "git_reset", "language": "en", "aliases": ["reset changes", "undo commit", "unstage"]},
+    {"phrase": "git reset", "domain": "git", "intent": "git_reset", "language": "pl", "aliases": ["cofnij zmiany", "cofnij commit"]},
+    
+    {"phrase": "git rebase", "domain": "git", "intent": "git_rebase", "language": "en", "aliases": ["rebase branch", "interactive rebase"]},
+    {"phrase": "git rebase", "domain": "git", "intent": "git_rebase", "language": "pl", "aliases": ["rebase gałęzi"]},
+    
+    {"phrase": "git tag", "domain": "git", "intent": "git_tag", "language": "en", "aliases": ["create tag", "list tags", "version tag"]},
+    {"phrase": "git tag", "domain": "git", "intent": "git_tag", "language": "pl", "aliases": ["utwórz tag", "lista tagów"]},
+    
+    {"phrase": "git remote", "domain": "git", "intent": "git_remote", "language": "en", "aliases": ["show remote", "list remotes", "remote repositories"]},
+    {"phrase": "git remote", "domain": "git", "intent": "git_remote", "language": "pl", "aliases": ["pokaż remote", "zdalne repozytoria"]},
+    
+    {"phrase": "select from table", "domain": "sql", "intent": "select", "language": "en", "aliases": ["query table", "get data", "fetch records", "show data"]},
+    {"phrase": "wybierz z tabeli", "domain": "sql", "intent": "select", "language": "pl", "aliases": ["pobierz dane", "pokaż dane", "zapytanie"]},
+    
+    {"phrase": "select all", "domain": "sql", "intent": "select_all", "language": "en", "aliases": ["get all records", "show all", "select *"]},
+    {"phrase": "wybierz wszystko", "domain": "sql", "intent": "select_all", "language": "pl", "aliases": ["pobierz wszystko", "pokaż wszystko"]},
+    
+    {"phrase": "insert into", "domain": "sql", "intent": "insert", "language": "en", "aliases": ["add record", "create record", "new row"]},
+    {"phrase": "wstaw do", "domain": "sql", "intent": "insert", "language": "pl", "aliases": ["dodaj rekord", "nowy wiersz"]},
+    
+    {"phrase": "update table", "domain": "sql", "intent": "update", "language": "en", "aliases": ["modify record", "change data", "edit record"]},
+    {"phrase": "zaktualizuj tabelę", "domain": "sql", "intent": "update", "language": "pl", "aliases": ["zmień rekord", "edytuj dane"]},
+    
+    {"phrase": "delete from", "domain": "sql", "intent": "sql_delete", "language": "en", "aliases": ["remove record", "delete record", "drop row"]},
+    {"phrase": "usuń z tabeli", "domain": "sql", "intent": "sql_delete", "language": "pl", "aliases": ["skasuj rekord", "usuń wiersz"]},
+    
+    {"phrase": "create table", "domain": "sql", "intent": "create_table", "language": "en", "aliases": ["new table", "make table"]},
+    {"phrase": "utwórz tabelę", "domain": "sql", "intent": "create_table", "language": "pl", "aliases": ["nowa tabela", "stwórz tabelę"]},
+    
+    {"phrase": "drop table", "domain": "sql", "intent": "drop_table", "language": "en", "aliases": ["delete table", "remove table"]},
+    {"phrase": "usuń tabelę", "domain": "sql", "intent": "drop_table", "language": "pl", "aliases": ["skasuj tabelę"]},
+    
+    {"phrase": "join tables", "domain": "sql", "intent": "join", "language": "en", "aliases": ["inner join", "left join", "combine tables"]},
+    {"phrase": "połącz tabele", "domain": "sql", "intent": "join", "language": "pl", "aliases": ["inner join", "left join", "scal tabele"]},
+    
+    {"phrase": "count records", "domain": "sql", "intent": "count", "language": "en", "aliases": ["count rows", "how many records", "record count"]},
+    {"phrase": "policz rekordy", "domain": "sql", "intent": "count", "language": "pl", "aliases": ["policz wiersze", "ile rekordów"]},
+    
+    {"phrase": "group by", "domain": "sql", "intent": "group", "language": "en", "aliases": ["group records", "aggregate", "grouping"]},
+    {"phrase": "grupuj według", "domain": "sql", "intent": "group", "language": "pl", "aliases": ["grupuj rekordy", "agreguj"]},
+    
+    {"phrase": "order by", "domain": "sql", "intent": "order", "language": "en", "aliases": ["sort by", "sort records", "ordering"]},
+    {"phrase": "sortuj według", "domain": "sql", "intent": "order", "language": "pl", "aliases": ["sortuj rekordy", "uporządkuj"]},
+    
+    {"phrase": "kubectl get pods", "domain": "kubernetes", "intent": "k8s_pods", "language": "en", "aliases": ["list pods", "show pods", "get pods"]},
+    {"phrase": "pokaż pody", "domain": "kubernetes", "intent": "k8s_pods", "language": "pl", "aliases": ["kubectl get pods", "lista podów"]},
+    
+    {"phrase": "kubectl get services", "domain": "kubernetes", "intent": "k8s_services", "language": "en", "aliases": ["list services", "show services"]},
+    {"phrase": "pokaż serwisy", "domain": "kubernetes", "intent": "k8s_services", "language": "pl", "aliases": ["kubectl get services", "lista serwisów"]},
+    
+    {"phrase": "kubectl apply", "domain": "kubernetes", "intent": "k8s_apply", "language": "en", "aliases": ["apply manifest", "deploy yaml"]},
+    {"phrase": "kubectl apply", "domain": "kubernetes", "intent": "k8s_apply", "language": "pl", "aliases": ["zastosuj manifest", "wdróż yaml"]},
+    
+    {"phrase": "kubectl delete", "domain": "kubernetes", "intent": "k8s_delete", "language": "en", "aliases": ["delete resource", "remove pod"]},
+    {"phrase": "kubectl delete", "domain": "kubernetes", "intent": "k8s_delete", "language": "pl", "aliases": ["usuń zasób", "usuń pod"]},
+    
+    {"phrase": "kubectl logs", "domain": "kubernetes", "intent": "k8s_logs", "language": "en", "aliases": ["pod logs", "container logs"]},
+    {"phrase": "kubectl logs", "domain": "kubernetes", "intent": "k8s_logs", "language": "pl", "aliases": ["logi poda", "logi kontenera"]},
+    
+    {"phrase": "kubectl exec", "domain": "kubernetes", "intent": "k8s_exec", "language": "en", "aliases": ["exec into pod", "shell into pod"]},
+    {"phrase": "kubectl exec", "domain": "kubernetes", "intent": "k8s_exec", "language": "pl", "aliases": ["wykonaj w podzie", "shell w podzie"]},
+    
+    {"phrase": "kubectl describe", "domain": "kubernetes", "intent": "k8s_describe", "language": "en", "aliases": ["describe pod", "pod details"]},
+    {"phrase": "kubectl describe", "domain": "kubernetes", "intent": "k8s_describe", "language": "pl", "aliases": ["opisz pod", "szczegóły poda"]},
+    
+    {"phrase": "kubectl scale", "domain": "kubernetes", "intent": "k8s_scale", "language": "en", "aliases": ["scale deployment", "replicas"]},
+    {"phrase": "kubectl scale", "domain": "kubernetes", "intent": "k8s_scale", "language": "pl", "aliases": ["skaluj deployment", "repliki"]}
+  ]
+}
