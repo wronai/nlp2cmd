@@ -5,6 +5,7 @@ Provides CPU, memory, and energy consumption tracking.
 """
 
 import time
+import platform
 try:
     import psutil
 except Exception:  # pragma: no cover
@@ -19,6 +20,11 @@ except Exception:  # pragma: no cover
                     return _MemInfo()
                 def memory_percent(self):
                     return 0.0
+                def cpu_times(self):
+                    class _CpuTimes:
+                        user = 0.0
+                        system = 0.0
+                    return _CpuTimes()
             return _ProcessStub()
     psutil = _PsutilStub()
 from typing import Dict, Any, Optional
@@ -41,11 +47,23 @@ class ResourceMonitor:
     
     def __init__(self):
         self.process = psutil.Process()
+        try:
+            self._cpu_count = int(psutil.cpu_count() or 1)
+        except Exception:  # pragma: no cover
+            self._cpu_count = 1
+
+    def _process_cpu_time_seconds(self) -> float:
+        """Return process CPU time in seconds (user+system)."""
+        try:
+            t = self.process.cpu_times()
+            return float(getattr(t, "user", 0.0) or 0.0) + float(getattr(t, "system", 0.0) or 0.0)
+        except Exception:  # pragma: no cover
+            return 0.0
     
     def get_current_metrics(self) -> ResourceMetrics:
         """Get current resource metrics."""
         return ResourceMetrics(
-            cpu_percent=psutil.cpu_percent(),
+            cpu_percent=0.0,
             memory_mb=self.process.memory_info().rss / 1024 / 1024,
             memory_percent=self.process.memory_percent(),
             execution_time_ms=0.0
@@ -54,28 +72,36 @@ class ResourceMonitor:
     @contextmanager
     def measure_execution(self):
         """Context manager to measure resource usage during execution."""
-        start_time = time.time()
-        start_metrics = self.get_current_metrics()
-        
-        # Reset CPU measurement
-        psutil.cpu_percent(interval=None)
+        start_time = time.perf_counter()
+        start_cpu_time = self._process_cpu_time_seconds()
         
         try:
             yield
         finally:
-            end_time = time.time()
+            end_time = time.perf_counter()
             end_metrics = self.get_current_metrics()
             
-            execution_time = (end_time - start_time) * 1000  # Convert to ms
-            
-            # Calculate average CPU usage during execution
-            avg_cpu = psutil.cpu_percent(interval=None)
-            
-            # Estimate energy consumption (simplified model)
+            wall_s = max(end_time - start_time, 0.0)
+            execution_time = wall_s * 1000  # Convert to ms
+
+            # Process CPU utilization over the interval, normalized by CPU count.
+            # This avoids the instability of psutil.cpu_percent(interval=None) for short runs.
+            end_cpu_time = self._process_cpu_time_seconds()
+            cpu_time_delta = max(end_cpu_time - start_cpu_time, 0.0)
+            if wall_s > 0:
+                cpu_fraction = min(max((cpu_time_delta / wall_s) / float(self._cpu_count), 0.0), 1.0)
+            else:
+                cpu_fraction = 0.0
+            avg_cpu = cpu_fraction * 100.0
+
+            # Estimate energy consumption (very rough).
+            # Use conservative constants to prevent huge spikes from brief bursts.
             # Energy (J) = Power (W) * Time (s)
-            # Assuming average power draw based on CPU and memory usage
-            power_estimate = (avg_cpu / 100) * 65 + (end_metrics.memory_percent / 100) * 10  # Watts
-            energy_joules = power_estimate * (execution_time / 1000)  # Convert ms to s
+            base_power_w = 5.0
+            cpu_power_w = cpu_fraction * 35.0
+            mem_power_w = (end_metrics.memory_percent / 100.0) * 8.0
+            power_estimate_w = base_power_w + cpu_power_w + mem_power_w
+            energy_joules = power_estimate_w * wall_s
             
             metrics = ResourceMetrics(
                 cpu_percent=avg_cpu,
@@ -146,5 +172,5 @@ def get_system_info() -> Dict[str, Any]:
     return {
         "cpu_count": psutil.cpu_count(),
         "memory_total_gb": psutil.virtual_memory().total / 1024 / 1024 / 1024,
-        "platform": psutil.platform.system(),
+        "platform": platform.system(),
     }

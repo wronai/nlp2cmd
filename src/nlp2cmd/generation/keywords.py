@@ -1140,6 +1140,10 @@ class KeywordIntentDetector:
 
         result = self._detect_normalized(text_lower)
         if result.domain != 'unknown' or result.confidence > 0.0:
+            try:
+                result.intent = self._normalize_intent(result.domain, result.intent, text_lower)
+            except Exception:
+                pass
             return result
 
         # Lazy lemmatization fallback (loads spaCy only if needed)
@@ -1148,6 +1152,10 @@ class KeywordIntentDetector:
             lemmatized_norm = self._normalize_text_lower(lemmatized)
             fallback = self._detect_normalized(lemmatized_norm)
             if fallback.domain != 'unknown' and fallback.confidence >= result.confidence:
+                try:
+                    fallback.intent = self._normalize_intent(fallback.domain, fallback.intent, lemmatized_norm)
+                except Exception:
+                    pass
                 return fallback
 
         return result
