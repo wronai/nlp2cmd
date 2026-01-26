@@ -7,12 +7,14 @@ Provides interactive REPL mode, file operations, and environment analysis.
 from __future__ import annotations
 
 import json
+import json
 import os
 import re
 import shlex
 import sys
 import select
 import asyncio
+from contextlib import nullcontext
 from pathlib import Path
 from typing import Any, Optional, TYPE_CHECKING
 
@@ -1590,10 +1592,17 @@ def main(
                 from nlp2cmd.monitoring import measure_resources, format_last_metrics
 
                 pipeline = RuleBasedPipeline()
-                with measure_resources():
+                _measure = str(os.environ.get("NLP2CMD_MEASURE_RESOURCES", "1") or "").strip().lower() not in {
+                    "0",
+                    "false",
+                    "no",
+                    "n",
+                    "off",
+                }
+                with (measure_resources() if _measure else nullcontext()):
                     pipeline_result = pipeline.process(query)
 
-                metrics_str = format_last_metrics()
+                metrics_str = format_last_metrics() if _measure else ""
                 out: dict[str, Any] = {
                     "dsl": "auto",
                     "query": query,
@@ -1605,6 +1614,45 @@ def main(
                     "suggestions": [],
                     "clarification_questions": [],
                 }
+
+                # Add metrics if available (keep output schema consistent with InteractiveSession)
+                if metrics_str:
+                    try:
+                        from nlp2cmd.monitoring.token_costs import parse_metrics_string
+                        from nlp2cmd.monitoring import estimate_token_cost
+
+                        metrics = parse_metrics_string(metrics_str)
+                        if metrics:
+                            out["resource_metrics"] = {
+                                "time_ms": metrics.get("time_ms"),
+                                "cpu_percent": metrics.get("cpu_percent"),
+                                "memory_mb": metrics.get("memory_mb"),
+                                "energy_mj": metrics.get("energy_mj"),
+                            }
+                            out["resource_metrics_parsed"] = metrics
+
+                            if (
+                                metrics.get("time_ms") is not None
+                                and metrics.get("cpu_percent") is not None
+                                and metrics.get("memory_mb") is not None
+                            ):
+                                token_estimate = estimate_token_cost(
+                                    metrics["time_ms"],
+                                    metrics["cpu_percent"],
+                                    metrics["memory_mb"],
+                                    metrics.get("energy_mj"),
+                                )
+                                out["token_estimate"] = {
+                                    "total": int(token_estimate.total_tokens_estimate),
+                                    "input": int(token_estimate.input_tokens_estimate),
+                                    "output": int(token_estimate.output_tokens_estimate),
+                                    "cost_usd": float(token_estimate.estimated_cost_usd),
+                                    "model_tier": token_estimate.equivalent_model_tier,
+                                    "tokens_per_ms": float(token_estimate.tokens_per_millisecond),
+                                    "tokens_per_mj": float(token_estimate.tokens_per_mj),
+                                }
+                    except Exception:
+                        pass
 
                 if explain:
                     out.update(

@@ -25,6 +25,9 @@ generated_command: playwright open https://www.prototypowanie.pl/kontakt/ && fil
 realizacja zadan w shell
 ![img_3.png](img_3.png)
 
+inteligentna reakcja na nie działająca w danym kontekscie polecenie i propzycja dzialajacego
+![img_4.png](img_4.png)
+
 # NLP2CMD
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)

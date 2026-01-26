@@ -33,6 +33,14 @@ from nlp2cmd.generation.templates import TemplateGenerator, TemplateResult
 # Enhanced context detector is imported lazily (it can pull heavy deps like torch).
 ENHANCED_CONTEXT_AVAILABLE: bool | None = None
 
+_DEFAULT_USE_ENHANCED_CONTEXT = str(os.environ.get("NLP2CMD_USE_ENHANCED_CONTEXT") or "").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "y",
+    "on",
+}
+
 
 @dataclass
 class PipelineResult:
@@ -96,7 +104,7 @@ class RuleBasedPipeline:
         extractor: Optional[RegexEntityExtractor] = None,
         generator: Optional[TemplateGenerator] = None,
         confidence_threshold: float = 0.5,
-        use_enhanced_context: bool = True,
+        use_enhanced_context: bool = _DEFAULT_USE_ENHANCED_CONTEXT,
     ):
         """
         Initialize pipeline.
