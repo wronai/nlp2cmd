@@ -2,7 +2,21 @@
 
 wypełnianie formularza:
 
+```bash
 nlp2cmd -r "otwórz https://www.prototypowanie.pl/kontakt/ i wypelnij formularz i wyslij"
+```
+
+```bash
+# 🚀 Run Mode: otwórz https://www.prototypowanie.pl/kontakt/ i wypelnij formularz i wyslij
+```
+
+```yaml
+dsl: auto
+query: otwórz https://www.prototypowanie.pl/kontakt/ i wypelnij formularz i wyslij
+status: success
+confidence: 1.0
+generated_command: playwright open https://www.prototypowanie.pl/kontakt/ && fill_form && submit
+```
 
 ![img_1.png](img_1.png)
 

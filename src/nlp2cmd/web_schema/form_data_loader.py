@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from pathlib import Path
 from urllib.parse import urlparse
 from typing import Any, Optional
@@ -399,9 +400,9 @@ class FormDataLoader:
     
     def _build_field_values(self) -> None:
         """Build field values dictionary from all sources."""
-        # Priority: .env > form_data.json > other json files
+        # Priority: .env > site-specific > form_data.json > other json files
         
-        # Load from JSON first (lower priority)
+        # Load from JSON defaults first (lowest priority)
         if 'defaults' in self._json_data:
             for key, value in self._json_data['defaults'].items():
                 self._field_values[key.lower()] = str(value)
@@ -410,7 +411,29 @@ class FormDataLoader:
             for key, value in self._json_data['fields'].items():
                 self._field_values[key.lower()] = str(value)
         
-        # Load from env using schema-based field mappings (higher priority)
+        # Load site-specific data (higher priority)
+        if 'sites' in self._json_data and self.site_domain:
+            # Try exact domain match first
+            if self.site_domain in self._json_data['sites']:
+                site_data = self._json_data['sites'][self.site_domain]
+                if isinstance(site_data, dict):
+                    for key, value in site_data.items():
+                        self._field_values[key.lower()] = str(value)
+            
+            # Try variations of domain
+            domain_variations = [
+                f"www.{self.site_domain}",
+                self.site_domain.replace("www.", ""),
+            ]
+            for variation in domain_variations:
+                if variation in self._json_data['sites']:
+                    site_data = self._json_data['sites'][variation]
+                    if isinstance(site_data, dict):
+                        for key, value in site_data.items():
+                            self._field_values[key.lower()] = str(value)
+                        break
+        
+        # Load from env using schema-based field mappings (highest priority)
         for field_pattern, env_key in self._field_mappings.items():
             if env_key in self._env_data:
                 self._field_values[field_pattern.lower()] = self._env_data[env_key]
@@ -443,6 +466,8 @@ class FormDataLoader:
             if not candidate:
                 continue
             candidate_lower = candidate.lower().strip()
+            # Normalize by removing asterisks and extra whitespace (for required field indicators)
+            candidate_lower = re.sub(r'\s*\*\s*', '', candidate_lower).strip()
             
             # Direct match in field values
             if candidate_lower in self._field_values:

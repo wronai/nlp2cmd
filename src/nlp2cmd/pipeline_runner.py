@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 from nlp2cmd.adapters.base import SafetyPolicy
 from nlp2cmd.ir import ActionIR
 from nlp2cmd.utils.data_files import find_data_file
+from rich.table import Table
 
 
 @dataclass
@@ -440,6 +441,26 @@ class PipelineRunner:
                             if not fields:
                                 console.print("[yellow]No form fields detected on this page[/yellow]")
                             else:
+                                # Debug: Show all detected fields
+                                debug_table = Table()
+                                debug_table.add_column("Field", style="yellow")
+                                debug_table.add_column("Type", style="dim")
+                                debug_table.add_column("Selector", style="cyan")
+                                debug_table.add_column("Name/ID", style="magenta")
+                                
+                                for f in fields:
+                                    name_id = f.name or f.id or ""
+                                    debug_table.add_row(
+                                        f.get_display_name(),
+                                        f.field_type,
+                                        f.selector,
+                                        name_id,
+                                    )
+                                
+                                console.print("\n[cyan]🔍 Detected form fields:[/cyan]")
+                                console.print(debug_table)
+                                console.print()
+                                
                                 # Automatic fill from .env and data/ files
                                 if data_loader.has_data():
                                     console.print("[cyan]📂 Loading form data from .env and data/...[/cyan]")

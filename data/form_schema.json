@@ -20,7 +20,7 @@
   "field_mappings": {
     "name": {
       "env_var": "FORM_NAME",
-      "patterns": ["imię", "imie", "name", "first_name", "firstname", "your-name", "nazwa"]
+      "patterns": ["imię", "imie", "name", "first_name", "firstname", "your-name", "nazwa", "name-1", "forminator-field-name"]
     },
     "lastname": {
       "env_var": "FORM_LASTNAME",
@@ -28,15 +28,15 @@
     },
     "email": {
       "env_var": "FORM_EMAIL",
-      "patterns": ["email", "e-mail", "adres e-mail", "your-email", "mail"]
+      "patterns": ["email", "e-mail", "adres e-mail", "your-email", "mail", "email-1", "forminator-field-email"]
     },
     "phone": {
       "env_var": "FORM_PHONE",
-      "patterns": ["telefon", "phone", "numer telefonu", "tel", "mobile"]
+      "patterns": ["telefon", "phone", "numer telefonu", "tel", "mobile", "phone-1", "forminator-field-phone"]
     },
     "message": {
       "env_var": "FORM_MESSAGE",
-      "patterns": ["wiadomość", "wiadomosc", "message", "your-message", "treść", "tresc", "komentarz", "comment"]
+      "patterns": ["wiadomość", "wiadomosc", "message", "your-message", "treść", "tresc", "komentarz", "comment", "textarea-1", "forminator-field-textarea"]
     },
     "subject": {
       "env_var": "FORM_SUBJECT",

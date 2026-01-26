@@ -63,8 +63,13 @@ class FormHandler:
         """
         fields = []
         
+        # Debug: Show all input fields found
+        all_inputs = page.query_selector_all('input')
+        self.console.print(f"[dim]Found {len(all_inputs)} total input elements[/dim]")
+        
         # Detect input fields
         inputs = page.query_selector_all('input:not([type="hidden"]):not([type="submit"]):not([type="button"])')
+        self.console.print(f"[dim]Found {len(inputs)} visible input fields[/dim]")
         
         for inp in inputs:
             try:
@@ -73,6 +78,9 @@ class FormHandler:
                 inp_id = inp.get_attribute('id')
                 placeholder = inp.get_attribute('placeholder')
                 required = inp.get_attribute('required') is not None
+                
+                # Debug output
+                self.console.print(f"[dim]Input: type={inp_type}, name={name}, id={inp_id}, placeholder={placeholder}[/dim]")
                 
                 # Try to find label
                 label = None
@@ -103,6 +111,7 @@ class FormHandler:
         
         # Detect textareas
         textareas = page.query_selector_all('textarea')
+        self.console.print(f"[dim]Found {len(textareas)} textarea fields[/dim]")
         
         for ta in textareas:
             try:
@@ -110,6 +119,9 @@ class FormHandler:
                 ta_id = ta.get_attribute('id')
                 placeholder = ta.get_attribute('placeholder')
                 required = ta.get_attribute('required') is not None
+                
+                # Debug output
+                self.console.print(f"[dim]Textarea: name={name}, id={ta_id}, placeholder={placeholder}[/dim]")
                 
                 # Try to find label
                 label = None
@@ -134,6 +146,81 @@ class FormHandler:
                     label=label,
                     placeholder=placeholder,
                     required=required,
+                ))
+            except Exception:
+                continue
+        
+        # Detect contenteditable divs (often used as rich text editors)
+        content_editables = page.query_selector_all('[contenteditable="true"]')
+        self.console.print(f"[dim]Found {len(content_editables)} contenteditable fields[/dim]")
+        
+        for ce in content_editables:
+            try:
+                ce_id = ce.get_attribute('id')
+                ce_class = ce.get_attribute('class')
+                
+                # Debug output
+                self.console.print(f"[dim]ContentEditable: id={ce_id}, class={ce_class}[/dim]")
+                
+                # Try to find label by looking for preceding text or label
+                label = None
+                if ce_id:
+                    label_elem = page.query_selector(f'label[for="{ce_id}"]')
+                    if label_elem:
+                        label = label_elem.inner_text().strip()
+                
+                # Generate selector
+                if ce_id:
+                    selector = f'#{ce_id}'
+                elif ce_class:
+                    selector = f'.{ce_class.replace(" ", ".")}'
+                else:
+                    continue
+                
+                fields.append(FormField(
+                    selector=selector,
+                    field_type='contenteditable',
+                    name=None,
+                    id=ce_id,
+                    label=label,
+                    placeholder=None,
+                    required=False,
+                ))
+            except Exception:
+                continue
+        
+        # Detect divs with form-like attributes (common in custom form builders)
+        div_inputs = page.query_selector_all('div[role="textbox"], div[data-input], div[data-field]')
+        self.console.print(f"[dim]Found {len(div_inputs)} div-based input fields[/dim]")
+        
+        for div in div_inputs:
+            try:
+                div_id = div.get_attribute('id')
+                div_role = div.get_attribute('role')
+                data_input = div.get_attribute('data-input')
+                data_field = div.get_attribute('data-field')
+                
+                # Debug output
+                self.console.print(f"[dim]DivInput: id={div_id}, role={div_role}, data-input={data_input}, data-field={data_field}[/dim]")
+                
+                # Generate selector
+                if div_id:
+                    selector = f'#{div_id}'
+                elif data_input:
+                    selector = f'[data-input="{data_input}"]'
+                elif data_field:
+                    selector = f'[data-field="{data_field}"]'
+                else:
+                    continue
+                
+                fields.append(FormField(
+                    selector=selector,
+                    field_type='div-input',
+                    name=data_input or data_field,
+                    id=div_id,
+                    label=None,
+                    placeholder=None,
+                    required=False,
                 ))
             except Exception:
                 continue
@@ -392,6 +479,16 @@ class FormHandler:
                 if tag == 'select':
                     elem.select_option(label=value)
                 elif tag in ('input', 'textarea'):
+                    elem.click()
+                    elem.fill('')
+                    elem.type(value, delay=30)
+                elif tag == 'div' or elem.get_attribute('contenteditable') == 'true':
+                    # Handle contenteditable divs and div-based inputs
+                    elem.click()
+                    elem.fill('')  # Clear existing content
+                    elem.type(value, delay=30)
+                else:
+                    # Fallback for other element types
                     elem.click()
                     elem.fill('')
                     elem.type(value, delay=30)
