@@ -30,8 +30,8 @@ def _legacy_user_config_dir() -> Path:
 
 
 def _package_data_dir() -> Path:
-    # utils/ -> nlp2cmd/
-    return Path(__file__).resolve().parents[1] / "data"
+    # utils/ -> nlp2cmd/ -> project_root/
+    return Path(__file__).resolve().parents[2] / "data"
 
 
 def find_data_files(

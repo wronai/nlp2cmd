@@ -881,48 +881,14 @@ class HybridThermodynamicGenerator:
         2. If found, use thermodynamic regardless of complexity
         3. Otherwise, use DSL generator
         """
-        # Estimate complexity and route
-        entities = context.get("entities", {}) if context else {}
-        complexity = self.router.estimate_complexity(text, entities)
 
-        # Detect intent for routing
-        text_lower = text.lower()
-
-        # Strong signals for optimization problems
-        schema = self._load_optimization_schema()
-        hard_optimization_keywords = schema.get("hard_optimization_keywords")
-        soft_optimization_keywords = schema.get("soft_optimization_keywords")
-        soft_threshold = schema.get("soft_complexity_threshold")
-
-        if not isinstance(hard_optimization_keywords, list):
-            hard_optimization_keywords = ["przydziel", "allocate", "zasob", "zaplanuj", "schedule", "harmonogram", "zad"]
-        if not isinstance(soft_optimization_keywords, list):
-            soft_optimization_keywords = ["optymalizuj", "optimize", "rozłóż", "balance", "assign", "route"]
-        if not isinstance(soft_threshold, (int, float)):
-            soft_threshold = 0.35
-
-        hard_optimization_keywords = [k for k in hard_optimization_keywords if isinstance(k, str) and k.strip()]
-        soft_optimization_keywords = [k for k in soft_optimization_keywords if isinstance(k, str) and k.strip()]
-
-        is_hard_optimization = any(kw in text_lower for kw in hard_optimization_keywords)
-        is_soft_optimization = any(kw in text_lower for kw in soft_optimization_keywords)
-
-        if is_hard_optimization or (is_soft_optimization and complexity > float(soft_threshold)):
-            # Use thermodynamic generator
+        if self._is_optimization_query(text):
             result = await self.thermo_generator.generate(text)
-            return {
-                "source": "thermodynamic",
-                "result": result,
-                "complexity": complexity,
-            }
-        else:
-            # Use DSL generator
-            result = await self.dsl_generator.generate(text, context)
-            return {
-                "source": "dsl",
-                "result": result,
-                "complexity": complexity,
-            }
+            return {'source': 'thermodynamic', 'result': result}
+
+        # DSL fallback
+        result = await self.dsl_generator.generate(text, context)
+        return {'source': 'dsl', 'result': result}
 
 
 def create_thermodynamic_generator(
