@@ -43,6 +43,19 @@ def pytest_configure(config):
     )
 
 
+def pytest_collection_modifyitems(config, items):
+    for item in items:
+        # This conftest is imported as a plugin and the hook runs for the whole
+        # test session. Only mark tests that actually live under tests/e2e.
+        try:
+            path = str(item.fspath)
+        except Exception:
+            path = item.nodeid
+
+        if "/tests/e2e/" in path or path.startswith("tests/e2e/"):
+            item.add_marker(pytest.mark.e2e)
+
+
 @pytest.fixture(scope="session")
 def e2e_config():
     """E2E test configuration."""

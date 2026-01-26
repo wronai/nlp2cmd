@@ -5,13 +5,16 @@ Ten moduł konfiguruje automatyczne przechwytywanie błędów
 i tworzenie ticketów w projektorze.
 
 Użycie:
-    # W głównym pliku nlp2cmd (np. __main__.py lub cli.py):
+    # Automatyczna instalacja (zalecane) - w __init__.py lub main.py:
+    try:
+        from projektor import install
+        install()
+    except ImportError:
+        pass  # projektor nie jest zainstalowany
+    
+    # Lub przez ten moduł:
     from projektor_integration import setup_projektor
     setup_projektor()
-    
-    # Lub importuj z projektor bezpośrednio:
-    from projektor.integration import install_global_handler
-    install_global_handler(auto_fix=False)
 """
 
 import sys
@@ -23,75 +26,142 @@ if PROJEKTOR_PATH.exists():
     sys.path.insert(0, str(PROJEKTOR_PATH))
 
 
-def setup_projektor(auto_fix: bool = False) -> None:
+def setup_projektor(auto_fix: bool = False) -> bool:
     """
     Konfiguruje integrację projektora z nlp2cmd.
     
     Args:
         auto_fix: Czy automatycznie próbować naprawiać błędy
+        
+    Returns:
+        True jeśli instalacja się powiodła
     """
     try:
-        from projektor.integration import install_global_handler
-        from projektor.integration.config_loader import load_integration_config
-        
-        # Załaduj konfigurację z projektor.yaml lub pyproject.toml
-        config = load_integration_config(Path(__file__).parent)
-        
-        if not config.enabled:
-            print("[projektor] Integration disabled in config")
-            return
-        
-        # Użyj ustawień z konfiguracji
-        install_global_handler(auto_fix=config.auto_fix or auto_fix)
-        
-        print("[projektor] Error tracking enabled for nlp2cmd")
-        if config.auto_fix or auto_fix:
-            print("[projektor] Auto-fix is ON")
-        
+        from projektor import install
+        return install(auto_fix=auto_fix)
     except ImportError as e:
         print(f"[projektor] Not available: {e}")
         print("[projektor] Install with: pip install projektor")
+        return False
 
 
-def catch_nlp2cmd_errors(func):
+# ==================== Dekoratory ====================
+
+def track_errors(func=None, **kwargs):
     """
-    Dekorator do przechwytywania błędów w nlp2cmd.
+    Dekorator do śledzenia błędów w funkcjach.
     
     Użycie:
-        @catch_nlp2cmd_errors
+        @track_errors
         def parse_command(text):
+            ...
+        
+        @track_errors(context={"component": "parser"})
+        def process(data):
             ...
     """
     try:
-        from projektor.integration import catch_errors
-        from projektor.core.ticket import Priority
-        
-        return catch_errors(
-            func,
-            auto_fix=False,
-            priority=Priority.HIGH,
-            labels=["nlp2cmd", "runtime-error"],
-        )
+        from projektor import track_errors as _track_errors
+        return _track_errors(func, **kwargs)
     except ImportError:
         # Fallback - zwróć oryginalną funkcję
+        if func is None:
+            return lambda f: f
         return func
 
 
-# ==================== Przykłady użycia ====================
+def track_async_errors(func=None, **kwargs):
+    """
+    Dekorator do śledzenia błędów w funkcjach async.
+    
+    Użycie:
+        @track_async_errors
+        async def fetch_data(url):
+            ...
+        
+        @track_async_errors(context={"component": "thermodynamic"})
+        async def generate(text):
+            ...
+    """
+    try:
+        from projektor import track_async_errors as _track_async_errors
+        return _track_async_errors(func, **kwargs)
+    except ImportError:
+        # Fallback - zwróć oryginalną funkcję
+        if func is None:
+            return lambda f: f
+        return func
+
+
+# ==================== Context Manager ====================
+
+class ErrorTracker:
+    """
+    Context manager do śledzenia błędów.
+    
+    Użycie:
+        with ErrorTracker(context={"input": text[:50]}) as tracker:
+            result = process(text)
+        
+        if tracker.had_error:
+            print(f"Error: {tracker.error}")
+    """
+    
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
+        self.had_error = False
+        self.error = None
+        self.ticket = None
+        self._real_tracker = None
+    
+    def __enter__(self):
+        try:
+            from projektor import ErrorTracker as _ErrorTracker
+            self._real_tracker = _ErrorTracker(**self.kwargs)
+            return self._real_tracker.__enter__()
+        except ImportError:
+            return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self._real_tracker:
+            return self._real_tracker.__exit__(exc_type, exc_val, exc_tb)
+        if exc_val:
+            self.had_error = True
+            self.error = exc_val
+        return False
+
+
+# ==================== Test ====================
 
 if __name__ == "__main__":
+    print("=== Testing Projektor Integration for nlp2cmd ===\n")
+    
     # Włącz integrację
-    setup_projektor(auto_fix=False)
+    if setup_projektor(auto_fix=False):
+        print("[OK] Projektor installed\n")
+    else:
+        print("[SKIP] Projektor not available\n")
     
-    # Przykład funkcji z dekoratorem
-    @catch_nlp2cmd_errors
+    # Przykład 1: Dekorator
+    print("1. Testing @track_errors decorator...")
+    
+    @track_errors
     def example_function():
-        # Ta funkcja automatycznie utworzy ticket przy błędzie
-        raise ValueError("Example error for testing projektor integration")
+        raise ValueError("Example error for testing")
     
-    print("Testing projektor integration...")
     try:
         example_function()
     except ValueError as e:
-        print(f"Error caught: {e}")
-        print("Check .projektor/tickets/ for the created bug ticket")
+        print(f"   Error caught: {e}")
+    
+    # Przykład 2: Context manager
+    print("\n2. Testing ErrorTracker context manager...")
+    
+    with ErrorTracker(context={"test": "example"}) as tracker:
+        # To nie rzuci błędu
+        x = 1 + 1
+    
+    print(f"   Had error: {tracker.had_error}")
+    
+    print("\n=== Done ===")
+    print("Check .projektor/tickets/ for created bug tickets")

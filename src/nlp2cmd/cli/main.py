@@ -16,6 +16,8 @@ import asyncio
 from pathlib import Path
 from typing import Any, Optional
 
+from nlp2cmd.execution import ExecutionRunner
+
 try:
     import click
 except Exception:  # pragma: no cover
@@ -831,7 +833,6 @@ def _handle_run_query(
         AppSpecAdapter,
         BrowserAdapter,
     )
-    from nlp2cmd.execution import ExecutionRunner
     from nlp2cmd.web_schema.form_data_loader import FormDataLoader
     
     print(f"```bash")
