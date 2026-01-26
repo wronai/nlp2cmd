@@ -450,56 +450,65 @@ nlp2cmd repair docker-compose.yml --backup
 
 ##### Shell Emulation Examples
 
-```bash
 # Interactive mode
-$ nlp2cmd --interactive --dsl shell
-╭──────────────────────────────────────────╮
-│ NLP2CMD Interactive Mode                 │
-│ Type 'help' for commands, 'exit' to quit │
-╰──────────────────────────────────────────╯
-🔍 Environment: Linux (6.17.0-8-generic)
-🛠️  Tools: docker, docker-compose, kubectl, git, python, node, terraform, ansible
-📁 Config files: 6
+```bash
+nlp2cmd "show user folders"
+```
 
-nlp2cmd> list files in current directory
-ls -la .
+### output: 
 
-nlp2cmd> find files larger than 100MB
-find . -type f -size +100MB -exec ls -lh {} \;
+```bash
+find ~ -maxdepth 1 -type d                                                                                                                                                                                                                               
+```
 
-nlp2cmd> show running processes
-ps aux
-
-nlp2cmd> exit
-👋 Goodbye!
-
-# Single query examples
-$ nlp2cmd --dsl shell --query "Pokaż użytkowników"
-ls -la .
-
-📊 ⏱️  Time: 13.7ms | 💻 CPU: 0.0% | 🧠 RAM: 54.8MB (0.1%) | ⚡ Energy: 0.120mJ
-
-$ nlp2cmd --dsl shell --query "Znajdź pliki .log większe niż 10MB"
-find . -type f -name "*.log" -size +10MB -exec ls -lh {} \;
-
-📊 ⏱️  Time: 3.1ms | 💻 CPU: 0.0% | 🧠 RAM: 55.1MB (0.1%) | ⚡ Energy: 0.028mJ
+```yaml
+dsl: auto                                                                                                                                                                                                                                                
+query: show user folders                                                                                                                                                                                                                                 
+status: success                                                                                                                                                                                                                                          
+confidence: 1.0                                                                                                                                                                                                                                          
+generated_command: find ~ -maxdepth 1 -type d                                                                                                                                                                                                            
+errors: []                                                                                                                                                                                                                                               
+warnings: []                                                                                                                                                                                                                                             
+suggestions: []                                                                                                                                                                                                                                          
+clarification_questions: []                                                                                                                                                                                                                              
+resource_metrics:                                                                                                                                                                                                                                        
+  time_ms: 1.6                                                                                                                                                                                                                                           
+  cpu_percent: 0.0                                                                                                                                                                                                                                       
+  memory_mb: 56.6                                                                                                                                                                                                                                        
+  energy_mj: 0.015                                                                                                                                                                                                                                       
+resource_metrics_parsed:                                                                                                                                                                                                                                 
+  time_ms: 1.6                                                                                                                                                                                                                                           
+  cpu_percent: 0.0                                                                                                                                                                                                                                       
+  memory_mb: 56.6                                                                                                                                                                                                                                        
+  energy_mj: 0.015                                                                                                                                                                                                                                       
+token_estimate:                                                                                                                                                                                                                                          
+  total: 1                                                                                                                                                                                                                                               
+  input: 1                                                                                                                                                                                                                                               
+  output: 0                                                                                                                                                                                                                                              
+  cost_usd: 2.0e-06                                                                                                                                                                                                                                      
+  model_tier: tiny                                                                                                                                                                                                                                       
+  tokens_per_ms: 0.625                                                                                                                                                                                                                                   
+  tokens_per_mj: 66.66666666666667                                                                                                                                                                                                                       
+```
 
 # Run mode with execution
 $ nlp2cmd --run "list files in current directory" --auto-confirm
-╭──────────────────────────────── 🚀 Run Mode ─────────────────────────────────╮
-│ list files in current directory                                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
+# 🚀 Run Mode: list files in current directory                                  
 Generating command...
-Detected: shell/list
+✗ Could not generate command with rule-based pipeline: # Unknown: could not 
+detect domain for: list files in current directory
+Attempting LLM fallback via LiteLLM...
+✓ LLM fallback succeeded
+Detected: shell/llm_fallback
 
-$ ls -la .
-  total 1280
-  drwxrwxr-x 23 tom tom   4096 Jan 24 21:23 .
-  drwxrwxr-x 31 tom tom   4096 Jan 24 09:33 ..
-  -rw-r--r--  1 tom tom   5450 Jan 24 21:20 CHANGELOG.md
-  -rw-r--r--  1 tom tom  22677 Jan 24 21:20 README.md
-  ...
-✓ Command completed in 25.7ms
+$ ls
+  CHANGELOG.md
+  COMMIT_MESSAGE.md
+  CONTRIBUTING.md
+  Dockerfile
+  ENHANCED_README.md
+  INSTALLATION.md...
+✓ Command completed in 13.4ms
 
 # Polish language examples
 $ nlp2cmd --dsl shell --query "uruchom usługę nginx"
@@ -609,17 +618,12 @@ $ nlp2cmd web-schema extract https://httpbin.org/forms/post
 📊 Extracted Elements: 12 inputs, 1 button, 1 form
 
 $ nlp2cmd cache info
-📁 Cache Directory: ~/.cache/external
-💾 Total Size: 3105.4 MB
-📦 Cached Packages: 1 (playwright)
-                Tools                
-┏━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┓
-┃ Tool           ┃ Version ┃ Status ┃
-┡━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━┩
-│ docker         │ 29.1.5  │ ✅     │
-│ kubectl        │ -       │ ✅     │
-│ git            │ 2.51.0  │ ✅     │
-└────────────────┴─────────┴────────┘
+╭─────────────────────────────── Cache Overview ───────────────────────────────╮
+│ Cache Directory: /home/tom/github/wronai/nlp2cmd/.cache/external             │
+│ Total Size: 0.0 MB                                                           │
+│ Cached Packages: 0                                                           │
+╰──────────────────────────────────────────────────────────────────────────────╯
+No packages cached
 ```
 
 ### Python API Usage
@@ -877,29 +881,11 @@ Based on [Whitelam (2025) "Generative thermodynamic computing"](https://arxiv.or
 
 ### Quick Example
 
-```python
-from nlp2cmd.generation import create_hybrid_generator
-
-# Create hybrid generator (DSL + Thermodynamic)
-hybrid = create_hybrid_generator()
-
-# Simple query → DSL generation (2ms, $0)
-result = await hybrid.generate("SELECT * FROM users")
-print(result['source'])  # 'dsl'
-
-# Complex optimization → Thermodynamic sampling (~200ms, ~$0.01)
-result = await hybrid.generate("Zaplanuj 5 zadań w 10 slotach z ograniczeniami")
-print(result['source'])  # 'thermodynamic'
-print(result['result'].decoded_output)
-# Schedule:
-#   Slot 0: task_0
-#   Slot 2: task_1
-#   Slot 4: task_2
-
-# Energy savings estimate
-print(result['result'].energy_estimate)
-# {'savings_digital_percent': 65.2, 'savings_analog_percent': 98.7}
+```bash
+nlp2cmd "Zaplanuj 5 zadań w 10 slotach z ograniczeniami" --explain
 ```
+
+This command triggers thermodynamic optimization for constraint satisfaction problems and outputs results in YAML format, including energy estimates and scheduling solutions.
 
 ### Supported Problem Types
 

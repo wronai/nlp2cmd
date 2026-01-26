@@ -113,6 +113,7 @@ class TemplateGenerator:
         'list': "ls -la {path}",
         'list_recursive': "ls -laR {path}",
         'list_user_directories': "ls -la {path}",
+        'list_dirs': "find {path} -maxdepth 1 -type d",
         'grep': "grep -r '{pattern}' {path}",
         'search': "grep -r '{pattern}' {path}",
         'grep_file': "grep '{pattern}' {file}",
@@ -617,7 +618,12 @@ class TemplateGenerator:
         domain_templates = self.templates.get(domain, {})
         template = domain_templates.get(intent)
         
-        if not template:
+        # Special case: for shell domain with list intent, always check for alternatives
+        if domain == 'shell' and intent == 'list':
+            alternative_template = self._find_alternative_template(domain, intent, entities)
+            if alternative_template and alternative_template != intent:
+                template = domain_templates.get(alternative_template)
+        elif not template:
             # Try to find alternative template
             alternative_template = self._find_alternative_template(domain, intent, entities)
             if alternative_template:
@@ -712,6 +718,10 @@ class TemplateGenerator:
                 return 'remove'  # For deleting files
             else:
                 return 'list'  # Default fallback
+        
+        # Special handling for list intent when target is directories
+        if domain == 'shell' and intent == 'list' and entities.get('target') == 'directories':
+            return 'list_dirs'
         
         # Standard intent mapping
         domain_aliases = intent_aliases.get(domain, {})

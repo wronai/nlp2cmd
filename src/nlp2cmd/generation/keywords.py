@@ -448,6 +448,7 @@ class KeywordIntentDetector:
             re.search(r"\b(lista|list)\b", text_lower)
             and re.search(r"\b(folder\w*|katalog\w*|directory\w*|dir)\b", text_lower)
             and not re.search(r"\b(tabel\w*|table|sql)\b", text_lower)
+            and not re.search(r"\b(user|użytkownik)\b", text_lower)  # Exclude user folder queries
         ):
             return DetectionResult(
                 domain="shell",

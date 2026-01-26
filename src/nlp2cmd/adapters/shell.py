@@ -1179,6 +1179,12 @@ class ShellAdapter(BaseDSLAdapter):
             if not clean_path or clean_path == "~":
                 clean_path = "~"
             return f"ls -la {clean_path} | grep '^d'"
+        
+        # Check if we're listing folders based on target or full text
+        text = entities.get("text", "")
+        if (target and "folder" in target.lower()) or (full_text and "folder" in full_text.lower()) or "folders" in str(full_text).lower() or "folders" in str(text).lower():
+            return f"find {path} -maxdepth 1 -type d"
+        
         return f"ls -la {path}"
 
     def _generate_list_dirs(self, entities: dict[str, Any]) -> str:
