@@ -332,13 +332,13 @@ class ExecutionRunner:
         Returns:
             True if user confirms, False otherwise
         """
-        self.print_markdown_block(f"```bash", language="bash", console=self.console)
+        print("```bash")
         # Use cached syntax highlighting for better performance
         from nlp2cmd.cli.syntax_cache import get_cached_syntax
         syntax = get_cached_syntax(command, "bash", theme="monokai", line_numbers=False)
         self.console.print(syntax)
-        self.print_markdown_block(f"```", language="bash", console=self.console)
-        self.print_markdown_block("", language="bash", console=self.console)
+        print("```")
+        print()
 
         if self.auto_confirm:
             return True

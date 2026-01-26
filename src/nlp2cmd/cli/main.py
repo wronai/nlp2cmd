@@ -135,6 +135,13 @@ except ImportError:
 from nlp2cmd.cli.display import display_command_result
 from nlp2cmd.cli.syntax_cache import get_cached_syntax
 
+# Expose ExecutionRunner for unit tests (monkeypatching) while keeping
+# heavy imports lazy and avoiding circular dependencies.
+try:
+    from nlp2cmd.execution import ExecutionRunner  # type: ignore
+except Exception:  # pragma: no cover
+    ExecutionRunner = None  # type: ignore
+
 
 def _register_subcommands_for_args(argv: list[str]) -> None:
     """Register Click subcommands lazily based on argv.
@@ -950,8 +957,13 @@ def _handle_run_query(
                     console.print("[yellow]No steps selected[/yellow]")
                     return
 
-                from nlp2cmd.execution import ExecutionRunner
-                runner = ExecutionRunner(
+                if ExecutionRunner is None:
+                    from nlp2cmd.execution import ExecutionRunner as _ExecutionRunner
+                    runner_cls = _ExecutionRunner
+                else:
+                    runner_cls = ExecutionRunner
+
+                runner = runner_cls(
                     console=console,
                     auto_confirm=auto_confirm,
                     max_retries=3,
@@ -1262,8 +1274,13 @@ Rules:
             execute_web = True
     
     # Step 3: Execute with recovery
-    from nlp2cmd.execution import ExecutionRunner
-    runner = ExecutionRunner(
+    if ExecutionRunner is None:
+        from nlp2cmd.execution import ExecutionRunner as _ExecutionRunner
+        runner_cls = _ExecutionRunner
+    else:
+        runner_cls = ExecutionRunner
+
+    runner = runner_cls(
         console=console,
         auto_confirm=auto_confirm,
         max_retries=3,

@@ -469,6 +469,8 @@ class KeywordIntentDetector:
             return intent
 
         if domain == 'docker':
+            if intent.startswith('docker_'):
+                intent = intent[len('docker_'):]
             if intent == 'compose':
                 if re.search(r"\b(run|start|launch|uruchom|odpal|wystartuj)\b", text_lower):
                     return 'compose_up'

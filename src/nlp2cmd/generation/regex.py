@@ -429,7 +429,10 @@ class RegexEntityExtractor:
         
         for entity_type, patterns in domain_patterns.items():
             for pattern in patterns:
-                match = re.search(pattern, text, re.IGNORECASE)
+                try:
+                    match = re.search(pattern, text, re.IGNORECASE)
+                except re.error:
+                    continue
                 if match:
                     value = self._process_match(entity_type, match)
                     if value is not None:
