@@ -345,6 +345,15 @@
       "how many folders",
       "number of folders"
     ],
+    "process_memory": [
+      "proces z najwieksza pamiecia",
+      "proces z najwiecej pamieci",
+      "najwiecej pamieci",
+      "najwiecej ram",
+      "najbardziej pamieciozerny proces",
+      "top proces pamiec",
+      "top procesy pamiec"
+    ],
     "process": [
       "procesy",
       "ps",

@@ -9,40 +9,61 @@ from __future__ import annotations
 
 import json
 import re
+import os
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
 from pathlib import Path
 
 # Try to import advanced NLP libraries
+_ENABLE_HEAVY_NLP = str(os.environ.get("NLP2CMD_ENABLE_HEAVY_NLP") or "").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "y",
+    "on",
+}
+
 try:
-    import nltk
-    from nltk.corpus import stopwords
-    from nltk.tokenize import word_tokenize
-    from nltk.stem import WordNetLemmatizer
-    from nltk.chunk import ne_chunk
-    from nltk.tag import pos_tag
-    NLTK_AVAILABLE = True
+    if _ENABLE_HEAVY_NLP:
+        import nltk
+        from nltk.corpus import stopwords
+        from nltk.tokenize import word_tokenize
+        from nltk.stem import WordNetLemmatizer
+        from nltk.chunk import ne_chunk
+        from nltk.tag import pos_tag
+        NLTK_AVAILABLE = True
+    else:
+        NLTK_AVAILABLE = False
 except ImportError:
     NLTK_AVAILABLE = False
 
 try:
-    from textblob import TextBlob
-    TEXTBLOB_AVAILABLE = True
+    if _ENABLE_HEAVY_NLP:
+        from textblob import TextBlob
+        TEXTBLOB_AVAILABLE = True
+    else:
+        TEXTBLOB_AVAILABLE = False
 except ImportError:
     TEXTBLOB_AVAILABLE = False
 
 try:
-    from sentence_transformers import SentenceTransformer
-    from sklearn.metrics.pairwise import cosine_similarity
-    import numpy as np
-    SENTENCE_TRANSFORMERS_AVAILABLE = True
+    if _ENABLE_HEAVY_NLP:
+        from sentence_transformers import SentenceTransformer
+        from sklearn.metrics.pairwise import cosine_similarity
+        import numpy as np
+        SENTENCE_TRANSFORMERS_AVAILABLE = True
+    else:
+        SENTENCE_TRANSFORMERS_AVAILABLE = False
 except ImportError:
     SENTENCE_TRANSFORMERS_AVAILABLE = False
 
 try:
-    from transformers import AutoTokenizer, AutoModel
-    import torch
-    TRANSFORMERS_AVAILABLE = True
+    if _ENABLE_HEAVY_NLP:
+        from transformers import AutoTokenizer, AutoModel
+        import torch
+        TRANSFORMERS_AVAILABLE = True
+    else:
+        TRANSFORMERS_AVAILABLE = False
 except ImportError:
     TRANSFORMERS_AVAILABLE = False
 
@@ -51,12 +72,6 @@ try:
     LANGDETECT_AVAILABLE = True
 except ImportError:
     LANGDETECT_AVAILABLE = False
-
-try:
-    from nlp2cmd.generation.enhanced_context import get_enhanced_detector
-    ENHANCED_CONTEXT_AVAILABLE = True
-except ImportError:
-    ENHANCED_CONTEXT_AVAILABLE = False
 
 try:
     from rapidfuzz import fuzz, process
