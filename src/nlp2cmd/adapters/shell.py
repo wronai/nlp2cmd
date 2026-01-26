@@ -1249,6 +1249,7 @@ class ShellAdapter(BaseDSLAdapter):
         username = entities.get("username", "")
         target = entities.get("target", "")
         full_text = entities.get("_full_text", "")
+        text = entities.get("text", "")
         
         # Extract path from full text if not already found
         if path == "." and full_text:
@@ -1262,7 +1263,10 @@ class ShellAdapter(BaseDSLAdapter):
             "folder" in target.lower() or 
             "katalog" in target.lower() or 
             "directories" in target.lower() or
-            "folder" in full_text.lower()
+            "folder" in full_text.lower() or
+            "katalog" in full_text.lower() or
+            "folder" in str(text).lower() or
+            "katalog" in str(text).lower()
         )
         
         if is_listing_folders:

@@ -79,20 +79,28 @@ def _get_ml_classifier():
             _ml_classifier = False
     return _ml_classifier if _ml_classifier else None
 
-# Lazy import for semantic matcher (sentence embeddings)
+# Lazy import for semantic matcher (sentence embeddings) - use optimized version
 _semantic_matcher = None
 
 def _get_semantic_matcher():
-    """Lazy load semantic matcher for embedding-based similarity."""
+    """Lazy load optimized semantic matcher for embedding-based similarity."""
     global _semantic_matcher
     if _semantic_matcher is None:
         try:
-            from nlp2cmd.generation.semantic_matcher import get_semantic_matcher
-            _semantic_matcher = get_semantic_matcher()
+            # Try optimized version first
+            from nlp2cmd.generation.semantic_matcher_optimized import get_optimized_semantic_matcher
+            _semantic_matcher = get_optimized_semantic_matcher(preload=False)
             if _semantic_matcher is None:
                 _semantic_matcher = False
         except ImportError:
-            _semantic_matcher = False
+            try:
+                # Fallback to original
+                from nlp2cmd.generation.semantic_matcher import get_semantic_matcher
+                _semantic_matcher = get_semantic_matcher()
+                if _semantic_matcher is None:
+                    _semantic_matcher = False
+            except ImportError:
+                _semantic_matcher = False
     return _semantic_matcher if _semantic_matcher else None
 
 @staticmethod
@@ -566,13 +574,15 @@ class KeywordIntentDetector:
 
         if (
             re.search(r"\b(lista|list)\b", text_lower)
-            and re.search(r"\b(folder\w*|katalog\w*|directory\w*|dir)\b", text_lower)
+            and re.search(
+                r"\b(foldery|folderow|folders|katalogi|katalogow|directories)\b",
+                text_lower,
+            )
             and not re.search(r"\b(tabel\w*|table|sql)\b", text_lower)
-            and not re.search(r"\b(user|użytkownik)\b", text_lower)  # Exclude user folder queries
         ):
             return DetectionResult(
                 domain="shell",
-                intent="list",
+                intent="list_dirs",
                 confidence=0.85,
                 matched_keyword="list folders",
             )

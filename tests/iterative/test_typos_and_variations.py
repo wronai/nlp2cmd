@@ -47,6 +47,16 @@ class TestTyposAndVariations:
             assert result.intent == exp_intent, f"Expected intent {exp_intent}, got {result.intent} for '{query}'"
             assert pipeline_result.command == exp_command, f"Expected command {exp_command}, got {pipeline_result.command} for '{query}'"
 
+    def test_list_dirs_user_home_polish(self, detector, pipeline):
+        query = "lista folderow w folderze usera"
+
+        result = detector.detect(query)
+        pipeline_result = pipeline.process(query)
+
+        assert result.domain == "shell"
+        assert result.intent == "list_dirs"
+        assert pipeline_result.command == "find ~ -maxdepth 1 -type d"
+
     def test_shell_service_variations(self, detector, pipeline):
         """Test shell service commands with variations."""
         test_cases = [
