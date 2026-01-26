@@ -36,23 +36,36 @@ except ImportError:
     fuzz = None
     process = None
 
-try:
-    import spacy
-    # Try to load Polish model - will be None if not available
-    NLP_MODEL = None
+# spaCy is intentionally imported lazily to keep CLI cold-start fast.
+_SPACY = None
+_NLP_MODEL = None
+_NLP_MODEL_LOAD_ATTEMPTED = False
+
+
+def _get_spacy_model():
+    global _SPACY, _NLP_MODEL, _NLP_MODEL_LOAD_ATTEMPTED
+
+    if _NLP_MODEL_LOAD_ATTEMPTED:
+        return _NLP_MODEL
+
+    _NLP_MODEL_LOAD_ATTEMPTED = True
     try:
-        NLP_MODEL = spacy.load("pl_core_news_sm")
-    except OSError:
+        import spacy as _spacy  # noqa: WPS433
+        _SPACY = _spacy
+    except Exception:
+        _SPACY = None
+        _NLP_MODEL = None
+        return None
+
+    try:
+        _NLP_MODEL = _SPACY.load("pl_core_news_sm")
+    except Exception:
         try:
-            # Try CLARIN model as fallback
-            NLP_MODEL = spacy.load("spacy_pl_model")
-        except OSError:
-            # No Polish model available
-            pass
-except ImportError:
-    # spaCy not installed - lemmatization disabled
-    spacy = None
-    NLP_MODEL = None
+            _NLP_MODEL = _SPACY.load("spacy_pl_model")
+        except Exception:
+            _NLP_MODEL = None
+
+    return _NLP_MODEL
 
 
 @dataclass
@@ -309,42 +322,38 @@ class KeywordIntentDetector:
         text_lower = re.sub(r"\bstartuj(?:cie|my|)?\b", "uruchom", text_lower)
         text_lower = re.sub(r"\bwystartuj(?:cie|my|)?\b", "uruchom", text_lower)
         
-        # Apply lemmatization if spaCy Polish model is available, but only for words
-        # that don't match our exact patterns to avoid breaking existing functionality
-        if NLP_MODEL is not None:
-            try:
-                doc = NLP_MODEL(text_lower)
-                # Extract lemmas for each token, but preserve exact matches for important keywords
-                lemmatized_tokens = []
-                for token in doc:
-                    # Keep punctuation and numbers as-is
-                    if token.is_punct or token.like_num or token.is_space:
-                        lemmatized_tokens.append(token.text)
-                    else:
-                        original_text = token.text.lower()
-                        lemma = token.lemma_.lower()
-                        
-                        # Don't lemmatize important command keywords that have exact patterns
-                        important_keywords = {
-                            'restartuj', 'uruchom', 'zrestartuj', 'startuj', 'wystartuj',
-                            'zatrzymaj', 'stopuj', 'usuń', 'skopiuj', 'przenieś', 'znajdź',
-                            'pokaż', 'sprawdź', 'utwórz', 'zmień', 'restart', 'docker', 'ps',
-                            'systemctl', 'nginx', 'kontener', 'kontenery', 'plik', 'foldery',
-                            'katalog', 'katalogi', 'usługa', 'usługi', 'usługę', 'serwis',
-                            'komputer', 'system', 'proces', 'procesy'
-                        }
-                        
-                        # Use original text if it's an important keyword or lemma is empty/too short
-                        if original_text in important_keywords or not lemma or len(lemma) <= 1:
-                            lemmatized_tokens.append(original_text)
-                        else:
-                            lemmatized_tokens.append(lemma)
-                text_lower = " ".join(lemmatized_tokens)
-            except Exception:
-                # If lemmatization fails, continue with regex-normalized text
-                pass
-        
         return text_lower
+
+    @staticmethod
+    def _maybe_lemmatize_text_lower(text_lower: str) -> str:
+        model = _get_spacy_model()
+        if model is None:
+            return text_lower
+
+        try:
+            doc = model(text_lower)
+            lemmatized_tokens = []
+            for token in doc:
+                if token.is_punct or token.like_num or token.is_space:
+                    lemmatized_tokens.append(token.text)
+                else:
+                    original_text = token.text.lower()
+                    lemma = (token.lemma_ or "").lower()
+                    important_keywords = {
+                        'restartuj', 'uruchom', 'zrestartuj', 'startuj', 'wystartuj',
+                        'zatrzymaj', 'stopuj', 'usuń', 'skopiuj', 'przenieś', 'znajdź',
+                        'pokaż', 'sprawdź', 'utwórz', 'zmień', 'restart', 'docker', 'ps',
+                        'systemctl', 'nginx', 'kontener', 'kontenery', 'plik', 'foldery',
+                        'katalog', 'katalogi', 'usługa', 'usługi', 'usługę', 'serwis',
+                        'komputer', 'system', 'proces', 'procesy'
+                    }
+                    if original_text in important_keywords or not lemma or len(lemma) <= 1:
+                        lemmatized_tokens.append(original_text)
+                    else:
+                        lemmatized_tokens.append(lemma)
+            return " ".join(lemmatized_tokens)
+        except Exception:
+            return text_lower
 
     @staticmethod
     def _normalize_intent(domain: str, intent: str, text_lower: str) -> str:
@@ -591,7 +600,12 @@ class KeywordIntentDetector:
         has_docker_context = (
             'docker' in text_lower
             or any(b.lower() in text_lower for b in docker_boosters)
-            or any(x in text_lower for x in ("kontener", "container", "obraz", "image"))
+            or any(
+                x in text_lower
+                for x in (
+                    'kontener', 'container', 'obraz', 'image'
+                )
+            )
         )
         if not has_docker_context:
             return None
@@ -667,8 +681,7 @@ class KeywordIntentDetector:
     def _detect_explicit_kubernetes(self, text_lower: str) -> Optional[DetectionResult]:
         k8s_boosters = self.domain_boosters.get('kubernetes', [])
         has_k8s_context = (
-            any(booster.lower() in text_lower for booster in k8s_boosters)
-            or any(
+            any(
                 x in text_lower
                 for x in (
                     'pod', 'pods', 'pody',
@@ -993,8 +1006,24 @@ class KeywordIntentDetector:
         Returns:
             DetectionResult with domain, intent, confidence
         """
-        text_lower = self._normalize_text_lower(text.lower())
+        raw_lower = text.lower()
+        text_lower = self._normalize_text_lower(raw_lower)
 
+        result = self._detect_normalized(text_lower)
+        if result.domain != 'unknown' or result.confidence > 0.0:
+            return result
+
+        # Lazy lemmatization fallback (loads spaCy only if needed)
+        lemmatized = self._maybe_lemmatize_text_lower(raw_lower)
+        if lemmatized != raw_lower:
+            lemmatized_norm = self._normalize_text_lower(lemmatized)
+            fallback = self._detect_normalized(lemmatized_norm)
+            if fallback.domain != 'unknown' and fallback.confidence >= result.confidence:
+                return fallback
+
+        return result
+
+    def _detect_normalized(self, text_lower: str) -> DetectionResult:
         fast_path = self._detect_fast_path(text_lower)
         if fast_path is not None:
             return fast_path
@@ -1013,12 +1042,10 @@ class KeywordIntentDetector:
         if k8s_explicit is not None:
             return k8s_explicit
 
-        # Explicit system reboot detection before pattern matching
         system_reboot = self._detect_explicit_system_reboot(text_lower)
         if system_reboot is not None:
             return system_reboot
 
-        # Explicit service_restart detection before pattern matching
         service_restart = self._detect_explicit_service_restart(text_lower)
         if service_restart is not None:
             return service_restart
@@ -1039,7 +1066,6 @@ class KeywordIntentDetector:
         if best_match is not None:
             return best_match
 
-        # Fuzzy matching fallback if rapidfuzz is available
         if fuzz is not None and process is not None:
             fuzzy_match = self._detect_best_from_fuzzy(text_lower)
             if fuzzy_match is not None:

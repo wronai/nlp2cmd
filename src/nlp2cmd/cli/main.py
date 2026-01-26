@@ -117,30 +117,63 @@ except Exception:  # pragma: no cover
     class Syntax:  # type: ignore
         def __init__(self, code, *args, **kwargs):
             self.code = code
+
+
 from nlp2cmd.cli.display import display_command_result
 from nlp2cmd.cli.syntax_cache import get_cached_syntax
 
-from nlp2cmd import NLP2CMD
-from nlp2cmd.adapters import (
-    DockerAdapter,
-    DQLAdapter,
-    KubernetesAdapter,
-    ShellAdapter,
-    SQLAdapter,
-    AppSpecAdapter,
-    BrowserAdapter,
-)
-from nlp2cmd.pipeline_runner import PipelineRunner
-from nlp2cmd.execution import ExecutionRunner, open_url
-from nlp2cmd.environment import EnvironmentAnalyzer
-from nlp2cmd.feedback import FeedbackAnalyzer, FeedbackResult, FeedbackType
-from nlp2cmd.schemas import SchemaRegistry
-from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
-from nlp2cmd.monitoring import measure_resources, format_last_metrics, estimate_token_cost, format_token_estimate
-from nlp2cmd.web_schema.form_data_loader import FormDataLoader
-
 
 console = Console()
+
+
+def _register_subcommands_for_args(argv: list[str]) -> None:
+    """Register Click subcommands lazily based on argv.
+
+    This avoids importing heavy optional subsystems (e.g. service/FastAPI) for
+    the common case of single-query command generation.
+    """
+    if not hasattr(click, "Group"):
+        return
+
+    # If user asks for help, register everything so commands show up.
+    wants_help = any(a in {"--help", "-h"} for a in argv)
+
+    # Find first non-flag token (potential subcommand)
+    subcmd = None
+    for a in argv:
+        if a.startswith("-"):
+            continue
+        subcmd = a
+        break
+
+    try:
+        if wants_help or subcmd in {"web-schema"}:
+            from nlp2cmd.cli.web_schema import web_schema_group
+            main.add_command(web_schema_group)
+    except Exception:
+        pass
+
+    try:
+        if wants_help or subcmd in {"history"}:
+            from nlp2cmd.cli.history import history_group
+            main.add_command(history_group)
+    except Exception:
+        pass
+
+    try:
+        if wants_help or subcmd in {"cache"}:
+            from nlp2cmd.cli.cache import cache_group
+            main.add_command(cache_group)
+    except Exception:
+        pass
+
+    # Service commands are the heaviest (can pull FastAPI/uvicorn). Register only on demand.
+    try:
+        if wants_help or subcmd in {"service", "config-service"}:
+            from nlp2cmd.service.cli import add_service_command
+            add_service_command(main)
+    except Exception:
+        pass
 
 
 def _system_beep() -> None:
@@ -206,6 +239,16 @@ def _shell_env_context(context: dict[str, Any]) -> dict[str, Any]:
 
 def get_adapter(dsl: str, context: dict[str, Any]):
     """Get the appropriate adapter for the DSL type."""
+    from nlp2cmd.adapters import (
+        DockerAdapter,
+        DQLAdapter,
+        KubernetesAdapter,
+        ShellAdapter,
+        SQLAdapter,
+        AppSpecAdapter,
+        BrowserAdapter,
+    )
+
     adapters = {
         "sql": lambda: SQLAdapter(dialect="postgresql"),
         "shell": lambda: ShellAdapter(environment_context=_shell_env_context(context)),
@@ -241,6 +284,10 @@ class InteractiveSession:
         self.appspec = appspec
 
         # Initialize components
+        from nlp2cmd.environment import EnvironmentAnalyzer
+        from nlp2cmd.feedback import FeedbackAnalyzer
+        from nlp2cmd.schemas import SchemaRegistry
+
         self.env_analyzer = EnvironmentAnalyzer()
         self.feedback_analyzer = FeedbackAnalyzer()
         self.schema_registry = SchemaRegistry()
@@ -270,6 +317,9 @@ class InteractiveSession:
 
     def process(self, user_input: str) -> FeedbackResult:
         """Process user input and return feedback."""
+        from nlp2cmd.feedback import FeedbackResult, FeedbackType
+        from nlp2cmd.monitoring import measure_resources
+
         # Use HybridThermodynamicGenerator for intelligent routing between DSL and thermodynamic
         from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
         
@@ -1377,6 +1427,8 @@ def _maybe_install_playwright(msg: str, runner: ExecutionRunner, *, auto_install
 
 
 def _fallback_open_url(ir) -> None:
+    from nlp2cmd.execution import open_url
+
     url = None
     type_text = None
 
@@ -1397,6 +1449,9 @@ def _fallback_open_url(ir) -> None:
 
 
 def _fallback_open_url_from_query(query: str) -> None:
+    from nlp2cmd.adapters import BrowserAdapter
+    from nlp2cmd.execution import open_url
+
     try:
         url = BrowserAdapter._extract_url(query)
     except Exception:
@@ -1427,16 +1482,6 @@ if not hasattr(click, 'Group'):
             return func
         return decorator
     # Apply the stub command method immediately after main function is defined
-else:
-    # If click is available, we need to handle the imports properly
-    try:
-        from nlp2cmd.cli.web_schema import web_schema_group
-        from nlp2cmd.cli.history import history_group
-        from nlp2cmd.cli.cache import cache_group
-    except Exception:
-        web_schema_group = None
-        history_group = None
-        cache_group = None
 
 
 @click.group(invoke_without_command=True)
@@ -1723,31 +1768,15 @@ def analyze_env(ctx, output: Optional[str]):
                 console.print(f"  • {rec}")
 
 
-# Register subcommands
-# Add command groups to main (only if click is available)
-if hasattr(click, 'Group'):
-    try:
-        from nlp2cmd.cli.web_schema import web_schema_group
-        from nlp2cmd.cli.history import history_group
-        from nlp2cmd.cli.cache import cache_group
-        from nlp2cmd.service.cli import add_service_command
-        
-        main.add_command(web_schema_group)
-        main.add_command(history_group)
-        main.add_command(cache_group)
-        
-        # Add service commands
-        add_service_command(main)
-    except Exception:
-        pass
-
-
 def cli_entry_point():
     """Entry point that handles natural language queries before Click."""
     import sys
     
     # Get command line arguments
     args = sys.argv[1:]  # Skip the script name
+    
+    # Lazily register subcommands depending on argv
+    _register_subcommands_for_args(args)
     
     # Check if this looks like a natural language query
     # Look for text that contains spaces after flags

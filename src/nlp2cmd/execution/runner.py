@@ -446,7 +446,7 @@ If the command syntax was wrong, provide the corrected command.
                 return ExecutionResult(
                     success=False,
                     command=current_command,
-                    exit_code=-1,
+                    exit_code=0,
                     error_context="User cancelled",
                 )
             

@@ -470,7 +470,6 @@ class ShellAdapter(BaseDSLAdapter):
                 elif attr == "age" and value:
                     # Handle age filter
                     cmd_parts.append(f"-mtime -{value}")
-            cmd_parts.extend(["-name", f'"*.{entities["file_pattern"]}"'])
         
         # Add size filter
         if "size" in entities and isinstance(entities["size"], dict):
@@ -517,7 +516,8 @@ class ShellAdapter(BaseDSLAdapter):
                 cmd_parts.append(f"-{time_unit} -{age_info['value']}")
         
         # Handle specific Polish patterns from natural language (fallback)
-        elif "zmodyfikowane" in str(target) or "mtime" in str(target):
+        full_text = str(entities.get("_full_text", "")).lower()
+        if "zmodyfikowane" in full_text or "mtime" in str(target).lower():
             days = entities.get("days", "7")
             cmd_parts.append(f"-mtime -{days}")
             # Add detailed listing for modified files search

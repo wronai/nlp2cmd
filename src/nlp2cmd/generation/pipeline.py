@@ -30,12 +30,8 @@ from nlp2cmd.generation.keywords import KeywordIntentDetector, DetectionResult
 from nlp2cmd.generation.regex import RegexEntityExtractor, ExtractionResult
 from nlp2cmd.generation.templates import TemplateGenerator, TemplateResult
 
-# Import enhanced context detector
-try:
-    from nlp2cmd.generation.enhanced_context import get_enhanced_detector
-    ENHANCED_CONTEXT_AVAILABLE = True
-except ImportError:
-    ENHANCED_CONTEXT_AVAILABLE = False
+# Enhanced context detector is imported lazily (it can pull heavy deps like torch).
+ENHANCED_CONTEXT_AVAILABLE: bool | None = None
 
 
 @dataclass
@@ -116,16 +112,33 @@ class RuleBasedPipeline:
         self.extractor = extractor or RegexEntityExtractor()
         self.generator = generator or TemplateGenerator()
         self.confidence_threshold = confidence_threshold
-        self.use_enhanced_context = use_enhanced_context and ENHANCED_CONTEXT_AVAILABLE
+        self.use_enhanced_context = use_enhanced_context
         
         # Initialize enhanced detector lazily (only when needed)
         self._enhanced_detector = None
         self._enhanced_detector_loaded = False
-    
+
     @property
     def enhanced_detector(self):
         """Lazy load enhanced detector only when needed."""
-        if not self._enhanced_detector_loaded and self.use_enhanced_context:
+        global ENHANCED_CONTEXT_AVAILABLE
+
+        if not self.use_enhanced_context:
+            return None
+
+        if ENHANCED_CONTEXT_AVAILABLE is None:
+            try:
+                from nlp2cmd.generation.enhanced_context import get_enhanced_detector  # noqa: WPS433
+                ENHANCED_CONTEXT_AVAILABLE = True
+            except Exception:
+                ENHANCED_CONTEXT_AVAILABLE = False
+
+        if not ENHANCED_CONTEXT_AVAILABLE:
+            self.use_enhanced_context = False
+            return None
+
+        if not self._enhanced_detector_loaded:
+            from nlp2cmd.generation.enhanced_context import get_enhanced_detector  # noqa: WPS433
             self._enhanced_detector = get_enhanced_detector()
             self._enhanced_detector_loaded = True
         return self._enhanced_detector
