@@ -63,6 +63,22 @@ def _get_fuzzy_schema_matcher():
             _fuzzy_schema_matcher = False
     return _fuzzy_schema_matcher if _fuzzy_schema_matcher else None
 
+# Lazy import for ML intent classifier (TF-IDF + SVM)
+_ml_classifier = None
+
+def _get_ml_classifier():
+    """Lazy load ML intent classifier for high-accuracy predictions."""
+    global _ml_classifier
+    if _ml_classifier is None:
+        try:
+            from nlp2cmd.generation.ml_intent_classifier import get_ml_classifier
+            _ml_classifier = get_ml_classifier()
+            if _ml_classifier is None:
+                _ml_classifier = False  # Mark as unavailable
+        except ImportError:
+            _ml_classifier = False
+    return _ml_classifier if _ml_classifier else None
+
 @staticmethod
 def _normalize_polish_text(text: str) -> str:
     """Normalize Polish diacritics to handle typos."""
@@ -1113,13 +1129,17 @@ class KeywordIntentDetector:
         schema_matcher = _get_fuzzy_schema_matcher()
         if schema_matcher:
             schema_result = schema_matcher.match(text_lower)
-            if schema_result and schema_result.matched and schema_result.confidence >= 0.85:
-                return DetectionResult(
-                    domain=schema_result.domain,
-                    intent=schema_result.intent,
-                    confidence=schema_result.confidence,
-                    matched_keyword=schema_result.phrase,
-                )
+            if schema_result and schema_result.matched:
+                # Accept if confidence is high OR if phrase is contained within input
+                if (schema_result.confidence >= 0.85 or 
+                    (schema_result.confidence >= 0.7 and 
+                     schema_matcher._normalize(schema_result.phrase) in text_lower)):
+                    return DetectionResult(
+                        domain=schema_result.domain,
+                        intent=schema_result.intent,
+                        confidence=schema_result.confidence,
+                        matched_keyword=schema_result.phrase,
+                    )
         
         fast_path = self._detect_fast_path(text_lower)
         if fast_path is not None:

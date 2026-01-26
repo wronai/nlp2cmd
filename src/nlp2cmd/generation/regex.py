@@ -148,10 +148,73 @@ class RegexEntityExtractor:
             r'(?:pliki?|files?)\s+\.(\w{1,16})\b',
             r'(?:rozszerzenie|extension)\s+\.?((\w+))',
         ],
+        'application': [
+            # Application name after "run", "start", "launch", "uruchom", etc.
+            r'(?:uruchom|urucham|start|run|launch|execute)\s+(?:aplikację|aplikacje|app|application)\s+([a-zA-Z0-9_-]+)',
+            r'(?:uruchom|urucham|start|run|launch)\s+([a-zA-Z0-9_-]+)',
+            # Just application name (fallback)
+            r'\b([a-zA-Z][a-zA-Z0-9_-]{2,})\b',
+        ],
+        'script': [
+            # Python script files
+            r'(?:python|uruchom|run)\s+(?:skrypt|script)\s+([a-zA-Z0-9_-]+\.py)',
+            r'(?:python|uruchom|run)\s+([a-zA-Z0-9_-]+\.py)',
+            r'\b([a-zA-Z0-9_-]+\.py)\b',
+        ],
+        'server_command': [
+            # Server commands
+            r'(?:uruchom|start|run)\s+(?:serwer|server)\s+([a-zA-Z0-9_-]+)',
+            r'(?:npm start|python manage\.py runserver|yarn start)',
+        ],
+        'service': [
+            # Service name after systemctl commands
+            r'(?:systemctl|sudo systemctl)\s+(?:start|stop|restart|reload|enable|disable)\s+([a-zA-Z0-9_-]+)',
+            r'(?:uruchom|zatrzymaj|zrestartuj|włącz|wyłącz)\s+(?:usługę|serwis|service)\s+([a-zA-Z0-9_-]+)',
+            r'(?:start|stop|restart)\s+(?:service|usługę)\s+([a-zA-Z0-9_-]+)',
+        ],
+        'container': [
+            # Docker container name
+            r'(?:docker|kontener)\s+(?:run|stop|start|restart|kill)\s+([a-zA-Z0-9_-]+)',
+            r'(?:uruchom|zatrzymaj|zrestartuj)\s+(?:kontener|docker)\s+([a-zA-Z0-9_-]+)',
+        ],
+        'image': [
+            # Docker image name
+            r'(?:docker|kontener)\s+(?:build|run|pull)\s+([a-zA-Z0-9_-/]+)',
+            r'(?:zbuduj|uruchom|pobierz)\s+(?:obraz|docker)\s+([a-zA-Z0-9_-/]+)',
+        ],
         'filename': [
             r'(?:plik|file)\s+[`"\']?([\w\.\-]+)[`"\']?',
             r'(?:katalog|directory|folder)\s+[`"\']?([\w\.\-]+)[`"\']?',
             r'[`"\']?([\w]+\.\w+)[`"\']?',
+        ],
+        'source': [
+            # Source file for copy/move operations
+            r'(?:copy|kopiuj|skopiuj)\s+(?:plik|file)?\s*([`"\']?[\w\.\-/]+[`"\']?)\s+(?:to|do)',
+            r'(?:move|przenieś|mv)\s+(?:plik|file)?\s*([`"\']?[\w\.\-/]+[`"\']?)\s+(?:to|do)',
+        ],
+        'destination': [
+            # Destination path for copy/move operations
+            r'(?:to|do)\s+([`"\']?[\w\.\-/]+[`"\']?)$',
+            r'(?:do|to)\s+([`"\']?[\w\.\-/]+[`"\']?)\s*$',
+        ],
+        'directory': [
+            # Directory name for creation
+            r'(?:create|make|utwórz|stwórz)\s+(?:directory|folder|katalog)\s+([a-zA-Z0-9_-]+)',
+            r'(?:mkdir|mkdir)\s+([a-zA-Z0-9_-]+)',
+        ],
+        'file': [
+            # File name for deletion
+            r'(?:delete|remove|usuń|rm)\s+(?:plik|file)?\s*([`"\']?[\w\.\-]+[`"\']?)',
+        ],
+        'pid': [
+            # Process ID for kill command
+            r'(?:kill|zabij)\s+(?:process|proces)?\s*(\d+)',
+            r'(?:kill|zabij)\s+-9\s+(\d+)',
+        ],
+        'process_name': [
+            # Process name for search
+            r'(?:find|znajdź|grep)\s+(?:process|proces)\s+([a-zA-Z0-9_-]+)',
+            r'(?:ps aux|grep)\s+([a-zA-Z0-9_-]+)',
         ],
         'size': [
             r'(\d+)\s*([KMGT]?B)',
