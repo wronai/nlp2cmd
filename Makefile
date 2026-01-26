@@ -311,7 +311,11 @@ build: clean ## Build package
 	$(PYTHON) -m build
 
 publish-test: build ## Publish to TestPyPI
-	$(PYTHON) -m twine upload --repository testpypi dist/*
+	@echo "$(YELLOW)Creating temporary virtual environment for twine...$(NC)"
+	$(PYTHON) -m venv publish-test-env
+	publish-test-env/bin/pip install twine
+	publish-test-env/bin/python -m twine upload --repository testpypi dist/*
+	rm -rf publish-test-env
 
 bump-patch: ## Bump patch version (X.Y.Z -> X.Y.Z+1)
 	@echo "$(YELLOW)Bumping patch version...$(NC)"
@@ -331,7 +335,11 @@ publish: build ## Publish to PyPI (with version bump)
 	@echo "$(YELLOW)Rebuilding package with new version...$(NC)"
 	$(MAKE) build
 	@echo "$(YELLOW)Publishing to PyPI...$(NC)"
-	$(PYTHON) -m twine upload dist/*
+	@echo "$(YELLOW)Creating temporary virtual environment for twine...$(NC)"
+	$(PYTHON) -m venv publish-env
+	publish-env/bin/pip install twine
+	publish-env/bin/python -m twine upload dist/*
+	rm -rf publish-env
 
 push: ## Complete release (bump version + build + push Docker + PyPI + Git tag)
 	@echo "$(YELLOW)Starting complete release process...$(NC)"
@@ -340,7 +348,11 @@ push: ## Complete release (bump version + build + push Docker + PyPI + Git tag)
 	@echo "$(YELLOW)2. Building package...$(NC)"
 	$(MAKE) build
 	@echo "$(YELLOW)3. Publishing to PyPI...$(NC)"
-	$(PYTHON) -m twine upload dist/*
+	@echo "$(YELLOW)Creating temporary virtual environment for twine...$(NC)"
+	$(PYTHON) -m venv push-env
+	push-env/bin/pip install twine
+	push-env/bin/python -m twine upload dist/*
+	rm -rf push-env
 	@echo "$(YELLOW)4. Building and pushing Docker image...$(NC)"
 	@if $(MAKE) docker-push; then \
 		echo "$(GREEN)Docker image pushed successfully!$(NC)"; \
