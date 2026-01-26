@@ -1319,11 +1319,16 @@ Rules:
         # Execute shell command with recovery
         exec_result = runner.run_with_recovery(command, query)
         
-        if not exec_result.success and exec_result.error_context:
-            console.print("\n[yellow]Command failed. Analyzing error...[/yellow]")
-            
-            # Try to suggest next steps based on error
-            _suggest_next_steps(query, command, exec_result, runner)
+        if not exec_result.success:
+            if (exec_result.error_context == "User cancelled") or (getattr(exec_result, "exit_code", None) == 0):
+                console.print("\n[yellow]Cancelled by user[/yellow]")
+                return
+
+            if exec_result.error_context:
+                console.print("\n[yellow]Command failed. Analyzing error...[/yellow]")
+                
+                # Try to suggest next steps based on error
+                _suggest_next_steps(query, command, exec_result, runner)
 
 
 def _suggest_next_steps(

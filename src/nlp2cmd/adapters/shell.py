@@ -325,8 +325,7 @@ class ShellAdapter(BaseDSLAdapter):
                     # Handle size filter
                     if isinstance(value, str):
                         # Parse string like "100M"
-                        import re
-                        m = re.match(r"^(d+)s*([a-zA-Z]+)$", value.strip())
+                        m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", value.strip())
                         if m:
                             num = m.group(1)
                             unit = m.group(2).upper()
@@ -443,8 +442,7 @@ class ShellAdapter(BaseDSLAdapter):
                     # Handle size filter
                     if isinstance(value, str):
                         # Parse string like "100M"
-                        import re
-                        m = re.match(r"^(d+)s*([a-zA-Z]+)$", value.strip())
+                        m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", value.strip())
                         if m:
                             num = m.group(1)
                             unit = m.group(2).upper()

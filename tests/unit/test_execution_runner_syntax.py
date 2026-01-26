@@ -108,6 +108,17 @@ class TestExecutionRunnerSyntax:
                               if call.args[0].code == "ls -la"]
         assert len(edited_syntax_calls) >= 1
 
+    def test_run_with_recovery_user_cancels_has_exit_code_0(self):
+        from nlp2cmd.execution.runner import ExecutionResult
+
+        with patch.object(self.runner, "confirm_execution", return_value=False):
+            res = self.runner.run_with_recovery(self.sample_command, original_query="test")
+
+        assert isinstance(res, ExecutionResult)
+        assert res.success is False
+        assert res.exit_code == 0
+        assert res.error_context == "User cancelled"
+
     @patch('builtins.print')
     @patch.object(ExecutionRunner, 'console')
     def test_confirm_execution_complex_command(self, mock_console, mock_print):
