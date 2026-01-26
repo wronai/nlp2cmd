@@ -16,8 +16,6 @@ from nlp2cmd.utils.data_files import find_data_file
 from rich.table import Table
 from rich.console import Console
 
-from nlp2cmd.cli.markdown_output import print_markdown_block
-
 
 class _MarkdownConsoleWrapper:
     """Context manager that captures console output into Markdown code blocks."""
@@ -27,10 +25,13 @@ class _MarkdownConsoleWrapper:
         self.enable_markdown = enable_markdown
         self.default_language = default_language
         self._buffer: list[str] = []
+        # Import inside class to avoid circular dependency
+        from nlp2cmd.cli.markdown_output import print_markdown_block
+        self.print_markdown_block = print_markdown_block
 
     def print(self, renderable, *, language: str | None = None) -> None:
         if self.enable_markdown:
-            print_markdown_block(renderable, language=language or self.default_language, console=self.console)
+            self.print_markdown_block(renderable, language=language or self.default_language, console=self.console)
         else:
             self.console.print(renderable)
 
@@ -45,7 +46,7 @@ class _MarkdownConsoleWrapper:
 
             def __exit__(self, exc_type, exc, tb):
                 if wrapper.enable_markdown and wrapper._buffer:
-                    print_markdown_block("\n".join(wrapper._buffer), language=wrapper.default_language, console=wrapper.console)
+                    wrapper.print_markdown_block("\n".join(wrapper._buffer), language=wrapper.default_language, console=wrapper.console)
                 elif wrapper._buffer:
                     wrapper.console.print("\n".join(wrapper._buffer))
 

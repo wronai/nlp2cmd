@@ -3,8 +3,8 @@ Execution runner with interactive error handling and LLM-assisted recovery.
 
 Provides:
 - Command execution with real-time logging
-- Error detection and context extraction
-- LLM integration for suggesting fix commands
+- Error detection and classification
+- LLM integration for suggesting recovery commands
 - Automatic app2schema discovery for new commands
 """
 
@@ -16,10 +16,6 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Optional, Callable
 from pathlib import Path
-
-# Import syntax cache for performance optimization
-from nlp2cmd.cli.syntax_cache import get_cached_syntax
-from nlp2cmd.cli.markdown_output import print_markdown_block, MarkdownBlockStream
 
 try:
     from rich.console import Console
@@ -135,6 +131,14 @@ class ExecutionRunner:
             self._cmd_history = get_global_history()
         except Exception:
             pass
+        
+        # Import inside method to avoid circular dependency
+        from nlp2cmd.cli.syntax_cache import get_cached_syntax
+        self.get_cached_syntax = get_cached_syntax
+        
+        from nlp2cmd.cli.markdown_output import print_markdown_block, MarkdownBlockStream
+        self.print_markdown_block = print_markdown_block
+        self.MarkdownBlockStream = MarkdownBlockStream
     
     def run_command(
         self,
@@ -159,7 +163,7 @@ class ExecutionRunner:
         """
         start_time = time.time()
         
-        print_markdown_block(f"$ {command}", language="bash", console=self.console)
+        self.print_markdown_block(f"$ {command}", language="bash", console=self.console)
         
         try:
             if stream_output:
@@ -178,7 +182,7 @@ class ExecutionRunner:
                 
                 import select
                 
-                with MarkdownBlockStream(console=self.console, language="bash") as stream:
+                with self.MarkdownBlockStream(console=self.console, language="bash") as stream:
                     if hasattr(select, 'poll'):
                         poller = select.poll()
                         poller.register(process.stdout, select.POLLIN)
@@ -249,9 +253,9 @@ class ExecutionRunner:
                 stderr = result.stderr
                 
                 if stdout:
-                    print_markdown_block(stdout, language="bash", console=self.console)
+                    self.print_markdown_block(stdout, language="bash", console=self.console)
                 if stderr:
-                    print_markdown_block(f"[stderr]\n{stderr}", language="bash", console=self.console)
+                    self.print_markdown_block(f"[stderr]\n{stderr}", language="bash", console=self.console)
             
             duration_ms = (time.time() - start_time) * 1000
             success = exit_code == 0
@@ -284,9 +288,9 @@ class ExecutionRunner:
                     pass
             
             if success:
-                print_markdown_block(f"✓ Command completed in {duration_ms:.1f}ms", language="text", console=self.console)
+                self.print_markdown_block(f"✓ Command completed in {duration_ms:.1f}ms", language="text", console=self.console)
             else:
-                print_markdown_block(f"✗ Command failed with exit code {exit_code}", language="text", console=self.console)
+                self.print_markdown_block(f"✗ Command failed with exit code {exit_code}", language="text", console=self.console)
             
             return result
             
@@ -301,7 +305,7 @@ class ExecutionRunner:
                 error_context="Timeout",
             )
             self.execution_history.append(result)
-            print_markdown_block(f"✗ Command timed out after {timeout}s", language="text", console=self.console)
+            self.print_markdown_block(f"✗ Command timed out after {timeout}s", language="text", console=self.console)
             return result
             
         except Exception as e:
@@ -315,7 +319,7 @@ class ExecutionRunner:
                 error_context=str(e),
             )
             self.execution_history.append(result)
-            print_markdown_block(f"✗ Execution error: {e}", language="text", console=self.console)
+            self.print_markdown_block(f"✗ Execution error: {e}", language="text", console=self.console)
             return result
     
     def confirm_execution(self, command: str) -> bool:
@@ -328,12 +332,13 @@ class ExecutionRunner:
         Returns:
             True if user confirms, False otherwise
         """
-        print(f"```bash")
+        self.print_markdown_block(f"```bash", language="bash", console=self.console)
         # Use cached syntax highlighting for better performance
+        from nlp2cmd.cli.syntax_cache import get_cached_syntax
         syntax = get_cached_syntax(command, "bash", theme="monokai", line_numbers=False)
         self.console.print(syntax)
-        print(f"```")
-        print()
+        self.print_markdown_block(f"```", language="bash", console=self.console)
+        self.print_markdown_block("", language="bash", console=self.console)
 
         if self.auto_confirm:
             return True
@@ -477,12 +482,13 @@ If the command syntax was wrong, provide the corrected command.
                 suggestion = self.get_recovery_suggestion(context)
                 
                 if suggestion:
-                    print(f"```bash")
+                    self.print_markdown_block(f"```bash", language="bash", console=self.console)
                     # Use cached syntax highlighting for better performance
+                    from nlp2cmd.cli.syntax_cache import get_cached_syntax
                     syntax = get_cached_syntax(f"# 💡 Suggested recovery:\n {suggestion}", "bash", theme="monokai", line_numbers=False)
                     self.console.print(syntax)
-                    print(f"```")
-                    print()
+                    self.print_markdown_block(f"```", language="bash", console=self.console)
+                    self.print_markdown_block("", language="bash", console=self.console)
                     
                     if on_suggestion:
                         if on_suggestion(suggestion):

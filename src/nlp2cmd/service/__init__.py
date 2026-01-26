@@ -243,6 +243,7 @@ class NLP2CMDService:
                 # Execute command if requested
                 if request.execute and result.success and result.command:
                     try:
+                        # Import inside function to avoid circular dependency
                         from ..execution.runner import ExecutionRunner
                         runner = ExecutionRunner(console=None, auto_confirm=True, max_retries=1)
                         exec_result = runner.run_with_recovery(result.command, request.query)

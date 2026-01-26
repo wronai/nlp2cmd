@@ -7,7 +7,6 @@ Provides interactive REPL mode, file operations, and environment analysis.
 from __future__ import annotations
 
 import json
-import json
 import os
 import re
 import shlex
@@ -20,8 +19,6 @@ from typing import Any, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from nlp2cmd.execution import ExecutionRunner
-
-from nlp2cmd.execution import ExecutionRunner
 
 try:
     import click
@@ -124,12 +121,18 @@ except Exception:  # pragma: no cover
         def __init__(self, code, *args, **kwargs):
             self.code = code
 
+# Fallback for console if rich is not available
+try:
+    from rich.console import Console
+    console = Console()
+except ImportError:
+    class Console:
+        def print(self, *args, **kwargs):
+            print(*args, **kwargs)
+    console = Console()
 
 from nlp2cmd.cli.display import display_command_result
 from nlp2cmd.cli.syntax_cache import get_cached_syntax
-
-
-console = Console()
 
 
 def _register_subcommands_for_args(argv: list[str]) -> None:
@@ -838,7 +841,7 @@ def _handle_run_query(
         AppSpecAdapter,
         BrowserAdapter,
     )
-    from nlp2cmd.execution import ExecutionRunner
+    from nlp2cmd import NLP2CMD, AppSpecAdapter, BrowserAdapter
     from nlp2cmd.web_schema.form_data_loader import FormDataLoader
     
     print(f"```bash")
@@ -946,6 +949,7 @@ def _handle_run_query(
                     console.print("[yellow]No steps selected[/yellow]")
                     return
 
+                from nlp2cmd.execution import ExecutionRunner
                 runner = ExecutionRunner(
                     console=console,
                     auto_confirm=auto_confirm,
@@ -1257,6 +1261,7 @@ Rules:
             execute_web = True
     
     # Step 3: Execute with recovery
+    from nlp2cmd.execution import ExecutionRunner
     runner = ExecutionRunner(
         console=console,
         auto_confirm=auto_confirm,
@@ -1529,6 +1534,7 @@ if not hasattr(click, 'Group'):
 @click.option("--execute-web", is_flag=True, help="Execute dom_dql.v1 actions via Playwright (requires playwright)")
 @click.option("--auto-confirm", is_flag=True, help="Skip confirmation prompts when using --run")
 @click.option("--auto-install", is_flag=True, help="Auto-install missing Python deps/tools when using --run (e.g. playwright)")
+@click.option("-v", "--version", is_flag=True, help="Show version information")
 @click.pass_context
 def main(
     ctx,
@@ -1542,6 +1548,7 @@ def main(
     execute_web: bool,
     auto_confirm: bool,
     auto_install: bool,
+    version: bool,
 ):
     """NLP2CMD - Natural Language to Domain-Specific Commands."""
     if load_dotenv is not None:
@@ -1554,6 +1561,10 @@ def main(
     ctx.obj["auto_repair"] = auto_repair
 
     if ctx.invoked_subcommand is None:
+        if version:
+            from nlp2cmd import __version__
+            console.print(f"nlp2cmd version {__version__}")
+            return
         if run and query:
             _handle_run_query(
                 query,
@@ -1576,7 +1587,13 @@ def main(
                 
                 if execute_web:
                     try:
-                        ir = NLP2CMD(adapter=AppSpecAdapter(appspec_path=str(appspec))).transform_ir(query)
+                        from nlp2cmd import NLP2CMD
+                        from nlp2cmd.adapters import AppSpecAdapter
+                        from nlp2cmd.pipeline_runner import PipelineRunner
+
+                        adapter = AppSpecAdapter(appspec_path=str(appspec))
+                        nlp = NLP2CMD(adapter=adapter)
+                        ir = nlp.transform_ir(query)
                         runner = PipelineRunner(headless=False)
                         res = runner.run(ir, dry_run=False, confirm=True)
                         if res.success:

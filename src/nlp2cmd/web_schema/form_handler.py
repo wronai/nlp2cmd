@@ -17,7 +17,6 @@ from rich.table import Table
 from rich.panel import Panel
 
 from nlp2cmd.web_schema.form_data_loader import FormDataLoader
-from nlp2cmd.cli.markdown_output import print_markdown_block
 
 
 @dataclass
@@ -56,6 +55,7 @@ class FormHandler:
     def _print(self, renderable: Any, *, language: str = "text") -> None:
         """Helper to optionally wrap output in markdown code blocks."""
         if self.use_markdown:
+            from nlp2cmd.cli.markdown_output import print_markdown_block
             print_markdown_block(renderable, language=language, console=self.console)
         else:
             self.console.print(renderable)

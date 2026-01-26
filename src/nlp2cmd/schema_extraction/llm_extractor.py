@@ -297,7 +297,7 @@ JSON:"""
     
     def _create_schema_with_template(self, command: str) -> ExtractedSchema:
         """Create schema with dynamically generated template."""
-        # Import dynamic generator
+        # Import dynamic generator inside method to avoid circular import
         from nlp2cmd.intelligent.dynamic_generator import DynamicSchemaGenerator
         
         # Use dynamic generator instead of hardcoded templates

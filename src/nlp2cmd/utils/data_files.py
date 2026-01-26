@@ -30,7 +30,28 @@ def _legacy_user_config_dir() -> Path:
 
 
 def _package_data_dir() -> Path:
-    # utils/ -> nlp2cmd/ -> project_root/
+    # Prefer package-local data directory (works for installed wheels).
+    try:
+        from importlib import resources
+
+        return Path(resources.files("nlp2cmd").joinpath("data"))
+    except Exception:
+        pass
+
+    # Fallbacks for source/dev layouts.
+    pkg_dir = Path(__file__).resolve().parents[1]
+    if (pkg_dir / "data").exists():
+        return pkg_dir / "data"
+
+    # utils/ -> nlp2cmd/ -> src/ -> project_root/ (repo layout)
+    try:
+        project_dir = Path(__file__).resolve().parents[3]
+        if (project_dir / "data").exists():
+            return project_dir / "data"
+    except Exception:
+        pass
+
+    # Last-resort fallback (legacy behavior)
     return Path(__file__).resolve().parents[2] / "data"
 
 

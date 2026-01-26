@@ -1,5 +1,6 @@
 """CLI module for NLP2CMD."""
 
-from nlp2cmd.cli.main import main, InteractiveSession
+# Commented out to prevent circular imports
+# from nlp2cmd.cli.main import main, InteractiveSession
 
-__all__ = ["main", "InteractiveSession"]
+__all__ = []  # Temporarily empty to avoid import issues
