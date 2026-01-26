@@ -229,7 +229,7 @@ class ShellAdapter(BaseDSLAdapter):
         """Parse environment context."""
         return EnvironmentContext(
             os=ctx.get("os", "linux"),
-            distro=ctx.get("distro", "ubuntu"),
+            distro=ctx.get("distr", "ubuntu"),
             shell=ctx.get("shell", self.shell_type),
             available_tools=ctx.get("available_tools", []),
             environment_variables=ctx.get("environment_variables", {}),
@@ -342,8 +342,6 @@ class ShellAdapter(BaseDSLAdapter):
                             cmd_parts.append(f"-size +{num}{unit}")
                         else:
                             cmd_parts.append(f"-size +{value}")
-                    else:
-                        cmd_parts.append(f"-size +{value}")
                 
                 elif attr == "mtime" and value:
                     # Handle modification time filter
@@ -354,7 +352,7 @@ class ShellAdapter(BaseDSLAdapter):
                     cmd_parts.append(f"-mtime -{value}")
         # Add name pattern
         if "file_pattern" in entities:
-            cmd_parts.extend(["-name", f"*.{entities['file_pattern']}"])
+            cmd_parts.extend(["-name", f'"*.{entities["file_pattern"]}"'])
         
         # Add size filter
         if "size" in entities and isinstance(entities["size"], dict):
@@ -410,6 +408,8 @@ class ShellAdapter(BaseDSLAdapter):
         elif "zmodyfikowane" in str(target) or "mtime" in str(target):
             days = entities.get("days", "7")
             cmd_parts.append(f"-mtime -{days}")
+            # Add detailed listing for modified files search
+            cmd_parts.append("-ls")
         
         return " ".join(cmd_parts)
 
@@ -432,6 +432,7 @@ class ShellAdapter(BaseDSLAdapter):
             cmd_parts.extend(["-name", f"*.{entities['file_pattern']}"])
         
         # Process filters list
+        filters = entities.get("filters", [])
         for filter_item in filters:
             if isinstance(filter_item, dict):
                 attr = filter_item.get("attribute")
@@ -514,6 +515,13 @@ class ShellAdapter(BaseDSLAdapter):
                 unit_map = {"days": "mtime", "hours": "mmin", "minutes": "mmin"}
                 time_unit = unit_map.get(age_info["unit"].lower(), "mtime")
                 cmd_parts.append(f"-{time_unit} -{age_info['value']}")
+        
+        # Handle specific Polish patterns from natural language (fallback)
+        elif "zmodyfikowane" in str(target) or "mtime" in str(target):
+            days = entities.get("days", "7")
+            cmd_parts.append(f"-mtime -{days}")
+            # Add detailed listing for modified files search
+            cmd_parts.append("-ls")
         
         return " ".join(cmd_parts)
 

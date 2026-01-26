@@ -8,23 +8,47 @@ import json
 import os
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, TYPE_CHECKING
 
 try:
-    from fastapi import FastAPI, HTTPException, BackgroundTasks
-    from fastapi.responses import JSONResponse
-    from fastapi.middleware.cors import CORSMiddleware
     from pydantic import BaseModel, Field
-    import uvicorn
 except ImportError:
-    FastAPI = None
-    HTTPException = None
-    BackgroundTasks = None
-    JSONResponse = None
-    CORSMiddleware = None
     BaseModel = object
     Field = lambda x, **kwargs: x
-    uvicorn = None
+
+# FastAPI/uvicorn are intentionally imported lazily to keep CLI startup fast.
+FastAPI = None
+HTTPException = None
+BackgroundTasks = None
+JSONResponse = None
+CORSMiddleware = None
+uvicorn = None
+
+if TYPE_CHECKING:  # pragma: no cover
+    from fastapi import FastAPI as _FastAPI, HTTPException as _HTTPException, BackgroundTasks as _BackgroundTasks
+    from fastapi.responses import JSONResponse as _JSONResponse
+    from fastapi.middleware.cors import CORSMiddleware as _CORSMiddleware
+
+
+def _ensure_service_deps() -> None:
+    """Lazily import FastAPI/uvicorn dependencies for service mode."""
+    global FastAPI, HTTPException, BackgroundTasks, JSONResponse, CORSMiddleware, uvicorn
+
+    if FastAPI is not None and uvicorn is not None:
+        return
+
+    from fastapi import FastAPI as _FastAPI, HTTPException as _HTTPException, BackgroundTasks as _BackgroundTasks
+    from fastapi.responses import JSONResponse as _JSONResponse
+    from fastapi.middleware.cors import CORSMiddleware as _CORSMiddleware
+    import uvicorn as _uvicorn
+
+    FastAPI = _FastAPI
+    HTTPException = _HTTPException
+    BackgroundTasks = _BackgroundTasks
+    JSONResponse = _JSONResponse
+    CORSMiddleware = _CORSMiddleware
+    uvicorn = _uvicorn
+
 
 from ..generation.pipeline import RuleBasedPipeline
 from ..cli.display import display_command_result
@@ -150,11 +174,10 @@ class NLP2CMDService:
         )
         self.logger = logging.getLogger(__name__)
         
-    def _create_app(self) -> FastAPI:
+    def _create_app(self) -> 'FastAPI':
         """Create FastAPI application."""
-        if FastAPI is None:
-            raise ImportError("FastAPI is required for service mode. Install with: pip install fastapi uvicorn")
-        
+        _ensure_service_deps()
+
         app = FastAPI(
             title="NLP2CMD API",
             description="Natural Language to Domain-Specific Commands API",
@@ -177,7 +200,7 @@ class NLP2CMDService:
         
         return app
     
-    def _setup_routes(self, app: FastAPI):
+    def _setup_routes(self, app: 'FastAPI'):
         """Setup API routes."""
         
         @app.get("/")
@@ -273,8 +296,7 @@ class NLP2CMDService:
     
     def run(self, host: Optional[str] = None, port: Optional[int] = None, **kwargs):
         """Run the service."""
-        if uvicorn is None:
-            raise ImportError("uvicorn is required for service mode. Install with: pip install uvicorn")
+        _ensure_service_deps()
         
         # Override config with command line arguments
         run_host = host or self.config.host
@@ -327,8 +349,9 @@ class NLP2CMDService:
                 os.environ.pop("NLP2CMD_PORT", None)
 
 
-def create_app() -> FastAPI:
+def create_app() -> 'FastAPI':
     """Create FastAPI application for uvicorn import."""
+    _ensure_service_deps()
     # Read configuration from environment variables (for workers/reload mode)
     config = ServiceConfig()
     service = NLP2CMDService(config)

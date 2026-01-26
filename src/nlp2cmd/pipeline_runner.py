@@ -14,6 +14,42 @@ from nlp2cmd.adapters.base import SafetyPolicy
 from nlp2cmd.ir import ActionIR
 from nlp2cmd.utils.data_files import find_data_file
 from rich.table import Table
+from rich.console import Console
+
+from nlp2cmd.cli.markdown_output import print_markdown_block
+
+
+class _MarkdownConsoleWrapper:
+    """Context manager that captures console output into Markdown code blocks."""
+
+    def __init__(self, console: Console, *, enable_markdown: bool, default_language: str = "text") -> None:
+        self.console = console
+        self.enable_markdown = enable_markdown
+        self.default_language = default_language
+        self._buffer: list[str] = []
+
+    def print(self, renderable, *, language: str | None = None) -> None:
+        if self.enable_markdown:
+            print_markdown_block(renderable, language=language or self.default_language, console=self.console)
+        else:
+            self.console.print(renderable)
+
+    def capture(self):
+        """Return context manager that captures printed text into a single block."""
+        wrapper = self
+
+        class _Capture:
+            def __enter__(self):
+                wrapper._buffer = []
+                return wrapper._buffer
+
+            def __exit__(self, exc_type, exc, tb):
+                if wrapper.enable_markdown and wrapper._buffer:
+                    print_markdown_block("\n".join(wrapper._buffer), language=wrapper.default_language, console=wrapper.console)
+                elif wrapper._buffer:
+                    wrapper.console.print("\n".join(wrapper._buffer))
+
+        return _Capture()
 
 
 @dataclass
@@ -391,6 +427,9 @@ class PipelineRunner:
                 kind="dom",
                 data={"dry_run": True, "url": url, "actions": actions},
             )
+
+        console = Console()
+        console_wrapper = _MarkdownConsoleWrapper(console, enable_markdown=True)
         
         try:
             from playwright.sync_api import sync_playwright  # type: ignore
@@ -423,23 +462,21 @@ class PipelineRunner:
                         # Automatic form filling from .env and data/*.json
                         try:
                             from nlp2cmd.web_schema.form_handler import FormHandler
-                            from rich.console import Console
                             
-                            console = Console()
-                            form_handler = FormHandler(console=console)
+                            form_handler = FormHandler(console=console, use_markdown=True)
                             data_loader = schema_loader
                             
                             # Wait for page to be fully loaded
-                            console.print("\n[cyan]⏳ Waiting for page to load...[/cyan]")
+                            console_wrapper.print("⏳ Waiting for page to load...", language="text")
                             page.wait_for_load_state("networkidle", timeout=10000)
                             page.wait_for_timeout(1500)
                             
                             # Detect form fields
-                            console.print("[cyan]🔍 Detecting form fields...[/cyan]")
+                            console_wrapper.print("🔍 Detecting form fields...", language="text")
                             fields = form_handler.detect_form_fields(page)
                             
                             if not fields:
-                                console.print("[yellow]No form fields detected on this page[/yellow]")
+                                console_wrapper.print("No form fields detected on this page", language="text")
                             else:
                                 # Debug: Show all detected fields
                                 debug_table = Table()
@@ -457,23 +494,22 @@ class PipelineRunner:
                                         name_id,
                                     )
                                 
-                                console.print("\n[cyan]🔍 Detected form fields:[/cyan]")
-                                console.print(debug_table)
-                                console.print()
+                                console_wrapper.print("🔍 Detected form fields:", language="text")
+                                console_wrapper.print(debug_table)
                                 
                                 # Automatic fill from .env and data/ files
                                 if data_loader.has_data():
-                                    console.print("[cyan]📂 Loading form data from .env and data/...[/cyan]")
+                                    console_wrapper.print("📂 Loading form data from .env and data/...", language="text")
                                     form_data = form_handler.automatic_fill(fields, data_loader)
                                 else:
-                                    console.print("[yellow]No form data in .env or data/ - using interactive mode[/yellow]")
+                                    console_wrapper.print("No form data in .env or data/ - using interactive mode", language="text")
                                     form_data = form_handler.interactive_fill(fields)
                                 if form_data is not None:
                                     form_data.submit_selector = form_handler.detect_submit_button(page, data_loader)
                                 
                                 # Fill the form if we have data
                                 if form_data and form_data.fields:
-                                    console.print("\n[cyan]📝 Filling form...[/cyan]")
+                                    console_wrapper.print("📝 Filling form...", language="text")
                                     form_handler.fill_form(page, form_data)
                                 
                             page.wait_for_timeout(500)
@@ -578,9 +614,6 @@ class PipelineRunner:
                     
                     elif action == "submit":
                         # Submit form by clicking submit button
-                        from rich.console import Console
-                        console = Console()
-                        
                         # Load submit selectors from schema
                         submit_selectors = schema_loader.get_submit_selectors()
                         
@@ -590,7 +623,7 @@ class PipelineRunner:
                                 page.wait_for_selector(sel, state="visible", timeout=2000)
                                 page.click(sel)
                                 submitted = True
-                                console.print(f"[green]✓[/green] Form submitted via: {sel}")
+                                console_wrapper.print(f"Form submitted via: {sel}", language="text")
                                 schema_loader.add_submit_selector(sel)
                                 break
                             except Exception:
@@ -598,7 +631,7 @@ class PipelineRunner:
                         
                         if not submitted:
                             page.keyboard.press("Enter")
-                            console.print("[green]✓[/green] Form submitted via Enter key")
+                            console_wrapper.print("Form submitted via Enter key", language="text")
                         
                         page.wait_for_timeout(2000)
                     

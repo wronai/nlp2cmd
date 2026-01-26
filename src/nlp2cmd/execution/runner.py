@@ -19,6 +19,7 @@ from pathlib import Path
 
 # Import syntax cache for performance optimization
 from nlp2cmd.cli.syntax_cache import get_cached_syntax
+from nlp2cmd.cli.markdown_output import print_markdown_block, MarkdownBlockStream
 
 try:
     from rich.console import Console
@@ -150,7 +151,7 @@ class ExecutionRunner:
         """
         start_time = time.time()
         
-        self.console.print(f"\n[bold cyan]$ {command}[/bold cyan]")
+        print_markdown_block(f"$ {command}", language="bash", console=self.console)
         
         try:
             if stream_output:
@@ -168,59 +169,59 @@ class ExecutionRunner:
                 stderr_lines = []
                 
                 import select
-                import os
                 
-                if hasattr(select, 'poll'):
-                    poller = select.poll()
-                    poller.register(process.stdout, select.POLLIN)
-                    poller.register(process.stderr, select.POLLIN)
+                with MarkdownBlockStream(console=self.console, language="bash") as stream:
+                    if hasattr(select, 'poll'):
+                        poller = select.poll()
+                        poller.register(process.stdout, select.POLLIN)
+                        poller.register(process.stderr, select.POLLIN)
+                        
+                        while process.poll() is None:
+                            events = poller.poll(100)
+                            for fd, event in events:
+                                if fd == process.stdout.fileno():
+                                    line = process.stdout.readline()
+                                    if line:
+                                        stdout_lines.append(line)
+                                        stream.print(line.rstrip())
+                                elif fd == process.stderr.fileno():
+                                    line = process.stderr.readline()
+                                    if line:
+                                        stderr_lines.append(line)
+                                        stream.print(f"[stderr] {line.rstrip()}")
+                        
+                        # Read any remaining output after process exits
+                        while True:
+                            line = process.stdout.readline()
+                            if not line:
+                                break
+                            stdout_lines.append(line)
+                            stream.print(line.rstrip())
+                        
+                        while True:
+                            line = process.stderr.readline()
+                            if not line:
+                                break
+                            stderr_lines.append(line)
+                            stream.print(f"[stderr] {line.rstrip()}")
+                    else:
+                        stdout, stderr = process.communicate(timeout=timeout)
+                        stdout_lines = stdout.splitlines(keepends=True)
+                        stderr_lines = stderr.splitlines(keepends=True)
+                        for line in stdout_lines:
+                            stream.print(line.rstrip())
+                        for line in stderr_lines:
+                            stream.print(f"[stderr] {line.rstrip()}")
                     
-                    while process.poll() is None:
-                        events = poller.poll(100)
-                        for fd, event in events:
-                            if fd == process.stdout.fileno():
-                                line = process.stdout.readline()
-                                if line:
-                                    stdout_lines.append(line)
-                                    self.console.print(f"  {line.rstrip()}")
-                            elif fd == process.stderr.fileno():
-                                line = process.stderr.readline()
-                                if line:
-                                    stderr_lines.append(line)
-                                    self.console.print(f"  [red]{line.rstrip()}[/red]")
-                    
-                    # Read any remaining output after process exits
-                    while True:
-                        line = process.stdout.readline()
-                        if not line:
-                            break
-                        stdout_lines.append(line)
-                        self.console.print(f"  {line.rstrip()}")
-                    
-                    while True:
-                        line = process.stderr.readline()
-                        if not line:
-                            break
-                        stderr_lines.append(line)
-                        self.console.print(f"  [red]{line.rstrip()}[/red]")
-                else:
-                    stdout, stderr = process.communicate(timeout=timeout)
-                    stdout_lines = stdout.splitlines(keepends=True)
-                    stderr_lines = stderr.splitlines(keepends=True)
-                    for line in stdout_lines:
-                        self.console.print(f"  {line.rstrip()}")
-                    for line in stderr_lines:
-                        self.console.print(f"  [red]{line.rstrip()}[/red]")
-                
-                remaining_stdout, remaining_stderr = process.communicate()
-                if remaining_stdout:
-                    stdout_lines.append(remaining_stdout)
-                    for line in remaining_stdout.splitlines():
-                        self.console.print(f"  {line}")
-                if remaining_stderr:
-                    stderr_lines.append(remaining_stderr)
-                    for line in remaining_stderr.splitlines():
-                        self.console.print(f"  [red]{line}[/red]")
+                    remaining_stdout, remaining_stderr = process.communicate()
+                    if remaining_stdout:
+                        stdout_lines.append(remaining_stdout)
+                        for line in remaining_stdout.splitlines():
+                            stream.print(line)
+                    if remaining_stderr:
+                        stderr_lines.append(remaining_stderr)
+                        for line in remaining_stderr.splitlines():
+                            stream.print(f"[stderr] {line}")
                 
                 exit_code = process.returncode
                 stdout = ''.join(stdout_lines)
@@ -240,9 +241,9 @@ class ExecutionRunner:
                 stderr = result.stderr
                 
                 if stdout:
-                    self.console.print(stdout)
+                    print_markdown_block(stdout, language="bash", console=self.console)
                 if stderr:
-                    self.console.print(f"[red]{stderr}[/red]")
+                    print_markdown_block(f"[stderr]\n{stderr}", language="bash", console=self.console)
             
             duration_ms = (time.time() - start_time) * 1000
             success = exit_code == 0
@@ -275,9 +276,9 @@ class ExecutionRunner:
                     pass
             
             if success:
-                self.console.print(f"[green]✓ Command completed in {duration_ms:.1f}ms[/green]")
+                print_markdown_block(f"✓ Command completed in {duration_ms:.1f}ms", language="text", console=self.console)
             else:
-                self.console.print(f"[red]✗ Command failed with exit code {exit_code}[/red]")
+                print_markdown_block(f"✗ Command failed with exit code {exit_code}", language="text", console=self.console)
             
             return result
             
@@ -292,7 +293,7 @@ class ExecutionRunner:
                 error_context="Timeout",
             )
             self.execution_history.append(result)
-            self.console.print(f"[red]✗ Command timed out after {timeout}s[/red]")
+            print_markdown_block(f"✗ Command timed out after {timeout}s", language="text", console=self.console)
             return result
             
         except Exception as e:
@@ -306,7 +307,7 @@ class ExecutionRunner:
                 error_context=str(e),
             )
             self.execution_history.append(result)
-            self.console.print(f"[red]✗ Execution error: {e}[/red]")
+            print_markdown_block(f"✗ Execution error: {e}", language="text", console=self.console)
             return result
     
     def confirm_execution(self, command: str) -> bool:

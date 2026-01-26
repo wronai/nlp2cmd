@@ -14,14 +14,12 @@ try:
 except ImportError:
     click = None
 
-from . import NLP2CMDService, ServiceConfig, create_service_config_from_args
-
 
 def add_service_command(main_group):
     """Add service command to the main CLI group."""
     if click is None:
         return
-    
+
     @main_group.command()
     @click.option("--host", default="0.0.0.0", help="Host to bind the service to")
     @click.option("--port", default=8000, type=int, help="Port to bind the service to")
@@ -52,7 +50,9 @@ def add_service_command(main_group):
         reload: bool
     ):
         """Start NLP2CMD as an HTTP API service."""
-        
+
+        from . import NLP2CMDService, create_service_config_from_args
+
         # Create configuration from arguments
         config = create_service_config_from_args(
             host=host,
@@ -66,7 +66,7 @@ def add_service_command(main_group):
             save_env=save_env,
             env_file=env_file
         )
-        
+
         # Set environment variables for multi-worker or reload mode
         if workers > 1 or reload:
             os.environ["NLP2CMD_HOST"] = host
@@ -77,10 +77,10 @@ def add_service_command(main_group):
             os.environ["NLP2CMD_MAX_WORKERS"] = str(max_workers)
             os.environ["NLP2CMD_AUTO_EXECUTE"] = str(auto_execute).lower()
             os.environ["NLP2CMD_SESSION_TIMEOUT"] = str(session_timeout)
-        
+
         # Create and run service
         service_instance = NLP2CMDService(config)
-        
+
         try:
             service_instance.run(
                 host=host,
@@ -94,7 +94,7 @@ def add_service_command(main_group):
         except Exception as e:
             print(f"Error starting service: {e}")
             sys.exit(1)
-    
+
     @main_group.command()
     @click.option("--host", default="0.0.0.0", help="Host to bind the service to")
     @click.option("--port", default=8000, type=int, help="Port to bind the service to")
@@ -119,7 +119,9 @@ def add_service_command(main_group):
         env_file: str
     ):
         """Configure and save service settings to .env file."""
-        
+
+        from . import create_service_config_from_args
+
         config = create_service_config_from_args(
             host=host,
             port=port,
