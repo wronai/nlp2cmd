@@ -733,10 +733,16 @@ class ShellAdapter(BaseDSLAdapter):
         action = entities.get("action", "")
         process_name = entities.get("process_name", "")
         pid = entities.get("pid", "")
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        # Direct ps command detection
+        if "ps aux" in full_text or "ps " in full_text:
+            return "ps aux"
+        if full_text.strip() == "ps":
+            return "ps aux"
         
         # If no entities extracted, use full text parsing
         if not action and not process_name:
-            full_text = str(entities.get("_full_text", "")).lower()
             
             # Detect action
             if "uruchom" in full_text or "start" in full_text:
@@ -1243,6 +1249,13 @@ class ShellAdapter(BaseDSLAdapter):
         username = entities.get("username", "")
         target = entities.get("target", "")
         full_text = entities.get("_full_text", "")
+        
+        # Extract path from full text if not already found
+        if path == "." and full_text:
+            # Match paths like /app/test_data, /home/user, etc.
+            path_match = re.search(r'(/[\w./-]+)', full_text)
+            if path_match:
+                path = path_match.group(1)
         
         # Check if listing directories/folders specifically
         is_listing_folders = (

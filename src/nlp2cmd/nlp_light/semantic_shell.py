@@ -42,10 +42,42 @@ class SemanticShellBackend(NLPBackend):
 
     def extract_intent(self, text: str) -> tuple[str, float]:
         text_lower = (text or "").lower()
+        
+        # Direct command detection (highest priority)
+        if text_lower.startswith("cat ") or "cat " in text_lower:
+            return "cat", 0.95
+        if text_lower.startswith("head ") or "head " in text_lower:
+            return "head", 0.95
+        if text_lower.startswith("tail ") or "tail " in text_lower:
+            return "tail", 0.95
+        if text_lower.startswith("wc ") or "wc " in text_lower:
+            return "wc", 0.95
+        if text_lower.startswith("grep ") or "grep " in text_lower:
+            return "search", 0.95
+        if text_lower.startswith("ls ") or text_lower == "ls":
+            return "list", 0.95
+        if text_lower.startswith("ps ") or text_lower == "ps":
+            return "process_management", 0.95
+        if text_lower.startswith("df ") or text_lower == "df":
+            return "disk", 0.95
+        
+        # Polish/English keyword detection
         if any(x in text_lower for x in ("znajd", "find", "szuk")):
             return "file_search", 0.75
+        if any(x in text_lower for x in ("policz lini", "count line", "wc")):
+            return "wc", 0.80
+        if any(x in text_lower for x in ("pierwsz", "head", "począt")):
+            return "head", 0.75
+        if any(x in text_lower for x in ("ostatni", "tail", "końc")):
+            return "tail", 0.75
+        if any(x in text_lower for x in ("grep", "szukaj tekst", "wyszuk")):
+            return "search", 0.75
+        # Cat detection - "wyświetl zawartość" should be cat, not list
+        if any(x in text_lower for x in ("zawartość", "zawartosc", "content")):
+            return "cat", 0.80
         if any(x in text_lower for x in ("pokaż", "pokaz", "list", "wyświetl", "wyswietl")):
-            return "file_search", 0.55
+            return "list", 0.55
+        
         return "unknown", 0.0
 
     def extract_entities(self, text: str) -> list[Any]:
@@ -56,9 +88,27 @@ class SemanticShellBackend(NLPBackend):
         self._maybe_warm_spacy()
         text_lower = (text or "").lower()
 
+        # First determine intent
+        intent, intent_confidence = self.extract_intent(text)
+        
         entities: dict[str, Any] = {}
+        entities["_full_text"] = text  # Pass full text for parameter extraction
         entities["scope"] = self._extract_scope(text)
         entities["target"] = self._infer_target(text_lower)
+        
+        # Extract file path from text
+        file_match = re.search(r'([/\w.-]+\.\w+)', text)
+        if file_match:
+            entities["file"] = file_match.group(1)
+            entities["path"] = file_match.group(1)
+        
+        # Extract pattern for grep
+        if intent == "search":
+            # Try to extract pattern (word after grep or before "w pliku")
+            pattern_match = re.search(r'grep\s+(\S+)', text_lower)
+            if pattern_match:
+                entities["pattern"] = pattern_match.group(1)
+            entities["action"] = "grep"
         
         # Extract username using NLP
         username = self._extract_username_with_nlp(text)
@@ -86,14 +136,14 @@ class SemanticShellBackend(NLPBackend):
 
         entities["filters"] = filters
 
-        confidence = 0.45
+        confidence = intent_confidence
         if size_filter is not None or age_filter is not None:
-            confidence = 0.8
+            confidence = max(confidence, 0.8)
         if ext:
             confidence = max(confidence, 0.7)
 
         return ExecutionPlan(
-            intent="file_search",
+            intent=intent if intent != "unknown" else "file_search",
             entities=entities,
             confidence=confidence,
             text=text or "",
