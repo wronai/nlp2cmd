@@ -312,7 +312,15 @@
       "listowa\u0107 plik w katalog domowy",
       "wypisa\u0107 plik w katalogu domowym",
       "katalog domowy",
-      "zawarto\u015b\u0107 katalog domowy"
+      "zawarto\u015b\u0107 katalog domowy",
+      "lista plik",
+      "pokaz pliki",
+      "show files",
+      "list files",
+      "wy\u015bwietl pliki",
+      "wyswietl pliki",
+      "poka\u017c files",
+      "pokaz files"
     ],
     "count_files": [
       "ile plik\u00f3w",
@@ -1356,7 +1364,17 @@
       "docker compose up",
       "compose up",
       "docker-compose up",
-      "docker uruchom nginx"
+      "docker uruchom nginx",
+      "odpal kontener",
+      "odpal container",
+      "wystartuj kontener",
+      "wystartuj container",
+      "run nginx",
+      "run redis",
+      "run postgres",
+      "uruchom nginx",
+      "uruchom redis",
+      "uruchom postgres"
     ],
     "run_detached": [
       "uruchom w tle",
@@ -1373,7 +1391,15 @@
       "zatrzymaj container",
       "docker compose stop",
       "compose stop",
-      "docker-compose stop"
+      "docker-compose stop",
+      "wyłącz kontener",
+      "wylacz kontener",
+      "wyłącz container",
+      "wylacz container",
+      "stop all containers",
+      "zatrzymaj wszystkie kontenery",
+      "kill kontener",
+      "kill container"
     ],
     "start": [
       "uruchom kontener",
@@ -1389,7 +1415,12 @@
       "restart container",
       "docker compose restart",
       "compose restart",
-      "docker-compose restart"
+      "docker-compose restart",
+      "restartuj container",
+      "zrestartuj kontener",
+      "zrestartuj container",
+      "restart all containers",
+      "restartuj wszystkie kontenery"
     ],
     "remove": [
       "usu\u0144 kontener",
@@ -1444,7 +1475,18 @@
       "logi kontenera",
       "container logs",
       "docker compose logs",
-      "compose logs"
+      "compose logs",
+      "pokaz logi",
+      "wyświetl logi",
+      "wyswietl logi",
+      "wyświetl logs",
+      "wyswietl logs",
+      "logi nginx",
+      "logs nginx",
+      "tail logs",
+      "follow logs",
+      "śledź logi",
+      "sledz logi"
     ],
     "exec": [
       "docker exec",
@@ -1452,7 +1494,17 @@
       "execute in container",
       "wejd\u017a do kontenera",
       "shell kontenera",
-      "container shell"
+      "container shell",
+      "wejdz do kontenera",
+      "wejdź do container",
+      "wejdz do container",
+      "bash w kontenerze",
+      "bash w container",
+      "terminal kontenera",
+      "terminal container",
+      "connect to container",
+      "połącz się z kontenerem",
+      "polacz sie z kontenerem"
     ],
     "build": [
       "zbuduj obraz",
@@ -1460,7 +1512,15 @@
       "build image",
       "docker compose build",
       "compose build",
-      "docker-compose build"
+      "docker-compose build",
+      "zbuduj image",
+      "build obraz",
+      "stwórz obraz",
+      "stworz obraz",
+      "stwórz image",
+      "stworz image",
+      "buduj kontener",
+      "buduj container"
     ],
     "prune": [
       "docker prune",
@@ -1490,7 +1550,15 @@
       "list images",
       "docker image ls",
       "obrazy",
-      "images"
+      "images",
+      "pokaz obrazy",
+      "lista obrazów",
+      "lista obrazow",
+      "lista images",
+      "wyświetl obrazy",
+      "wyswietl obrazy",
+      "pokaż images",
+      "pokaz images"
     ],
     "network": [
       "docker network",

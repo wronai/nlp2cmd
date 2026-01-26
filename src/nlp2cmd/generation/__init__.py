@@ -15,6 +15,12 @@ This module provides iterative text-to-DSL generation capabilities:
 from nlp2cmd.generation.keywords import KeywordIntentDetector, DetectionResult
 from nlp2cmd.generation.regex import RegexEntityExtractor, ExtractionResult
 from nlp2cmd.generation.templates import TemplateGenerator, TemplateResult
+from nlp2cmd.generation.multi_command import (
+    MultiCommandDetector,
+    MultiCommandResult,
+    detect_multi_commands,
+    get_multi_command_detector,
+)
 from nlp2cmd.generation.pipeline import (
     RuleBasedPipeline,
     PipelineResult,
@@ -37,6 +43,11 @@ __all__ = [
     "PipelineResult",
     "PipelineMetrics",
     "create_pipeline",
+    # Multi-command detection
+    "MultiCommandDetector",
+    "MultiCommandResult",
+    "detect_multi_commands",
+    "get_multi_command_detector",
     # Iteration 4-5: LLM
     "LLMClient",
     "LLMConfig",

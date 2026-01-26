@@ -538,7 +538,8 @@ If the command syntax was wrong, provide the corrected command.
         
         for attempt in range(self.max_retries + 1):
             if attempt > 0:
-                self.console.print(f"\n[yellow]Retry attempt {attempt}/{self.max_retries}[/yellow]")
+                if not self.plain_output:
+                    self.console.print(f"\n[yellow]Retry attempt {attempt}/{self.max_retries}[/yellow]")
             
             if not self.confirm_execution(current_command):
                 return ExecutionResult(
@@ -567,19 +568,24 @@ If the command syntax was wrong, provide the corrected command.
                 suggestion = self.get_recovery_suggestion(context)
                 
                 if suggestion:
-                    self.print_markdown_block(f"```bash", language="bash", console=self.console)
-                    # Use cached syntax highlighting for better performance
-                    from nlp2cmd.cli.syntax_cache import get_cached_syntax
-                    syntax = get_cached_syntax(f"# 💡 Suggested recovery:\n {suggestion}", "bash", theme="monokai", line_numbers=False)
-                    self.console.print(syntax)
-                    self.print_markdown_block(f"```", language="bash", console=self.console)
-                    self.print_markdown_block("", language="bash", console=self.console)
+                    if not self.plain_output:
+                        self.print_markdown_block(f"```bash", language="bash", console=self.console)
+                        # Use cached syntax highlighting for better performance
+                        from nlp2cmd.cli.syntax_cache import get_cached_syntax
+                        syntax = get_cached_syntax(f"# 💡 Suggested recovery:\n {suggestion}", "bash", theme="monokai", line_numbers=False)
+                        self.console.print(syntax)
+                        self.print_markdown_block(f"```", language="bash", console=self.console)
+                        self.print_markdown_block("", language="bash", console=self.console)
                     
                     if on_suggestion:
                         if on_suggestion(suggestion):
                             current_command = suggestion
                             continue
                     else:
+                        if self.plain_output and self.auto_confirm:
+                            current_command = suggestion
+                            continue
+
                         response = self.console.input(
                             "[yellow]Try this suggestion? [Y/n/c(ustom)]: [/yellow]"
                         ).strip().lower()
@@ -593,6 +599,9 @@ If the command syntax was wrong, provide the corrected command.
                                 current_command = custom
                                 continue
                 
+                if self.plain_output and self.auto_confirm:
+                    break
+
                 response = self.console.input(
                     "[yellow]Retry with modified command? [y/N]: [/yellow]"
                 ).strip().lower()

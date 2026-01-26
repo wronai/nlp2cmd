@@ -1000,6 +1000,9 @@ def _handle_run_query(
                 return
 
         if _looks_like_log_input(query):
+            if only_output:
+                sys.stderr.write("nlp2cmd: could not generate executable command\n")
+                raise SystemExit(1)
             console.print("[yellow]Detected log-like input. Falling back to interactive nlp2cmd analysis.[/yellow]")
             session = InteractiveSession(dsl="shell", auto_repair=False)
             feedback = session.process(query)
@@ -1014,16 +1017,21 @@ def _handle_run_query(
                 detected_intent = "log_fallback"
                 used_generated_command = True
             else:
+                if only_output:
+                    sys.stderr.write("nlp2cmd: could not generate executable command\n")
+                    raise SystemExit(1)
                 console.print("[red]✗ Could not derive an executable command from logs[/red]")
                 return
         elif not result.success:
-            console.print(f"[red]✗ Could not generate command with rule-based pipeline: {result.command}[/red]")
+            if not only_output:
+                console.print(f"[red]✗ Could not generate command with rule-based pipeline: {result.command}[/red]")
             
             # Try different fallback strategies
             fallback_success = False
             
             # Strategy 1: Try LiteLLM with Ollama
-            console.print("[yellow]Attempting LLM fallback via LiteLLM...[/yellow]")
+            if not only_output:
+                console.print("[yellow]Attempting LLM fallback via LiteLLM...[/yellow]")
             try:
                 from nlp2cmd.generation.llm_simple import LiteLLMClient
                 import asyncio
@@ -1065,22 +1073,26 @@ Rules:
                 if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
                     detected_domain = "shell"
                     detected_intent = "llm_fallback"
-                    console.print(f"[green]✓ LLM fallback succeeded[/green]")
+                    if not only_output:
+                        console.print(f"[green]✓ LLM fallback succeeded[/green]")
                     fallback_success = True
                     used_generated_command = True
             except ImportError as e:
                 if "litellm" in str(e):
-                    console.print("[yellow]LiteLLM not installed. Attempting auto-install...[/yellow]")
+                    if not only_output:
+                        console.print("[yellow]LiteLLM not installed. Attempting auto-install...[/yellow]")
                     if auto_install:
                         try:
                             import subprocess
-                            console.print("[dim]Installing litellm...[/dim]")
+                            if not only_output:
+                                console.print("[dim]Installing litellm...[/dim]")
                             subprocess.run(
                                 [sys.executable, "-m", "pip", "install", "litellm"],
                                 check=True,
                                 capture_output=True,
                             )
-                            console.print("[green]✓ litellm installed successfully. Retrying LLM fallback...[/green]")
+                            if not only_output:
+                                console.print("[green]✓ litellm installed successfully. Retrying LLM fallback...[/green]")
                             # Retry after installation
                             from nlp2cmd.generation.llm_simple import LiteLLMClient
                             import asyncio
@@ -1121,25 +1133,32 @@ Rules:
                             if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
                                 detected_domain = "shell"
                                 detected_intent = "llm_fallback"
-                                console.print(f"[green]✓ LLM fallback succeeded after auto-install[/green]")
+                                if not only_output:
+                                    console.print(f"[green]✓ LLM fallback succeeded after auto-install[/green]")
                                 fallback_success = True
                                 used_generated_command = True
                         except Exception as install_error:
-                            console.print(f"[red]✗ Auto-install failed: {str(install_error)}[/red]")
+                            if not only_output:
+                                console.print(f"[red]✗ Auto-install failed: {str(install_error)}[/red]")
                     else:
-                        console.print("[yellow]Use --auto-install to automatically install missing dependencies[/yellow]")
+                        if not only_output:
+                            console.print("[yellow]Use --auto-install to automatically install missing dependencies[/yellow]")
                 else:
-                    console.print(f"[red]✗ Import error: {str(e)}[/red]")
+                    if not only_output:
+                        console.print(f"[red]✗ Import error: {str(e)}[/red]")
             except Exception as e:
                 error_msg = str(e)
                 if "connection" in error_msg.lower() or "refused" in error_msg.lower():
-                    console.print("[yellow]Could not connect to Ollama. Attempting to start Ollama...[/yellow]")
+                    if not only_output:
+                        console.print("[yellow]Could not connect to Ollama. Attempting to start Ollama...[/yellow]")
                     if auto_install:
                         try:
                             import subprocess
-                            console.print("[dim]Starting Ollama with Docker...[/dim]")
+                            if not only_output:
+                                console.print("[dim]Starting Ollama with Docker...[/dim]")
                             subprocess.run(["docker", "run", "-d", "-p", "11434:11434", "ollama/ollama"], check=True, capture_output=True)
-                            console.print("[green]✓ Ollama started. Retrying LLM fallback...[/green]")
+                            if not only_output:
+                                console.print("[green]✓ Ollama started. Retrying LLM fallback...[/green]")
                             # Give it a moment to start
                             import time
                             time.sleep(3)
@@ -1184,19 +1203,24 @@ Rules:
                             if command and not command.startswith("#") and not command.lower().startswith(("i'm sorry", "sorry", "i cannot", "cannot")):
                                 detected_domain = "shell"
                                 detected_intent = "llm_fallback"
-                                console.print(f"[green]✓ LLM fallback succeeded after starting Ollama[/green]")
+                                if not only_output:
+                                    console.print(f"[green]✓ LLM fallback succeeded after starting Ollama[/green]")
                                 fallback_success = True
                                 used_generated_command = True
                         except Exception as docker_error:
-                            console.print(f"[red]✗ Failed to start Ollama: {str(docker_error)}[/red]")
+                            if not only_output:
+                                console.print(f"[red]✗ Failed to start Ollama: {str(docker_error)}[/red]")
                     else:
-                        console.print("[yellow]Use --auto-install to automatically start Ollama[/yellow]")
+                        if not only_output:
+                            console.print("[yellow]Use --auto-install to automatically start Ollama[/yellow]")
                 else:
-                    console.print(f"[red]✗ LLM fallback failed with error: {str(e)}[/red]")
+                    if not only_output:
+                        console.print(f"[red]✗ LLM fallback failed with error: {str(e)}[/red]")
             
             # Strategy 2: Simple pattern matching as last resort
             if not fallback_success:
-                console.print("[yellow]Attempting pattern-based fallback...[/yellow]")
+                if not only_output:
+                    console.print("[yellow]Attempting pattern-based fallback...[/yellow]")
                 query_lower = query.lower()
                 
                 # Simple pattern matching for common commands
@@ -1205,7 +1229,8 @@ Rules:
                         command = "docker run -it ubuntu bash"
                         detected_domain = "docker"
                         detected_intent = "pattern_fallback"
-                        console.print("[green]✓ Pattern fallback succeeded[/green]")
+                        if not only_output:
+                            console.print("[green]✓ Pattern fallback succeeded[/green]")
                         fallback_success = True
                         used_generated_command = True
                 elif "git" in query_lower:
@@ -1213,11 +1238,15 @@ Rules:
                         command = "git clone <repository_url>"
                         detected_domain = "shell"
                         detected_intent = "pattern_fallback"
-                        console.print("[green]✓ Pattern fallback succeeded[/green]")
+                        if not only_output:
+                            console.print("[green]✓ Pattern fallback succeeded[/green]")
                         fallback_success = True
                         used_generated_command = True
             
             if not fallback_success:
+                if only_output:
+                    sys.stderr.write("nlp2cmd: could not generate executable command\n")
+                    raise SystemExit(1)
                 console.print("[red]✗ All fallback strategies failed[/red]")
                 return
 
