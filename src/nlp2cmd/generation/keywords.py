@@ -371,6 +371,19 @@ class KeywordIntentDetector:
         if domain != 'shell':
             return intent
 
+        # Process-related heuristics: avoid misclassifying "find process" style queries
+        # as file searching just because they contain "znajdź".
+        if any(k in text_lower for k in ("proces", "procesy", "process", "pid")):
+            wants_most = any(k in text_lower for k in ("najwięcej", "najwiecej", "najbardziej", "most", "top"))
+            wants_mem = any(k in text_lower for k in ("ram", "pamięc", "pamiec", "%mem", "mem"))
+            wants_cpu = any(k in text_lower for k in ("cpu", "procesor", "%cpu"))
+
+            if wants_mem and (wants_most or wants_cpu or True):
+                # Prefer memory sort when user mentions RAM/memory.
+                return 'process_memory'
+            if wants_cpu:
+                return 'process_cpu'
+
         if intent in {'process', 'process_list', 'process_management'}:
             return 'list_processes'
         if intent == 'disk':
