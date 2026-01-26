@@ -1546,6 +1546,18 @@ if not hasattr(click, 'Group'):
     help="Path to an app2schema.appspec JSON file (required for --dsl appspec)",
 )
 @click.option("-q", "--query", help="Single query to process")
+@click.option(
+    "--stdin",
+    "stdin_mode",
+    is_flag=True,
+    help="Read query text from stdin (usually automatic when piped; e.g. echo 'list files' | nlp2cmd)",
+)
+@click.option(
+    "--stdout",
+    "stdout_only",
+    is_flag=True,
+    help="Print only the generated command to stdout (no extra formatting)",
+)
 @click.option("-r", "--run", is_flag=True, help="Execute query immediately with interactive error recovery")
 @click.option("--auto-repair", is_flag=True, help="Auto-apply repairs")
 @click.option("--explain", is_flag=True, help="Explain how the result was produced")
@@ -1560,6 +1572,8 @@ def main(
     dsl: str,
     appspec: Optional[Path],
     query: Optional[str],
+    stdin_mode: bool,
+    stdout_only: bool,
     run: bool,
     auto_repair: bool,
     explain: bool,
@@ -1581,6 +1595,23 @@ def main(
     ctx.obj["dsl"] = dsl
     ctx.obj["auto_repair"] = auto_repair
     ctx.obj["script_start_time"] = script_start_time
+
+    if ctx.invoked_subcommand is None:
+        auto_stdin = (not stdin_mode) and (not query) and (not sys.stdin.isatty())
+        if (stdin_mode or auto_stdin) and not query:
+            try:
+                stdin_text = sys.stdin.read()
+            except Exception:
+                stdin_text = ""
+            stdin_text = (stdin_text or "").strip()
+            if stdin_text:
+                query = stdin_text
+
+    if stdout_only:
+        run = False
+        explain = False
+        interactive = False
+        execute_web = False
 
     if ctx.invoked_subcommand is None:
         if version:
@@ -1640,6 +1671,15 @@ def main(
                 }
                 with (measure_resources() if _measure else nullcontext()):
                     pipeline_result = pipeline.process(query)
+
+                if stdout_only:
+                    cmd = (pipeline_result.command or "").strip()
+                    if cmd:
+                        sys.stdout.write(cmd + "\n")
+                    if not pipeline_result.success:
+                        for err in list(pipeline_result.errors or []):
+                            sys.stderr.write(str(err).rstrip() + "\n")
+                    return
 
                 metrics_str = format_last_metrics() if _measure else ""
                 out: dict[str, Any] = {
