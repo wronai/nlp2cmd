@@ -1631,8 +1631,6 @@ def main(
                     "suggestions": [],
                     "clarification_questions": [],
                 }
-
-                # Add metrics if available (keep output schema consistent with InteractiveSession)
                 if metrics_str:
                     try:
                         from nlp2cmd.monitoring.token_costs import parse_metrics_string

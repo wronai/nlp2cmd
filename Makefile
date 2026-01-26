@@ -30,8 +30,8 @@
 
 # Project settings
 PROJECT_NAME := nlp2cmd
-PYTHON := python3
-PIP := pip3
+PYTHON := /usr/bin/python3.12
+PIP := $(PYTHON) -m pip
 PYTEST := pytest
 DOCKER_COMPOSE := docker compose
 

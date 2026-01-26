@@ -33,6 +33,7 @@ from nlp2cmd.adapters import (
     DockerAdapter,
     DQLAdapter,
     KubernetesAdapter,
+    BrowserAdapter,
     SQLSafetyPolicy,
     ShellSafetyPolicy,
     DockerSafetyPolicy,
@@ -95,6 +96,7 @@ __all__ = [
     "DockerAdapter",
     "DQLAdapter",
     "KubernetesAdapter",
+    "BrowserAdapter",
     # Safety Policies
     "SQLSafetyPolicy",
     "ShellSafetyPolicy",

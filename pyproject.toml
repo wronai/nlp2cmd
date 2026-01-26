@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "nlp2cmd"
-version = "1.0.44"
+version = "1.0.46"
 description = "Natural Language to Domain-Specific Commands with Thermodynamic Optimization - Transform natural language into SQL, Shell, Docker, Kubernetes and solve optimization problems using Langevin dynamics"
 readme = "README.md"
 license = "Apache-2.0"
@@ -110,11 +110,15 @@ Changelog = "https://github.com/wronai/nlp2cmd/blob/main/CHANGELOG.md"
 [tool.hatch.build.targets.wheel]
 packages = ["src/nlp2cmd", "src/app2schema"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"data" = "nlp2cmd/data"
+
 [tool.hatch.build.targets.sdist]
 include = [
     "/src",
     "/tests",
     "/docs",
+    "/data",
 ]
 
 [tool.black]
