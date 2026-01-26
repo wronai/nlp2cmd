@@ -270,6 +270,7 @@ class ShellAdapter(BaseDSLAdapter):
             "file_search": self._generate_file_search,
             "find": self._generate_find,
             "list": self._generate_list,
+            "list_dirs": self._generate_list_dirs,
             "file_operation": self._generate_file_operation,
             "process_management": self._generate_process_management,
             "process_monitoring": self._generate_process_monitoring,
@@ -1126,6 +1127,29 @@ class ShellAdapter(BaseDSLAdapter):
         """Generate list command."""
         path = entities.get("path", ".")
         username = entities.get("username", "")
+        target = entities.get("target", "")
+        full_text = entities.get("_full_text", "")
+        
+        # Check if listing directories/folders specifically
+        is_listing_folders = (
+            "folder" in target.lower() or 
+            "katalog" in target.lower() or 
+            "directories" in target.lower() or
+            "folder" in full_text.lower()
+        )
+        
+        if is_listing_folders:
+            # Clean path by removing 'folders' if present
+            if path.endswith("folders"):
+                path = path[:-7].strip()
+                if not path:
+                    path = "~"
+            
+            # Handle user-specific paths
+            if "user" in str(path).lower():
+                path = "~"
+            
+            return f"find {path} -maxdepth 1 -type d"
         
         # Handle user home directory explicitly
         if path == "~" or path == "~/":
@@ -1137,7 +1161,7 @@ class ShellAdapter(BaseDSLAdapter):
             user_keywords = ["użytkownika", "usera", "user", "użytkownik"]
             if any(keyword in username.lower() for keyword in user_keywords):
                 # Default to current user home directory for generic user references
-                if username.lower() in ["użytkownika", "usera", "user", "użytkownik"]:
+                if username.lower() in ["użytkownika", "usera", "user", "użytkownik", "folders"]:
                     return "ls -la ~"
                 else:
                     # Try to extract actual username
@@ -1150,7 +1174,31 @@ class ShellAdapter(BaseDSLAdapter):
                         return "ls -la ~"
         
         # Default list command
+        if "folders" in path.lower():
+            clean_path = path.lower().replace("folders", "").strip()
+            if not clean_path or clean_path == "~":
+                clean_path = "~"
+            return f"ls -la {clean_path} | grep '^d'"
         return f"ls -la {path}"
+
+    def _generate_list_dirs(self, entities: dict[str, Any]) -> str:
+        """Generate list directories command."""
+        path = entities.get("path", "~")
+        full_text = entities.get("_full_text", "")
+        
+        # Clean path for user folders
+        if "user" in str(path).lower() and "folders" in str(path).lower():
+            path = "~"
+        elif path.endswith("folders"):
+            path = path[:-7].strip()
+            if not path:
+                path = "~"
+        
+        # Handle user-specific paths
+        if "user" in full_text.lower():
+            path = "~"
+        
+        return f"find {path} -maxdepth 1 -type d"
 
     def _generate_generic(self, entities: dict[str, Any]) -> str:
         """Generate generic command from entities."""

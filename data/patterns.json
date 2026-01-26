@@ -259,8 +259,30 @@
     ]
   },
   "shell": {
+    "list_dirs": [
+      "poka\u017c katalogi",
+      "poka\u017c foldery",
+      "lista katalog\u00f3w",
+      "lista folder\u00f3w",
+      "list directories",
+      "list folders",
+      "show directories",
+      "show folders",
+      "user directories",
+      "user folders",
+      "foldery u\u017cytkownika",
+      "katalogi u\u017cytkownika",
+      "katalogi domowe",
+      "foldery domowe",
+      "listuj katalogi",
+      "listuj foldery",
+      "wylistuj katalogi",
+      "wylistuj foldery",
+      "show list user folders",
+      "list user folders",
+      "show user folders"
+    ],
     "list": [
-      "poka\u017c pliki u\u017cytkownika",
       "poka\u017c pliki u\u017cytkownika",
       "poka\u017c pliki uzytkownika",
       "poka\u017c pliki użytkownika",

@@ -147,8 +147,8 @@
       "development",
       "security",
       "process_management",
-      "find",
-      "list"
+      "list_dirs",
+      "find"
     ],
     "docker": [
       "stop",

@@ -854,6 +854,9 @@ class TemplateGenerator:
             # Handle specific username paths
             if username == 'root':
                 result['path'] = '/root'  # Root user home
+            elif username.lower() in ['folders', 'użytkownika', 'usera', 'user', 'użytkownik']:
+                # These are not actual usernames but generic user references
+                result['path'] = '~'  # Default to current user home
             else:
                 result['path'] = f'~{username}'  # Specific user home
         else:

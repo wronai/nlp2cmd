@@ -54,6 +54,7 @@
     "count_files": "find '{path}' -maxdepth 1 -mindepth 1 -type f {name_flag_count} | wc -l",
     "count_dirs": "find '{path}' -maxdepth 1 -mindepth 1 -type d {name_flag_count} | wc -l",
     "list": "ls -la {path}",
+    "list_dirs": "find {path} -maxdepth 1 -type d",
     "list_recursive": "ls -laR {path}",
     "grep": "grep -r '{pattern}' {path}",
     "search": "grep -r '{pattern}' {path}",

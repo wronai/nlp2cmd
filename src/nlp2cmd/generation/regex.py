@@ -99,19 +99,24 @@ class RegexEntityExtractor:
     
     SHELL_PATTERNS: dict[str, list[str]] = {
         'path': [
+            # User folders patterns - MOST SPECIFIC FIRST
+            r'(?:show|pokaż|list|wyświetl)\s+(?:user|użytkownik)\s+(?:folders?|foldery|katalogi|directories?)\b',
+            r'(?:user|użytkownik)\s+(?:folders?|foldery|katalogi|directories?)\s+(?:show|pokaż|list|wyświetl)\b',
+            r'(?:foldery|folders?)\s+(?:użytkownika|usera|user)\b',
+            r'(?:użytkownika|usera|user)\s+(?:foldery|folders?)\b',
+            # Direct match for "user folders" pattern
+            r'user\s+folders',
+            # Generic path patterns with capture groups
             r'(?:w\s+)?(?:katalogu|folderze|ścieżce|directory|folder|path)?\s*[`"\']?([/~][\w\.\-/]+)[`"\']?',
             r'(?:w\s+)?(?:katalogu|folderze)?\s+(?:użytkownika|user|home)\b\s*[`"\']?([/~][\w\.\-/]*)[`"\']?',
             r'(?:do|from|to|z|in)\s+[`"\']?([/~][\w\.\-/]+)[`"\']?',
             r'(?:do|from|to|z|in)\s+[`"\']?((?:\./|\.\./)[\w\.\-/]*|\.{1,2})[`"\']?',
             r'\s([/~][\w\.\-/]+)\s',
             r'\s((?:\./|\.\./)[\w\.\-/]*|\.{1,2})\s',
-            # User file patterns - MOST SPECIFIC FIRST
+            # User file patterns
             r'(?:pliki|plików|files?)\s+(?:użytkownika|usera|user)\b',
             r'(?:użytkownika|usera|user)\s+(?:pliki|plików|files?)\b',
             # Generic user home directory with capture group
-            r'(?:pliki|plików|files?)\s+(?:użytkownika|usera|user)\b',
-            r'(?:użytkownika|usera|user)\s+(?:pliki|plików|files?)\b',
-            # User home directory with capture group
             r'((?:pliki|plików|files?)\s+(?:użytkownika|usera|user))',
             r'((?:użytkownika|usera|user)\s+(?:pliki|plików|files?))',
         ],
@@ -188,6 +193,9 @@ class RegexEntityExtractor:
             r'(?:szukaj|wyszukaj|znajdź|szukać|wyszukać|znaleźć)\s+(?:na\s+)?(?:amazon|google|github)\s+(.+?)(?:\s+|$)',
             r'(?:amazon|google|github)\s+(?:search|szukaj|wyszukaj)\s+(.+?)(?:\s+|$)',
             r'(?:szukaj|wyszukaj|znajdź|szukać|wyszukać|znaleźć)\s+(.+?)(?:\s+na\s+(?:amazon|google|github)|\s+w\s+(?:amazon|google|github))',
+        ],
+        'target': [
+            r'(?:foldery|folders?|katalogi|directories?)',
         ],
     }
     
@@ -513,10 +521,15 @@ class RegexEntityExtractor:
                 result['grouping'] = [entities['group_by']]
         
         elif domain == 'shell':
+            # Check for user folders pattern in raw text first
+            if re.search(r'show\s+list\s+user\s+folders|pokaż\s+listę\s+użytkownik\s+foldery|list\s+user\s+folders|show\s+user\s+folders', text_lower):
+                result['path'] = '~'
             # Handle user files patterns
-            if 'path' in entities and entities['path']:
+            elif 'path' in entities and entities['path']:
                 path = entities['path']
                 if re.search(r'pliki.*(?:użytkownika|usera|user)|(?:użytkownika|usera|user).*pliki', path, re.IGNORECASE):
+                    result['path'] = '~'
+                elif re.search(r'foldery.*(?:użytkownika|usera|user)|(?:użytkownika|usera|user).*foldery', path, re.IGNORECASE):
                     result['path'] = '~'
                 elif 'folderze użytkownika' in text_lower or 'folderze usera' in text_lower:
                     result['path'] = '~'
@@ -524,7 +537,7 @@ class RegexEntityExtractor:
                     result['path'] = path
             # Handle "folderze użytkownika" -> default to ~ if no path found
             elif 'path' not in entities or not entities['path']:
-                if re.search(r'folderze\s+użytkownika|katalogu\s+użytkownika|listę\s+folderów\s+użytkownika|listę\s+katalogów\s+użytkownika', text_lower):
+                if re.search(r'folderze\s+użytkownika|katalogu\s+użytkownika|listę\s+folderów\s+użytkownika|listę\s+katalogów\s+użytkownika|foldery\s+użytkownika|user\s+folders|show\s+list\s+user\s+folders|show\s+user\s+folders|list\s+user\s+folders|user\s+folders', text_lower):
                     result['path'] = '~'
                 else:
                     result['path'] = '.'
