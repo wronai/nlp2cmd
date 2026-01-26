@@ -637,32 +637,47 @@ class TemplateGenerator:
         Returns:
             TemplateResult with generated command
         """
+        # Normalize some domain buckets from patterns.json to domains we can generate.
+        # We only have templates for high-level domains like: shell/sql/docker/kubernetes.
+        normalized_domain = domain
+        normalized_intent = intent
+        normalized_entities = dict(entities or {})
+
+        if normalized_domain == "shell_utilities":
+            # Treat shell utilities as shell commands.
+            normalized_domain = "shell"
+            # We generally don't have dedicated templates for every utility.
+            # Fallback to running the utility directly.
+            if normalized_intent not in self.templates.get("shell", {}):
+                normalized_entities.setdefault("application", normalized_intent)
+                normalized_intent = "run_application"
+
         # Get template
-        domain_templates = self.templates.get(domain, {})
-        template = domain_templates.get(intent)
+        domain_templates = self.templates.get(normalized_domain, {})
+        template = domain_templates.get(normalized_intent)
         
         # Special case: for shell domain with list intent, always check for alternatives
-        if domain == 'shell' and intent == 'list':
-            alternative_template = self._find_alternative_template(domain, intent, entities)
-            if alternative_template and alternative_template != intent:
+        if normalized_domain == 'shell' and normalized_intent == 'list':
+            alternative_template = self._find_alternative_template(normalized_domain, normalized_intent, normalized_entities)
+            if alternative_template and alternative_template != normalized_intent:
                 template = domain_templates.get(alternative_template)
         elif not template:
             # Try to find alternative template
-            alternative_template = self._find_alternative_template(domain, intent, entities)
+            alternative_template = self._find_alternative_template(normalized_domain, normalized_intent, normalized_entities)
             if alternative_template:
                 template = domain_templates.get(alternative_template)
         
         if not template:
             return TemplateResult(
-                command=f"# Unknown: {domain}/{intent}",
+                command=f"# Unknown: {normalized_domain}/{normalized_intent}",
                 template_used="",
-                entities_used=entities,
+                entities_used=normalized_entities,
                 missing_entities=[],
                 success=False,
             )
         
         # Prepare entities with defaults
-        prepared = self._prepare_entities(domain, intent, entities)
+        prepared = self._prepare_entities(normalized_domain, normalized_intent, normalized_entities)
         
         # Fill template
         try:

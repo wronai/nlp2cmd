@@ -827,7 +827,7 @@ def _handle_run_query(
     execute_web: bool,
     auto_install: bool,
     auto_repair: bool,
-    only_output: bool,
+    only_output: bool = False,
 ):
     """
     Handle --run option: generate and execute command with error recovery.
@@ -1620,6 +1620,7 @@ if not hasattr(click, 'Group'):
     help="Print only the generated command to stdout (no extra formatting)",
 )
 @click.option(
+    "-oo",
     "--only-output",
     "only_output",
     is_flag=True,
@@ -1629,7 +1630,7 @@ if not hasattr(click, 'Group'):
 @click.option("--auto-repair", is_flag=True, help="Auto-apply repairs")
 @click.option("--explain", is_flag=True, help="Explain how the result was produced")
 @click.option("--execute-web", is_flag=True, help="Execute dom_dql.v1 actions via Playwright (requires playwright)")
-@click.option("--auto-confirm", is_flag=True, help="Skip confirmation prompts when using --run")
+@click.option("-ac", "--auto-confirm", is_flag=True, help="Skip confirmation prompts when using --run")
 @click.option("--auto-install", is_flag=True, help="Auto-install missing Python deps/tools when using --run (e.g. playwright)")
 @click.option("-v", "--version", is_flag=True, help="Show version information")
 @click.pass_context

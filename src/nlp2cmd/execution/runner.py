@@ -582,7 +582,10 @@ If the command syntax was wrong, provide the corrected command.
                             current_command = suggestion
                             continue
                     else:
-                        if self.plain_output and self.auto_confirm:
+                        if self.auto_confirm:
+                            # Do not auto-execute comment-only "suggestions" (they are informational).
+                            if suggestion.lstrip().startswith("#"):
+                                break
                             current_command = suggestion
                             continue
 
@@ -599,7 +602,7 @@ If the command syntax was wrong, provide the corrected command.
                                 current_command = custom
                                 continue
                 
-                if self.plain_output and self.auto_confirm:
+                if self.auto_confirm:
                     break
 
                 response = self.console.input(
