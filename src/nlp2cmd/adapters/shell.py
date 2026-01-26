@@ -298,6 +298,7 @@ class ShellAdapter(BaseDSLAdapter):
         target = entities.get("target", "files")
         filters = entities.get("filters", [])
         scope = entities.get("path", entities.get("scope", "."))
+        mtime_filtered = False
         
         # Build find command with entities
         cmd_parts = ["find", scope]
@@ -344,11 +345,17 @@ class ShellAdapter(BaseDSLAdapter):
                 
                 elif attr == "mtime" and value:
                     # Handle modification time filter
-                    cmd_parts.append(f"-mtime -{value}")
+                    m = re.search(r"(\d+)", str(value))
+                    days = m.group(1) if m else str(value)
+                    cmd_parts.append(f"-mtime -{days}")
+                    mtime_filtered = True
                 
                 elif attr == "age" and value:
                     # Handle age filter
-                    cmd_parts.append(f"-mtime -{value}")
+                    m = re.search(r"(\d+)", str(value))
+                    days = m.group(1) if m else str(value)
+                    cmd_parts.append(f"-mtime -{days}")
+                    mtime_filtered = True
         # Add name pattern
         if "file_pattern" in entities:
             cmd_parts.extend(["-name", f'"*.{entities["file_pattern"]}"'])
@@ -395,6 +402,8 @@ class ShellAdapter(BaseDSLAdapter):
                 unit_map = {"days": "mtime", "hours": "mmin", "minutes": "mmin"}
                 time_unit = unit_map.get(age_info["unit"].lower(), "mtime")
                 cmd_parts.append(f"-{time_unit} -{age_info['value']}")
+                if time_unit == "mtime":
+                    mtime_filtered = True
         
         # Handle specific Polish patterns from natural language (fallback)
         elif "rozszerzeniem" in str(target) or "extension" in str(target):
@@ -405,16 +414,23 @@ class ShellAdapter(BaseDSLAdapter):
             cmd_parts.append(f"-size +{size}")
         elif "zmodyfikowane" in str(target) or "mtime" in str(target):
             days = entities.get("days", "7")
+            m = re.search(r"(\d+)", str(days))
+            days = m.group(1) if m else str(days)
             cmd_parts.append(f"-mtime -{days}")
-            # Add detailed listing for modified files search
-            cmd_parts.append("-ls")
+            mtime_filtered = True
         
+        if mtime_filtered:
+            printf_format = "'%T@\\t%TY-%Tm-%Td %TH:%TM:%TS\\t%s\\t%p\\n'"
+            find_cmd = " ".join(cmd_parts + ["-printf", printf_format])
+            return f"{find_cmd} | sort -nr | cut -f2-"
+
         return " ".join(cmd_parts)
 
     def _generate_find(self, entities: dict[str, Any]) -> str:
         """Generate find command using entities."""
         scope = entities.get("path", entities.get("scope", "."))
         cmd_parts = ["find", scope]
+        mtime_filtered = False
         
         # Add type filter
         target = entities.get("target", "files")

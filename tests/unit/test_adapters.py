@@ -128,6 +128,8 @@ class TestShellAdapter:
         assert "find" in result
         assert "-size +100M" in result
         assert "-mtime -7" in result
+        assert "-printf" in result
+        assert "sort -nr" in result
 
     def test_process_monitoring(self):
         """Test process monitoring command."""
