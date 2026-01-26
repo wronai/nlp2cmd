@@ -85,7 +85,7 @@
     "file_delete_all": "find . -name '*.{extension}' -delete",
     "dir_create": "mkdir {directory}",
     "process_monitor": "top -n 1",
-    "process_memory": "ps aux --sort=-%mem | head -10",
+    "process_memory": "ps aux --sort=-%mem | head -2",
     "process_cpu": "ps aux --sort=-%cpu | head -10",
     "process_tree": "pstree",
     "process_user": "ps aux | grep {user}",

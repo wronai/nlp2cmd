@@ -14,9 +14,10 @@ import sys
 import select
 import asyncio
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 
-from nlp2cmd.execution import ExecutionRunner
+if TYPE_CHECKING:
+    from nlp2cmd.execution import ExecutionRunner
 
 try:
     import click
@@ -833,6 +834,7 @@ def _handle_run_query(
         AppSpecAdapter,
         BrowserAdapter,
     )
+    from nlp2cmd.execution import ExecutionRunner
     from nlp2cmd.web_schema.form_data_loader import FormDataLoader
     
     print(f"```bash")

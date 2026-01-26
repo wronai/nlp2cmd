@@ -498,7 +498,7 @@ class KeywordIntentDetector:
             )
 
         if self._has_shell_file_context(text_lower) and re.search(
-            r"\b(usuń|usun|skasuj|delete|remove|rm)\b",
+            r"\b(usuń|usun|usuw\w*|skasuj|delete|remove|rm)\b",
             text_lower,
         ):
             return DetectionResult(
