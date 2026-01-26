@@ -1351,8 +1351,8 @@
     "run": [
       "uruchom kontener",
       "docker run",
-      "start container",
-      "docker start",
+      "run container",
+      "uruchom container",
       "docker compose up",
       "compose up",
       "docker-compose up",
@@ -1370,6 +1370,7 @@
       "zatrzymaj kontener",
       "docker stop",
       "stop container",
+      "zatrzymaj container",
       "docker compose stop",
       "compose stop",
       "docker-compose stop"
@@ -1422,7 +1423,11 @@
       "sprawd\u017a czy kontener dzia\u0142a",
       "sprawdz kontener",
       "pokaz kontener",
-      "status kontenera"
+      "status kontenera",
+      "lista container",
+      "lista kontener",
+      "poka\u017c container",
+      "pokaz container"
     ],
     "list_all": [
       "poka\u017c wszystkie kontenery",
@@ -1435,6 +1440,7 @@
       "poka\u017c logi",
       "docker logs",
       "show logs",
+      "poka\u017c logs",
       "logi kontenera",
       "container logs",
       "docker compose logs",

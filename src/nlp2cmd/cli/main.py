@@ -827,6 +827,7 @@ def _handle_run_query(
     execute_web: bool,
     auto_install: bool,
     auto_repair: bool,
+    only_output: bool,
 ):
     """
     Handle --run option: generate and execute command with error recovery.
@@ -851,13 +852,14 @@ def _handle_run_query(
     )
     from nlp2cmd import NLP2CMD, AppSpecAdapter, BrowserAdapter
     from nlp2cmd.web_schema.form_data_loader import FormDataLoader
-    
-    print(f"```bash")
-    # Use cached syntax highlighting for better performance
-    syntax = get_cached_syntax(f"# 🚀 Run Mode: {query}", "bash", theme="monokai", line_numbers=False)
-    console.print(syntax)
-    print(f"```")
-    print()
+
+    if not only_output:
+        print(f"```bash")
+        # Use cached syntax highlighting for better performance
+        syntax = get_cached_syntax(f"# 🚀 Run Mode: {query}", "bash", theme="monokai", line_numbers=False)
+        console.print(syntax)
+        print(f"```")
+        print()
     
     # Step 0: Check for similar queries in history (disambiguation)
     if not auto_confirm:
@@ -868,14 +870,16 @@ def _handle_run_query(
             result = disambiguator.disambiguate(query, auto_select=False)
             
             if result.from_history and result.selected_command:
-                console.print(f"\n[dim]Using previous command from history[/dim]")
+                if not only_output:
+                    console.print(f"\n[dim]Using previous command from history[/dim]")
                 query = result.selected_query
                 # Could directly use result.selected_command here
         except Exception:
             pass
     
     # Step 1: Generate command
-    console.print("\n[dim]Generating command...[/dim]")
+    if not only_output:
+        console.print("\n[dim]Generating command...[/dim]")
     
     adapter_map = {
         "sql": lambda: SQLAdapter(),
@@ -909,22 +913,26 @@ def _handle_run_query(
         if not _looks_like_log_input(query):
             steps = pipeline.process_steps(query)
             if len(steps) > 1:
-                console.print("\n[cyan]Multi-step plan detected:[/cyan]")
+                if not only_output:
+                    console.print("\n[cyan]Multi-step plan detected:[/cyan]")
                 executable_indices: list[int] = []
                 for i, step in enumerate(steps, 1):
                     cmd = (step.command or "").strip()
                     ok = bool(cmd) and not cmd.startswith("#") and step.domain != "sql"
                     if ok:
                         executable_indices.append(i)
-                    console.print(f"  {i}. [{step.domain}/{step.intent}] {cmd}")
+                    if not only_output:
+                        console.print(f"  {i}. [{step.domain}/{step.intent}] {cmd}")
 
                 if not executable_indices:
                     if any(s.domain == "sql" for s in steps):
-                        console.print(
-                            "[yellow]Only SQL steps were generated. Run Mode executes shell commands and will not execute SQL.[/yellow]"
-                        )
+                        if not only_output:
+                            console.print(
+                                "[yellow]Only SQL steps were generated. Run Mode executes shell commands and will not execute SQL.[/yellow]"
+                            )
                     else:
-                        console.print("[red]✗ No executable steps could be derived[/red]")
+                        if not only_output:
+                            console.print("[red]✗ No executable steps could be derived[/red]")
                     return
 
                 selected: list[int] = []
@@ -954,7 +962,8 @@ def _handle_run_query(
                                         selected.append(n)
 
                 if not selected:
-                    console.print("[yellow]No steps selected[/yellow]")
+                    if not only_output:
+                        console.print("[yellow]No steps selected[/yellow]")
                     return
 
                 if ExecutionRunner is None:
@@ -967,6 +976,7 @@ def _handle_run_query(
                     console=console,
                     auto_confirm=auto_confirm,
                     max_retries=3,
+                    plain_output=only_output,
                 )
 
                 for n in selected:
@@ -974,12 +984,13 @@ def _handle_run_query(
                     cmd = (step.command or "").strip()
                     if not cmd or cmd.startswith("#"):
                         continue
-                    print(f"```bash")
-                    # Use cached syntax highlighting for better performance
-                    syntax = get_cached_syntax(f"# Step {n}/{len(steps)}: {step.domain}/{step.intent}\n {cmd}", "bash", theme="monokai", line_numbers=False)
-                    console.print(syntax)
-                    print(f"```")
-                    print()
+                    if not only_output:
+                        print(f"```bash")
+                        # Use cached syntax highlighting for better performance
+                        syntax = get_cached_syntax(f"# Step {n}/{len(steps)}: {step.domain}/{step.intent}\n {cmd}", "bash", theme="monokai", line_numbers=False)
+                        console.print(syntax)
+                        print(f"```")
+                        print()
                     exec_result = runner.run_with_recovery(cmd, query)
                     if not exec_result.success and not auto_confirm:
                         cont = console.input("[yellow]Continue to next step? [y/N]: [/yellow]").strip().lower()
@@ -1215,7 +1226,8 @@ Rules:
             detected_domain = result.domain
             detected_intent = result.intent
         
-        console.print(f"[dim]Detected: {detected_domain}/{detected_intent}[/dim]")
+        if not only_output:
+            console.print(f"[dim]Detected: {detected_domain}/{detected_intent}[/dim]")
     else:
         adapter = adapter_map.get(dsl, lambda: ShellAdapter())()
         nlp = NLP2CMD(adapter=adapter)
@@ -1224,18 +1236,27 @@ Rules:
 
         detected_domain = dsl
         detected_intent = getattr(getattr(transform_result, "plan", None), "intent", "unknown")
-        console.print(f"[dim]Detected: {detected_domain}/{detected_intent}[/dim]")
+        if not only_output:
+            console.print(f"[dim]Detected: {detected_domain}/{detected_intent}[/dim]")
 
     if detected_domain == "sql":
-        print(f"```sql")
-        # Use cached syntax highlighting for better performance
-        syntax = get_cached_syntax(command, "sql", theme="monokai", line_numbers=False)
-        console.print(syntax)
-        print(f"```")
-        print()
-        console.print(
-            "[yellow]Run Mode executes shell commands; SQL is not executed automatically. Run this query in your database client (psql/mysql/sqlite3) or use --dsl sql without --run.[/yellow]"
-        )
+        if only_output:
+            sql_text = (command or "").rstrip() + "\n"
+            if sql_text.strip():
+                sys.stdout.write(sql_text)
+            sys.stderr.write(
+                "Run Mode executes shell commands; SQL is not executed automatically. Use --dsl sql without --run.\n"
+            )
+        else:
+            print(f"```sql")
+            # Use cached syntax highlighting for better performance
+            syntax = get_cached_syntax(command, "sql", theme="monokai", line_numbers=False)
+            console.print(syntax)
+            print(f"```")
+            print()
+            console.print(
+                "[yellow]Run Mode executes shell commands; SQL is not executed automatically. Run this query in your database client (psql/mysql/sqlite3) or use --dsl sql without --run.[/yellow]"
+            )
         return
     
     # Step 2: Check if it's a browser command and detect typing actions
@@ -1265,7 +1286,8 @@ Rules:
             
             # Auto-enable execute_web if typing/clicking detected
             if detected_has_typing and not execute_web:
-                console.print("[dim]Auto-enabling browser automation (detected typing/clicking action)[/dim]")
+                if not only_output:
+                    console.print("[dim]Auto-enabling browser automation (detected typing/clicking action)[/dim]")
                 execute_web = True
     elif dsl == "browser":
         is_browser_command = True
@@ -1284,17 +1306,20 @@ Rules:
         console=console,
         auto_confirm=auto_confirm,
         max_retries=3,
+        plain_output=only_output,
     )
     
     if is_browser_command and execute_web and detected_has_typing:
         # Use PipelineRunner for complex browser automation (typing, clicking, etc.)
-        console.print("\n[cyan]Using Playwright for browser automation...[/cyan]")
+        if not only_output:
+            console.print("\n[cyan]Using Playwright for browser automation...[/cyan]")
         
         # Check and install Playwright if needed
         from nlp2cmd.utils.playwright_installer import ensure_playwright_installed
         
         if not ensure_playwright_installed(console=console, auto_install=auto_install):
-            console.print("[yellow]Browser automation skipped - Playwright not available[/yellow]")
+            if not only_output:
+                console.print("[yellow]Browser automation skipped - Playwright not available[/yellow]")
             _fallback_open_url_from_query(query)
             return
         
@@ -1303,8 +1328,9 @@ Rules:
             browser_adapter = BrowserAdapter()
             nlp_browser = NLP2CMD(adapter=browser_adapter)
             ir = nlp_browser.transform_ir(query)
-            
-            console.print(f"[dim]Actions: {ir.explanation}[/dim]\n")
+
+            if not only_output:
+                console.print(f"[dim]Actions: {ir.explanation}[/dim]\n")
             
             # Execute with PipelineRunner
             from nlp2cmd.pipeline_runner import PipelineRunner
@@ -1341,21 +1367,25 @@ Rules:
                         approved = True
 
                 if not approved and not auto_confirm:
-                    console.print("[yellow]Cancelled by user[/yellow]")
+                    if not only_output:
+                        console.print("[yellow]Cancelled by user[/yellow]")
                     return
 
                 result = pw_runner.run(ir, dry_run=False, confirm=True)
 
             if result.success:
-                console.print(f"\n[green]✅ Browser automation completed successfully[/green]")
-                console.print(f"[dim]Executed {result.data.get('actions_executed', 0)} actions in {result.duration_ms:.1f}ms[/dim]")
+                if not only_output:
+                    console.print(f"\n[green]✅ Browser automation completed successfully[/green]")
+                    console.print(f"[dim]Executed {result.data.get('actions_executed', 0)} actions in {result.duration_ms:.1f}ms[/dim]")
                 return
 
-            console.print(f"\n[red]❌ Browser automation failed: {result.error}[/red]")
+            if not only_output:
+                console.print(f"\n[red]❌ Browser automation failed: {result.error}[/red]")
             _fallback_open_url(ir)
             return
         except Exception as e:
-            console.print(f"[red]Playwright error: {e}[/red]")
+            if not only_output:
+                console.print(f"[red]Playwright error: {e}[/red]")
             _fallback_open_url_from_query(query)
             return
     else:
@@ -1364,11 +1394,13 @@ Rules:
         
         if not exec_result.success:
             if (exec_result.error_context == "User cancelled") or (getattr(exec_result, "exit_code", None) == 0):
-                console.print("\n[yellow]Cancelled by user[/yellow]")
+                if not only_output:
+                    console.print("\n[yellow]Cancelled by user[/yellow]")
                 return
 
             if exec_result.error_context:
-                console.print("\n[yellow]Command failed. Analyzing error...[/yellow]")
+                if not only_output:
+                    console.print("\n[yellow]Command failed. Analyzing error...[/yellow]")
                 
                 # Try to suggest next steps based on error
                 _suggest_next_steps(query, command, exec_result, runner)
@@ -1558,6 +1590,12 @@ if not hasattr(click, 'Group'):
     is_flag=True,
     help="Print only the generated command to stdout (no extra formatting)",
 )
+@click.option(
+    "--only-output",
+    "only_output",
+    is_flag=True,
+    help="In --run mode, print only the executed command output (suppress generation/execution UI)",
+)
 @click.option("-r", "--run", is_flag=True, help="Execute query immediately with interactive error recovery")
 @click.option("--auto-repair", is_flag=True, help="Auto-apply repairs")
 @click.option("--explain", is_flag=True, help="Explain how the result was produced")
@@ -1574,6 +1612,7 @@ def main(
     query: Optional[str],
     stdin_mode: bool,
     stdout_only: bool,
+    only_output: bool,
     run: bool,
     auto_repair: bool,
     explain: bool,
@@ -1627,6 +1666,7 @@ def main(
                 execute_web=execute_web,
                 auto_install=auto_install,
                 auto_repair=auto_repair,
+                only_output=only_output,
             )
         elif query:
             if dsl == "appspec":

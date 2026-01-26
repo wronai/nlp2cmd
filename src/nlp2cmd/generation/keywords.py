@@ -966,6 +966,15 @@ class KeywordIntentDetector:
             text_clean = text_lower.strip()
             if not any(b.lower() in text_clean for b in boosters):
                 return False
+        
+        # Special handling for shell vs docker ambiguity
+        if domain == 'shell':
+            # Check if we have specific docker indicators that should override shell
+            docker_specific = ['logi', 'logs', 'kontener', 'container', 'obraz', 'image']
+            if any(word in text_lower for word in docker_specific):
+                # If we have docker-specific words, don't allow shell to take precedence
+                return False
+        
         return True
 
     def _detect_best_from_priority_intents(

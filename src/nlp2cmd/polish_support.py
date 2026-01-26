@@ -61,6 +61,16 @@ KNOWN_PHRASES = [
     "sprawdź pamięć",
     "sprawdz pamiec",
     "miejsce dysku",
+    "lista kontenerów",
+    "lista kontenerow",
+    "lista kontener",
+    "lista container",
+    "pokaż kontenery",
+    "pokaz kontenery",
+    "pokaż kontener",
+    "pokaz kontener",
+    "pokaż container",
+    "pokaz container",
 ]
 
 
@@ -131,6 +141,24 @@ class PolishLanguageSupport:
         """
         text_lower = text.lower()
         
+        # Skip correction for common English command words to avoid false positives
+        english_command_words = {
+            'stop', 'start', 'run', 'list', 'show', 'get', 'set', 'delete', 'remove',
+            'create', 'update', 'find', 'search', 'copy', 'move', 'kill', 'restart',
+            'build', 'push', 'pull', 'exec', 'logs', 'stats', 'inspect', 'container',
+            'image', 'volume', 'network', 'service', 'deploy', 'install', 'config'
+        }
+        
+        words = text_lower.split()
+        if any(word in english_command_words for word in words):
+            # If we have common English command words, be more conservative
+            # Only apply direct corrections, not fuzzy matching
+            for incorrect, correct in STT_CORRECTIONS.items():
+                if incorrect in text_lower:
+                    text_lower = text_lower.replace(incorrect, correct)
+                    return text_lower
+            return text_lower
+        
         # Try direct corrections first
         for incorrect, correct in STT_CORRECTIONS.items():
             if incorrect in text_lower:
@@ -162,7 +190,7 @@ class PolishLanguageSupport:
         
         return text_lower
     
-    def _find_best_phrase_match(self, text, threshold=0.75):
+    def _find_best_phrase_match(self, text, threshold=0.85):
         """Find best matching known phrase using fuzzy matching."""
         text_normalized = self.normalize_polish_text(text)
         best_score = 0
