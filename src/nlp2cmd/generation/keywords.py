@@ -605,6 +605,21 @@ class KeywordIntentDetector:
                 matched_keyword="list folders",
             )
 
+        # STT/voice mode often produces short fragments like: "folderów", "to folderów".
+        # Treat these as intent to list directories to avoid unknown template errors.
+        if (
+            re.search(r"\b(foldery|folderow|folders|katalogi|katalogow|directories)\b", text_lower)
+            and len([w for w in text_lower.split() if w.strip()]) <= 3
+            and not re.search(r"\b(tabel\w*|table|sql)\b", text_lower)
+            and not re.search(r"\b(docker|kubectl|kubernetes)\b", text_lower)
+        ):
+            return DetectionResult(
+                domain="shell",
+                intent="list_dirs",
+                confidence=0.6,
+                matched_keyword="folders fragment",
+            )
+
         if re.search(r"\bfind\b", text_lower) and re.search(r"\bfiles?\b", text_lower):
             return DetectionResult(
                 domain='shell',
