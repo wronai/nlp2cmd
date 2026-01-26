@@ -7,6 +7,62 @@ Provides Polish language patterns and mappings
 import json
 import re
 from pathlib import Path
+from difflib import SequenceMatcher
+
+# Common STT word boundary errors: incorrect -> correct
+STT_CORRECTIONS = {
+    # "list aplików" -> "lista plików" (boundary shift)
+    "list aplik": "lista plik",
+    "list a plik": "lista plik",
+    "lista plik": "lista plik",  # already correct
+    "listy plik": "lista plik",
+    "listę plik": "lista plik",
+    # "pokaż procesy" variations
+    "pokaz procesy": "pokaż procesy",
+    "pokaż a procesy": "pokaż procesy",
+    "pokaza procesy": "pokaż procesy",
+    # "znajdź plik" variations  
+    "znajdz plik": "znajdź plik",
+    "z najdź plik": "znajdź plik",
+    "znaj dplik": "znajdź plik",
+    # "usuń plik" variations
+    "usun plik": "usuń plik",
+    "u suń plik": "usuń plik",
+    # "utwórz katalog" variations
+    "utworz katalog": "utwórz katalog",
+    "u twórz katalog": "utwórz katalog",
+    # "kopiuj plik" variations
+    "kopi uj plik": "kopiuj plik",
+    "kopiu jplik": "kopiuj plik",
+}
+
+# Known Polish command phrases for fuzzy matching
+KNOWN_PHRASES = [
+    "lista plików",
+    "lista plikow",
+    "pokaż pliki",
+    "pokaz pliki",
+    "znajdź plik",
+    "znajdz plik",
+    "usuń plik",
+    "usun plik",
+    "utwórz katalog",
+    "utworz katalog",
+    "kopiuj plik",
+    "skopiuj plik",
+    "przenieś plik",
+    "przenies plik",
+    "pokaż procesy",
+    "pokaz procesy",
+    "lista procesów",
+    "lista procesow",
+    "zabij proces",
+    "zatrzymaj proces",
+    "sprawdź pamięć",
+    "sprawdz pamiec",
+    "miejsce dysku",
+]
+
 
 class PolishLanguageSupport:
     """Polish language support for NLP2CMD"""
@@ -65,6 +121,68 @@ class PolishLanguageSupport:
             text = text.replace(polish, latin)
         
         return text
+    
+    def normalize_stt_errors(self, text):
+        """Fix common STT word boundary errors.
+        
+        STT often shifts word boundaries, e.g.:
+        - 'lista plików' -> 'list aplików' (shifted 'a')
+        - 'znajdź plik' -> 'z najdź plik' (split first letter)
+        """
+        text_lower = text.lower()
+        
+        # Try direct corrections first
+        for incorrect, correct in STT_CORRECTIONS.items():
+            if incorrect in text_lower:
+                text_lower = text_lower.replace(incorrect, correct)
+                return text_lower
+        
+        # Try fuzzy matching against known phrases
+        best_match = self._find_best_phrase_match(text_lower)
+        if best_match:
+            return best_match
+        
+        # Try joining adjacent words and matching
+        words = text_lower.split()
+        if len(words) >= 2:
+            # Try joining pairs of words
+            for i in range(len(words) - 1):
+                joined = words[i] + words[i + 1]
+                # Check if joined word matches any known pattern
+                for phrase in KNOWN_PHRASES:
+                    phrase_words = phrase.split()
+                    for pw in phrase_words:
+                        # Remove diacritics for comparison
+                        pw_normalized = self.normalize_polish_text(pw)
+                        joined_normalized = self.normalize_polish_text(joined)
+                        if self._similar(joined_normalized, pw_normalized, threshold=0.8):
+                            # Reconstruct with corrected word
+                            new_words = words[:i] + [pw] + words[i+2:]
+                            return ' '.join(new_words)
+        
+        return text_lower
+    
+    def _find_best_phrase_match(self, text, threshold=0.75):
+        """Find best matching known phrase using fuzzy matching."""
+        text_normalized = self.normalize_polish_text(text)
+        best_score = 0
+        best_phrase = None
+        
+        for phrase in KNOWN_PHRASES:
+            phrase_normalized = self.normalize_polish_text(phrase)
+            score = self._similar(text_normalized, phrase_normalized)
+            if score > best_score and score >= threshold:
+                best_score = score
+                best_phrase = phrase
+        
+        return best_phrase
+    
+    def _similar(self, a, b, threshold=None):
+        """Calculate similarity ratio between two strings."""
+        ratio = SequenceMatcher(None, a, b).ratio()
+        if threshold is not None:
+            return ratio >= threshold
+        return ratio
     
     def match_polish_patterns(self, text, domain):
         """Match Polish patterns for given domain"""

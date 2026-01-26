@@ -15,6 +15,20 @@ import re
 
 from nlp2cmd.utils.data_files import find_data_files
 
+# Lazy import for polish support to avoid circular imports
+_polish_support = None
+
+def _get_polish_support():
+    """Lazy load Polish support to avoid circular imports."""
+    global _polish_support
+    if _polish_support is None:
+        try:
+            from nlp2cmd.polish_support import polish_support
+            _polish_support = polish_support
+        except ImportError:
+            _polish_support = False  # Mark as unavailable
+    return _polish_support if _polish_support else None
+
 @staticmethod
 def _normalize_polish_text(text: str) -> str:
     """Normalize Polish diacritics to handle typos."""
@@ -1033,6 +1047,12 @@ class KeywordIntentDetector:
             DetectionResult with domain, intent, confidence
         """
         raw_lower = text.lower()
+        
+        # Apply STT error normalization for Polish text
+        polish = _get_polish_support()
+        if polish:
+            raw_lower = polish.normalize_stt_errors(raw_lower)
+        
         text_lower = self._normalize_text_lower(raw_lower)
 
         result = self._detect_normalized(text_lower)
