@@ -79,6 +79,22 @@ def _get_ml_classifier():
             _ml_classifier = False
     return _ml_classifier if _ml_classifier else None
 
+# Lazy import for semantic matcher (sentence embeddings)
+_semantic_matcher = None
+
+def _get_semantic_matcher():
+    """Lazy load semantic matcher for embedding-based similarity."""
+    global _semantic_matcher
+    if _semantic_matcher is None:
+        try:
+            from nlp2cmd.generation.semantic_matcher import get_semantic_matcher
+            _semantic_matcher = get_semantic_matcher()
+            if _semantic_matcher is None:
+                _semantic_matcher = False
+        except ImportError:
+            _semantic_matcher = False
+    return _semantic_matcher if _semantic_matcher else None
+
 @staticmethod
 def _normalize_polish_text(text: str) -> str:
     """Normalize Polish diacritics to handle typos."""
@@ -1125,7 +1141,19 @@ class KeywordIntentDetector:
         return result
 
     def _detect_normalized(self, text_lower: str) -> DetectionResult:
-        # Try multilingual schema matching first for high-confidence matches
+        # Try ML classifier first for high-confidence matches (fastest, <1ms)
+        ml_classifier = _get_ml_classifier()
+        if ml_classifier:
+            ml_result = ml_classifier.predict(text_lower)
+            if ml_result and ml_result.confidence >= 0.9:
+                return DetectionResult(
+                    domain=ml_result.domain,
+                    intent=ml_result.intent,
+                    confidence=ml_result.confidence,
+                    matched_keyword=f"ml:{ml_result.method}",
+                )
+        
+        # Try multilingual schema matching for high-confidence matches
         schema_matcher = _get_fuzzy_schema_matcher()
         if schema_matcher:
             schema_result = schema_matcher.match(text_lower)
@@ -1140,6 +1168,27 @@ class KeywordIntentDetector:
                         confidence=schema_result.confidence,
                         matched_keyword=schema_result.phrase,
                     )
+        
+        # ML classifier fallback for medium confidence (still useful)
+        if ml_classifier and ml_result and ml_result.confidence >= 0.7:
+            return DetectionResult(
+                domain=ml_result.domain,
+                intent=ml_result.intent,
+                confidence=ml_result.confidence,
+                matched_keyword=f"ml:{ml_result.method}",
+            )
+        
+        # Semantic matching fallback for typos and paraphrases (slower but more accurate)
+        semantic_matcher = _get_semantic_matcher()
+        if semantic_matcher:
+            semantic_result = semantic_matcher.match(text_lower)
+            if semantic_result and semantic_result.confidence >= 0.75:
+                return DetectionResult(
+                    domain=semantic_result.domain,
+                    intent=semantic_result.intent,
+                    confidence=semantic_result.confidence,
+                    matched_keyword=f"semantic:{semantic_result.matched_phrase}",
+                )
         
         fast_path = self._detect_fast_path(text_lower)
         if fast_path is not None:

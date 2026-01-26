@@ -179,8 +179,8 @@ class RegexEntityExtractor:
         ],
         'image': [
             # Docker image name
-            r'(?:docker|kontener)\s+(?:build|run|pull)\s+([a-zA-Z0-9_-/]+)',
-            r'(?:zbuduj|uruchom|pobierz)\s+(?:obraz|docker)\s+([a-zA-Z0-9_-/]+)',
+            r'(?:docker|kontener)\s+(?:build|run|pull)\s+([a-zA-Z0-9_/:-]+)',
+            r'(?:zbuduj|uruchom|pobierz)\s+(?:obraz|docker)\s+([a-zA-Z0-9_/:-]+)',
         ],
         'filename': [
             r'(?:plik|file)\s+[`"\']?([\w\.\-]+)[`"\']?',

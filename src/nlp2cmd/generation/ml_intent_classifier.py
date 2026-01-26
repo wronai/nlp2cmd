@@ -165,7 +165,23 @@ class MLIntentClassifier:
             key = f"{sample.domain}/{sample.intent}"
             self.intent_to_domain[key] = sample.domain
         
-        # Create pipeline with TF-IDF + Calibrated SVM
+        # Count samples per class for CV fold calculation
+        from collections import Counter
+        label_counts = Counter(labels)
+        min_samples = min(label_counts.values())
+        
+        # Use calibrated SVM only if we have enough samples, otherwise plain SVM
+        if min_samples >= 2:
+            cv_folds = min(3, min_samples)
+            classifier = CalibratedClassifierCV(
+                LinearSVC(C=1.0, max_iter=10000, class_weight='balanced'),
+                cv=cv_folds
+            )
+        else:
+            # Fall back to plain LinearSVC without calibration
+            classifier = LinearSVC(C=1.0, max_iter=10000, class_weight='balanced')
+        
+        # Create pipeline with TF-IDF + SVM
         self.pipeline = Pipeline([
             ('tfidf', TfidfVectorizer(
                 ngram_range=(1, 3),
@@ -174,10 +190,7 @@ class MLIntentClassifier:
                 min_df=1,
                 analyzer='char_wb',  # Character n-grams for typo tolerance
             )),
-            ('clf', CalibratedClassifierCV(
-                LinearSVC(C=1.0, max_iter=10000, class_weight='balanced'),
-                cv=min(3, len(set(labels)))  # Cross-validation folds
-            ))
+            ('clf', classifier)
         ])
         
         # Train
@@ -205,27 +218,42 @@ class MLIntentClassifier:
         
         features = self._extract_features(text)
         
-        # Get probabilities
-        probs = self.pipeline.predict_proba([features])[0]
-        classes = self.pipeline.classes_
-        
-        # Sort by probability
-        sorted_idx = probs.argsort()[::-1]
-        
-        # Top prediction
-        top_idx = sorted_idx[0]
-        top_label = classes[top_idx]
-        top_prob = probs[top_idx]
+        # Check if we have predict_proba (calibrated) or just predict
+        if hasattr(self.pipeline, 'predict_proba'):
+            # Get probabilities
+            probs = self.pipeline.predict_proba([features])[0]
+            classes = self.pipeline.classes_
+            
+            # Sort by probability
+            sorted_idx = probs.argsort()[::-1]
+            
+            # Top prediction
+            top_idx = sorted_idx[0]
+            top_label = classes[top_idx]
+            top_prob = probs[top_idx]
+            
+            # Alternatives
+            alternatives = []
+            for idx in sorted_idx[1:top_k]:
+                label = classes[idx]
+                prob = probs[idx]
+                d, i = label.split('/', 1) if '/' in label else ('unknown', label)
+                alternatives.append((d, i, float(prob)))
+        else:
+            # Plain prediction without probabilities
+            top_label = self.pipeline.predict([features])[0]
+            # Use decision function for confidence estimation
+            try:
+                decision = self.pipeline.decision_function([features])[0]
+                if hasattr(decision, '__len__'):
+                    top_prob = min(1.0, max(0.5, 0.5 + 0.1 * max(decision)))
+                else:
+                    top_prob = min(1.0, max(0.5, 0.5 + 0.1 * decision))
+            except Exception:
+                top_prob = 0.8  # Default confidence
+            alternatives = []
         
         domain, intent = top_label.split('/', 1) if '/' in top_label else ('unknown', top_label)
-        
-        # Alternatives
-        alternatives = []
-        for idx in sorted_idx[1:top_k]:
-            label = classes[idx]
-            prob = probs[idx]
-            d, i = label.split('/', 1) if '/' in label else ('unknown', label)
-            alternatives.append((d, i, float(prob)))
         
         return IntentPrediction(
             intent=intent,
