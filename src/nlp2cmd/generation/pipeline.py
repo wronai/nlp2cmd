@@ -533,42 +533,22 @@ class RuleBasedPipeline:
                     ll = ln.lower()
                     if "traceback (most recent call last)" in ll:
                         score += 4
-        try:
-            import spacy
-            
-            # Try Polish model first, then English
-            models = ["pl_core_news_sm", "en_core_web_sm"]
-            nlp = None
-            
-            for model in models:
-                try:
-                    nlp = spacy.load(model)
-                    break
-                except OSError:
-                    continue
-            
-            # Fallback to blank model with sentencizer
-            if nlp is None:
-                try:
-                    nlp = spacy.blank("pl")
-                except Exception:
-                    nlp = spacy.blank("en")
-                
-                if "sentencizer" not in nlp.pipe_names:
-                    nlp.add_pipe("sentencizer")
-            
-            doc = nlp(text)
-            sents = [s.text.strip() for s in doc.sents if s.text and s.text.strip()]
-            
-            if len(sents) >= 2:
-                return sents
-                
-        except ImportError:
-            pass  # spaCy not available
-        except Exception:
-            pass  # spaCy failed
-        
-        # Fallback to regex-based splitting
+                    if re.search(r"file \".+\", line \d+", ln):
+                        score += 3
+                    if re.search(r"\b(exception|error|fatal|stack trace)\b", ll):
+                        score += 1
+                    if re.search(r"^\d{4}-\d{2}-\d{2}[ t]\d{2}:\d{2}:\d{2}", ln):
+                        score += 1
+                    if re.search(r"^\[(info|warn|warning|error|debug|trace)\]", ll):
+                        score += 1
+                    if "command not found" in ll:
+                        score += 2
+
+                # Treat log-like input as a single "sentence" to avoid expensive NLP.
+                if score >= 4:
+                    return [text]
+
+        # Fast regex-based splitting (default). This keeps cold-start fast.
         parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", text) if p.strip()]
         return parts
 
