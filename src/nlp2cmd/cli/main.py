@@ -480,6 +480,8 @@ class InteractiveSession:
 
     def display_feedback(self, feedback: FeedbackResult, include_explanation: bool = False):
         """Display feedback result with formatting."""
+        from nlp2cmd.monitoring import format_last_metrics, estimate_token_cost
+
         # Build output data
         out: dict[str, Any] = {
             "dsl": getattr(self, "dsl", None),
@@ -820,6 +822,16 @@ def _handle_run_query(
     - Context-aware disambiguation from history
     """
     from nlp2cmd.generation.pipeline import RuleBasedPipeline
+    from nlp2cmd.adapters import (
+        DockerAdapter,
+        DQLAdapter,
+        KubernetesAdapter,
+        ShellAdapter,
+        SQLAdapter,
+        AppSpecAdapter,
+        BrowserAdapter,
+    )
+    from nlp2cmd.execution import ExecutionRunner
     
     print(f"```bash")
     # Use cached syntax highlighting for better performance
@@ -1566,16 +1578,54 @@ def main(
                     except Exception as e:
                         console.print(f"\n❌ Web execution error: {e}")
             elif dsl == "auto":
-                # Use InteractiveSession for auto mode to get consistent YAML format
-                session = InteractiveSession(
-                    dsl="auto",
-                    auto_repair=auto_repair,
+                # Fast path: for single-shot CLI queries we avoid spinning up the full
+                # InteractiveSession (env scan + thermo router), which saves seconds.
+                from nlp2cmd.generation.pipeline import RuleBasedPipeline
+                from nlp2cmd.monitoring import measure_resources, format_last_metrics
+
+                pipeline = RuleBasedPipeline()
+                with measure_resources():
+                    pipeline_result = pipeline.process(query)
+
+                metrics_str = format_last_metrics()
+                out: dict[str, Any] = {
+                    "dsl": "auto",
+                    "query": query,
+                    "status": "success" if pipeline_result.success else "error",
+                    "confidence": float(pipeline_result.confidence),
+                    "generated_command": (pipeline_result.command or "").strip() or None,
+                    "errors": list(pipeline_result.errors or []),
+                    "warnings": list(pipeline_result.warnings or []),
+                    "suggestions": [],
+                    "clarification_questions": [],
+                }
+
+                if explain:
+                    out.update(
+                        {
+                            "domain": pipeline_result.domain,
+                            "intent": pipeline_result.intent,
+                            "detection_confidence": pipeline_result.detection_confidence,
+                            "template_used": pipeline_result.template_used,
+                            "source": pipeline_result.source,
+                            "entities": pipeline_result.entities,
+                        }
+                    )
+
+                display_command_result(
+                    command=out.get("generated_command", "") or "",
+                    metadata=out,
+                    metrics_str=metrics_str,
+                    show_yaml=True,
+                    title="NLP2CMD Result",
                 )
-                feedback = session.process(query)
-                session.display_feedback(feedback, include_explanation=explain)
                 
                 if execute_web and dsl == "browser":
                     try:
+                        from nlp2cmd import NLP2CMD
+                        from nlp2cmd.adapters import BrowserAdapter
+                        from nlp2cmd.pipeline_runner import PipelineRunner
+
                         adapter = BrowserAdapter()
                         nlp = NLP2CMD(adapter=adapter)
                         ir = nlp.transform_ir(query, context=session.context)
