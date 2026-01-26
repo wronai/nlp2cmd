@@ -361,10 +361,6 @@
     "systemctl_disable": "sudo systemctl disable {service}",
     "systemctl_list": "systemctl list-units --type=service",
     "systemctl_failed": "systemctl --failed",
-    "service_status": "systemctl status {service}",
-    "service_start": "systemctl start {service}",
-    "service_stop": "systemctl stop {service}",
-    "service_restart": "systemctl restart {service}",
     "crontab_list": "crontab -l",
     "crontab_edit": "crontab -e",
     "crontab_remove": "crontab -r",
@@ -558,7 +554,6 @@
     "shutdown": "sudo shutdown -h now",
     "shutdown_time": "sudo shutdown -h {time}",
     "shutdown_cancel": "sudo shutdown -c",
-    "reboot": "reboot",
     "poweroff": "sudo poweroff",
     
     "mount": "mount",
