@@ -199,6 +199,72 @@ class ShellAdapter(BaseDSLAdapter):
             "required_entities": ["action"],
             "optional_entities": ["container_name", "image_name", "options"],
         },
+        "user_management": {
+            "patterns": [
+                "użytkownik", "user", "grupa", "group", "whoami", "who", "last", "id",
+                "dodaj użytkownika", "usuń użytkownika", "zmień hasło", "passwd",
+                "useradd", "userdel", "usermod", "groupadd", "kim jestem"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["username", "group"],
+        },
+        "hardware_info": {
+            "patterns": [
+                "cpu", "procesor", "pamięć", "ram", "hardware", "sprzęt", "lscpu", "lspci",
+                "lsusb", "lshw", "urządzenia", "devices", "info o cpu", "info o sprzęcie"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["device"],
+        },
+        "disk_management": {
+            "patterns": [
+                "mount", "umount", "zamontuj", "odmontuj", "partycja", "partition",
+                "fdisk", "mkfs", "fsck", "blkid", "lsblk", "dyski", "disks"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["device", "mountpoint"],
+        },
+        "package_management": {
+            "patterns": [
+                "apt", "apt-get", "dpkg", "yum", "dnf", "pacman", "snap", "flatpak",
+                "zainstaluj", "odinstaluj", "aktualizuj pakiety", "install package"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["package"],
+        },
+        "service_management": {
+            "patterns": [
+                "systemctl", "service", "usługa", "daemon", "cron", "crontab",
+                "uruchom usługę", "zatrzymaj usługę", "status usługi", "journalctl"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["service_name"],
+        },
+        "text_file_ops": {
+            "patterns": [
+                "cat", "head", "tail", "less", "more", "wc", "sort", "uniq", "cut", "tr",
+                "pokaż plik", "wyświetl plik", "pierwsze linie", "ostatnie linie",
+                "policz linie", "sortuj", "unikalne", "śledź log"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["file", "lines"],
+        },
+        "checksum": {
+            "patterns": [
+                "md5", "sha256", "sha1", "checksum", "suma kontrolna", "hash",
+                "base64", "koduj", "dekoduj", "encode", "decode"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["file"],
+        },
+        "terminal_session": {
+            "patterns": [
+                "screen", "tmux", "byobu", "sesja", "session", "multiplexer",
+                "nowa sesja", "lista sesji", "dołącz do sesji"
+            ],
+            "required_entities": ["action"],
+            "optional_entities": ["session_name"],
+        },
     }
 
     def __init__(
@@ -284,6 +350,14 @@ class ShellAdapter(BaseDSLAdapter):
             "git": self._generate_git,
             "docker": self._generate_docker,
             "container_management": self._generate_docker,  # alias
+            "user_management": self._generate_user_management,
+            "hardware_info": self._generate_hardware_info,
+            "disk_management": self._generate_disk_management,
+            "package_management": self._generate_package_management,
+            "service_management": self._generate_service_management,
+            "text_file_ops": self._generate_text_file_ops,
+            "checksum": self._generate_checksum,
+            "terminal_session": self._generate_terminal_session,
         }
 
         generator = generators.get(intent)
@@ -478,11 +552,17 @@ class ShellAdapter(BaseDSLAdapter):
                 
                 elif attr == "mtime" and value:
                     # Handle modification time filter
-                    cmd_parts.append(f"-mtime -{value}")
+                    m = re.search(r"(\d+)", str(value))
+                    days = m.group(1) if m else str(value)
+                    cmd_parts.append(f"-mtime -{days}")
+                    mtime_filtered = True
                 
                 elif attr == "age" and value:
                     # Handle age filter
-                    cmd_parts.append(f"-mtime -{value}")
+                    m = re.search(r"(\d+)", str(value))
+                    days = m.group(1) if m else str(value)
+                    cmd_parts.append(f"-mtime -{days}")
+                    mtime_filtered = True
         
         # Add size filter
         if "size" in entities and isinstance(entities["size"], dict):
@@ -526,14 +606,22 @@ class ShellAdapter(BaseDSLAdapter):
                 unit_map = {"days": "mtime", "hours": "mmin", "minutes": "mmin"}
                 time_unit = unit_map.get(age_info["unit"].lower(), "mtime")
                 cmd_parts.append(f"-{time_unit} -{age_info['value']}")
+                if time_unit == "mtime":
+                    mtime_filtered = True
         
         # Handle specific Polish patterns from natural language (fallback)
         full_text = str(entities.get("_full_text", "")).lower()
         if "zmodyfikowane" in full_text or "mtime" in str(target).lower():
             days = entities.get("days", "7")
+            m = re.search(r"(\d+)", str(days))
+            days = m.group(1) if m else str(days)
             cmd_parts.append(f"-mtime -{days}")
-            # Add detailed listing for modified files search
-            cmd_parts.append("-ls")
+            mtime_filtered = True
+
+        if mtime_filtered:
+            printf_format = "'%T@\\t%TY-%Tm-%Td %TH:%TM:%TS\\t%s\\t%p\\n'"
+            find_cmd = " ".join(cmd_parts + ["-printf", printf_format])
+            return f"{find_cmd} | sort -nr | cut -f2-"
         
         return " ".join(cmd_parts)
 
@@ -1277,6 +1365,359 @@ class ShellAdapter(BaseDSLAdapter):
                 return "kill -9 PID"
 
         return "# Could not generate command"
+
+    def _generate_user_management(self, entities: dict[str, Any]) -> str:
+        """Generate user management command."""
+        action = entities.get("action", "")
+        username = entities.get("username", "")
+        group = entities.get("group", "")
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        if "whoami" in full_text or "kim jestem" in full_text:
+            return "whoami"
+        elif "who" in action or "zalogowani" in full_text:
+            return "who"
+        elif "last" in action or "historia logowań" in full_text:
+            return "last -n 10"
+        elif "id" in action or "identyfikator" in full_text:
+            if username:
+                return f"id {username}"
+            return "id"
+        elif "groups" in action or "grupy" in full_text:
+            if username:
+                return f"groups {username}"
+            return "groups"
+        elif "dodaj" in action or "useradd" in action or "add user" in full_text:
+            if username:
+                return f"sudo useradd -m {username}"
+            return "sudo useradd -m USERNAME"
+        elif "usuń" in action or "userdel" in action or "delete user" in full_text:
+            if username:
+                return f"sudo userdel -r {username}"
+            return "sudo userdel -r USERNAME"
+        elif "modyfikuj" in action or "usermod" in action:
+            if username and group:
+                return f"sudo usermod -aG {group} {username}"
+            return "sudo usermod -aG GROUP USERNAME"
+        elif "groupadd" in action or "dodaj grupę" in full_text:
+            if group:
+                return f"sudo groupadd {group}"
+            return "sudo groupadd GROUP"
+        elif "passwd" in action or "hasło" in full_text:
+            if username:
+                return f"sudo passwd {username}"
+            return "passwd"
+        elif "su" in action or "przełącz" in full_text:
+            if username:
+                return f"su - {username}"
+            return "su -"
+        
+        return "whoami"
+
+    def _generate_hardware_info(self, entities: dict[str, Any]) -> str:
+        """Generate hardware info command."""
+        action = entities.get("action", "")
+        device = entities.get("device", "")
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        if "lscpu" in full_text or "cpu" in action or "procesor" in full_text:
+            return "lscpu"
+        elif "lspci" in full_text or "pci" in action:
+            return "lspci"
+        elif "lsusb" in full_text or "usb" in action:
+            return "lsusb"
+        elif "lshw" in full_text or "hardware" in action or "sprzęt" in full_text:
+            return "sudo lshw -short"
+        elif "dmidecode" in full_text or "bios" in action:
+            return "sudo dmidecode -t system"
+        elif "pamięć" in full_text or "ram" in full_text or "memory" in action:
+            return "free -h"
+        elif "hdparm" in full_text or "dysk twardy" in full_text:
+            if device:
+                return f"sudo hdparm -I {device}"
+            return "sudo hdparm -I /dev/sda"
+        elif "smartctl" in full_text or "smart" in action or "zdrowie" in full_text:
+            if device:
+                return f"sudo smartctl -a {device}"
+            return "sudo smartctl -a /dev/sda"
+        
+        return "lscpu"
+
+    def _generate_disk_management(self, entities: dict[str, Any]) -> str:
+        """Generate disk management command."""
+        action = entities.get("action", "")
+        device = entities.get("device", "")
+        mountpoint = entities.get("mountpoint", "")
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        if "lsblk" in full_text or "lista dysków" in full_text or "list disks" in action:
+            return "lsblk -f"
+        elif "blkid" in full_text or "uuid" in full_text:
+            return "blkid"
+        elif "mount" in action and "umount" not in action:
+            if device and mountpoint:
+                return f"sudo mount {device} {mountpoint}"
+            return "mount"
+        elif "umount" in action or "odmontuj" in full_text:
+            if mountpoint:
+                return f"sudo umount {mountpoint}"
+            elif device:
+                return f"sudo umount {device}"
+            return "sudo umount /mnt"
+        elif "fdisk" in full_text or "partycja" in full_text:
+            if device:
+                return f"sudo fdisk -l {device}"
+            return "sudo fdisk -l"
+        elif "mkfs" in full_text or "formatuj" in full_text:
+            if device:
+                return f"sudo mkfs.ext4 {device}"
+            return "sudo mkfs.ext4 /dev/sdX"
+        elif "fsck" in full_text or "sprawdź" in full_text:
+            if device:
+                return f"sudo fsck {device}"
+            return "sudo fsck /dev/sda1"
+        
+        return "lsblk"
+
+    def _generate_package_management(self, entities: dict[str, Any]) -> str:
+        """Generate package management command."""
+        action = entities.get("action", "")
+        package = entities.get("package", "")
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        # Detect package manager from context
+        if "yum" in full_text:
+            pm = "yum"
+        elif "dnf" in full_text:
+            pm = "dnf"
+        elif "pacman" in full_text:
+            pm = "pacman"
+        elif "snap" in full_text:
+            pm = "snap"
+        elif "flatpak" in full_text:
+            pm = "flatpak"
+        elif "pip" in full_text:
+            pm = "pip"
+        else:
+            pm = "apt"
+        
+        if "zainstaluj" in action or "install" in action:
+            if pm == "apt":
+                return f"sudo apt install -y {package}" if package else "sudo apt install -y PACKAGE"
+            elif pm == "yum":
+                return f"sudo yum install -y {package}" if package else "sudo yum install -y PACKAGE"
+            elif pm == "dnf":
+                return f"sudo dnf install -y {package}" if package else "sudo dnf install -y PACKAGE"
+            elif pm == "pacman":
+                return f"sudo pacman -S {package}" if package else "sudo pacman -S PACKAGE"
+            elif pm == "snap":
+                return f"sudo snap install {package}" if package else "sudo snap install PACKAGE"
+            elif pm == "pip":
+                return f"pip install {package}" if package else "pip install PACKAGE"
+        elif "odinstaluj" in action or "remove" in action or "usuń" in action:
+            if pm == "apt":
+                return f"sudo apt remove {package}" if package else "sudo apt remove PACKAGE"
+            elif pm == "pip":
+                return f"pip uninstall {package}" if package else "pip uninstall PACKAGE"
+        elif "aktualizuj" in action or "update" in action or "upgrade" in action:
+            if pm == "apt":
+                return "sudo apt update && sudo apt upgrade -y"
+            elif pm == "yum":
+                return "sudo yum update -y"
+            elif pm == "dnf":
+                return "sudo dnf update -y"
+            elif pm == "pacman":
+                return "sudo pacman -Syu"
+        elif "szukaj" in action or "search" in action:
+            if pm == "apt":
+                return f"apt search {package}" if package else "apt search PATTERN"
+        elif "lista" in action or "list" in action:
+            if pm == "apt":
+                return "apt list --installed"
+            elif pm == "pip":
+                return "pip list"
+        
+        return "sudo apt update"
+
+    def _generate_service_management(self, entities: dict[str, Any]) -> str:
+        """Generate service management command."""
+        action = entities.get("action", "")
+        service_name = entities.get("service_name", "")
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        # Detect service from text
+        if not service_name:
+            for svc in ["nginx", "apache2", "mysql", "postgresql", "docker", "ssh", "redis"]:
+                if svc in full_text:
+                    service_name = svc
+                    break
+        
+        if "status" in action or "status" in full_text:
+            if service_name:
+                return f"systemctl status {service_name}"
+            return "systemctl status"
+        elif "uruchom" in action or "start" in action:
+            if service_name:
+                return f"sudo systemctl start {service_name}"
+            return "sudo systemctl start SERVICE"
+        elif "zatrzymaj" in action or "stop" in action:
+            if service_name:
+                return f"sudo systemctl stop {service_name}"
+            return "sudo systemctl stop SERVICE"
+        elif "restart" in action or "restartuj" in full_text:
+            if service_name:
+                return f"sudo systemctl restart {service_name}"
+            return "sudo systemctl restart SERVICE"
+        elif "enable" in action or "włącz" in full_text:
+            if service_name:
+                return f"sudo systemctl enable {service_name}"
+            return "sudo systemctl enable SERVICE"
+        elif "disable" in action or "wyłącz" in full_text:
+            if service_name:
+                return f"sudo systemctl disable {service_name}"
+            return "sudo systemctl disable SERVICE"
+        elif "lista" in action or "list" in action:
+            return "systemctl list-units --type=service"
+        elif "journalctl" in full_text or "logi" in full_text:
+            if service_name:
+                return f"journalctl -u {service_name} -f"
+            return "journalctl -f"
+        elif "crontab" in full_text or "cron" in action:
+            if "edytuj" in full_text or "edit" in action:
+                return "crontab -e"
+            return "crontab -l"
+        
+        return "systemctl list-units --type=service"
+
+    def _generate_text_file_ops(self, entities: dict[str, Any]) -> str:
+        """Generate text file operations command."""
+        action = entities.get("action", "")
+        file = entities.get("file", "")
+        lines = entities.get("lines", "10")
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        if "cat" in action or "pokaż plik" in full_text or "wyświetl plik" in full_text:
+            if file:
+                return f"cat {file}"
+            return "cat FILE"
+        elif "head" in action or "pierwsze linie" in full_text:
+            if file:
+                return f"head -n {lines} {file}"
+            return f"head -n {lines} FILE"
+        elif "tail" in action or "ostatnie linie" in full_text:
+            if "śledź" in full_text or "follow" in action:
+                if file:
+                    return f"tail -f {file}"
+                return "tail -f FILE"
+            if file:
+                return f"tail -n {lines} {file}"
+            return f"tail -n {lines} FILE"
+        elif "less" in action:
+            if file:
+                return f"less {file}"
+            return "less FILE"
+        elif "wc" in action or "policz" in full_text:
+            if "linie" in full_text or "lines" in action:
+                if file:
+                    return f"wc -l {file}"
+                return "wc -l FILE"
+            if file:
+                return f"wc {file}"
+            return "wc FILE"
+        elif "sort" in action or "sortuj" in full_text:
+            if file:
+                return f"sort {file}"
+            return "sort FILE"
+        elif "uniq" in action or "unikalne" in full_text:
+            if file:
+                return f"sort {file} | uniq"
+            return "sort FILE | uniq"
+        elif "cut" in action:
+            if file:
+                return f"cut -d',' -f1 {file}"
+            return "cut -d',' -f1 FILE"
+        elif "tr" in action:
+            return "tr '[:lower:]' '[:upper:]'"
+        
+        return "cat FILE"
+
+    def _generate_checksum(self, entities: dict[str, Any]) -> str:
+        """Generate checksum/encoding command."""
+        action = entities.get("action", "")
+        file = entities.get("file", "")
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        if "md5" in action or "md5" in full_text:
+            if file:
+                return f"md5sum {file}"
+            return "md5sum FILE"
+        elif "sha256" in action or "sha256" in full_text:
+            if file:
+                return f"sha256sum {file}"
+            return "sha256sum FILE"
+        elif "sha1" in action or "sha1" in full_text:
+            if file:
+                return f"sha1sum {file}"
+            return "sha1sum FILE"
+        elif "base64" in action or "base64" in full_text:
+            if "dekoduj" in full_text or "decode" in action:
+                if file:
+                    return f"base64 -d {file}"
+                return "base64 -d FILE"
+            if file:
+                return f"base64 {file}"
+            return "base64 FILE"
+        elif "xxd" in action or "hex" in full_text:
+            if file:
+                return f"xxd {file}"
+            return "xxd FILE"
+        
+        return "md5sum FILE"
+
+    def _generate_terminal_session(self, entities: dict[str, Any]) -> str:
+        """Generate terminal multiplexer command."""
+        action = entities.get("action", "")
+        session_name = entities.get("session_name", "")
+        full_text = str(entities.get("_full_text", "")).lower()
+        
+        # Detect tool
+        if "screen" in full_text:
+            tool = "screen"
+        elif "byobu" in full_text:
+            tool = "byobu"
+        else:
+            tool = "tmux"
+        
+        if "nowa" in action or "new" in action or "utwórz" in full_text:
+            if tool == "tmux":
+                if session_name:
+                    return f"tmux new -s {session_name}"
+                return "tmux new -s session"
+            elif tool == "screen":
+                if session_name:
+                    return f"screen -S {session_name}"
+                return "screen -S session"
+        elif "lista" in action or "list" in action:
+            if tool == "tmux":
+                return "tmux ls"
+            elif tool == "screen":
+                return "screen -ls"
+        elif "dołącz" in action or "attach" in action:
+            if tool == "tmux":
+                if session_name:
+                    return f"tmux attach -t {session_name}"
+                return "tmux attach"
+            elif tool == "screen":
+                if session_name:
+                    return f"screen -r {session_name}"
+                return "screen -r"
+        elif "zamknij" in action or "kill" in action:
+            if tool == "tmux":
+                if session_name:
+                    return f"tmux kill-session -t {session_name}"
+                return "tmux kill-session"
+        
+        return "tmux ls"
 
     def validate_syntax(self, command: str) -> dict[str, Any]:
         """Validate shell command syntax."""

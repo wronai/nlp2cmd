@@ -13,11 +13,8 @@ import shlex
 import sys
 import select
 import asyncio
-import shlex
 from pathlib import Path
 from typing import Any, Optional
-
-from nlp2cmd.execution import ExecutionRunner
 
 try:
     import click
@@ -824,6 +821,7 @@ def _handle_run_query(
     - Context-aware disambiguation from history
     """
     from nlp2cmd.generation.pipeline import RuleBasedPipeline
+    from nlp2cmd import NLP2CMD
     from nlp2cmd.adapters import (
         SQLAdapter,
         ShellAdapter,
@@ -833,6 +831,8 @@ def _handle_run_query(
         AppSpecAdapter,
         BrowserAdapter,
     )
+    from nlp2cmd.execution import ExecutionRunner
+    from nlp2cmd.web_schema.form_data_loader import FormDataLoader
     
     print(f"```bash")
     # Use cached syntax highlighting for better performance
