@@ -12,7 +12,6 @@ from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
 
 from .virtual_objects import VirtualObject, ObjectType, VirtualObjectManager
-from ..generation.enhanced_context import get_enhanced_detector
 
 
 @dataclass
@@ -30,6 +29,8 @@ class SemanticObjectFactory:
     
     def __init__(self):
         self.patterns = self._initialize_patterns()
+        from ..generation.enhanced_context import get_enhanced_detector
+
         self.enhanced_detector = get_enhanced_detector()
         self.object_manager = VirtualObjectManager()
     

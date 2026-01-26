@@ -41,9 +41,18 @@ _SPACY = None
 _NLP_MODEL = None
 _NLP_MODEL_LOAD_ATTEMPTED = False
 
+_ENABLE_SPACY_LEMMATIZATION = str(
+    os.environ.get("NLP2CMD_ENABLE_SPACY_LEMMATIZATION")
+    or os.environ.get("NLP2CMD_ENABLE_HEAVY_NLP")
+    or ""
+).strip().lower() in {"1", "true", "yes", "y", "on"}
+
 
 def _get_spacy_model():
     global _SPACY, _NLP_MODEL, _NLP_MODEL_LOAD_ATTEMPTED
+
+    if not _ENABLE_SPACY_LEMMATIZATION:
+        return None
 
     if _NLP_MODEL_LOAD_ATTEMPTED:
         return _NLP_MODEL
@@ -328,6 +337,8 @@ class KeywordIntentDetector:
 
     @staticmethod
     def _maybe_lemmatize_text_lower(text_lower: str) -> str:
+        if not _ENABLE_SPACY_LEMMATIZATION:
+            return text_lower
         model = _get_spacy_model()
         if model is None:
             return text_lower

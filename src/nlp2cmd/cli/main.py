@@ -19,6 +19,8 @@ from typing import Any, Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     from nlp2cmd.execution import ExecutionRunner
 
+from nlp2cmd.execution import ExecutionRunner
+
 try:
     import click
 except Exception:  # pragma: no cover
