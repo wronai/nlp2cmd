@@ -23,14 +23,33 @@ def print_result(query, result, elapsed):
     print(f"   ⚡ Latency: {elapsed:.1f}ms")
 
 
+async def run_query_group(
+    title: str,
+    section_label: str,
+    queries: list[str],
+    *,
+    leading_newline: bool = False,
+) -> None:
+    prefix = "\n" if leading_newline else ""
+    print(f"{prefix}{'=' * 70}")
+    print(f"  {title}")
+    print("=" * 70)
+
+    generator = HybridThermodynamicGenerator()
+
+    if section_label:
+        print(section_label)
+
+    for query in queries:
+        start_time = time.time()
+        result = await generator.generate(query)
+        elapsed = (time.time() - start_time) * 1000
+
+        print_result(query, result, elapsed)
+
+
 async def demo_file_operations():
     """Demonstracja operacji na plikach."""
-    print("=" * 70)
-    print("  Shell DSL - Operacje na plikach")
-    print("=" * 70)
-    
-    generator = HybridThermodynamicGenerator()
-    
     # Operacje na plikach
     file_queries = [
         "znajdź pliki z rozszerzeniem .py w katalogu src",
@@ -44,24 +63,16 @@ async def demo_file_operations():
         "pokaż ostatnie 10 linii pliku access.log",
         "znajdź pliki zmodyfikowane w ostatnim tygodniu",
     ]
-    
-    print("📁 Operacje na plikach i katalogach:")
-    for query in file_queries:
-        start_time = time.time()
-        result = await generator.generate(query)
-        elapsed = (time.time() - start_time) * 1000
-        
-        print_result(query, result, elapsed)
+
+    await run_query_group(
+        "Shell DSL - Operacje na plikach",
+        "📁 Operacje na plikach i katalogach:",
+        file_queries,
+    )
 
 
 async def demo_system_monitoring():
     """Demonstracja monitoringu systemu."""
-    print("\n" + "=" * 70)
-    print("  Shell DSL - Monitorowanie systemu")
-    print("=" * 70)
-    
-    generator = HybridThermodynamicGenerator()
-    
     # Monitorowanie systemu
     monitoring_queries = [
         "pokaż użycie CPU i pamięci",
@@ -75,24 +86,17 @@ async def demo_system_monitoring():
         "pokaż historię poleceń użytkownika",
         "znajdź zombie procesy",
     ]
-    
-    print("🖥️ Monitorowanie systemu:")
-    for query in monitoring_queries:
-        start_time = time.time()
-        result = await generator.generate(query)
-        elapsed = (time.time() - start_time) * 1000
-        
-        print_result(query, result, elapsed)
+
+    await run_query_group(
+        "Shell DSL - Monitorowanie systemu",
+        "🖥️ Monitorowanie systemu:",
+        monitoring_queries,
+        leading_newline=True,
+    )
 
 
 async def demo_network_operations():
     """Demonstracja operacji sieciowych."""
-    print("\n" + "=" * 70)
-    print("  Shell DSL - Operacje sieciowe")
-    print("=" * 70)
-    
-    generator = HybridThermodynamicGenerator()
-    
     # Operacje sieciowe
     network_queries = [
         "sprawdź połączenie z google.com",
@@ -106,24 +110,17 @@ async def demo_network_operations():
         "znajdź proces używający portu 22",
         "sprawdź konfigurację sieciową",
     ]
-    
-    print("🌐 Operacje sieciowe:")
-    for query in network_queries:
-        start_time = time.time()
-        result = await generator.generate(query)
-        elapsed = (time.time() - start_time) * 1000
-        
-        print_result(query, result, elapsed)
+
+    await run_query_group(
+        "Shell DSL - Operacje sieciowe",
+        "🌐 Operacje sieciowe:",
+        network_queries,
+        leading_newline=True,
+    )
 
 
 async def demo_process_management():
     """Demonstracja zarządzania procesami."""
-    print("\n" + "=" * 70)
-    print("  Shell DSL - Zarządzanie procesami")
-    print("=" * 70)
-    
-    generator = HybridThermodynamicGenerator()
-    
     # Zarządzanie procesami
     process_queries = [
         "zabij proces o PID 1234",
@@ -137,24 +134,17 @@ async def demo_process_management():
         "uruchom monitor systemowy",
         "sprawdź status usługi docker",
     ]
-    
-    print("⚙️ Zarządzanie procesami:")
-    for query in process_queries:
-        start_time = time.time()
-        result = await generator.generate(query)
-        elapsed = (time.time() - start_time) * 1000
-        
-        print_result(query, result, elapsed)
+
+    await run_query_group(
+        "Shell DSL - Zarządzanie procesami",
+        "⚙️ Zarządzanie procesami:",
+        process_queries,
+        leading_newline=True,
+    )
 
 
 async def demo_development_tools():
     """Demonstracja narzędzi deweloperskich."""
-    print("\n" + "=" * 70)
-    print("  Shell DSL - Narzędzia deweloperskie")
-    print("=" * 70)
-    
-    generator = HybridThermodynamicGenerator()
-    
     # Narzędzia deweloperskie
     dev_queries = [
         "uruchom testy jednostkowe",
@@ -168,24 +158,17 @@ async def demo_development_tools():
         "czyszczenie cache projektu",
         "generuj dokumentację API",
     ]
-    
-    print("💻 Narzędzia deweloperskie:")
-    for query in dev_queries:
-        start_time = time.time()
-        result = await generator.generate(query)
-        elapsed = (time.time() - start_time) * 1000
-        
-        print_result(query, result, elapsed)
+
+    await run_query_group(
+        "Shell DSL - Narzędzia deweloperskie",
+        "💻 Narzędzia deweloperskie:",
+        dev_queries,
+        leading_newline=True,
+    )
 
 
 async def demo_security_operations():
     """Demonstracja operacji bezpieczeństwa."""
-    print("\n" + "=" * 70)
-    print("  Shell DSL - Operacje bezpieczeństwa")
-    print("=" * 70)
-    
-    generator = HybridThermodynamicGenerator()
-    
     # Operacje bezpieczeństwa
     security_queries = [
         "sprawdź kto jest zalogowany",
@@ -199,24 +182,17 @@ async def demo_security_operations():
         "sprawdź zainstalowane pakiety",
         "pokaż użytkowników w systemie",
     ]
-    
-    print("🔒 Operacje bezpieczeństwa:")
-    for query in security_queries:
-        start_time = time.time()
-        result = await generator.generate(query)
-        elapsed = (time.time() - start_time) * 1000
-        
-        print_result(query, result, elapsed)
+
+    await run_query_group(
+        "Shell DSL - Operacje bezpieczeństwa",
+        "🔒 Operacje bezpieczeństwa:",
+        security_queries,
+        leading_newline=True,
+    )
 
 
 async def demo_backup_operations():
     """Demonstracja operacji backup."""
-    print("\n" + "=" * 70)
-    print("  Shell DSL - Operacje backup")
-    print("=" * 70)
-    
-    generator = HybridThermodynamicGenerator()
-    
     # Operacje backup
     backup_queries = [
         "utwórz backup katalogu /home/user/documents",
@@ -230,24 +206,17 @@ async def demo_backup_operations():
         "sprawdź status backupu",
         "utwórz przyrostowy backup",
     ]
-    
-    print("💾 Operacje backup:")
-    for query in backup_queries:
-        start_time = time.time()
-        result = await generator.generate(query)
-        elapsed = (time.time() - start_time) * 1000
-        
-        print_result(query, result, elapsed)
+
+    await run_query_group(
+        "Shell DSL - Operacje backup",
+        "💾 Operacje backup:",
+        backup_queries,
+        leading_newline=True,
+    )
 
 
 async def demo_system_maintenance():
     """Demonstracja konserwacji systemu."""
-    print("\n" + "=" * 70)
-    print("  Shell DSL - Konserwacja systemu")
-    print("=" * 70)
-    
-    generator = HybridThermodynamicGenerator()
-    
     # Konserwacja systemu
     maintenance_queries = [
         "czyść cache systemowy",
@@ -261,14 +230,13 @@ async def demo_system_maintenance():
         "sprawdź status usługi cron",
         "znajdź błędy w logach",
     ]
-    
-    print("🔧 Konserwacja systemu:")
-    for query in maintenance_queries:
-        start_time = time.time()
-        result = await generator.generate(query)
-        elapsed = (time.time() - start_time) * 1000
-        
-        print_result(query, result, elapsed)
+
+    await run_query_group(
+        "Shell DSL - Konserwacja systemu",
+        "🔧 Konserwacja systemu:",
+        maintenance_queries,
+        leading_newline=True,
+    )
 
 
 async def main():

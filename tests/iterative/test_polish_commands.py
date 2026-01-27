@@ -26,14 +26,14 @@ class MultiCommandDetector:
     SEPARATORS = [
         r'\.\s+',           # Period followed by space
         r';\s*',            # Semicolon
-        r'\s+i\s+',         # Polish "i" (and)
-        r'\s+oraz\s+',      # Polish "oraz" (and also)
         r'\s+a\s+potem\s+', # Polish "a potem" (and then)
         r'\s+potem\s+',     # Polish "potem" (then)
         r'\s+nast[eę]pnie\s+',  # Polish "następnie" (next)
-        r'\s+then\s+',      # English "then"
+        r'\s+oraz\s+',      # Polish "oraz" (and also)
         r'\s+and\s+then\s+', # English "and then"
+        r'\s+then\s+',      # English "then"
         r'\s+after\s+that\s+', # English "after that"
+        r'\s+i\s+',         # Polish "i" (and)
         r'\s+and\s+',       # English "and"
     ]
     
@@ -296,6 +296,13 @@ class TestMultiCommandDetection:
         results = self.multi_detector.detect_all_commands(text)
         
         assert len(results) >= 2, f"Expected at least 2 commands, got {len(results)}"
+
+    def test_english_and_then_command(self):
+        """Test: 'stop container and then start container'"""
+        text = "stop container and then start container"
+        results = self.multi_detector.detect_all_commands(text)
+
+        assert len(results) >= 2, f"Expected at least 2 commands, got {len(results)}"
     
     def test_polish_oraz_separator(self):
         """Test: 'pokaż kontenery oraz pokaż obrazy'"""
@@ -339,6 +346,39 @@ class TestMultiSentenceDetection:
         results = self.multi_detector.detect_all_commands(text)
         
         assert len(results) >= 3, f"Expected at least 3 commands, got {len(results)}"
+
+    def test_two_sentences_shell(self):
+        """Test: 'Pokaż pliki. Usuń plik.'"""
+        text = "Pokaż pliki. Usuń plik."
+        results = self.multi_detector.detect_all_commands(text)
+
+        assert len(results) >= 2, f"Expected at least 2 commands, got {len(results)}"
+
+        intents = [r[1].intent for r in results]
+        assert "list" in intents
+        assert "delete" in intents
+
+    def test_two_sentences_mixed_domains(self):
+        """Test: 'Pokaż kontenery. Pokaż pliki.'"""
+        text = "Pokaż kontenery. Pokaż pliki."
+        results = self.multi_detector.detect_all_commands(text)
+
+        assert len(results) >= 2, f"Expected at least 2 commands, got {len(results)}"
+
+        domains = [r[1].domain for r in results]
+        assert "docker" in domains
+        assert "shell" in domains
+
+    def test_multi_sentence_user_list(self):
+        """Test: 'Pokaż userów systemu. Pokaż procesy.'"""
+        text = "Pokaż userów systemu. Pokaż procesy."
+        results = self.multi_detector.detect_all_commands(text)
+
+        assert len(results) >= 2, f"Expected at least 2 commands, got {len(results)}"
+
+        intents = [r[1].intent for r in results]
+        assert "user_list" in intents
+        assert "list_processes" in intents
 
 
 class TestEdgeCases:
