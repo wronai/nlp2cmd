@@ -6,59 +6,23 @@ w procesie odkrywania leków (lead optimization).
 """
 
 import asyncio
-import math
-from typing import Dict, List
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from nlp2cmd.generation.thermodynamic import (
     OptimizationProblem,
     ThermodynamicGenerator,
 )
 
-
-def _sigmoid(value: float) -> float:
-    """Map raw sample value to [0, 1]."""
-    return 1.0 / (1.0 + math.exp(-value))
-
-
-def _project_sample(
-    problem: OptimizationProblem,
-    raw_sample: List[float],
-) -> Dict[str, float]:
-    """Project raw Langevin samples into variable ranges (heuristic)."""
-    if not raw_sample:
-        return {}
-
-    constraint_map = {
-        c.get("var"): c
-        for c in problem.constraints
-        if c.get("type") == "range" and c.get("var")
-    }
-
-    projected: Dict[str, float] = {}
-    for idx, var in enumerate(problem.variables):
-        raw_value = raw_sample[idx] if idx < len(raw_sample) else 0.0
-        constraint = constraint_map.get(var)
-        if constraint and "min" in constraint and "max" in constraint:
-            min_val = float(constraint["min"])
-            max_val = float(constraint["max"])
-            projected[var] = min_val + (max_val - min_val) * _sigmoid(raw_value)
-        else:
-            projected[var] = raw_value
-
-    return projected
+from _demo_helpers import (
+    print_fallback_note,
+    print_projected,
+    project_sample,
+)
 
 
-def _print_projected(title: str, projected: Dict[str, float]) -> None:
-    print(title)
-    for key, value in projected.items():
-        print(f"   {key}: {value:.3f}")
-
-
-def _print_fallback_note() -> None:
-    print(
-        "\n⚠️  Uwaga: brak dedykowanego modelu energii dla 'drug_discovery'. "
-        "Wyniki bazują na surowej próbce (raw_sample) rzutowanej na zakresy."
-    )
 
 
 async def demo_lead_optimization() -> None:
@@ -97,13 +61,13 @@ async def demo_lead_optimization() -> None:
     )
 
     raw_sample = result.solution.get("raw_sample", [])
-    projected = _project_sample(problem, raw_sample)
+    projected = project_sample(problem, raw_sample)
 
     print(result.decoded_output)
-    _print_projected("\n🔬 Projected physicochemical profile:", projected)
+    print_projected("\n🔬 Projected physicochemical profile:", projected, precision=3)
     print(f"\n   Energy: {result.energy:.4f}")
     print(f"   Converged: {result.converged}")
-    _print_fallback_note()
+    print_fallback_note("drug_discovery")
 
 
 async def demo_admet_balancing() -> None:
@@ -140,13 +104,13 @@ async def demo_admet_balancing() -> None:
     )
 
     raw_sample = result.solution.get("raw_sample", [])
-    projected = _project_sample(problem, raw_sample)
+    projected = project_sample(problem, raw_sample)
 
     print(result.decoded_output)
-    _print_projected("\n🧪 Projected ADMET profile:", projected)
+    print_projected("\n🧪 Projected ADMET profile:", projected, precision=3)
     print(f"\n   Energy: {result.energy:.4f}")
     print(f"   Latency: {result.latency_ms:.1f}ms")
-    _print_fallback_note()
+    print_fallback_note("drug_discovery")
 
 
 async def main() -> None:

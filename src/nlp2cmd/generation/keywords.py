@@ -581,7 +581,7 @@ class KeywordIntentDetector:
             )
 
         if (
-            re.search(r"\b(użytkownik\w*|uzytkownik\w*|users?)\b", text_lower)
+            re.search(r"\b(użytkownik\w*|uzytkownik\w*|user\w*|users?)\b", text_lower)
             and re.search(r"\b(systemu|system)\b", text_lower)
             and not re.search(r"\b(tabel\w*|table|sql)\b", text_lower)
         ):

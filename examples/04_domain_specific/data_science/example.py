@@ -6,62 +6,22 @@ planowania eksperymentów i wyboru cech.
 """
 
 import asyncio
-import math
+import sys
 import time
+from pathlib import Path
 from typing import Dict, List
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 from nlp2cmd.generation.thermodynamic import (
     ThermodynamicGenerator,
     OptimizationProblem,
 )
 
-
-def _sigmoid(value: float) -> float:
-    """Map raw sample value to [0, 1]."""
-    return 1.0 / (1.0 + math.exp(-value))
-
-
-def _project_sample(
-    problem: OptimizationProblem,
-    raw_sample: List[float],
-) -> Dict[str, float]:
-    """Project raw Langevin samples into variable ranges (heuristic)."""
-    if not raw_sample:
-        return {}
-
-    constraint_map = {
-        c.get("var"): c
-        for c in problem.constraints
-        if c.get("type") == "range" and c.get("var")
-    }
-
-    projected: Dict[str, float] = {}
-    for idx, var in enumerate(problem.variables):
-        raw_value = raw_sample[idx] if idx < len(raw_sample) else 0.0
-        constraint = constraint_map.get(var)
-        if constraint and "min" in constraint and "max" in constraint:
-            min_val = float(constraint["min"])
-            max_val = float(constraint["max"])
-            projected[var] = min_val + (max_val - min_val) * _sigmoid(raw_value)
-        else:
-            projected[var] = raw_value
-
-    return projected
-
-
-def _print_projected(title: str, projected: Dict[str, float]) -> None:
-    print(title)
-    if not projected:
-        print("  (no projected values)")
-        return
-    for key, value in projected.items():
-        print(f"  {key}: {value:.4f}")
-
-
-def _print_fallback_note() -> None:
-    print(
-        "\n⚠️  Uwaga: brak dedykowanego modelu energii dla 'hyperparameter'. "
-        "Wyniki bazują na surowej próbce (raw_sample) rzutowanej na zakresy."
-    )
+from _demo_helpers import (
+    print_fallback_note,
+    print_projected,
+    project_sample,
+)
 
 
 async def demo_hyperparameter_optimization():
@@ -92,12 +52,12 @@ async def demo_hyperparameter_optimization():
     )
     
     raw_sample = result.solution.get("raw_sample", [])
-    projected = _project_sample(problem, raw_sample)
+    projected = project_sample(problem, raw_sample)
 
-    _print_projected("\n✅ Projected hyperparameters:", projected)
+    print_projected("\n✅ Projected hyperparameters:", projected)
     print(f"  Energy: {result.energy:.4f}")
     print(f"  Converged: {result.converged}")
-    _print_fallback_note()
+    print_fallback_note("hyperparameter")
 
 
 async def demo_feature_selection():
