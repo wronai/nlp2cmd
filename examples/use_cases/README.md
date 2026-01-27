@@ -14,6 +14,7 @@ Spis treści:
 - [Shell DSL Commands](#shell-dsl-commands)
 - [Data Science & ML](#data-science--ml)
 - [Bioinformatyka](#bioinformatyka)
+- [Drug Discovery](#drug-discovery)
 - [Fizyka i symulacje](#fizyka-i-symulacje)
 - [Logistyka i Supply Chain](#logistyka-i-supply-chain)
 - [Finanse i Trading](#finanse-i-trading)
@@ -233,6 +234,42 @@ Throughput: 8 samples/hour
 - Alokację zasobów dla symulacji foldingu białek
 - Projektowanie CRISPR guide RNA
 - Analizę proteomiczną
+
+---
+
+## Drug Discovery
+
+### Uruchomienie:
+```bash
+cd examples/use_cases
+python drug_discovery.py
+```
+
+### Przykładowy output:
+```
+======================================================================
+  Drug Discovery - Lead Optimization
+======================================================================
+
+# Solution:
+{'raw_sample': [...]}  # surowy wynik samplera
+
+🔬 Projected physicochemical profile:
+  molecular_weight: 378.2
+  logP: 2.7
+  tpsa: 68.4
+  hbd: 1.3
+  hba: 5.4
+  rotatable_bonds: 3.1
+
+Energy: 0.1421
+Converged: True
+```
+
+### Co demonstruje:
+- Wielokryterialną optymalizację cząsteczek (lead optimization)
+- Równoważenie profilu ADMET (toksyczność, biodostępność)
+- Mapowanie surowej próbki Langevina na zakresy fizykochemiczne
 
 ---
 
@@ -530,6 +567,7 @@ python dsl_commands_demo.py          # Shell DSL Commands
 python devops_automation.py          # IT & DevOps
 python data_science_ml.py              # Data Science
 python bioinformatics.py               # Bioinformatyka
+python drug_discovery.py               # Drug Discovery
 python logistics_supply_chain.py      # Logistyka
 python finance_trading.py             # Finanse
 python healthcare.py                  # Medycyna
@@ -549,6 +587,7 @@ python physics_simulations.py        # Fizyka
 | IT & DevOps | Komendy DSL | **1.4ms** | Błyskawiczne | Direct command routing |
 | Data Science | Hiperparametry | **~847ms** | Średnie | Limited by simple implementation |
 | Bioinformatyka | Pipeline | **1,118ms** | Średnie | Allocation problems |
+| Drug Discovery | Lead optimization | **~980ms** | Średnie | ADMET balancing |
 | Fizyka | Eksperymenty | **1,221ms** | Średnie | Scheduling problems |
 | Logistyka | VRP | **1,119ms** | Średnie | 5 pojazdów |
 | Finanse | Portfolio | **1,808ms** | Średnie | 10 aktywów |
@@ -597,6 +636,7 @@ python physics_simulations.py        # Fizyka
 | IT & DevOps | Scheduling, Automation | 80% redukcja pracy manualnej |
 | Data Science | Hyperparameter opt. | Szybsza konwergencja modeli |
 | Bioinformatyka | Pipeline scheduling | 10x szybsza analiza |
+| Drug Discovery | Molecule optimization | Lepszy profil ADMET |
 | Logistyka | VRP, Warehouse | 20-30% redukcja kosztów |
 | Finanse | Portfolio opt. | Lepszy risk-adjusted return |
 | Medycyna | OR scheduling | 15% więcej operacji |

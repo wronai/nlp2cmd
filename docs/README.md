@@ -20,6 +20,7 @@
 - **[🔌 API Reference](api/README.md)** - Detailed API documentation
 - **[🔬 Thermodynamic Integration](../THERMODYNAMIC_INTEGRATION.md)** - Advanced optimization guide
 - **[🏗️ Thermodynamic Architecture](../THERMODYNAMIC_ARCHITECTURE.md)** - Deep technical architecture
+- **[🧪 Thermodynamic Use Cases](THERMODYNAMIC_USE_CASES.md)** - Concrete solutions & benefits
 - **[⚙️ Generation Module](../README_GENERATION.md)** - DSL generation implementation
 
 ### Development & Contributing
@@ -62,6 +63,7 @@ docs/
 ├── cli-reference.md            # CLI documentation
 ├── python-api.md               # Python API guide
 ├── examples-guide.md           # Examples overview
+├── THERMODYNAMIC_USE_CASES.md  # Thermodynamic use cases & benefits
 ├── SCHEMA_SYSTEMS.md           # Schema systems overview
 ├── SCHEMA_USAGE_GUIDE.md       # Schema usage
 ├── SCHEMA_COMPLETE_GUIDE.md    # Schema deep dive

@@ -1030,25 +1030,6 @@ class TemplateGenerator:
         return ''
 
     def _apply_shell_common_defaults(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
-        result.setdefault('metric', 'mem')
-        result.setdefault('limit', '10')
-        result.setdefault('process_name', '')
-
-        result.setdefault('archive', 'archive.tar.gz')
-        result.setdefault('source', '.')
-        result.setdefault('destination', '.')
-
-        result.setdefault('flags', '')
-        result.setdefault('target', '')
-        result.setdefault('file', '')
-
-    def _apply_shell_text_processing_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
-        if intent in {'text_tail', 'text_head', 'text_tail_follow'}:
-            result.setdefault('file', entities.get('file', entities.get('filename', '')))
-            result.setdefault('lines', str(entities.get('lines', entities.get('limit', '10'))))
-            if not result.get('file'):
-                result['file'] = 'app.log'
-
         if intent in {'text_cat', 'text_cat_number'}:
             if not result.get('file'):
                 result['file'] = (

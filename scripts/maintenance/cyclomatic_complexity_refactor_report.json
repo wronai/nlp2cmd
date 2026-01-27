@@ -1,0 +1,107 @@
+{
+  "title": "Cyclomatic Complexity Refactoring Report",
+  "date": "2026-01-27T13:36:30.543926",
+  "summary": {
+    "objective": "Reduce cyclomatic complexity in high-CC methods",
+    "target_cc_before": 39,
+    "target_cc_after": 15,
+    "methods_refactored": 2
+  },
+  "refactored_components": [
+    {
+      "file": "src/nlp2cmd/generation/keywords.py",
+      "class": "KeywordIntentDetector",
+      "method": "_detect_normalized",
+      "cc_before": 39,
+      "cc_after": 8,
+      "helper_methods": [
+        "_detect_ml_classifier",
+        "_detect_schema_matcher",
+        "_detect_ml_medium_confidence",
+        "_detect_explicit_matches",
+        "_detect_pattern_matches",
+        "_detect_fuzzy_match",
+        "_detect_schema_fallback",
+        "_detect_semantic_fallback"
+      ],
+      "benefits": [
+        "Improved readability",
+        "Better testability",
+        "Clear separation of concerns",
+        "Easier debugging"
+      ]
+    },
+    {
+      "file": "src/nlp2cmd/generation/templates.py",
+      "class": "TemplateGenerator",
+      "method": "_apply_shell_intent_specific_defaults",
+      "cc_before": 25,
+      "cc_after": 10,
+      "helper_methods": [
+        "_apply_shell_backup_defaults",
+        "_apply_shell_system_defaults",
+        "_apply_shell_dev_defaults",
+        "_apply_shell_security_defaults",
+        "_apply_shell_text_search_defaults",
+        "_apply_shell_network_defaults",
+        "_apply_shell_disk_defaults",
+        "_apply_shell_process_defaults",
+        "_apply_shell_service_defaults",
+        "_apply_shell_browser_defaults"
+      ],
+      "benefits": [
+        "Category-based organization",
+        "Reduced complexity per handler",
+        "Easier maintenance",
+        "Better modularity"
+      ]
+    }
+  ],
+  "artifacts_created": [
+    {
+      "type": "Refactor Scripts",
+      "files": [
+        "scripts/maintenance/refactor_detect_normalized.py",
+        "scripts/maintenance/refactor_shell_entities.py",
+        "scripts/maintenance/apply_complexity_refactors.py",
+        "scripts/maintenance/apply_refactors_to_source.py",
+        "scripts/maintenance/auto_apply_refactors.py"
+      ],
+      "purpose": "Automated refactoring implementation"
+    },
+    {
+      "type": "Test Files",
+      "files": [
+        "tests/unit/test_refactored_methods.py"
+      ],
+      "purpose": "Unit tests for refactored methods"
+    },
+    {
+      "type": "Documentation",
+      "files": [
+        "scripts/maintenance/refactoring_summary.py",
+        "scripts/maintenance/keywords.py.patch",
+        "scripts/maintenance/templates.py.patch"
+      ],
+      "purpose": "Documentation and patches"
+    }
+  ],
+  "test_results": {
+    "status": "Prepared",
+    "test_coverage": "Unit tests created for all refactored methods",
+    "mocking": "Used to isolate functionality"
+  },
+  "next_steps": [
+    "Review and apply patches to source files",
+    "Run integration tests",
+    "Update documentation",
+    "Consider similar refactoring for other high-CC methods",
+    "Add to CI/CD pipeline"
+  ],
+  "lessons_learned": [
+    "Breaking down complex methods improves maintainability",
+    "Dispatch patterns reduce conditional complexity",
+    "Helper methods should have single responsibilities",
+    "Testing is essential when refactoring core logic"
+  ]
+}

@@ -13,6 +13,7 @@ This guide provides a comprehensive overview of all NLP2CMD examples, organized 
 
 ```
 examples/
+├── thermodynamic_example.py     # Standalone thermodynamic demo
 ├── use_cases/                    # Real-world scenarios
 │   ├── shell_commands_demo.sh    # Complete CLI examples
 │   ├── simple_demo_examples.py   # Python API + Shell concepts
@@ -20,6 +21,7 @@ examples/
 │   ├── dsl_commands_demo.py      # Direct DSL generation
 │   ├── devops_automation.py      # DevOps workflows
 │   ├── data_science_ml.py        # Data science workflows
+│   ├── drug_discovery.py          # Drug discovery workflows
 │   ├── healthcare.py             # Healthcare applications
 │   ├── finance_trading.py         # Financial operations
 │   ├── smart_cities.py           # Urban management
@@ -110,6 +112,18 @@ result = await generator.generate("Zoptymalizuj przydzielanie zasobów")
 - DSL vs thermodynamic routing
 - Context-aware queries
 - Performance patterns
+
+### 4. Thermodynamic Computing Demo
+
+**File:** `examples/thermodynamic_example.py`
+
+Focused walkthrough of Langevin sampling, energy estimation, and routing:
+
+```bash
+python3 examples/thermodynamic_example.py
+```
+
+**Companion example:** `examples/use_cases/drug_discovery.py` for molecule optimization.
 
 ## 📚 Domain-Specific Examples
 

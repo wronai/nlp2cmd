@@ -7,6 +7,7 @@
 | IT & DevOps | Scheduling, Automation | 80% redukcja pracy manualnej |
 | Data Science | Hyperparameter opt. | Szybsza konwergencja modeli |
 | Bioinformatyka | Pipeline scheduling | 10x szybsza analiza |
+| Drug Discovery | Molecule optimization | Lepszy profil ADMET |
 | Logistyka | VRP, Warehouse | 20-30% redukcja kosztów |
 | Finanse | Portfolio opt. | Lepszy risk-adjusted return |
 | Medycyna | OR scheduling | 15% więcej operacji |

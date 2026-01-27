@@ -18,6 +18,7 @@ from dsl_commands_demo import main as dsl_main
 from shell_validation import main as validation_main
 from data_science_ml import main as ds_main
 from bioinformatics import main as bio_main
+from drug_discovery import main as drug_discovery_main
 from logistics_supply_chain import main as logistics_main
 from finance_trading import main as finance_main
 from healthcare import main as healthcare_main
@@ -39,6 +40,7 @@ async def run_all_demos():
         ("IT & DevOps", devops_main),
         ("Data Science & ML", ds_main),
         ("Bioinformatyka", bio_main),
+        ("Drug Discovery", drug_discovery_main),
         ("Logistyka & Supply Chain", logistics_main),
         ("Finanse & Trading", finance_main),
         ("Medycyna & Healthcare", healthcare_main),
@@ -102,6 +104,7 @@ def print_summary_table():
         ("IT & DevOps", "Scheduling, Automation", "80% redukcja pracy manualnej"),
         ("Data Science", "Hyperparameter opt.", "Szybsza konwergencja modeli"),
         ("Bioinformatyka", "Pipeline scheduling", "10x szybsza analiza"),
+        ("Drug Discovery", "Molecule optimization", "Lepszy profil ADMET"),
         ("Logistyka", "VRP, Warehouse", "20-30% redukcja kosztów"),
         ("Finanse", "Portfolio opt.", "Lepszy risk-adjusted return"),
         ("Medycyna", "OR scheduling", "15% więcej operacji"),

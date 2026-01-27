@@ -1,0 +1,64 @@
+# Patch for templates.py - Replace _apply_shell_intent_specific_defaults method
+# Location: around line 900-1311
+
+def _apply_shell_intent_specific_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
+    """Refactored intent-specific defaults with reduced complexity."""
+    # File operations
+    file_handlers = {
+        'file_search': self._shell_intent_file_search,
+        'file_content': self._shell_intent_file_content,
+        'file_tail': self._shell_intent_file_tail,
+        'file_size': self._shell_intent_file_size,
+        'file_rename': self._shell_intent_file_rename,
+        'file_delete_all': self._shell_intent_file_delete_all,
+        'dir_create': self._shell_intent_dir_create,
+        'remove_all': self._shell_intent_remove_all,
+        'file_operation': self._shell_intent_file_operation,
+    }
+    
+    # Check file handlers first
+    handler = file_handlers.get(intent)
+    if handler:
+        handler(entities, result)
+        return
+    
+    # Dispatch to category-specific handlers
+    if intent.startswith('backup'):
+        self._apply_shell_backup_defaults(intent, entities, result)
+    elif intent.startswith('system'):
+        self._apply_shell_system_defaults(intent, entities, result)
+    elif intent.startswith('dev'):
+        self._apply_shell_dev_defaults(intent, entities, result)
+    elif intent.startswith('security'):
+        self._apply_shell_security_defaults(intent, entities, result)
+    elif intent.startswith('text_search'):
+        self._apply_shell_text_search_defaults(intent, entities, result)
+    elif intent.startswith('network'):
+        self._apply_shell_network_defaults(intent, entities, result)
+    elif intent.startswith('disk'):
+        self._apply_shell_disk_defaults(intent, entities, result)
+    elif intent.startswith('process'):
+        self._apply_shell_process_defaults(intent, entities, result)
+    elif intent.startswith('service'):
+        self._apply_shell_service_defaults(intent, entities, result)
+    elif intent in ('open_url', 'open_browser', 'browse', 'search_web', 'browser_history', 'browser_bookmarks'):
+        self._apply_shell_browser_defaults(intent, entities, result)
+
+# Add the helper methods before _apply_shell_intent_specific_defaults
+def _apply_shell_backup_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
+    """Apply backup-related defaults."""
+    backup_handlers = {
+        'backup_create': self._shell_intent_backup_create,
+        'backup_copy': self._shell_intent_backup_copy,
+        'backup_restore': self._shell_intent_backup_restore,
+        'backup_integrity': self._shell_intent_backup_integrity,
+        'backup_status': self._shell_intent_backup_path,
+        'backup_cleanup': self._shell_intent_backup_path,
+        'backup_size': self._shell_intent_backup_size,
+    }
+    
+    handler = backup_handlers.get(intent)
+    if handler:
+        handler(entities, result)
+
+# ... (other helper methods from refactor_shell_entities.py)

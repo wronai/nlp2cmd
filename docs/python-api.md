@@ -81,6 +81,13 @@ result = await generator.generate("check system status", context=context)
 }
 ```
 
+#### Custom Problem Types (Fallback Behavior)
+
+If `problem_type` does not match a built-in energy model, the thermodynamic
+engine falls back to `ConstraintEnergy` and returns only `raw_sample` in the
+solution. You can project the sample back into variable ranges yourself.
+See **[THERMODYNAMIC_USE_CASES.md](THERMODYNAMIC_USE_CASES.md)** for an example.
+
 **Thermodynamic Response:**
 ```python
 {

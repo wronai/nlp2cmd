@@ -1,0 +1,70 @@
+# Patch for keywords.py - Replace _detect_normalized method
+# Location: around line 1278-1397
+
+def _detect_normalized(self, text_lower: str) -> DetectionResult:
+    """Refactored detect method with reduced complexity."""
+    # Try ML classifier first for high-confidence matches (fastest, <1ms)
+    result = self._detect_ml_classifier(text_lower)
+    if result:
+        return result
+    
+    # Try multilingual schema matching for high-confidence matches
+    result = self._detect_schema_matcher(text_lower)
+    if result:
+        return result
+    
+    # ML classifier fallback for medium confidence (still useful)
+    result = self._detect_ml_medium_confidence()
+    if result:
+        return result
+    
+    # Detect explicit domain-specific matches
+    result = self._detect_explicit_matches(text_lower)
+    if result:
+        return result
+    
+    # Detect matches from priority intents and general patterns
+    result = self._detect_pattern_matches(text_lower)
+    if result:
+        return result
+    
+    # Try fuzzy matching if available
+    result = self._detect_fuzzy_match(text_lower)
+    if result:
+        return result
+    
+    # Fallback: Try multilingual fuzzy schema matching
+    result = self._detect_schema_fallback(text_lower)
+    if result:
+        return result
+    
+    # Semantic matching fallback for typos and paraphrases (slower)
+    result = self._detect_semantic_fallback(text_lower)
+    if result:
+        return result
+    
+    return DetectionResult(
+        domain='unknown',
+        intent='unknown',
+        confidence=0.0,
+        matched_keyword=None,
+    )
+
+# Add the helper methods before _detect_normalized
+def _detect_ml_classifier(self, text_lower: str) -> Optional[DetectionResult]:
+    """Try ML classifier for high-confidence matches (fastest, <1ms)."""
+    ml_classifier = _get_ml_classifier()
+    if ml_classifier:
+        ml_result = ml_classifier.predict(text_lower)
+        if ml_result and ml_result.confidence >= 0.9:
+            return DetectionResult(
+                domain=ml_result.domain,
+                intent=ml_result.intent,
+                confidence=ml_result.confidence,
+                matched_keyword=f"ml:{ml_result.method}",
+            )
+        # Store for medium confidence fallback
+        self._last_ml_result = ml_result
+    return None
+
+# ... (other helper methods from refactor_detect_normalized.py)
