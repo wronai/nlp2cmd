@@ -23,7 +23,7 @@
 
 .PHONY: help install setup-cache test test-unit test-e2e test-web-schema lint format clean \
         docker-build docker-up docker-down docker-test docker-e2e docker-push \
-        dev demo test-examples bump-patch bump-minor bump-major publish publish-test push git-tag
+        dev demo test-examples bump-patch bump-minor bump-major publish publish-test push git-tag report
 
 # Default target
 .DEFAULT_GOAL := help
@@ -392,4 +392,58 @@ info: ## Show project info
 	@echo "$(BLUE)Project:$(NC) $(PROJECT_NAME)"
 	@echo "$(BLUE)Python:$(NC) $(shell $(PYTHON) --version)"
 	@echo "$(BLUE)Pip:$(NC) $(shell $(PIP) --version)"
-	@echo "$(BLUE)Version:$(NC) $(shell $(PYTHON) -c 'import $(PROJECT_NAME); print($(PROJECT_NAME).__version__)')"
+	@echo "$(BLUE)Version:$(NC) $(shell $(PYTHON) -c 'import $(PROJECT_NAME); print($(PROJECT_NAME).__version__)')
+
+# =============================================================================
+# Benchmarking and Reporting
+# =============================================================================
+
+report: ## Generate performance benchmark report
+	@echo "$(BLUE)Running NLP2CMD performance benchmark...$(NC)"
+	@echo "$(YELLOW)This will test single vs sequential command processing speed.$(NC)"
+	$(PYTHON) benchmark_nlp2cmd.py
+	@echo ""
+	@echo "$(GREEN)✓ Benchmark complete!$(NC)"
+	@echo "$(BLUE)Reports generated:$(NC)"
+	@echo "  - benchmark_report.json (detailed JSON report)"
+	@echo "  - benchmark_report.md (Markdown report with analysis)"
+	@echo "  - benchmark_results.csv (CSV for plotting)"
+	@echo ""
+	@echo "$(YELLOW)To view the Markdown report:$(NC)"
+	@echo "  cat benchmark_report.md | head -50"
+	@echo ""
+	@echo "$(YELLOW)Key findings:$(NC)"
+	@if [ -f benchmark_report.json ]; then \
+		TIME_SAVED=$$(cat benchmark_report.json | jq -r '.markdown_report' | grep -A1 "Total Time Saved" | tail -1 | sed 's/.*\*\*\([0-9.]*\)ms.*/\1/'); \
+		EFFICIENCY=$$(cat benchmark_report.json | jq -r '.markdown_report' | grep "Total Time Saved" | sed 's/.*(\([0-9.]*\)% efficiency gain.*/\1/'); \
+		echo "  • Time saved (10 commands): $${TIME_SAVED}ms"; \
+		echo "  • Efficiency gain: $${EFFICIENCY}%"; \
+	fi
+
+benchmark: report ## Alias for report target
+
+benchmark-view: ## View the last benchmark report
+	@if [ -f benchmark_report.json ]; then \
+		echo "$(BLUE)Last Benchmark Report Summary:$(NC)"; \
+		cat benchmark_report.json | jq '.summary'; \
+		echo ""; \
+		echo "$(BLUE)Key Metrics from Markdown Report:$(NC)"; \
+		if [ -f benchmark_report.md ]; then \
+			echo "Time saved: $$(grep 'Total Time Saved' benchmark_report.md | grep -o '\*\*[0-9.]*ms\*\*' | sed 's/\*\*//g')"; \
+			echo "Efficiency: $$(grep 'Total Time Saved' benchmark_report.md | grep -o '([0-9.]*% efficiency gain)' | sed 's/[() ]//g')"; \
+		fi; \
+	else \
+		echo "$(YELLOW)No benchmark report found. Run 'make report' first.$(NC)"; \
+	fi
+
+benchmark-md: ## View the full markdown report
+	@if [ -f benchmark_report.md ]; then \
+		echo "$(BLUE)Full Markdown Benchmark Report:$(NC)"; \
+		cat benchmark_report.md; \
+	else \
+		echo "$(YELLOW)No markdown report found. Run 'make report' first.$(NC)"; \
+	fi
+
+benchmark-clean: ## Clean benchmark reports
+	rm -f benchmark_report.json benchmark_report.md benchmark_results.csv
+	@echo "$(GREEN)✓ Benchmark reports cleaned!$(NC)"

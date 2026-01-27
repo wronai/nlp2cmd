@@ -147,6 +147,67 @@ class TestShellAdapter:
         assert "ps" in result
         assert "mem" in result
 
+    def test_process_management_direct_ps(self):
+        """Test direct ps request handling."""
+        adapter = ShellAdapter()
+        plan = {
+            "intent": "process_management",
+            "entities": {},
+            "text": "ps aux",
+        }
+
+        result = adapter.generate(plan)
+
+        assert result == "ps aux"
+
+    def test_process_management_kill_pid(self):
+        """Test process kill by PID."""
+        adapter = ShellAdapter()
+        plan = {
+            "intent": "process_management",
+            "entities": {
+                "action": "kill",
+                "pid": "123",
+            },
+            "text": "kill 123",
+        }
+
+        result = adapter.generate(plan)
+
+        assert result == "kill -9 123"
+
+    def test_process_management_start_service(self):
+        """Test process start for a service."""
+        adapter = ShellAdapter()
+        plan = {
+            "intent": "process_management",
+            "entities": {
+                "action": "start",
+                "process_name": "nginx",
+            },
+            "text": "uruchom nginx",
+        }
+
+        result = adapter.generate(plan)
+
+        assert result == "systemctl start nginx"
+
+    def test_process_management_status_service(self):
+        """Test status check for a service."""
+        adapter = ShellAdapter()
+        plan = {
+            "intent": "process_management",
+            "entities": {
+                "action": "status usługi",
+                "process_name": "nginx",
+            },
+            "text": "status usługi nginx",
+        }
+
+        result = adapter.generate(plan)
+
+        assert result == "systemctl status nginx"
+
     def test_safety_blocks_dangerous(self):
         """Test that dangerous commands are blocked."""
         policy = ShellSafetyPolicy()

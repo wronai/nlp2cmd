@@ -78,3 +78,58 @@ class TestShellTemplates:
         assert 'find' in result.command
         assert '100' in result.command
         assert 'MB' in result.command
+
+    def test_shell_find_exec_flag(self, generator):
+        """Test find exec flag for list intent in text."""
+        result = generator.generate(
+            domain='shell',
+            intent='find',
+            entities={
+                'path': '/tmp',
+                'pattern': '*.log',
+                'target': 'files',
+                'text': 'lista plików log',
+            },
+        )
+
+        assert result.success
+        assert '-ls' in result.command
+
+    def test_shell_find_time_flag_recent(self, generator):
+        """Test find time flag for recent files."""
+        result = generator.generate(
+            domain='shell',
+            intent='find',
+            entities={
+                'path': '.',
+                'age': {'value': 7},
+                'text': 'pokaż pliki z ostatnich 7 dni',
+            },
+        )
+
+        assert result.success
+        assert '-mtime -7' in result.command
+
+    def test_shell_file_operation_remove_all(self, generator):
+        """Test file_operation routes to remove_all template."""
+        result = generator.generate(
+            domain='shell',
+            intent='file_operation',
+            entities={'text': 'usuń wszystkie pliki .log', 'extension': 'log'},
+        )
+
+        assert result.success
+        assert 'find' in result.command
+        assert '*.log' in result.command
+        assert '-delete' in result.command
+
+    def test_shell_file_operation_rename(self, generator):
+        """Test file_operation routes to rename template."""
+        result = generator.generate(
+            domain='shell',
+            intent='file_operation',
+            entities={'text': 'zmień nazwę pliku', 'old_name': 'a.txt', 'new_name': 'b.txt'},
+        )
+
+        assert result.success
+        assert result.command.strip() == 'mv a.txt b.txt'

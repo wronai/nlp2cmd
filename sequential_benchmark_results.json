@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-01-27 11:28:22",
+  "single_command": {
+    "command": "Find all Python files in the current directory",
+    "average_latency_ms": 25.116257599984237,
+    "all_latencies": [
+      34.578529999635066,
+      23.753748000672203,
+      24.269157000162522,
+      21.416781999505474,
+      21.56307099994592
+    ]
+  },
+  "sequential": {
+    "total_commands": 10,
+    "total_time_ms": 222.1333039997262,
+    "average_latency_ms": 22.193687799972395,
+    "min_latency_ms": 21.427231000416214,
+    "max_latency_ms": 23.342424000475148,
+    "throughput_commands_per_second": 45.01801314769228
+  },
+  "batch": {
+    "batch_size": 5,
+    "total_time_ms": 111.78560100051982,
+    "average_per_command_ms": 22.357120200103964
+  }
+}

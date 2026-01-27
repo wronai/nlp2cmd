@@ -403,52 +403,62 @@ class RuleBasedBackend(NLPBackend):
         """Extract entities using simple pattern matching."""
         dsl = self.config.get("dsl") if isinstance(self.config, dict) else None
 
-        if dsl in {"sql", "shell", "docker", "kubernetes"}:
-            from nlp2cmd.generation.regex import RegexEntityExtractor
-
-            extractor = RegexEntityExtractor()
-            extracted = extractor.extract(text, dsl)
-
-            entities: list[Entity] = []
-            for name, value in extracted.entities.items():
-                if isinstance(value, bool):
-                    t = "boolean"
-                elif isinstance(value, int):
-                    t = "integer"
-                elif isinstance(value, float):
-                    t = "number"
-                elif isinstance(value, (list, dict)):
-                    t = "object"
-                else:
-                    t = "string"
-                entities.append(Entity(name=name, value=value, type=t))
-
-            # Small domain-independent helpers
-            text_lower = text.lower()
-            if "all" in text_lower or "wszystkie" in text_lower:
-                entities.append(Entity(name="all", value=True, type="boolean"))
-
-            return entities
+        if self._is_regex_dsl(dsl):
+            return self._extract_regex_entities(text, str(dsl))
 
         if dsl == "dql":
-            import re
-
-            entities: list[Entity] = []
-
-            # Try to capture an entity class name (e.g. "User", "OrderItem")
-            m = re.search(
-                r"(?:entity|encj[aeę]|encji|model)\s+([A-Z][A-Za-z0-9_]*)",
-                text,
-            )
-            if not m:
-                m = re.search(r"\b([A-Z][A-Za-z0-9_]{2,})\b", text)
-
-            if m:
-                entities.append(Entity(name="entity", value=m.group(1), type="string"))
-
-            return entities
+            return self._extract_dql_entities(text)
 
         return []
+
+    def _is_regex_dsl(self, dsl: Optional[str]) -> bool:
+        return dsl in {"sql", "shell", "docker", "kubernetes"}
+
+    def _extract_regex_entities(self, text: str, dsl: str) -> list[Entity]:
+        from nlp2cmd.generation.regex import RegexEntityExtractor
+
+        extractor = RegexEntityExtractor()
+        extracted = extractor.extract(text, dsl)
+
+        entities = [
+            Entity(name=name, value=value, type=self._infer_entity_type(value))
+            for name, value in extracted.entities.items()
+        ]
+        self._append_all_entity(text, entities)
+        return entities
+
+    def _infer_entity_type(self, value: Any) -> str:
+        if isinstance(value, bool):
+            return "boolean"
+        if isinstance(value, int):
+            return "integer"
+        if isinstance(value, float):
+            return "number"
+        if isinstance(value, (list, dict)):
+            return "object"
+        return "string"
+
+    def _append_all_entity(self, text: str, entities: list[Entity]) -> None:
+        text_lower = text.lower()
+        if "all" in text_lower or "wszystkie" in text_lower:
+            entities.append(Entity(name="all", value=True, type="boolean"))
+
+    def _extract_dql_entities(self, text: str) -> list[Entity]:
+        import re
+
+        entities: list[Entity] = []
+
+        m = re.search(
+            r"(?:entity|encj[aeę]|encji|model)\s+([A-Z][A-Za-z0-9_]*)",
+            text,
+        )
+        if not m:
+            m = re.search(r"\b([A-Z][A-Za-z0-9_]{2,})\b", text)
+
+        if m:
+            entities.append(Entity(name="entity", value=m.group(1), type="string"))
+
+        return entities
 
     def extract_intent(self, text: str) -> tuple[str, float]:
         """Extract intent using pattern matching."""
@@ -589,16 +599,16 @@ class NLP2CMD:
         dsl = self.dsl_name
         normalized = dict(entities)
 
-        if dsl == "sql":
-            self._normalize_sql_entities(normalized, context)
-        if dsl == "shell":
-            self._normalize_shell_entities(intent, normalized, context)
-        if dsl == "docker":
-            self._normalize_docker_entities(intent, normalized)
-        if dsl == "kubernetes":
-            self._normalize_kubernetes_entities(intent, normalized)
-        if dsl == "dql":
-            self._normalize_dql_entities(normalized, context)
+        handlers: dict[str, Callable[[], None]] = {
+            "sql": lambda: self._normalize_sql_entities(normalized, context),
+            "shell": lambda: self._normalize_shell_entities(intent, normalized, context),
+            "docker": lambda: self._normalize_docker_entities(intent, normalized),
+            "kubernetes": lambda: self._normalize_kubernetes_entities(intent, normalized),
+            "dql": lambda: self._normalize_dql_entities(normalized, context),
+        }
+        handler = handlers.get(dsl)
+        if handler:
+            handler()
 
         return normalized
 

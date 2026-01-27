@@ -664,7 +664,20 @@ class TemplateGenerator:
         
         # Special case: for shell domain with list intent, always check for alternatives
         if normalized_domain == 'shell' and normalized_intent == 'list':
-            alternative_template = self._find_alternative_template(normalized_domain, normalized_intent, normalized_entities)
+            alternative_template = self._find_alternative_template(
+                normalized_domain,
+                normalized_intent,
+                normalized_entities,
+            )
+            if alternative_template and alternative_template != normalized_intent:
+                template = domain_templates.get(alternative_template)
+        # Special case: shell file_operation should always map based on text context
+        elif normalized_domain == 'shell' and normalized_intent == 'file_operation':
+            alternative_template = self._find_alternative_template(
+                normalized_domain,
+                normalized_intent,
+                normalized_entities,
+            )
             if alternative_template and alternative_template != normalized_intent:
                 template = domain_templates.get(alternative_template)
         elif not template:

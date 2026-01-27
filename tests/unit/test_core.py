@@ -3,6 +3,7 @@ Unit tests for NLP2CMD core module.
 """
 
 import pytest
+from typing import Any
 
 from nlp2cmd.core import (
     NLP2CMD,
@@ -180,6 +181,91 @@ class TestNLP2CMD:
         # The adapter should block or the result should reflect the policy
         # (actual behavior depends on plan generation)
         assert result is not None
+
+    def test_normalize_entities_sql_defaults(self):
+        """Test SQL entity normalization (table, filters, ordering)."""
+        adapter = SQLAdapter(dialect="postgresql")
+        nlp = NLP2CMD(adapter=adapter)
+
+        entities = {
+            "where_field": "city",
+            "where_value": "Warsaw",
+            "order_by": "created_at",
+        }
+        context = {"default_table": "users"}
+
+        normalized = nlp._normalize_entities("select", entities, context)
+
+        assert normalized["table"] == "users"
+        assert normalized["filters"][0]["field"] == "city"
+        assert normalized["filters"][0]["value"] == "Warsaw"
+        assert normalized["ordering"][0]["field"] == "created_at"
+        assert normalized["ordering"][0]["direction"] == "ASC"
+
+    def test_normalize_entities_shell_file_search(self):
+        """Test shell file_search normalization (filters, scope)."""
+        adapter = ShellAdapter()
+        nlp = NLP2CMD(adapter=adapter)
+
+        entities = {
+            "file_pattern": "py",
+            "size": "10MB",
+            "filename": "app.py",
+        }
+        context = {"text": "pokaż pliki większe niż 10MB"}
+
+        normalized = nlp._normalize_entities("file_search", entities, context)
+
+        assert normalized["scope"] == "."
+        assert normalized["target"] == "files"
+        filters = normalized["filters"]
+        assert any(f["attribute"] == "extension" for f in filters)
+        assert any(f["attribute"] == "size" for f in filters)
+        assert any(f["attribute"] == "name" for f in filters)
+
+    def test_normalize_entities_docker_defaults(self):
+        """Test docker normalization for ports/tail/env defaults."""
+        adapter = ShellAdapter()
+        nlp = NLP2CMD(adapter=adapter)
+
+        nlp.adapter.DSL_NAME = "docker"
+        entities = {
+            "port": {"host": 8080, "container": 80},
+            "tail_lines": "50",
+            "env_var": {"name": "ENV", "value": "prod"},
+        }
+
+        normalized = nlp._normalize_entities("container_run", entities, {})
+
+        assert normalized["ports"] == [entities["port"]]
+        assert normalized["tail"] == 50
+        assert normalized["environment"] == {"ENV": "prod"}
+        assert normalized["detach"] is True
+
+    def test_normalize_entities_kubernetes_defaults(self):
+        """Test kubernetes normalization for resource type and scale."""
+        adapter = ShellAdapter()
+        nlp = NLP2CMD(adapter=adapter)
+        nlp.adapter.DSL_NAME = "kubernetes"
+
+        entities = {"resource_type": "pods", "replica_count": "3"}
+
+        normalized = nlp._normalize_entities("scale", entities, {})
+
+        assert normalized["replica_count"] == 3
+
+    def test_normalize_entities_dql_defaults(self):
+        """Test DQL normalization for default entity."""
+        adapter = ShellAdapter()
+        nlp = NLP2CMD(adapter=adapter)
+        nlp.adapter.DSL_NAME = "dql"
+
+        entities: dict[str, Any] = {}
+        context = {"default_entity": "events"}
+
+        normalized = nlp._normalize_entities("query", entities, context)
+
+        assert normalized["entity"] == "events"
 
 
 class TestIntent:

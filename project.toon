@@ -1,66 +1,74 @@
-# src | 108f 46623L | python:108
+# src | 116f 52622L | python:116
 # Keys: M=modules, D=details, i=imports, c=classes, f=functions, m=methods
-M[108]:
-  nlp2cmd/pipeline_runner.py,496
+M[116]:
+  nlp2cmd/pipeline_runner.py,538
   nlp2cmd/schema_driven.py,220
-  nlp2cmd/polish_support.py,102
-  nlp2cmd/__init__.py,118
+  nlp2cmd/polish_support.py,215
+  nlp2cmd/__init__.py,120
   nlp2cmd/__main__.py,6
   nlp2cmd/appspec_runtime.py,45
   nlp2cmd/core_patched.py,755
   nlp2cmd/core_backup.py,768
-  nlp2cmd/core.py,754
+  nlp2cmd/core.py,785
   nlp2cmd/ir.py,28
   app2schema/cli.py,76
   app2schema/extract.py,826
   app2schema/__init__.py,13
   app2schema/__main__.py,4
-  nlp2cmd/monitoring/resources.py,111
+  nlp2cmd/monitoring/resources.py,137
   nlp2cmd/monitoring/token_costs.py,180
   nlp2cmd/monitoring/__init__.py,31
   nlp2cmd/schemas/__init__.py,743
-  nlp2cmd/generation/regex.py,519
-  nlp2cmd/generation/keywords.py,1014
-  nlp2cmd/generation/thermodynamic.py,729
-  nlp2cmd/generation/enhanced_context.py,403
-  nlp2cmd/generation/__init__.py,133
-  nlp2cmd/generation/templates.py,1159
-  nlp2cmd/generation/pipeline.py,813
+  nlp2cmd/generation/semantic_matcher_optimized.py,565
+  nlp2cmd/generation/train_model.py,339
+  nlp2cmd/generation/regex.py,572
+  nlp2cmd/generation/fuzzy_schema_matcher.py,433
+  nlp2cmd/generation/keywords.py,1298
+  nlp2cmd/generation/thermodynamic.py,845
+  nlp2cmd/generation/ml_intent_classifier.py,463
+  nlp2cmd/generation/multi_command.py,132
+  nlp2cmd/generation/enhanced_context.py,418
+  nlp2cmd/generation/__init__.py,137
+  nlp2cmd/generation/semantic_matcher.py,281
+  nlp2cmd/generation/data_loader.py,287
+  nlp2cmd/generation/templates.py,1259
+  nlp2cmd/generation/pipeline.py,816
   nlp2cmd/generation/llm_multi.py,207
   nlp2cmd/generation/validating.py,213
   nlp2cmd/generation/hybrid.py,292
   nlp2cmd/generation/llm_simple.py,316
   nlp2cmd/generation/structured.py,297
   nlp2cmd/validators/__init__.py,582
-  nlp2cmd/service/cli.py,123
-  nlp2cmd/service/__init__.py,293
+  nlp2cmd/service/cli.py,124
+  nlp2cmd/service/__init__.py,319
   nlp2cmd/planner/__init__.py,340
   nlp2cmd/core/toon_integration.py,170
   nlp2cmd/storage/__init__.py,3
   nlp2cmd/storage/per_command_store.py,287
   nlp2cmd/storage/versioned_store.py,313
   nlp2cmd/cli/web_schema.py,204
-  nlp2cmd/cli/display.py,124
-  nlp2cmd/cli/__init__.py,3
+  nlp2cmd/cli/display.py,128
+  nlp2cmd/cli/__init__.py,2
   nlp2cmd/cli/syntax_cache.py,80
+  nlp2cmd/cli/markdown_output.py,75
   nlp2cmd/cli/history.py,219
-  nlp2cmd/cli/main.py,1411
+  nlp2cmd/cli/main.py,1666
   nlp2cmd/cli/cache.py,262
-  nlp2cmd/web_schema/form_data_loader.py,535
+  nlp2cmd/web_schema/form_data_loader.py,554
   nlp2cmd/web_schema/__init__.py,15
   nlp2cmd/web_schema/extractor.py,299
   nlp2cmd/web_schema/history.py,288
-  nlp2cmd/web_schema/form_handler.py,317
-  nlp2cmd/execution/runner.py,418
+  nlp2cmd/web_schema/form_handler.py,402
+  nlp2cmd/execution/runner.py,519
   nlp2cmd/execution/browser.py,295
   nlp2cmd/execution/__init__.py,18
   nlp2cmd/aggregator/__init__.py,274
   nlp2cmd/nlp_enhanced/__init__.py,386
-  nlp2cmd/nlp_light/semantic_shell.py,221
+  nlp2cmd/nlp_light/semantic_shell.py,258
   nlp2cmd/nlp_light/__init__.py,3
   nlp2cmd/registry/__init__.py,529
   nlp2cmd/thermodynamic/energy_models.py,319
-  nlp2cmd/thermodynamic/__init__.py,429
+  nlp2cmd/thermodynamic/__init__.py,448
   nlp2cmd/executor/__init__.py,526
   nlp2cmd/adapters/sql_patched.py,378
   nlp2cmd/adapters/dynamic.py,496
@@ -78,13 +86,13 @@ M[108]:
   nlp2cmd/adapters/docker_backup.py,486
   nlp2cmd/adapters/shell_patched.py,1101
   nlp2cmd/adapters/sql.py,371
-  nlp2cmd/adapters/shell.py,1138
+  nlp2cmd/adapters/shell.py,1926
   nlp2cmd/adapters/appspec.py,71
   nlp2cmd/utils/playwright_installer.py,116
   nlp2cmd/utils/external_cache.py,241
   nlp2cmd/utils/__init__.py,18
   nlp2cmd/utils/yaml_compat.py,141
-  nlp2cmd/utils/data_files.py,83
+  nlp2cmd/utils/data_files.py,97
   nlp2cmd/environment/__init__.py,426
   nlp2cmd/context/__init__.py,9
   nlp2cmd/context/disambiguator.py,148
@@ -113,6 +121,7 @@ D:
   nlp2cmd/pipeline_runner.py:
     i: json,re,shlex,subprocess,time,dataclasses.{dataclass,field},pathlib.Path,typing.{Any,Optional}
     e: ShellExecutionPolicy,RunnerResult,PipelineRunner
+    _MarkdownConsoleWrapper: __init__(1),print(1),capture(0)  # Context manager that captures console...
     ShellExecutionPolicy: load_from_data(1)
     RunnerResult: 
     PipelineRunner: __init__(0),run(1),_run_shell(1),_parse_shell_command(1),_check_against_safety_policy(2)
@@ -122,9 +131,9 @@ D:
     MatchResult: 
     SchemaDrivenNLP2CMD: __init__(1),transform(1),_select_action(1),_extract_params(2),_render_dsl(3)
   nlp2cmd/polish_support.py:
-    i: json,re,pathlib.Path
-    e: PolishLanguageSupport,get_polish_support
-    PolishLanguageSupport: __init__(0),_load_patterns(0),normalize_polish_text(1),match_polish_patterns(2),translate_polish_intent(1)  # Polish language support for NLP2CMD
+    i: json,re,difflib.SequenceMatcher,pathlib.Path
+    e: STT_CORRECTIONS,KNOWN_PHRASES,PolishLanguageSupport,get_polish_support
+    PolishLanguageSupport: __init__(0),_load_patterns(0),normalize_polish_text(1),normalize_stt_errors(1),_find_best_phrase_match(2)  # Polish language support for NLP2CMD
     get_polish_support()->None
   nlp2cmd/appspec_runtime.py:
     i: json,dataclasses.dataclass,pathlib.Path,typing.{Any,Optional}
@@ -184,10 +193,10 @@ D:
     extract_schema(target:Union[str;Path])->App2SchemaResult
     extract_appspec_to_file(target:Union[str;Path];out_path:Union[str;Path])->Path
   nlp2cmd/monitoring/resources.py:
-    i: time,psutil,contextlib.contextmanager,dataclasses.dataclass,typing.{Any,Dict,Optional}
+    i: time,platform,psutil,contextlib.contextmanager,dataclasses.dataclass,typing.{Any,Dict,Optional}
     e: ResourceMetrics,ResourceMonitor,get_monitor,measure_resources,get_last_metrics,format_last_metrics,get_system_info
     ResourceMetrics:   # Resource consumption metrics.
-    ResourceMonitor: __init__(0),get_current_metrics(0),measure_execution(0),get_last_metrics(0),format_metrics(1)  # Monitor system resource usage during...
+    ResourceMonitor: __init__(0),_process_cpu_time_seconds(0),get_current_metrics(0),measure_execution(0),get_last_metrics(0)  # Monitor system resource usage during...
     get_monitor()->ResourceMonitor
     measure_resources()->None
     get_last_metrics()->Optional[ResourceMetrics]
@@ -206,33 +215,115 @@ D:
     e: FileFormatSchema,SchemaRegistry
     FileFormatSchema: validate(1),parse(1),generate(1),matches_extension(1),matches_mime_type(1)  # Definition of a file format schema.
     SchemaRegistry: __init__(0),_register_builtin_schemas(0),register(2),get(1),has_schema(1)  # Registry for file format schemas with...
+  nlp2cmd/generation/semantic_matcher_optimized.py:
+    i: atexit,hashlib,json,os,pickle,threading,dataclasses.{dataclass,field},functools.lru_cache,pathlib.Path
+    e: _EMBEDDING_CACHE_SIZE,MODEL_CONFIGS,SemanticMatch,IntentEmbedding,OptimizedSemanticMatcher,create_optimized_matcher_from_phrases,get_optimized_semantic_matcher,preload_models
+    SemanticMatch:   # Result of semantic matching.
+    IntentEmbedding:   # Stored embedding for an intent phrase.
+    OptimizedSemanticMatcher: __init__(7),_preload_models(0),_get_model(0),_get_polish_model(0),_load_model(1)  # Optimized semantic similarity matcher...
+    _check_sentence_transformers()->bool
+    _check_torch()->bool
+    _check_ctranslate2()->bool
+    _get_cache_dir()->Path
+    _compute_cache_key(text:str;model_name:str)->str
+    _cleanup_models()->None
+    create_optimized_matcher_from_phrases(phrases_path:Path;preload:bool=False)->OptimizedSemanticMatcher
+    get_optimized_semantic_matcher(preload:bool=False)->Optional[OptimizedSemanticMatcher]
+  nlp2cmd/generation/train_model.py:
+    i: json,time,collections.Counter,nlp2cmd.generation.data_loader.{DataLoader,PhraseDatabase},nlp2cmd.generation.ml_intent_classifier.{MLIntentClassifier,TrainingSample,create_default_training_data},pathlib.Path,typing.Optional
+    e: load_expanded_phrases,load_patterns,load_command_schemas,generate_augmented_samples,deduplicate_samples,train_all_models,quick_test
+    load_expanded_phrases(path:Path)->list[TrainingSample]
+    load_patterns(path:Path)->list[TrainingSample]
+    load_command_schemas(schemas_dir:Path)->list[TrainingSample]
+    generate_augmented_samples(samples:list[TrainingSample])->list[TrainingSample]
+    deduplicate_samples(samples:list[TrainingSample])->list[TrainingSample]
+    train_all_models(data_dir:Optional[Path]=None;output_dir:Optional[Path]=None;augment:bool=True;verbose:bool=True)->dict
+    quick_test(data_dir:Optional[Path]=None)->None
   nlp2cmd/generation/regex.py:
     i: json,os,re,dataclasses.{dataclass,field},nlp2cmd.utils.data_files.find_data_file,typing.{Any,Optional}
     e: ExtractedEntity,ExtractionResult,RegexEntityExtractor
     ExtractedEntity:   # A single extracted entity.
     ExtractionResult:   # Result of entity extraction.
     RegexEntityExtractor: __init__(1),_load_patterns_from_json(0),extract(2),_process_match(2),_parse_columns(1)  # Extract entities from text using rege...
+  nlp2cmd/generation/fuzzy_schema_matcher.py:
+    i: json,re,unicodedata,dataclasses.{dataclass,field},pathlib.Path,typing.{Any,Optional}
+    e: MatchResult,PhraseSchema,FuzzySchemaMatcherConfig,FuzzySchemaMatcher,create_multilingual_matcher
+    MatchResult:   # Result of fuzzy schema matching.
+    PhraseSchema:   # Schema for a phrase with metadata.
+    FuzzySchemaMatcherConfig: __init__(6)  # Configuration for fuzzy matching thre...
+    FuzzySchemaMatcher: __init__(2),load_schema(1),add_phrase(1),add_phrases_from_dict(1),_build_index(0)  # Language-agnostic fuzzy matcher using...
+    _get_jellyfish()->None
+    _get_rapidfuzz()->None
+    create_multilingual_matcher(phrases_dict:Optional[dict]=None;schema_path:Optional[Path]=None)->FuzzySchemaMatcher
   nlp2cmd/generation/keywords.py:
     i: json,os,re,dataclasses.{dataclass,field},nlp2cmd.utils.data_files.find_data_files,pathlib.Path,rapidfuzz.{fuzz,process},typing.Optional
-    e: DetectionResult,KeywordIntentDetector
+    e: _ENABLE_ML_CLASSIFIER,_ENABLE_SEMANTIC_MATCHING,_SPACY,_NLP_MODEL,_NLP_MODEL_LOAD_ATTEMPTED,_ENABLE_SPACY_LEMMATIZATION,DetectionResult,KeywordIntentDetector
     DetectionResult:   # Result of intent detection.
     KeywordIntentDetector: __init__(3),_load_detector_config_from_json(0),_load_patterns_from_json(0),_match_keyword(2),_normalize_text_lower(1)  # Rule-based intent detection using key...
+    _get_polish_support()->None
+    _get_fuzzy_schema_matcher()->None
+    _get_ml_classifier()->None
+    _get_semantic_matcher()->None
     _normalize_polish_text(text:str)->str
+    _get_spacy_model()->None
   nlp2cmd/generation/thermodynamic.py:
     i: numpy,re,json,dataclasses.{dataclass,field},nlp2cmd.thermodynamic.LangevinConfig,pathlib.Path,typing.{Any,Callable,Optional}
-    e: OptimizationProblem,ThermodynamicResult,SolutionQuality,SchedulingEnergy,AllocationEnergy,ThermodynamicGenerator,HybridThermodynamicGenerator,create_thermodynamic_generator
+    e: OptimizationProblem,ThermodynamicResult,SolutionQuality,SchedulingEnergy,AllocationEnergy,RoutingEnergy,ThermodynamicGenerator,HybridThermodynamicGenerator
     OptimizationProblem: to_condition(0)  # Structured optimization problem defin...
     ThermodynamicResult:   # Result of thermodynamic optimization.
     SolutionQuality: 
     SchedulingEnergy: __init__(2),energy(2),gradient(2),_decode_assignments(1),_softmax(1)  # Energy model for scheduling problems.
     AllocationEnergy: __init__(2),energy(2),gradient(2),_decode_allocation(1)  # Energy model for resource allocation...
-    create_thermodynamic_generator(llm_client:Optional[LLMClient]=None;n_samples:int=5;n_steps:int=500;adaptive_steps:bool=True)->ThermodynamicGenerator
+    create_thermodynamic_generator(llm_client:Optional[LLMClient]=None;n_samples:int=5;n_steps:int=500;adaptive_steps:bool=True;parallel_sampling:bool=False;max_workers:int=4)->ThermodynamicGenerator
+  nlp2cmd/generation/ml_intent_classifier.py:
+    i: json,pickle,re,unicodedata,dataclasses.{dataclass,field},pathlib.Path,typing.{Any,Optional}
+    e: IntentPrediction,TrainingSample,MLIntentClassifier,generate_training_data_from_phrases,create_default_training_data,get_ml_classifier
+    IntentPrediction:   # Result of intent classification.
+    TrainingSample:   # Single training sample.
+    MLIntentClassifier: __init__(1),_get_nlp(0),_normalize_text(1),_extract_features(1),train(2)  # Fast ML-based intent classifier using...
+    _check_sklearn()->None
+    _check_spacy()->None
+    generate_training_data_from_phrases(phrases_path:Path)->list[TrainingSample]
+    _generate_variations(phrase:str;domain:str;intent:str;language:str)->list[TrainingSample]
+    create_default_training_data()->list[TrainingSample]
+    get_ml_classifier(force_retrain:bool=False)->Optional[MLIntentClassifier]
+  nlp2cmd/generation/multi_command.py:
+    i: re,dataclasses.dataclass,nlp2cmd.generation.keywords.{DetectionResult,KeywordIntentDetector},typing.{List,Optional,Tuple}
+    e: MultiCommandResult,MultiCommandDetector,get_multi_command_detector,detect_multi_commands
+    MultiCommandResult: count(0),get_domains(0),get_intents(0)  # Result of multi-command detection.
+    MultiCommandDetector: __init__(1),split_commands(1),detect(1),detect_with_fallback(1)  # Utility class to detect multiple comm...
+    get_multi_command_detector()->MultiCommandDetector
+    detect_multi_commands(text:str)->MultiCommandResult
   nlp2cmd/generation/enhanced_context.py:
-    i: json,re,nltk,dataclasses.dataclass,pathlib.Path,typing.{Any,Dict,List,Optional,Tuple}
-    e: ContextualMatch,EnhancedContextDetector,get_enhanced_detector
+    i: json,re,os,dataclasses.dataclass,pathlib.Path,typing.{Any,Dict,List,Optional,Tuple}
+    e: _ENABLE_HEAVY_NLP,ContextualMatch,EnhancedContextDetector,get_enhanced_detector
     ContextualMatch:   # Enhanced match with semantic similarity.
     EnhancedContextDetector: __init__(0),_initialize_nlp(0),_load_schemas_and_templates(0),_build_semantic_index(0),_preprocess_text(1)  # Enhanced context detection using mult...
     get_enhanced_detector()->EnhancedContextDetector
+  nlp2cmd/generation/__init__.py:
+    i: nlp2cmd.generation.keywords.{DetectionResult,KeywordIntentDetector},nlp2cmd.generation.multi_command.{MultiCommandDetector,MultiCommandResult,detect_multi_commands,get_multi_command_detector},nlp2cmd.generation.regex.{ExtractionResult,RegexEntityExtractor},nlp2cmd.generation.templates.{TemplateGenerator,TemplateResult}
+    e: _LAZY_EXPORTS
+    __getattr__(name:str)->Any
+    __dir__()->list[str]
+  nlp2cmd/generation/semantic_matcher.py:
+    i: json,pickle,numpy,dataclasses.{dataclass,field},pathlib.Path,typing.{Any,Optional}
+    e: SemanticMatch,IntentEmbedding,SemanticMatcher,create_semantic_matcher_from_phrases,get_semantic_matcher
+    SemanticMatch:   # Result of semantic matching.
+    IntentEmbedding:   # Stored embedding for an intent phrase.
+    SemanticMatcher: __init__(3),_get_model(0),add_intent(4),add_intents_batch(1),_get_embedding_matrix(0)  # Semantic similarity matcher using sen...
+    _check_sentence_transformers()->None
+    create_semantic_matcher_from_phrases(phrases_path:Path)->SemanticMatcher
+    get_semantic_matcher()->Optional[SemanticMatcher]
+  nlp2cmd/generation/data_loader.py:
+    i: json,pickle,time,dataclasses.{asdict,dataclass,field},pathlib.Path,typing.{Any,Iterator,Optional}
+    e: PhraseEntry,PhraseDatabase,DataLoader,load_legacy_phrases,merge_databases,benchmark_formats
+    PhraseEntry: to_dict(0),from_dict(1)  # Single phrase entry for intent matching.
+    PhraseDatabase: __len__(0),__iter__(0),add(1),add_phrase(7),get_by_domain(1)  # Collection of phrase entries with met...
+    DataLoader: __init__(1),load_phrases(1),save_phrases(3),_load_json(1),_save_json(2)  # Optimized data loader with format det...
+    _check_msgpack()->None
+    load_legacy_phrases(path:Path)->PhraseDatabase
+    merge_databases()->PhraseDatabase
+    benchmark_formats(db:PhraseDatabase;iterations:int=10)->dict
   nlp2cmd/generation/templates.py:
     i: getpass,json,os,re,dataclasses.dataclass,nlp2cmd.utils.data_files.find_data_files,pathlib.Path,typing.{Any,Optional}
     e: TemplateResult,TemplateGenerator
@@ -240,7 +331,7 @@ D:
     TemplateGenerator: __init__(1),_load_defaults_from_json(0),_load_templates_from_json(0),_get_default(2),generate(3)  # Generate DSL commands from templates.
   nlp2cmd/generation/pipeline.py:
     i: json,os,re,time,dataclasses.{dataclass,field},nlp2cmd.utils.data_files.data_file_write_path,pathlib.Path,typing.{Any,Optional}
-    e: SimpleExecutionPlan,PipelineResult,RuleBasedPipeline,PipelineMetrics,create_pipeline
+    e: SimpleExecutionPlan,ENHANCED_CONTEXT_AVAILABLE,_DEFAULT_USE_ENHANCED_CONTEXT,PipelineResult,RuleBasedPipeline,PipelineMetrics,create_pipeline
     SimpleExecutionPlan:   # Simple execution plan for adapters.
     PipelineResult: __post_init__(0),to_plan(0)  # Result of the complete pipeline.
     RuleBasedPipeline: __init__(5),enhanced_detector(0),process(1),_infer_domain_from_markers(1),process_steps(1)  # Complete rule-based NL → DSL pipeline.
@@ -296,17 +387,18 @@ D:
     SQLValidator: __init__(1),validate(1)  # SQL-specific validator.
     ShellValidator: __init__(1),validate(1)  # Shell command validator.
   nlp2cmd/service/cli.py:
-    i: os,sys,click,NLP2CMDService,ServiceConfig,create_service_config_from_args,pathlib.Path,typing.Optional
+    i: os,sys,click,pathlib.Path,typing.Optional
     e: add_service_command
     add_service_command(main_group)->None
   nlp2cmd/service/__init__.py:
-    i: json,os,logging,fastapi.{BackgroundTasks,FastAPI,HTTPException},pathlib.Path,typing.{Any,Dict,Optional}
+    i: json,os,logging,pathlib.Path,pydantic.{BaseModel,Field},typing.{Any,Dict,Optional,TYPE_CHECKING}
     e: ServiceConfig,QueryRequest,QueryResponse,NLP2CMDService,create_app,create_service_config_from_args
     ServiceConfig: __init__(0),to_dict(0),save_to_env(1)  # Configuration for NLP2CMD service.
     QueryRequest:   # Request model for query endpoint.
     QueryResponse:   # Response model for query endpoint.
     NLP2CMDService: __init__(1),_setup_logging(0),_create_app(0),_setup_routes(1),run(2)  # NLP2CMD HTTP API Service.
-    create_app()->FastAPI
+    _ensure_service_deps()->None
+    create_app()->'FastAPI'
     create_service_config_from_args(host:str='0.0.0.0';port:int=8000;debug:bool=False;log_level:str='info';cors_origins:str='*';max_workers:int=4;...+1)->ServiceConfig
   nlp2cmd/planner/__init__.py:
     i: json,logging,dataclasses.{dataclass,field},nlp2cmd.executor.{ExecutionPlan,PlanStep},nlp2cmd.registry.{ActionRegistry,get_registry},typing.{Any,Optional}
@@ -360,6 +452,13 @@ D:
     get_cached_syntax(code:str;lexer:str;theme:str='monokai';line_numbers:bool=False)->Syntax
     clear_syntax_cache()->None
     get_cache_stats()->Dict[str, int]
+  nlp2cmd/cli/markdown_output.py:
+    i: rich.console.Console,typing.{Any,Optional}
+    e: print_markdown_block,MarkdownConsoleProxy,MarkdownBlockStream
+    MarkdownConsoleProxy: __init__(1),print(1),input(0),__getattr__(1)  # Proxy that forces all console.print o...
+    MarkdownBlockStream: __init__(1),__enter__(0),__exit__(3),_ensure_open(0),print(1)  # Context manager that streams multiple...
+    _render_to_text(renderable:Any)->str
+    print_markdown_block(renderable:Any)->None
   nlp2cmd/cli/history.py:
     i: click,pathlib.Path,rich.console.Console,rich.panel.Panel,rich.table.Table
     e: history_group,show_history,show_stats,show_popular,export_analytics,clear_history
@@ -370,9 +469,10 @@ D:
     export_analytics(output:Path)->None
     clear_history(confirm:bool)->None
   nlp2cmd/cli/main.py:
-    i: json,os,re,shlex,sys,select,asyncio,pathlib.Path,typing.{Any,Optional}
+    i: json,os,re,shlex,sys,select,asyncio,time,contextlib.nullcontext,pathlib.Path
     e: get_adapter,InteractiveSession,repair,validate,analyze_env,version,main,repair
     InteractiveSession: __init__(3),_analyze_environment(0),process(1),display_feedback(2),run(0)  # Interactive REPL session with feedbac...
+    _register_subcommands_for_args(argv:list[str])->None
     _system_beep()->None
     _timed_default_yes(timed_prompt:str;full_prompt:str)->str
     _shell_env_context(context:dict[str;Any])->dict[str, Any]
@@ -380,7 +480,6 @@ D:
     _looks_like_log_input(text:str)->bool
     _interactive_followup(session:InteractiveSession;feedback:FeedbackResult)->FeedbackResult
     _handle_run_query(query:str;dsl:str;appspec:Optional[Path];auto_confirm:bool;execute_web:bool;auto_install:bool;...+1)->None
-    _suggest_next_steps(original_query:str;command:str;result;runner:ExecutionRunner)->None
   nlp2cmd/cli/cache.py:
     i: click,pathlib.Path,rich.console.Console,rich.panel.Panel,rich.progress.{Progress,SpinnerColumn,TextColumn},rich.table.Table
     e: cache_group,setup_cache,install_package,show_cache_info,check_cache,clear_cache,auto_setup
@@ -392,7 +491,7 @@ D:
     clear_cache(package:Any;clear_all:bool;cache_dir:Any)->None
     auto_setup(cache_dir:Any)->None
   nlp2cmd/web_schema/form_data_loader.py:
-    i: json,os,pathlib.Path,typing.{Any,Optional},urllib.parse.urlparse
+    i: json,os,re,pathlib.Path,typing.{Any,Optional},urllib.parse.urlparse
     e: FormDataLoader,create_example_env_file,create_example_form_data_json
     FormDataLoader: __init__(5),_dedupe_preserve_order(1),dedupe_selectors(1),_parse_domain(1),_safe_domain_filename(1)  # Loads form field data from multiple s...
     create_example_env_file(path:str='.env.example')->None
@@ -414,13 +513,13 @@ D:
     e: FormField,FormData,FormHandler
     FormField: get_display_name(0)  # Represents a form field.
     FormData:   # Collected form data.
-    FormHandler: __init__(1),detect_form_fields(1),detect_submit_button(2),automatic_fill(2),interactive_fill(2)  # Handles form detection and interactiv...
+    FormHandler: __init__(1),_print(1),detect_form_fields(1),detect_submit_button(2),automatic_fill(2)  # Handles form detection and interactiv...
   nlp2cmd/execution/runner.py:
-    i: subprocess,sys,time,dataclasses.{dataclass,field},nlp2cmd.cli.syntax_cache.get_cached_syntax,pathlib.Path,typing.{Any,Callable,Optional}
+    i: subprocess,sys,time,dataclasses.{dataclass,field},pathlib.Path,rich.console.Console,typing.{Any,Callable,Optional}
     e: ExecutionResult,RecoveryContext,ExecutionRunner
     ExecutionResult:   # Result of command execution.
     RecoveryContext:   # Context for LLM-assisted error recovery.
-    ExecutionRunner: __init__(4),run_command(5),confirm_execution(1),get_recovery_suggestion(1),_build_recovery_prompt(1)  # Execute commands with logging, error...
+    ExecutionRunner: console(0),console(1),__init__(5),run_command(5),confirm_execution(1)  # Execute commands with logging, error...
   nlp2cmd/execution/browser.py:
     i: platform,subprocess,webbrowser,dataclasses.dataclass,typing.{Any,Optional},urllib.parse.quote_plus
     e: BrowserResult,get_os_open_command,normalize_url,open_url,search_web,BrowserExecutor,generate_shell_command
@@ -469,7 +568,7 @@ D:
     e: LangevinConfig,SamplerResult,EnergyModel,QuadraticEnergy,ConstraintEnergy,LangevinSampler,EntropyProductionRegularizer,MajorityVoter
     LangevinConfig:   # Configuration for Langevin dynamics s...
     SamplerResult:   # Result from Langevin sampling.
-    EnergyModel: energy(2),gradient(2),__call__(2)  # Abstract base class for energy models.
+    EnergyModel: energy(2),gradient(2),numerical_gradient(3),__call__(2)  # Abstract base class for energy models.
     QuadraticEnergy: __init__(1),energy(2),gradient(2)  # Simple quadratic energy for testing:...
     ConstraintEnergy: __init__(0),add_penalty(4),energy(2),gradient(2)  # Energy model for constraint satisfact...
   nlp2cmd/executor/__init__.py:
@@ -567,7 +666,7 @@ D:
     e: ShellSafetyPolicy,EnvironmentContext,ShellAdapter
     ShellSafetyPolicy:   # Shell-specific safety policy.
     EnvironmentContext:   # System environment context.
-    ShellAdapter: __init__(4),_parse_environment_context(1),generate(1),_generate_file_search(1),_generate_find(1)  # Shell adapter supporting multiple she...
+    ShellAdapter: __init__(4),_parse_environment_context(1),_resolve_user_home_path(1),generate(1),_generate_file_search(1)  # Shell adapter supporting multiple she...
   nlp2cmd/adapters/appspec.py:
     i: dataclasses.dataclass,nlp2cmd.adapters.base.{AdapterConfig,BaseDSLAdapter,SafetyPolicy},nlp2cmd.appspec_runtime.{AppSpec,load_appspec},nlp2cmd.ir.ActionIR,pathlib.Path,typing.{Any,Optional}
     e: AppSpecAdapterConfig,AppSpecAdapter

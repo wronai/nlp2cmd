@@ -1149,23 +1149,42 @@ class ShellAdapter(BaseDSLAdapter):
         """Generate disk command."""
         action = entities.get("action", "usage")
         path = entities.get("path", ".")
-        
-        # Handle specific Polish patterns
-        if "dysk" in str(action) or "miejsce" in str(action) or "usage" in str(action):
-            return "df -h"
-        elif "zdrowie" in str(action) or "health" in str(action):
-            return "fsck -n /dev/sda1"
-        elif "defragmentacja" in str(action) or "defrag" in action:
-            return "defrag /dev/sda1"
 
-        if action == "usage":
-            return f"df -h {path}"
-        elif action == "size":
-            return f"du -sh {path}"
-        elif action == "tree":
-            return f"tree -L 2 {path}"
+        action_str = str(action)
+
+        handlers = (
+            (lambda: self._disk_is_usage_pattern(action_str), lambda: "df -h"),
+            (lambda: self._disk_is_health(action_str), lambda: "fsck -n /dev/sda1"),
+            (lambda: self._disk_is_defrag(action_str), lambda: "defrag /dev/sda1"),
+        )
+
+        for predicate, handler in handlers:
+            if predicate():
+                return handler()
+
+        fallback = self._disk_action_fallback(action, path)
+        if fallback is not None:
+            return fallback
 
         return f"df -h {path}"
+
+    def _disk_is_usage_pattern(self, action_str: str) -> bool:
+        return "dysk" in action_str or "miejsce" in action_str or "usage" in action_str
+
+    def _disk_is_health(self, action_str: str) -> bool:
+        return "zdrowie" in action_str or "health" in action_str
+
+    def _disk_is_defrag(self, action_str: str) -> bool:
+        return "defragmentacja" in action_str or "defrag" in action_str
+
+    def _disk_action_fallback(self, action: str, path: str) -> str | None:
+        if action == "usage":
+            return f"df -h {path}"
+        if action == "size":
+            return f"du -sh {path}"
+        if action == "tree":
+            return f"tree -L 2 {path}"
+        return None
 
     def _generate_archive(self, entities: dict[str, Any]) -> str:
         """Generate archive command."""
@@ -1366,86 +1385,158 @@ class ShellAdapter(BaseDSLAdapter):
         action = entities.get("action", "")
         target = entities.get("target", "")
         tool = entities.get("tool", "")
-        
-        if "test" in action:
-            if "pytest" in tool or "python" in tool:
-                return "pytest tests/"
-            elif "maven" in tool:
-                return "mvn test"
-            else:
-                return "python -m pytest"
-        elif "build" in action:
-            if "maven" in tool:
-                return "mvn clean install"
-            elif "npm" in tool:
-                return "npm run build"
-            else:
-                return "make build"
-        elif "install" in action:
-            if "npm" in tool:
-                return "npm install"
-            elif "pip" in tool:
-                return "pip install -r requirements.txt"
-            else:
-                return "apt install"
-        elif "run" in action or "serwer" in target:
-            if "django" in tool:
-                return "python manage.py runserver"
-            elif "flask" in tool:
-                return "flask run"
-            else:
-                return "python main.py"
-        elif "debug" in action:
-            return "python -m pdb script.py"
-        elif "lint" in action:
-            if "python" in tool:
-                return "pylint src/"
-            elif "javascript" in tool:
-                return "eslint ."
-            else:
-                return "lint"
-        elif "version" in action:
-            if "node" in tool:
-                return "node --version"
-            elif "python" in tool:
-                return "python --version"
-            else:
-                return "version"
-        elif "logi" in target:
-            return "tail -f app.log"
-        elif "cache" in target:
-            return "rm -rf __pycache__"
-        elif "dokumentacja" in target:
-            return "sphinx-build -b html docs/"
-        
+
+        action_str = str(action)
+        target_str = str(target)
+        tool_str = str(tool)
+
+        handlers = (
+            (lambda: self._development_is_test(action_str), lambda: self._development_test_cmd(tool_str)),
+            (lambda: self._development_is_build(action_str), lambda: self._development_build_cmd(tool_str)),
+            (lambda: self._development_is_install(action_str), lambda: self._development_install_cmd(tool_str)),
+            (lambda: self._development_is_run(action_str, target_str), lambda: self._development_run_cmd(tool_str)),
+            (lambda: self._development_is_debug(action_str), lambda: "python -m pdb script.py"),
+            (lambda: self._development_is_lint(action_str), lambda: self._development_lint_cmd(tool_str)),
+            (lambda: self._development_is_version(action_str), lambda: self._development_version_cmd(tool_str)),
+            (lambda: self._development_is_logs(target_str), lambda: "tail -f app.log"),
+            (lambda: self._development_is_cache(target_str), lambda: "rm -rf __pycache__"),
+            (lambda: self._development_is_docs(target_str), lambda: "sphinx-build -b html docs/"),
+        )
+
+        for predicate, handler in handlers:
+            if predicate():
+                return handler()
+
         return f"# Development: {action}"
+
+    def _development_is_test(self, action_str: str) -> bool:
+        return "test" in action_str
+
+    def _development_is_build(self, action_str: str) -> bool:
+        return "build" in action_str
+
+    def _development_is_install(self, action_str: str) -> bool:
+        return "install" in action_str
+
+    def _development_is_run(self, action_str: str, target_str: str) -> bool:
+        return "run" in action_str or "serwer" in target_str
+
+    def _development_is_debug(self, action_str: str) -> bool:
+        return "debug" in action_str
+
+    def _development_is_lint(self, action_str: str) -> bool:
+        return "lint" in action_str
+
+    def _development_is_version(self, action_str: str) -> bool:
+        return "version" in action_str
+
+    def _development_is_logs(self, target_str: str) -> bool:
+        return "logi" in target_str
+
+    def _development_is_cache(self, target_str: str) -> bool:
+        return "cache" in target_str
+
+    def _development_is_docs(self, target_str: str) -> bool:
+        return "dokumentacja" in target_str
+
+    def _development_test_cmd(self, tool_str: str) -> str:
+        if "pytest" in tool_str or "python" in tool_str:
+            return "pytest tests/"
+        if "maven" in tool_str:
+            return "mvn test"
+        return "python -m pytest"
+
+    def _development_build_cmd(self, tool_str: str) -> str:
+        if "maven" in tool_str:
+            return "mvn clean install"
+        if "npm" in tool_str:
+            return "npm run build"
+        return "make build"
+
+    def _development_install_cmd(self, tool_str: str) -> str:
+        if "npm" in tool_str:
+            return "npm install"
+        if "pip" in tool_str:
+            return "pip install -r requirements.txt"
+        return "apt install"
+
+    def _development_run_cmd(self, tool_str: str) -> str:
+        if "django" in tool_str:
+            return "python manage.py runserver"
+        if "flask" in tool_str:
+            return "flask run"
+        return "python main.py"
+
+    def _development_lint_cmd(self, tool_str: str) -> str:
+        if "python" in tool_str:
+            return "pylint src/"
+        if "javascript" in tool_str:
+            return "eslint ."
+        return "lint"
+
+    def _development_version_cmd(self, tool_str: str) -> str:
+        if "node" in tool_str:
+            return "node --version"
+        if "python" in tool_str:
+            return "python --version"
+        return "version"
 
     def _generate_security(self, entities: dict[str, Any]) -> str:
         """Generate security command."""
         action = entities.get("action", "")
         target = entities.get("target", "")
-        
-        if "zalogowany" in target or "who" in action:
-            return "who"
-        elif "historia" in target or "logowań" in target:
-            return "last -n 10"
-        elif "uprawnienia" in target:
-            file_path = entities.get("file_path", "config.conf")
-            return f"ls -la {file_path}"
-        elif "suid" in target:
-            return "find / -perm -4000 -type f"
-        elif "firewall" in target:
-            return "iptables -L"
-        elif "bezpieczeństwa" in target:
-            return "tail -n 100 /var/log/auth.log"
-        elif "podejrzane" in target:
-            return "ps aux | grep -v '\\['"
-        elif "pakiety" in target:
-            return "dpkg -l | grep -i security"
-        elif "użytkownicy" in target:
-            return "cat /etc/passwd"
-        
+
+        action_str = str(action)
+        target_str = str(target)
+
+        handlers = (
+            (lambda: self._security_is_who(target_str, action_str), lambda: "who"),
+            (lambda: self._security_is_history(target_str), lambda: "last -n 10"),
+            (lambda: self._security_is_permissions(target_str), lambda: self._security_permissions_cmd(entities)),
+            (lambda: self._security_is_suid(target_str), lambda: "find / -perm -4000 -type f"),
+            (lambda: self._security_is_firewall(target_str), lambda: "iptables -L"),
+            (lambda: self._security_is_auth_logs(target_str), lambda: "tail -n 100 /var/log/auth.log"),
+            (lambda: self._security_is_suspicious(target_str), lambda: "ps aux | grep -v '\\['"),
+            (lambda: self._security_is_packages(target_str), lambda: "dpkg -l | grep -i security"),
+            (lambda: self._security_is_users(target_str), lambda: "cat /etc/passwd"),
+        )
+
+        for predicate, handler in handlers:
+            if predicate():
+                return handler()
+
         return f"# Security: {action}"
+
+    def _security_is_who(self, target_str: str, action_str: str) -> bool:
+        return "zalogowany" in target_str or "who" in action_str
+
+    def _security_is_history(self, target_str: str) -> bool:
+        return "historia" in target_str or "logowań" in target_str
+
+    def _security_is_permissions(self, target_str: str) -> bool:
+        return "uprawnienia" in target_str
+
+    def _security_is_suid(self, target_str: str) -> bool:
+        return "suid" in target_str
+
+    def _security_is_firewall(self, target_str: str) -> bool:
+        return "firewall" in target_str
+
+    def _security_is_auth_logs(self, target_str: str) -> bool:
+        return "bezpieczeństwa" in target_str
+
+    def _security_is_suspicious(self, target_str: str) -> bool:
+        return "podejrzane" in target_str
+
+    def _security_is_packages(self, target_str: str) -> bool:
+        return "pakiety" in target_str
+
+    def _security_is_users(self, target_str: str) -> bool:
+        return "użytkownicy" in target_str
+
+    def _security_permissions_cmd(self, entities: dict[str, Any]) -> str:
+        file_path = entities.get("file_path", "config.conf")
+        return f"ls -la {file_path}"
 
     def _generate_docker(self, entities: dict[str, Any]) -> str:
         """Generate docker command."""
