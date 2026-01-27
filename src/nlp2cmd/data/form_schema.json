@@ -1,0 +1,114 @@
+{
+  "$schema": "form_schema.v1",
+  "description": "Schema for automatic form field detection and filling",
+  
+  "nlp_keywords": {
+    "typing": ["wpisz", "wpisać", "wpisac", "type", "input", "napisz", "fill"],
+    "clicking": ["kliknij", "click", "naciśnij", "nacisnij", "press"],
+    "form": ["formularz", "form", "wypełnij", "wypelnij", "fill out", "fill form"],
+    "submit": ["wyślij", "wyslij", "submit", "send", "prześlij", "przeslij", "zatwierdź", "zatwierdz"],
+    "press_enter": ["naciśnij enter", "nacisnij enter", "wciśnij enter", "wcisnij enter", "press enter", "hit enter", "enter"],
+    "fill_form_phrases": ["wypełnij formularz", "wypelnij formularz", "fill form"]
+  },
+  
+  "type_text_patterns": [
+    "(?:wpisz|type|input|napisz)\\s+(?:w\\s+pole)?:?\\s*(.+?)(?:\\s*,?\\s*(?:oraz|and|i)\\s+(?:naciśnij|nacisnij|press|hit)\\s+(?:enter|return)|$)",
+    "(?:wpisz|type|input|napisz)\\s+(?:tekst|text)?\\s*[\"'](.+?)[\"']",
+    "(?:wpisz|type)\\s+(.+?)(?:\\s+w\\s+pole|\\s+in\\s+field|$)"
+  ],
+  
+  "field_mappings": {
+    "name": {
+      "env_var": "FORM_NAME",
+      "patterns": ["imię", "imie", "name", "first_name", "firstname", "your-name", "nazwa", "name-1", "forminator-field-name"]
+    },
+    "lastname": {
+      "env_var": "FORM_LASTNAME",
+      "patterns": ["nazwisko", "surname", "last_name", "lastname"]
+    },
+    "email": {
+      "env_var": "FORM_EMAIL",
+      "patterns": ["email", "e-mail", "adres e-mail", "your-email", "mail", "email-1", "forminator-field-email"]
+    },
+    "phone": {
+      "env_var": "FORM_PHONE",
+      "patterns": ["telefon", "phone", "numer telefonu", "tel", "mobile", "phone-1", "forminator-field-phone"]
+    },
+    "message": {
+      "env_var": "FORM_MESSAGE",
+      "patterns": ["wiadomość", "wiadomosc", "message", "your-message", "treść", "tresc", "komentarz", "comment", "textarea-1", "forminator-field-textarea"]
+    },
+    "subject": {
+      "env_var": "FORM_SUBJECT",
+      "patterns": ["temat", "subject"]
+    },
+    "company": {
+      "env_var": "FORM_COMPANY",
+      "patterns": ["firma", "company", "organization"]
+    },
+    "address": {
+      "env_var": "FORM_ADDRESS",
+      "patterns": ["adres", "address"]
+    },
+    "city": {
+      "env_var": "FORM_CITY",
+      "patterns": ["miasto", "city"]
+    },
+    "website": {
+      "env_var": "FORM_WEBSITE",
+      "patterns": ["strona", "website", "url"]
+    },
+    "consent": {
+      "env_var": "FORM_CONSENT",
+      "patterns": ["zgoda", "consent", "rodo", "gdpr", "akceptuję", "akceptuje", "accept", "agree", "zgadzam", "polityka", "regulamin", "terms", "privacy"]
+    }
+  },
+  
+  "submit_selectors": [
+    "button[type=\"submit\"]",
+    "input[type=\"submit\"]",
+    "button:has-text(\"Wyślij\")",
+    "button:has-text(\"Submit\")",
+    "button:has-text(\"Send\")",
+    "button:has-text(\"Prześlij\")",
+    "button:has-text(\"OK\")",
+    ".submit-button",
+    "[type=\"submit\"]"
+  ],
+  
+  "skip_fields": ["sl", "tl", "query", "gtrans", "vote", "honeypot", "bot", "captcha", "hidden"],
+  
+  "type_selectors": {
+    "search": [
+      "input[name='q']",
+      "input[type='search']",
+      "textarea[name='q']",
+      "textarea[aria-label*='Search']",
+      "textarea[aria-label*='Szukaj']",
+      "input[aria-label*='Search']",
+      "input[aria-label*='Szukaj']",
+      "textarea",
+      "input[type='text']"
+    ],
+    "generic": [
+      "textarea",
+      "input[type='text']",
+      "input"
+    ]
+  },
+  
+  "dismiss_selectors": [
+    "button:has-text('Accept all')",
+    "button:has-text('Akceptuj wszystko')",
+    "button:has-text('Zaakceptuj')",
+    "button:has-text('Accept')",
+    "button:has-text('Zgadzam się')",
+    "button:has-text('I agree')",
+    "button:has-text('OK')",
+    "button[aria-label*='Accept']",
+    "button[aria-label*='Akceptuj']",
+    "button[id*='accept']",
+    "button[id*='consent']",
+    "#L2AGLb"
+  ]
+}

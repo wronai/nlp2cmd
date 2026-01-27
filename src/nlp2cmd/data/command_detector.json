@@ -1,0 +1,1630 @@
+{
+  "$schema": "command_detector.v1",
+  "action_mappings": {
+    "find": {
+      "keywords": [
+        "find",
+        "search",
+        "look for",
+        "locate",
+        "list files",
+        "search files"
+      ],
+      "patterns": [
+        "\\bfind\\b",
+        "\\bsearch\\b",
+        "\\blook for\\b",
+        "\\blocate\\b"
+      ],
+      "context_keywords": [
+        "file",
+        "files",
+        "directory",
+        "folder",
+        "pattern",
+        "name"
+      ]
+    },
+    "grep": {
+      "keywords": [
+        "search",
+        "find text",
+        "search in",
+        "look for",
+        "grep",
+        "pattern"
+      ],
+      "patterns": [
+        "\\bsearch\\b",
+        "\\bgrep\\b",
+        "\\bfind text\\b"
+      ],
+      "context_keywords": [
+        "text",
+        "content",
+        "pattern",
+        "string",
+        "word",
+        "file",
+        "files"
+      ]
+    },
+    "sed": {
+      "keywords": [
+        "replace",
+        "substitute",
+        "change",
+        "modify",
+        "edit text"
+      ],
+      "patterns": [
+        "\\breplace\\b",
+        "\\bsubstitute\\b",
+        "\\bsed\\b"
+      ],
+      "context_keywords": [
+        "text",
+        "file",
+        "pattern",
+        "string"
+      ]
+    },
+    "awk": {
+      "keywords": [
+        "process",
+        "extract",
+        "parse",
+        "column",
+        "field"
+      ],
+      "patterns": [
+        "\\bawk\\b",
+        "\\bextract\\b",
+        "\\bcolumn\\b"
+      ],
+      "context_keywords": [
+        "text",
+        "file",
+        "field",
+        "column"
+      ]
+    },
+    "ls": {
+      "keywords": [
+        "list",
+        "show",
+        "display files",
+        "directory contents"
+      ],
+      "patterns": [
+        "\\blist\\b",
+        "\\bls\\b",
+        "\\bshow files\\b"
+      ],
+      "context_keywords": [
+        "files",
+        "directory",
+        "folder",
+        "contents"
+      ]
+    },
+    "mkdir": {
+      "keywords": [
+        "create directory",
+        "make directory",
+        "mkdir",
+        "new folder"
+      ],
+      "patterns": [
+        "\\bcreate.*directory\\b",
+        "\\bmake.*directory\\b",
+        "\\bmkdir\\b"
+      ],
+      "context_keywords": [
+        "directory",
+        "folder"
+      ]
+    },
+    "rm": {
+      "keywords": [
+        "remove",
+        "delete",
+        "rm",
+        "unlink"
+      ],
+      "patterns": [
+        "\\bremove\\b",
+        "\\bdelete\\b",
+        "\\brm\\b"
+      ],
+      "context_keywords": [
+        "file",
+        "files",
+        "directory",
+        "folder"
+      ]
+    },
+    "cp": {
+      "keywords": [
+        "copy",
+        "duplicate",
+        "cp"
+      ],
+      "patterns": [
+        "\\bcopy\\b",
+        "\\bduplicate\\b",
+        "\\bcp\\b"
+      ],
+      "context_keywords": [
+        "file",
+        "files",
+        "directory",
+        "folder"
+      ]
+    },
+    "mv": {
+      "keywords": [
+        "move",
+        "rename",
+        "mv"
+      ],
+      "patterns": [
+        "\\bmove\\b",
+        "\\brename\\b",
+        "\\bmv\\b"
+      ],
+      "context_keywords": [
+        "file",
+        "files",
+        "directory",
+        "folder"
+      ]
+    },
+    "tar": {
+      "keywords": [
+        "compress",
+        "archive",
+        "tar",
+        "bundle",
+        "pack"
+      ],
+      "patterns": [
+        "\\bcompress\\b",
+        "\\barchive\\b",
+        "\\btar\\b",
+        "\\bbundle\\b"
+      ],
+      "context_keywords": [
+        "files",
+        "directory",
+        "folder",
+        "backup"
+      ]
+    },
+    "zip": {
+      "keywords": [
+        "zip",
+        "compress to zip"
+      ],
+      "patterns": [
+        "\\bzip\\b"
+      ],
+      "context_keywords": [
+        "files",
+        "folder"
+      ]
+    },
+    "unzip": {
+      "keywords": [
+        "unzip",
+        "extract zip"
+      ],
+      "patterns": [
+        "\\bunzip\\b",
+        "\\bextract.*zip\\b"
+      ],
+      "context_keywords": [
+        "archive",
+        "file"
+      ]
+    },
+    "ps": {
+      "keywords": [
+        "processes",
+        "running processes",
+        "ps",
+        "list processes"
+      ],
+      "patterns": [
+        "\\bprocesses?\\b",
+        "\\bps\\b",
+        "\\brunning\\b"
+      ],
+      "context_keywords": [
+        "process",
+        "running",
+        "list"
+      ]
+    },
+    "top": {
+      "keywords": [
+        "monitor processes",
+        "top",
+        "process monitor"
+      ],
+      "patterns": [
+        "\\btop\\b",
+        "\\bmonitor.*process\\b"
+      ],
+      "context_keywords": [
+        "process",
+        "monitor",
+        "running"
+      ]
+    },
+    "kill": {
+      "keywords": [
+        "kill",
+        "terminate",
+        "stop process"
+      ],
+      "patterns": [
+        "\\bkill\\b",
+        "\\bterminate\\b",
+        "\\bstop.*process\\b"
+      ],
+      "context_keywords": [
+        "process",
+        "pid",
+        "signal"
+      ]
+    },
+    "df": {
+      "keywords": [
+        "disk usage",
+        "disk space",
+        "df",
+        "filesystem"
+      ],
+      "patterns": [
+        "\\bdisk\\b",
+        "\\bdf\\b",
+        "\\bspace\\b"
+      ],
+      "context_keywords": [
+        "disk",
+        "space",
+        "filesystem",
+        "usage"
+      ]
+    },
+    "du": {
+      "keywords": [
+        "disk usage",
+        "file size",
+        "directory size",
+        "du"
+      ],
+      "patterns": [
+        "\\bfile.*size\\b",
+        "\\bdu\\b",
+        "\\bdirectory.*size\\b"
+      ],
+      "context_keywords": [
+        "size",
+        "disk",
+        "usage",
+        "file",
+        "directory"
+      ]
+    },
+    "free": {
+      "keywords": [
+        "memory",
+        "ram",
+        "free",
+        "memory usage"
+      ],
+      "patterns": [
+        "\\bmemory\\b",
+        "\\bram\\b",
+        "\\bfree\\b"
+      ],
+      "context_keywords": [
+        "memory",
+        "ram",
+        "usage",
+        "free"
+      ]
+    },
+    "uname": {
+      "keywords": [
+        "system info",
+        "uname",
+        "kernel version"
+      ],
+      "patterns": [
+        "\\bsystem.*info\\b",
+        "\\buname\\b",
+        "\\bkernel\\b"
+      ],
+      "context_keywords": [
+        "system",
+        "kernel",
+        "version",
+        "info"
+      ]
+    },
+    "uptime": {
+      "keywords": [
+        "uptime",
+        "system uptime",
+        "how long"
+      ],
+      "patterns": [
+        "\\buptime\\b",
+        "\\bsystem.*uptime\\b",
+        "\\bhow long\\b"
+      ],
+      "context_keywords": [
+        "uptime",
+        "running",
+        "time"
+      ]
+    },
+    "ping": {
+      "keywords": [
+        "ping",
+        "test connection",
+        "check host",
+        "network test"
+      ],
+      "patterns": [
+        "\\bping\\b",
+        "\\btest.*connection\\b",
+        "\\bcheck.*host\\b"
+      ],
+      "context_keywords": [
+        "host",
+        "connection",
+        "network",
+        "test"
+      ]
+    },
+    "curl": {
+      "keywords": [
+        "download",
+        "http",
+        "url",
+        "curl",
+        "web request"
+      ],
+      "patterns": [
+        "\\bcurl\\b",
+        "\\bdownload\\b",
+        "\\bhttp\\b",
+        "\\burl\\b"
+      ],
+      "context_keywords": [
+        "url",
+        "http",
+        "download",
+        "web",
+        "request"
+      ]
+    },
+    "wget": {
+      "keywords": [
+        "download",
+        "wget",
+        "fetch"
+      ],
+      "patterns": [
+        "\\bwget\\b",
+        "\\bdownload\\b",
+        "\\bfetch\\b"
+      ],
+      "context_keywords": [
+        "url",
+        "download",
+        "file",
+        "web"
+      ]
+    },
+    "netstat": {
+      "keywords": [
+        "network connections",
+        "netstat",
+        "ports",
+        "listening"
+      ],
+      "patterns": [
+        "\\bnetstat\\b",
+        "\\bnetwork.*connection\\b",
+        "\\bports?\\b"
+      ],
+      "context_keywords": [
+        "network",
+        "connection",
+        "port",
+        "listening"
+      ]
+    },
+    "ss": {
+      "keywords": [
+        "socket",
+        "ss",
+        "network statistics"
+      ],
+      "patterns": [
+        "\\bss\\b",
+        "\\bsocket\\b",
+        "\\bnetwork.*stat\\b"
+      ],
+      "context_keywords": [
+        "socket",
+        "network",
+        "connection"
+      ]
+    },
+    "ssh": {
+      "keywords": [
+        "ssh",
+        "remote login",
+        "connect to server"
+      ],
+      "patterns": [
+        "\\bssh\\b",
+        "\\bremote.*login\\b",
+        "\\bconnect.*server\\b"
+      ],
+      "context_keywords": [
+        "remote",
+        "server",
+        "ssh",
+        "connect"
+      ]
+    },
+    "scp": {
+      "keywords": [
+        "scp",
+        "remote copy",
+        "transfer file"
+      ],
+      "patterns": [
+        "\\bscp\\b",
+        "\\bremote.*copy\\b",
+        "\\btransfer.*file\\b"
+      ],
+      "context_keywords": [
+        "remote",
+        "copy",
+        "transfer",
+        "file"
+      ]
+    },
+    "git": {
+      "keywords": [
+        "git",
+        "version control",
+        "commit",
+        "push",
+        "pull",
+        "clone",
+        "status"
+      ],
+      "patterns": [
+        "\\bgit\\b",
+        "\\bcommit\\b",
+        "\\bpush\\b",
+        "\\bpull\\b",
+        "\\bclone\\b",
+        "\\bstatus\\b"
+      ],
+      "context_keywords": [
+        "repository",
+        "branch",
+        "code",
+        "version"
+      ]
+    },
+    "docker": {
+      "keywords": [
+        "docker",
+        "container",
+        "image",
+        "docker run"
+      ],
+      "patterns": [
+        "\\bdocker\\b",
+        "\\bcontainer\\b",
+        "\\bimage\\b"
+      ],
+      "context_keywords": [
+        "container",
+        "image",
+        "docker",
+        "run"
+      ]
+    },
+    "kubectl": {
+      "keywords": [
+        "kubernetes",
+        "kubectl",
+        "k8s",
+        "pod",
+        "deployment"
+      ],
+      "patterns": [
+        "\\bkubectl\\b",
+        "\\bkubernetes\\b",
+        "\\bk8s\\b",
+        "\\bpod\\b"
+      ],
+      "context_keywords": [
+        "kubernetes",
+        "pod",
+        "deployment",
+        "cluster"
+      ]
+    },
+    "make": {
+      "keywords": [
+        "make",
+        "build",
+        "compile"
+      ],
+      "patterns": [
+        "\\bmake\\b",
+        "\\bbuild\\b",
+        "\\bcompile\\b"
+      ],
+      "context_keywords": [
+        "build",
+        "compile",
+        "makefile"
+      ]
+    },
+    "gcc": {
+      "keywords": [
+        "gcc",
+        "compile c",
+        "gcc compile"
+      ],
+      "patterns": [
+        "\\bgcc\\b",
+        "\\bcompile.*c\\b"
+      ],
+      "context_keywords": [
+        "compile",
+        "c",
+        "source"
+      ]
+    },
+    "python": {
+      "keywords": [
+        "python",
+        "run python",
+        "python script"
+      ],
+      "patterns": [
+        "\\bpython\\b",
+        "\\brun.*python\\b"
+      ],
+      "context_keywords": [
+        "python",
+        "script",
+        "run"
+      ]
+    },
+    "npm": {
+      "keywords": [
+        "npm",
+        "node",
+        "install package"
+      ],
+      "patterns": [
+        "\\bnpm\\b",
+        "\\bnode\\b",
+        "\\binstall.*package\\b"
+      ],
+      "context_keywords": [
+        "npm",
+        "node",
+        "package",
+        "install"
+      ]
+    },
+    "cat": {
+      "keywords": ["cat", "show file", "display file", "view file", "read file", "file content"],
+      "patterns": ["\\bcat\\b", "\\bshow.*file\\b", "\\bview.*file\\b", "\\bread.*file\\b"],
+      "context_keywords": ["file", "content", "text", "display", "view"]
+    },
+    "head": {
+      "keywords": ["head", "first lines", "top lines", "beginning", "start of file"],
+      "patterns": ["\\bhead\\b", "\\bfirst.*lines\\b", "\\btop.*lines\\b"],
+      "context_keywords": ["lines", "file", "beginning", "first", "top"]
+    },
+    "tail": {
+      "keywords": ["tail", "last lines", "end of file", "bottom lines", "follow log"],
+      "patterns": ["\\btail\\b", "\\blast.*lines\\b", "\\bend.*file\\b", "\\bfollow\\b"],
+      "context_keywords": ["lines", "file", "end", "last", "log", "follow"]
+    },
+    "less": {
+      "keywords": ["less", "more", "page through", "scroll file", "pager"],
+      "patterns": ["\\bless\\b", "\\bmore\\b", "\\bpager\\b"],
+      "context_keywords": ["file", "scroll", "page", "view"]
+    },
+    "wc": {
+      "keywords": ["wc", "word count", "line count", "count lines", "count words", "count characters"],
+      "patterns": ["\\bwc\\b", "\\bcount.*lines\\b", "\\bcount.*words\\b", "\\bword.*count\\b"],
+      "context_keywords": ["lines", "words", "characters", "count", "file"]
+    },
+    "sort": {
+      "keywords": ["sort", "order", "arrange", "alphabetical", "numeric sort"],
+      "patterns": ["\\bsort\\b", "\\border\\b", "\\barrange\\b"],
+      "context_keywords": ["file", "lines", "order", "alphabetical", "numeric"]
+    },
+    "uniq": {
+      "keywords": ["uniq", "unique", "remove duplicates", "deduplicate", "distinct"],
+      "patterns": ["\\buniq\\b", "\\bunique\\b", "\\bdeduplicate\\b", "\\bremove.*duplicates\\b"],
+      "context_keywords": ["lines", "duplicates", "unique", "distinct"]
+    },
+    "cut": {
+      "keywords": ["cut", "extract column", "extract field", "delimiter", "column"],
+      "patterns": ["\\bcut\\b", "\\bextract.*column\\b", "\\bextract.*field\\b"],
+      "context_keywords": ["column", "field", "delimiter", "file"]
+    },
+    "tr": {
+      "keywords": ["tr", "translate", "replace characters", "uppercase", "lowercase", "delete chars"],
+      "patterns": ["\\btr\\b", "\\btranslate\\b", "\\buppercase\\b", "\\blowercase\\b"],
+      "context_keywords": ["characters", "translate", "replace", "case"]
+    },
+    "diff": {
+      "keywords": ["diff", "compare", "difference", "compare files"],
+      "patterns": ["\\bdiff\\b", "\\bcompare\\b", "\\bdifference\\b"],
+      "context_keywords": ["files", "compare", "difference", "changes"]
+    },
+    "patch": {
+      "keywords": ["patch", "apply patch", "apply diff"],
+      "patterns": ["\\bpatch\\b", "\\bapply.*patch\\b"],
+      "context_keywords": ["patch", "diff", "apply", "file"]
+    },
+    "tee": {
+      "keywords": ["tee", "split output", "write and display"],
+      "patterns": ["\\btee\\b", "\\bsplit.*output\\b"],
+      "context_keywords": ["output", "file", "write", "display"]
+    },
+    "xargs": {
+      "keywords": ["xargs", "build arguments", "pipe arguments", "parallel"],
+      "patterns": ["\\bxargs\\b", "\\bparallel\\b"],
+      "context_keywords": ["arguments", "pipe", "parallel", "command"]
+    },
+    "touch": {
+      "keywords": ["touch", "create file", "update timestamp", "new file"],
+      "patterns": ["\\btouch\\b", "\\bcreate.*file\\b", "\\bnew.*file\\b"],
+      "context_keywords": ["file", "create", "timestamp", "new"]
+    },
+    "ln": {
+      "keywords": ["ln", "link", "symbolic link", "symlink", "hard link"],
+      "patterns": ["\\bln\\b", "\\blink\\b", "\\bsymlink\\b", "\\bsymbolic.*link\\b"],
+      "context_keywords": ["link", "symbolic", "file", "hard"]
+    },
+    "stat": {
+      "keywords": ["stat", "file info", "file status", "file details", "metadata"],
+      "patterns": ["\\bstat\\b", "\\bfile.*info\\b", "\\bfile.*status\\b"],
+      "context_keywords": ["file", "info", "status", "metadata", "details"]
+    },
+    "file": {
+      "keywords": ["file", "file type", "detect type", "mime type"],
+      "patterns": ["\\bfile\\b", "\\bfile.*type\\b", "\\bmime.*type\\b"],
+      "context_keywords": ["type", "file", "mime", "detect"]
+    },
+    "chmod": {
+      "keywords": ["chmod", "change permissions", "permissions", "executable", "read write"],
+      "patterns": ["\\bchmod\\b", "\\bpermissions\\b", "\\bexecutable\\b"],
+      "context_keywords": ["permissions", "file", "executable", "read", "write"]
+    },
+    "chown": {
+      "keywords": ["chown", "change owner", "ownership", "owner", "group"],
+      "patterns": ["\\bchown\\b", "\\bchange.*owner\\b", "\\bownership\\b"],
+      "context_keywords": ["owner", "group", "file", "ownership"]
+    },
+    "chgrp": {
+      "keywords": ["chgrp", "change group", "group ownership"],
+      "patterns": ["\\bchgrp\\b", "\\bchange.*group\\b"],
+      "context_keywords": ["group", "file", "ownership"]
+    },
+    "pwd": {
+      "keywords": ["pwd", "current directory", "working directory", "where am i"],
+      "patterns": ["\\bpwd\\b", "\\bcurrent.*directory\\b", "\\bworking.*directory\\b"],
+      "context_keywords": ["directory", "current", "path", "working"]
+    },
+    "cd": {
+      "keywords": ["cd", "change directory", "go to", "navigate"],
+      "patterns": ["\\bcd\\b", "\\bchange.*directory\\b", "\\bgo.*to\\b"],
+      "context_keywords": ["directory", "navigate", "change", "folder"]
+    },
+    "tree": {
+      "keywords": ["tree", "directory tree", "folder structure", "tree view"],
+      "patterns": ["\\btree\\b", "\\bdirectory.*tree\\b", "\\bfolder.*structure\\b"],
+      "context_keywords": ["tree", "directory", "structure", "folders"]
+    },
+    "rmdir": {
+      "keywords": ["rmdir", "remove directory", "delete directory", "remove empty directory"],
+      "patterns": ["\\brmdir\\b", "\\bremove.*directory\\b", "\\bdelete.*directory\\b"],
+      "context_keywords": ["directory", "remove", "delete", "empty"]
+    },
+    "which": {
+      "keywords": ["which", "locate command", "find command", "command path"],
+      "patterns": ["\\bwhich\\b", "\\blocate.*command\\b", "\\bfind.*command\\b"],
+      "context_keywords": ["command", "path", "locate", "binary"]
+    },
+    "whereis": {
+      "keywords": ["whereis", "locate binary", "find binary", "man page location"],
+      "patterns": ["\\bwhereis\\b", "\\blocate.*binary\\b"],
+      "context_keywords": ["binary", "man", "source", "location"]
+    },
+    "locate": {
+      "keywords": ["locate", "find file fast", "search database", "mlocate"],
+      "patterns": ["\\blocate\\b", "\\bmlocate\\b"],
+      "context_keywords": ["file", "search", "database", "fast"]
+    },
+    "updatedb": {
+      "keywords": ["updatedb", "update locate database", "refresh database"],
+      "patterns": ["\\bupdatedb\\b", "\\bupdate.*locate\\b"],
+      "context_keywords": ["database", "update", "locate", "refresh"]
+    },
+    "rsync": {
+      "keywords": ["rsync", "sync", "synchronize", "backup", "remote sync", "mirror"],
+      "patterns": ["\\brsync\\b", "\\bsync\\b", "\\bsynchronize\\b", "\\bmirror\\b"],
+      "context_keywords": ["sync", "backup", "remote", "copy", "mirror"]
+    },
+    "dd": {
+      "keywords": ["dd", "disk dump", "disk image", "clone disk", "copy disk"],
+      "patterns": ["\\bdd\\b", "\\bdisk.*dump\\b", "\\bdisk.*image\\b", "\\bclone.*disk\\b"],
+      "context_keywords": ["disk", "image", "clone", "copy", "dump"]
+    },
+    "gzip": {
+      "keywords": ["gzip", "compress gzip", "gz compress"],
+      "patterns": ["\\bgzip\\b", "\\bgunzip\\b"],
+      "context_keywords": ["compress", "gzip", "gz", "file"]
+    },
+    "gunzip": {
+      "keywords": ["gunzip", "decompress gzip", "extract gz"],
+      "patterns": ["\\bgunzip\\b", "\\bextract.*gz\\b"],
+      "context_keywords": ["decompress", "extract", "gzip", "gz"]
+    },
+    "bzip2": {
+      "keywords": ["bzip2", "compress bzip", "bz2 compress"],
+      "patterns": ["\\bbzip2\\b", "\\bbunzip2\\b"],
+      "context_keywords": ["compress", "bzip", "bz2", "file"]
+    },
+    "xz": {
+      "keywords": ["xz", "compress xz", "xz compress", "lzma"],
+      "patterns": ["\\bxz\\b", "\\blzma\\b"],
+      "context_keywords": ["compress", "xz", "lzma", "file"]
+    },
+    "7z": {
+      "keywords": ["7z", "7zip", "compress 7z", "extract 7z"],
+      "patterns": ["\\b7z\\b", "\\b7zip\\b"],
+      "context_keywords": ["compress", "7z", "archive", "extract"]
+    },
+    "rar": {
+      "keywords": ["rar", "unrar", "compress rar", "extract rar"],
+      "patterns": ["\\brar\\b", "\\bunrar\\b"],
+      "context_keywords": ["compress", "rar", "archive", "extract"]
+    },
+    "htop": {
+      "keywords": ["htop", "interactive process", "system monitor", "process viewer"],
+      "patterns": ["\\bhtop\\b", "\\binteractive.*process\\b"],
+      "context_keywords": ["process", "monitor", "interactive", "system"]
+    },
+    "pgrep": {
+      "keywords": ["pgrep", "find process", "process grep", "search process"],
+      "patterns": ["\\bpgrep\\b", "\\bfind.*process\\b"],
+      "context_keywords": ["process", "find", "search", "pid"]
+    },
+    "pkill": {
+      "keywords": ["pkill", "kill by name", "kill process name"],
+      "patterns": ["\\bpkill\\b", "\\bkill.*name\\b"],
+      "context_keywords": ["kill", "process", "name", "signal"]
+    },
+    "killall": {
+      "keywords": ["killall", "kill all processes", "kill by name"],
+      "patterns": ["\\bkillall\\b", "\\bkill.*all\\b"],
+      "context_keywords": ["kill", "all", "process", "name"]
+    },
+    "nice": {
+      "keywords": ["nice", "priority", "process priority", "run with priority"],
+      "patterns": ["\\bnice\\b", "\\bpriority\\b"],
+      "context_keywords": ["priority", "process", "nice", "run"]
+    },
+    "renice": {
+      "keywords": ["renice", "change priority", "adjust priority"],
+      "patterns": ["\\brenice\\b", "\\bchange.*priority\\b"],
+      "context_keywords": ["priority", "change", "process", "adjust"]
+    },
+    "nohup": {
+      "keywords": ["nohup", "run background", "ignore hangup", "detach process"],
+      "patterns": ["\\bnohup\\b", "\\bbackground\\b", "\\bdetach\\b"],
+      "context_keywords": ["background", "hangup", "detach", "process"]
+    },
+    "bg": {
+      "keywords": ["bg", "background job", "resume background"],
+      "patterns": ["\\bbg\\b", "\\bbackground.*job\\b"],
+      "context_keywords": ["background", "job", "resume"]
+    },
+    "fg": {
+      "keywords": ["fg", "foreground job", "resume foreground"],
+      "patterns": ["\\bfg\\b", "\\bforeground.*job\\b"],
+      "context_keywords": ["foreground", "job", "resume"]
+    },
+    "jobs": {
+      "keywords": ["jobs", "list jobs", "background jobs", "running jobs"],
+      "patterns": ["\\bjobs\\b", "\\blist.*jobs\\b"],
+      "context_keywords": ["jobs", "background", "list", "running"]
+    },
+    "lsof": {
+      "keywords": ["lsof", "open files", "list open files", "who uses file"],
+      "patterns": ["\\blsof\\b", "\\bopen.*files\\b", "\\blist.*open\\b"],
+      "context_keywords": ["files", "open", "process", "port"]
+    },
+    "fuser": {
+      "keywords": ["fuser", "file user", "who uses", "process using file"],
+      "patterns": ["\\bfuser\\b", "\\bwho.*uses\\b"],
+      "context_keywords": ["file", "user", "process", "using"]
+    },
+    "strace": {
+      "keywords": ["strace", "trace syscalls", "system calls", "debug process"],
+      "patterns": ["\\bstrace\\b", "\\btrace.*syscalls\\b"],
+      "context_keywords": ["trace", "syscalls", "debug", "process"]
+    },
+    "ltrace": {
+      "keywords": ["ltrace", "trace library", "library calls"],
+      "patterns": ["\\bltrace\\b", "\\blibrary.*calls\\b"],
+      "context_keywords": ["trace", "library", "calls", "debug"]
+    },
+    "time": {
+      "keywords": ["time", "measure time", "execution time", "how long"],
+      "patterns": ["\\btime\\b", "\\bmeasure.*time\\b", "\\bexecution.*time\\b"],
+      "context_keywords": ["time", "measure", "execution", "command"]
+    },
+    "watch": {
+      "keywords": ["watch", "repeat command", "monitor command", "every seconds"],
+      "patterns": ["\\bwatch\\b", "\\brepeat.*command\\b", "\\bmonitor.*command\\b"],
+      "context_keywords": ["repeat", "monitor", "seconds", "command"]
+    },
+    "vmstat": {
+      "keywords": ["vmstat", "virtual memory", "memory statistics", "system stats"],
+      "patterns": ["\\bvmstat\\b", "\\bvirtual.*memory\\b"],
+      "context_keywords": ["memory", "virtual", "statistics", "system"]
+    },
+    "iostat": {
+      "keywords": ["iostat", "io statistics", "disk io", "cpu io"],
+      "patterns": ["\\biostat\\b", "\\bio.*statistics\\b", "\\bdisk.*io\\b"],
+      "context_keywords": ["io", "disk", "statistics", "cpu"]
+    },
+    "sar": {
+      "keywords": ["sar", "system activity", "performance report", "system report"],
+      "patterns": ["\\bsar\\b", "\\bsystem.*activity\\b"],
+      "context_keywords": ["system", "activity", "performance", "report"]
+    },
+    "mpstat": {
+      "keywords": ["mpstat", "cpu statistics", "processor stats", "multiprocessor"],
+      "patterns": ["\\bmpstat\\b", "\\bcpu.*statistics\\b"],
+      "context_keywords": ["cpu", "processor", "statistics", "multiprocessor"]
+    },
+    "dmesg": {
+      "keywords": ["dmesg", "kernel messages", "boot messages", "system messages"],
+      "patterns": ["\\bdmesg\\b", "\\bkernel.*messages\\b", "\\bboot.*messages\\b"],
+      "context_keywords": ["kernel", "messages", "boot", "system"]
+    },
+    "journalctl": {
+      "keywords": ["journalctl", "systemd logs", "system logs", "journal"],
+      "patterns": ["\\bjournalctl\\b", "\\bsystemd.*logs\\b", "\\bjournal\\b"],
+      "context_keywords": ["logs", "systemd", "journal", "system"]
+    },
+    "systemctl": {
+      "keywords": ["systemctl", "systemd", "service control", "manage service"],
+      "patterns": ["\\bsystemctl\\b", "\\bsystemd\\b", "\\bservice.*control\\b"],
+      "context_keywords": ["service", "systemd", "start", "stop", "status"]
+    },
+    "service": {
+      "keywords": ["service", "daemon", "start service", "stop service"],
+      "patterns": ["\\bservice\\b", "\\bdaemon\\b"],
+      "context_keywords": ["service", "daemon", "start", "stop"]
+    },
+    "crontab": {
+      "keywords": ["crontab", "cron", "schedule", "scheduled task", "periodic"],
+      "patterns": ["\\bcrontab\\b", "\\bcron\\b", "\\bschedule\\b"],
+      "context_keywords": ["schedule", "cron", "task", "periodic"]
+    },
+    "at": {
+      "keywords": ["at", "schedule once", "run later", "one time"],
+      "patterns": ["\\bat\\b", "\\bschedule.*once\\b", "\\brun.*later\\b"],
+      "context_keywords": ["schedule", "once", "later", "time"]
+    },
+    "hostname": {
+      "keywords": ["hostname", "host name", "machine name", "server name"],
+      "patterns": ["\\bhostname\\b", "\\bhost.*name\\b", "\\bmachine.*name\\b"],
+      "context_keywords": ["hostname", "name", "machine", "server"]
+    },
+    "hostnamectl": {
+      "keywords": ["hostnamectl", "set hostname", "change hostname"],
+      "patterns": ["\\bhostnamectl\\b", "\\bset.*hostname\\b"],
+      "context_keywords": ["hostname", "set", "change", "system"]
+    },
+    "date": {
+      "keywords": ["date", "time", "current date", "current time", "set date"],
+      "patterns": ["\\bdate\\b", "\\bcurrent.*date\\b", "\\bcurrent.*time\\b"],
+      "context_keywords": ["date", "time", "current", "set"]
+    },
+    "cal": {
+      "keywords": ["cal", "calendar", "month", "year calendar"],
+      "patterns": ["\\bcal\\b", "\\bcalendar\\b"],
+      "context_keywords": ["calendar", "month", "year", "date"]
+    },
+    "timedatectl": {
+      "keywords": ["timedatectl", "timezone", "set time", "ntp"],
+      "patterns": ["\\btimedatectl\\b", "\\btimezone\\b", "\\bntp\\b"],
+      "context_keywords": ["time", "date", "timezone", "ntp"]
+    },
+    "whoami": {
+      "keywords": ["whoami", "who am i", "current user", "my username"],
+      "patterns": ["\\bwhoami\\b", "\\bwho.*am.*i\\b", "\\bcurrent.*user\\b"],
+      "context_keywords": ["user", "current", "username", "me"]
+    },
+    "who": {
+      "keywords": ["who", "logged users", "logged in", "users online"],
+      "patterns": ["\\bwho\\b", "\\blogged.*users\\b", "\\blogged.*in\\b"],
+      "context_keywords": ["users", "logged", "online", "login"]
+    },
+    "w": {
+      "keywords": ["w", "who is doing", "user activity", "what users doing"],
+      "patterns": ["\\bw\\b", "\\buser.*activity\\b"],
+      "context_keywords": ["users", "activity", "doing", "load"]
+    },
+    "last": {
+      "keywords": ["last", "login history", "last logins", "reboot history"],
+      "patterns": ["\\blast\\b", "\\blogin.*history\\b", "\\blast.*logins\\b"],
+      "context_keywords": ["login", "history", "reboot", "users"]
+    },
+    "lastlog": {
+      "keywords": ["lastlog", "last login", "login report"],
+      "patterns": ["\\blastlog\\b", "\\blast.*login\\b"],
+      "context_keywords": ["login", "last", "report", "users"]
+    },
+    "id": {
+      "keywords": ["id", "user id", "uid", "gid", "groups"],
+      "patterns": ["\\bid\\b", "\\buser.*id\\b", "\\buid\\b", "\\bgid\\b"],
+      "context_keywords": ["user", "id", "uid", "gid", "groups"]
+    },
+    "groups": {
+      "keywords": ["groups", "user groups", "list groups"],
+      "patterns": ["\\bgroups\\b", "\\buser.*groups\\b"],
+      "context_keywords": ["groups", "user", "list"]
+    },
+    "useradd": {
+      "keywords": ["useradd", "add user", "create user", "new user"],
+      "patterns": ["\\buseradd\\b", "\\badd.*user\\b", "\\bcreate.*user\\b"],
+      "context_keywords": ["user", "add", "create", "new"]
+    },
+    "userdel": {
+      "keywords": ["userdel", "delete user", "remove user"],
+      "patterns": ["\\buserdel\\b", "\\bdelete.*user\\b", "\\bremove.*user\\b"],
+      "context_keywords": ["user", "delete", "remove"]
+    },
+    "usermod": {
+      "keywords": ["usermod", "modify user", "change user", "user settings"],
+      "patterns": ["\\busermod\\b", "\\bmodify.*user\\b", "\\bchange.*user\\b"],
+      "context_keywords": ["user", "modify", "change", "settings"]
+    },
+    "groupadd": {
+      "keywords": ["groupadd", "add group", "create group", "new group"],
+      "patterns": ["\\bgroupadd\\b", "\\badd.*group\\b", "\\bcreate.*group\\b"],
+      "context_keywords": ["group", "add", "create", "new"]
+    },
+    "groupdel": {
+      "keywords": ["groupdel", "delete group", "remove group"],
+      "patterns": ["\\bgroupdel\\b", "\\bdelete.*group\\b", "\\bremove.*group\\b"],
+      "context_keywords": ["group", "delete", "remove"]
+    },
+    "passwd": {
+      "keywords": ["passwd", "change password", "set password", "password"],
+      "patterns": ["\\bpasswd\\b", "\\bchange.*password\\b", "\\bset.*password\\b"],
+      "context_keywords": ["password", "change", "set", "user"]
+    },
+    "su": {
+      "keywords": ["su", "switch user", "become user", "login as"],
+      "patterns": ["\\bsu\\b", "\\bswitch.*user\\b", "\\bbecome.*user\\b"],
+      "context_keywords": ["user", "switch", "become", "login"]
+    },
+    "sudo": {
+      "keywords": ["sudo", "superuser", "root", "admin", "elevated"],
+      "patterns": ["\\bsudo\\b", "\\bsuperuser\\b", "\\broot\\b", "\\badmin\\b"],
+      "context_keywords": ["root", "admin", "superuser", "elevated"]
+    },
+    "ip": {
+      "keywords": ["ip", "ip address", "network interface", "routing", "ip route"],
+      "patterns": ["\\bip\\b", "\\bip.*address\\b", "\\bnetwork.*interface\\b"],
+      "context_keywords": ["ip", "address", "network", "interface", "route"]
+    },
+    "ifconfig": {
+      "keywords": ["ifconfig", "interface config", "network config", "ip config"],
+      "patterns": ["\\bifconfig\\b", "\\binterface.*config\\b"],
+      "context_keywords": ["interface", "network", "config", "ip"]
+    },
+    "route": {
+      "keywords": ["route", "routing table", "add route", "show routes"],
+      "patterns": ["\\broute\\b", "\\brouting.*table\\b"],
+      "context_keywords": ["route", "routing", "table", "network"]
+    },
+    "iptables": {
+      "keywords": ["iptables", "firewall", "filter", "nat", "packet filter"],
+      "patterns": ["\\biptables\\b", "\\bfirewall\\b", "\\bpacket.*filter\\b"],
+      "context_keywords": ["firewall", "filter", "rules", "nat"]
+    },
+    "nftables": {
+      "keywords": ["nftables", "nft", "firewall", "packet filter"],
+      "patterns": ["\\bnftables\\b", "\\bnft\\b"],
+      "context_keywords": ["firewall", "filter", "rules", "nft"]
+    },
+    "ufw": {
+      "keywords": ["ufw", "uncomplicated firewall", "firewall"],
+      "patterns": ["\\bufw\\b", "\\buncomplicated.*firewall\\b"],
+      "context_keywords": ["firewall", "ufw", "rules", "allow", "deny"]
+    },
+    "traceroute": {
+      "keywords": ["traceroute", "trace route", "network path", "hops"],
+      "patterns": ["\\btraceroute\\b", "\\btrace.*route\\b", "\\bnetwork.*path\\b"],
+      "context_keywords": ["route", "trace", "hops", "path", "network"]
+    },
+    "mtr": {
+      "keywords": ["mtr", "my traceroute", "network diagnostic"],
+      "patterns": ["\\bmtr\\b", "\\bmy.*traceroute\\b"],
+      "context_keywords": ["traceroute", "network", "diagnostic", "ping"]
+    },
+    "nslookup": {
+      "keywords": ["nslookup", "dns lookup", "name server", "resolve dns"],
+      "patterns": ["\\bnslookup\\b", "\\bdns.*lookup\\b", "\\bresolve.*dns\\b"],
+      "context_keywords": ["dns", "lookup", "resolve", "name", "server"]
+    },
+    "dig": {
+      "keywords": ["dig", "dns query", "dns info", "domain info"],
+      "patterns": ["\\bdig\\b", "\\bdns.*query\\b", "\\bdomain.*info\\b"],
+      "context_keywords": ["dns", "query", "domain", "info"]
+    },
+    "host": {
+      "keywords": ["host", "dns lookup", "resolve hostname"],
+      "patterns": ["\\bhost\\b", "\\bresolve.*hostname\\b"],
+      "context_keywords": ["dns", "host", "resolve", "lookup"]
+    },
+    "nc": {
+      "keywords": ["nc", "netcat", "network cat", "port scan", "tcp connection"],
+      "patterns": ["\\bnc\\b", "\\bnetcat\\b", "\\bport.*scan\\b"],
+      "context_keywords": ["network", "tcp", "port", "connection", "scan"]
+    },
+    "nmap": {
+      "keywords": ["nmap", "port scanner", "network scan", "security scan"],
+      "patterns": ["\\bnmap\\b", "\\bport.*scanner\\b", "\\bnetwork.*scan\\b"],
+      "context_keywords": ["scan", "port", "network", "security"]
+    },
+    "tcpdump": {
+      "keywords": ["tcpdump", "packet capture", "network capture", "sniff"],
+      "patterns": ["\\btcpdump\\b", "\\bpacket.*capture\\b", "\\bsniff\\b"],
+      "context_keywords": ["packet", "capture", "network", "sniff"]
+    },
+    "arp": {
+      "keywords": ["arp", "arp table", "mac address", "address resolution"],
+      "patterns": ["\\barp\\b", "\\barp.*table\\b", "\\bmac.*address\\b"],
+      "context_keywords": ["arp", "mac", "address", "table"]
+    },
+    "ethtool": {
+      "keywords": ["ethtool", "ethernet", "network card", "nic settings"],
+      "patterns": ["\\bethtool\\b", "\\bethernet\\b", "\\bnic.*settings\\b"],
+      "context_keywords": ["ethernet", "nic", "network", "card"]
+    },
+    "iwconfig": {
+      "keywords": ["iwconfig", "wireless", "wifi config", "wlan"],
+      "patterns": ["\\biwconfig\\b", "\\bwireless\\b", "\\bwifi.*config\\b"],
+      "context_keywords": ["wireless", "wifi", "wlan", "config"]
+    },
+    "nmcli": {
+      "keywords": ["nmcli", "network manager", "connection", "wifi connect"],
+      "patterns": ["\\bnmcli\\b", "\\bnetwork.*manager\\b"],
+      "context_keywords": ["network", "manager", "connection", "wifi"]
+    },
+    "apt": {
+      "keywords": ["apt", "apt-get", "install package", "update", "upgrade", "debian package"],
+      "patterns": ["\\bapt\\b", "\\bapt-get\\b", "\\binstall.*package\\b"],
+      "context_keywords": ["package", "install", "update", "upgrade"]
+    },
+    "dpkg": {
+      "keywords": ["dpkg", "debian package", "install deb", "package info"],
+      "patterns": ["\\bdpkg\\b", "\\bdebian.*package\\b", "\\binstall.*deb\\b"],
+      "context_keywords": ["package", "debian", "deb", "install"]
+    },
+    "yum": {
+      "keywords": ["yum", "rpm package", "install rpm", "redhat package"],
+      "patterns": ["\\byum\\b", "\\brpm.*package\\b"],
+      "context_keywords": ["package", "rpm", "install", "yum"]
+    },
+    "dnf": {
+      "keywords": ["dnf", "fedora package", "rpm", "install package"],
+      "patterns": ["\\bdnf\\b", "\\bfedora.*package\\b"],
+      "context_keywords": ["package", "fedora", "rpm", "install"]
+    },
+    "rpm": {
+      "keywords": ["rpm", "rpm package", "install rpm", "package manager"],
+      "patterns": ["\\brpm\\b", "\\brpm.*package\\b"],
+      "context_keywords": ["package", "rpm", "install", "query"]
+    },
+    "pacman": {
+      "keywords": ["pacman", "arch package", "install arch", "arch linux"],
+      "patterns": ["\\bpacman\\b", "\\barch.*package\\b"],
+      "context_keywords": ["package", "arch", "install", "pacman"]
+    },
+    "snap": {
+      "keywords": ["snap", "snapcraft", "snap package", "install snap"],
+      "patterns": ["\\bsnap\\b", "\\bsnapcraft\\b"],
+      "context_keywords": ["snap", "package", "install"]
+    },
+    "flatpak": {
+      "keywords": ["flatpak", "flatpak install", "flatpak package"],
+      "patterns": ["\\bflatpak\\b"],
+      "context_keywords": ["flatpak", "package", "install"]
+    },
+    "pip": {
+      "keywords": ["pip", "python package", "install python", "pypi"],
+      "patterns": ["\\bpip\\b", "\\bpython.*package\\b", "\\bpypi\\b"],
+      "context_keywords": ["python", "package", "pip", "install"]
+    },
+    "pip3": {
+      "keywords": ["pip3", "python3 package", "install python3"],
+      "patterns": ["\\bpip3\\b", "\\bpython3.*package\\b"],
+      "context_keywords": ["python3", "package", "pip3", "install"]
+    },
+    "virtualenv": {
+      "keywords": ["virtualenv", "virtual environment", "python env", "venv"],
+      "patterns": ["\\bvirtualenv\\b", "\\bvirtual.*environment\\b", "\\bvenv\\b"],
+      "context_keywords": ["virtual", "environment", "python", "venv"]
+    },
+    "env": {
+      "keywords": ["env", "environment", "environment variables", "printenv"],
+      "patterns": ["\\benv\\b", "\\bprintenv\\b", "\\benvironment\\b"],
+      "context_keywords": ["environment", "variables", "env"]
+    },
+    "export": {
+      "keywords": ["export", "set variable", "environment variable", "set env"],
+      "patterns": ["\\bexport\\b", "\\bset.*variable\\b"],
+      "context_keywords": ["variable", "environment", "set", "export"]
+    },
+    "echo": {
+      "keywords": ["echo", "print", "display text", "output text"],
+      "patterns": ["\\becho\\b", "\\bprint\\b", "\\bdisplay.*text\\b"],
+      "context_keywords": ["print", "display", "text", "output"]
+    },
+    "printf": {
+      "keywords": ["printf", "formatted print", "format output"],
+      "patterns": ["\\bprintf\\b", "\\bformatted.*print\\b"],
+      "context_keywords": ["print", "format", "output"]
+    },
+    "read": {
+      "keywords": ["read", "read input", "user input", "read line"],
+      "patterns": ["\\bread\\b", "\\bread.*input\\b", "\\buser.*input\\b"],
+      "context_keywords": ["input", "read", "user", "line"]
+    },
+    "history": {
+      "keywords": ["history", "command history", "previous commands", "bash history"],
+      "patterns": ["\\bhistory\\b", "\\bcommand.*history\\b", "\\bprevious.*commands\\b"],
+      "context_keywords": ["history", "commands", "previous", "bash"]
+    },
+    "alias": {
+      "keywords": ["alias", "command alias", "shortcut", "create alias"],
+      "patterns": ["\\balias\\b", "\\bcommand.*alias\\b", "\\bshortcut\\b"],
+      "context_keywords": ["alias", "shortcut", "command"]
+    },
+    "unalias": {
+      "keywords": ["unalias", "remove alias", "delete alias"],
+      "patterns": ["\\bunalias\\b", "\\bremove.*alias\\b"],
+      "context_keywords": ["alias", "remove", "delete"]
+    },
+    "source": {
+      "keywords": ["source", "run script", "execute script", "load script"],
+      "patterns": ["\\bsource\\b", "\\brun.*script\\b", "\\bload.*script\\b"],
+      "context_keywords": ["source", "script", "run", "load"]
+    },
+    "bash": {
+      "keywords": ["bash", "shell", "bash script", "run bash"],
+      "patterns": ["\\bbash\\b", "\\bshell\\b", "\\bbash.*script\\b"],
+      "context_keywords": ["bash", "shell", "script"]
+    },
+    "sh": {
+      "keywords": ["sh", "shell", "shell script", "posix shell"],
+      "patterns": ["\\bsh\\b", "\\bshell.*script\\b"],
+      "context_keywords": ["sh", "shell", "script", "posix"]
+    },
+    "zsh": {
+      "keywords": ["zsh", "z shell", "zsh script"],
+      "patterns": ["\\bzsh\\b", "\\bz.*shell\\b"],
+      "context_keywords": ["zsh", "shell", "script"]
+    },
+    "man": {
+      "keywords": ["man", "manual", "help", "documentation", "man page"],
+      "patterns": ["\\bman\\b", "\\bmanual\\b", "\\bman.*page\\b"],
+      "context_keywords": ["manual", "help", "documentation", "page"]
+    },
+    "info": {
+      "keywords": ["info", "info page", "gnu info", "documentation"],
+      "patterns": ["\\binfo\\b", "\\binfo.*page\\b"],
+      "context_keywords": ["info", "documentation", "help"]
+    },
+    "help": {
+      "keywords": ["help", "command help", "builtin help"],
+      "patterns": ["\\bhelp\\b", "\\bcommand.*help\\b"],
+      "context_keywords": ["help", "command", "usage"]
+    },
+    "apropos": {
+      "keywords": ["apropos", "search manual", "find command", "whatis search"],
+      "patterns": ["\\bapropos\\b", "\\bsearch.*manual\\b"],
+      "context_keywords": ["search", "manual", "command", "find"]
+    },
+    "whatis": {
+      "keywords": ["whatis", "what is", "command description", "brief help"],
+      "patterns": ["\\bwhatis\\b", "\\bwhat.*is\\b"],
+      "context_keywords": ["what", "command", "description"]
+    },
+    "clear": {
+      "keywords": ["clear", "clear screen", "cls", "clean terminal"],
+      "patterns": ["\\bclear\\b", "\\bclear.*screen\\b", "\\bcls\\b"],
+      "context_keywords": ["clear", "screen", "terminal", "clean"]
+    },
+    "reset": {
+      "keywords": ["reset", "reset terminal", "reinitialize terminal"],
+      "patterns": ["\\breset\\b", "\\breset.*terminal\\b"],
+      "context_keywords": ["reset", "terminal", "reinitialize"]
+    },
+    "exit": {
+      "keywords": ["exit", "quit", "logout", "close terminal"],
+      "patterns": ["\\bexit\\b", "\\bquit\\b", "\\blogout\\b"],
+      "context_keywords": ["exit", "quit", "logout", "close"]
+    },
+    "shutdown": {
+      "keywords": ["shutdown", "power off", "halt", "turn off"],
+      "patterns": ["\\bshutdown\\b", "\\bpower.*off\\b", "\\bhalt\\b"],
+      "context_keywords": ["shutdown", "power", "off", "halt"]
+    },
+    "reboot": {
+      "keywords": ["reboot", "restart", "restart system", "reboot system"],
+      "patterns": ["\\breboot\\b", "\\brestart\\b", "\\brestart.*system\\b"],
+      "context_keywords": ["reboot", "restart", "system"]
+    },
+    "poweroff": {
+      "keywords": ["poweroff", "power off", "turn off"],
+      "patterns": ["\\bpoweroff\\b", "\\bpower.*off\\b"],
+      "context_keywords": ["power", "off", "shutdown"]
+    },
+    "mount": {
+      "keywords": ["mount", "mount disk", "mount partition", "attach filesystem"],
+      "patterns": ["\\bmount\\b", "\\bmount.*disk\\b", "\\battach.*filesystem\\b"],
+      "context_keywords": ["mount", "disk", "partition", "filesystem"]
+    },
+    "umount": {
+      "keywords": ["umount", "unmount", "detach disk", "unmount partition"],
+      "patterns": ["\\bumount\\b", "\\bunmount\\b", "\\bdetach.*disk\\b"],
+      "context_keywords": ["unmount", "detach", "disk", "partition"]
+    },
+    "fdisk": {
+      "keywords": ["fdisk", "partition", "disk partition", "partition table"],
+      "patterns": ["\\bfdisk\\b", "\\bpartition\\b", "\\bdisk.*partition\\b"],
+      "context_keywords": ["partition", "disk", "table", "fdisk"]
+    },
+    "parted": {
+      "keywords": ["parted", "gparted", "partition editor", "resize partition"],
+      "patterns": ["\\bparted\\b", "\\bgparted\\b", "\\bpartition.*editor\\b"],
+      "context_keywords": ["partition", "editor", "resize", "disk"]
+    },
+    "mkfs": {
+      "keywords": ["mkfs", "make filesystem", "format disk", "create filesystem"],
+      "patterns": ["\\bmkfs\\b", "\\bmake.*filesystem\\b", "\\bformat.*disk\\b"],
+      "context_keywords": ["filesystem", "format", "create", "disk"]
+    },
+    "fsck": {
+      "keywords": ["fsck", "filesystem check", "repair disk", "check disk"],
+      "patterns": ["\\bfsck\\b", "\\bfilesystem.*check\\b", "\\brepair.*disk\\b"],
+      "context_keywords": ["filesystem", "check", "repair", "disk"]
+    },
+    "blkid": {
+      "keywords": ["blkid", "block id", "disk uuid", "partition uuid"],
+      "patterns": ["\\bblkid\\b", "\\bblock.*id\\b", "\\buuid\\b"],
+      "context_keywords": ["block", "id", "uuid", "partition"]
+    },
+    "lsblk": {
+      "keywords": ["lsblk", "list block", "list disks", "block devices"],
+      "patterns": ["\\blsblk\\b", "\\blist.*block\\b", "\\blist.*disks\\b"],
+      "context_keywords": ["block", "devices", "disks", "list"]
+    },
+    "lscpu": {
+      "keywords": ["lscpu", "cpu info", "processor info", "cpu details"],
+      "patterns": ["\\blscpu\\b", "\\bcpu.*info\\b", "\\bprocessor.*info\\b"],
+      "context_keywords": ["cpu", "processor", "info", "details"]
+    },
+    "lspci": {
+      "keywords": ["lspci", "pci devices", "hardware info", "list pci"],
+      "patterns": ["\\blspci\\b", "\\bpci.*devices\\b", "\\bhardware.*info\\b"],
+      "context_keywords": ["pci", "devices", "hardware", "list"]
+    },
+    "lsusb": {
+      "keywords": ["lsusb", "usb devices", "list usb", "usb info"],
+      "patterns": ["\\blsusb\\b", "\\busb.*devices\\b", "\\blist.*usb\\b"],
+      "context_keywords": ["usb", "devices", "list", "info"]
+    },
+    "lshw": {
+      "keywords": ["lshw", "hardware info", "list hardware", "system hardware"],
+      "patterns": ["\\blshw\\b", "\\bhardware.*info\\b", "\\blist.*hardware\\b"],
+      "context_keywords": ["hardware", "info", "list", "system"]
+    },
+    "dmidecode": {
+      "keywords": ["dmidecode", "dmi", "bios info", "system info", "hardware info"],
+      "patterns": ["\\bdmidecode\\b", "\\bdmi\\b", "\\bbios.*info\\b"],
+      "context_keywords": ["dmi", "bios", "hardware", "system"]
+    },
+    "hdparm": {
+      "keywords": ["hdparm", "hard disk", "disk parameters", "disk speed"],
+      "patterns": ["\\bhdparm\\b", "\\bhard.*disk\\b", "\\bdisk.*parameters\\b"],
+      "context_keywords": ["disk", "hard", "parameters", "speed"]
+    },
+    "smartctl": {
+      "keywords": ["smartctl", "smart", "disk health", "disk diagnostics"],
+      "patterns": ["\\bsmartctl\\b", "\\bsmart\\b", "\\bdisk.*health\\b"],
+      "context_keywords": ["smart", "disk", "health", "diagnostics"]
+    },
+    "modprobe": {
+      "keywords": ["modprobe", "kernel module", "load module", "driver"],
+      "patterns": ["\\bmodprobe\\b", "\\bkernel.*module\\b", "\\bload.*module\\b"],
+      "context_keywords": ["module", "kernel", "driver", "load"]
+    },
+    "lsmod": {
+      "keywords": ["lsmod", "list modules", "kernel modules", "loaded modules"],
+      "patterns": ["\\blsmod\\b", "\\blist.*modules\\b", "\\bkernel.*modules\\b"],
+      "context_keywords": ["modules", "kernel", "list", "loaded"]
+    },
+    "insmod": {
+      "keywords": ["insmod", "insert module", "load kernel module"],
+      "patterns": ["\\binsmod\\b", "\\binsert.*module\\b"],
+      "context_keywords": ["module", "insert", "kernel", "load"]
+    },
+    "rmmod": {
+      "keywords": ["rmmod", "remove module", "unload module"],
+      "patterns": ["\\brmmod\\b", "\\bremove.*module\\b", "\\bunload.*module\\b"],
+      "context_keywords": ["module", "remove", "unload", "kernel"]
+    },
+    "sysctl": {
+      "keywords": ["sysctl", "kernel parameters", "system parameters", "kernel config"],
+      "patterns": ["\\bsysctl\\b", "\\bkernel.*parameters\\b"],
+      "context_keywords": ["kernel", "parameters", "system", "config"]
+    },
+    "screen": {
+      "keywords": ["screen", "terminal multiplexer", "detach session", "screen session"],
+      "patterns": ["\\bscreen\\b", "\\bterminal.*multiplexer\\b"],
+      "context_keywords": ["screen", "session", "terminal", "detach"]
+    },
+    "tmux": {
+      "keywords": ["tmux", "terminal multiplexer", "tmux session", "split terminal"],
+      "patterns": ["\\btmux\\b", "\\bterminal.*multiplexer\\b"],
+      "context_keywords": ["tmux", "session", "terminal", "split"]
+    },
+    "byobu": {
+      "keywords": ["byobu", "terminal multiplexer", "byobu session"],
+      "patterns": ["\\bbyobu\\b"],
+      "context_keywords": ["byobu", "session", "terminal"]
+    },
+    "nano": {
+      "keywords": ["nano", "text editor", "edit file", "nano editor"],
+      "patterns": ["\\bnano\\b", "\\btext.*editor\\b"],
+      "context_keywords": ["nano", "editor", "text", "edit"]
+    },
+    "vim": {
+      "keywords": ["vim", "vi", "text editor", "vim editor"],
+      "patterns": ["\\bvim\\b", "\\bvi\\b"],
+      "context_keywords": ["vim", "vi", "editor", "text"]
+    },
+    "emacs": {
+      "keywords": ["emacs", "text editor", "emacs editor"],
+      "patterns": ["\\bemacs\\b"],
+      "context_keywords": ["emacs", "editor", "text"]
+    },
+    "sed": {
+      "keywords": ["sed", "stream editor", "replace text", "substitute", "find replace"],
+      "patterns": ["\\bsed\\b", "\\bstream.*editor\\b", "\\bsubstitute\\b"],
+      "context_keywords": ["sed", "replace", "substitute", "text", "stream"]
+    },
+    "jq": {
+      "keywords": ["jq", "json", "parse json", "json query", "json processor"],
+      "patterns": ["\\bjq\\b", "\\bjson.*query\\b", "\\bparse.*json\\b"],
+      "context_keywords": ["json", "parse", "query", "jq"]
+    },
+    "yq": {
+      "keywords": ["yq", "yaml", "parse yaml", "yaml query", "yaml processor"],
+      "patterns": ["\\byq\\b", "\\byaml.*query\\b", "\\bparse.*yaml\\b"],
+      "context_keywords": ["yaml", "parse", "query", "yq"]
+    },
+    "column": {
+      "keywords": ["column", "columnize", "format columns", "table format"],
+      "patterns": ["\\bcolumn\\b", "\\bcolumnize\\b", "\\btable.*format\\b"],
+      "context_keywords": ["column", "format", "table"]
+    },
+    "paste": {
+      "keywords": ["paste", "merge lines", "join files", "combine lines"],
+      "patterns": ["\\bpaste\\b", "\\bmerge.*lines\\b", "\\bjoin.*files\\b"],
+      "context_keywords": ["paste", "merge", "lines", "join"]
+    },
+    "join": {
+      "keywords": ["join", "join files", "merge files", "join lines"],
+      "patterns": ["\\bjoin\\b", "\\bjoin.*files\\b", "\\bmerge.*files\\b"],
+      "context_keywords": ["join", "merge", "files", "lines"]
+    },
+    "split": {
+      "keywords": ["split", "split file", "divide file", "break file"],
+      "patterns": ["\\bsplit\\b", "\\bsplit.*file\\b", "\\bdivide.*file\\b"],
+      "context_keywords": ["split", "divide", "file", "break"]
+    },
+    "csplit": {
+      "keywords": ["csplit", "context split", "split by pattern"],
+      "patterns": ["\\bcsplit\\b", "\\bcontext.*split\\b"],
+      "context_keywords": ["split", "context", "pattern"]
+    },
+    "nl": {
+      "keywords": ["nl", "number lines", "line numbers", "add line numbers"],
+      "patterns": ["\\bnl\\b", "\\bnumber.*lines\\b", "\\bline.*numbers\\b"],
+      "context_keywords": ["number", "lines", "add"]
+    },
+    "fold": {
+      "keywords": ["fold", "wrap lines", "line wrap", "text wrap"],
+      "patterns": ["\\bfold\\b", "\\bwrap.*lines\\b", "\\bline.*wrap\\b"],
+      "context_keywords": ["fold", "wrap", "lines", "text"]
+    },
+    "fmt": {
+      "keywords": ["fmt", "format text", "reformat", "text formatter"],
+      "patterns": ["\\bfmt\\b", "\\bformat.*text\\b", "\\breformat\\b"],
+      "context_keywords": ["format", "text", "reformat"]
+    },
+    "expand": {
+      "keywords": ["expand", "tabs to spaces", "convert tabs"],
+      "patterns": ["\\bexpand\\b", "\\btabs.*to.*spaces\\b"],
+      "context_keywords": ["tabs", "spaces", "convert"]
+    },
+    "unexpand": {
+      "keywords": ["unexpand", "spaces to tabs", "convert spaces"],
+      "patterns": ["\\bunexpand\\b", "\\bspaces.*to.*tabs\\b"],
+      "context_keywords": ["spaces", "tabs", "convert"]
+    },
+    "rev": {
+      "keywords": ["rev", "reverse", "reverse lines", "backwards"],
+      "patterns": ["\\brev\\b", "\\breverse\\b", "\\bbackwards\\b"],
+      "context_keywords": ["reverse", "lines", "backwards"]
+    },
+    "tac": {
+      "keywords": ["tac", "reverse file", "reverse order", "cat backwards"],
+      "patterns": ["\\btac\\b", "\\breverse.*file\\b", "\\bcat.*backwards\\b"],
+      "context_keywords": ["reverse", "file", "order", "backwards"]
+    },
+    "shuf": {
+      "keywords": ["shuf", "shuffle", "random", "randomize lines"],
+      "patterns": ["\\bshuf\\b", "\\bshuffle\\b", "\\brandomize\\b"],
+      "context_keywords": ["shuffle", "random", "lines"]
+    },
+    "comm": {
+      "keywords": ["comm", "compare files", "common lines", "difference"],
+      "patterns": ["\\bcomm\\b", "\\bcommon.*lines\\b"],
+      "context_keywords": ["compare", "common", "lines", "files"]
+    },
+    "cmp": {
+      "keywords": ["cmp", "compare binary", "byte compare", "binary diff"],
+      "patterns": ["\\bcmp\\b", "\\bcompare.*binary\\b", "\\bbyte.*compare\\b"],
+      "context_keywords": ["compare", "binary", "byte", "diff"]
+    },
+    "md5sum": {
+      "keywords": ["md5sum", "md5", "checksum", "hash", "verify checksum"],
+      "patterns": ["\\bmd5sum\\b", "\\bmd5\\b", "\\bchecksum\\b"],
+      "context_keywords": ["md5", "checksum", "hash", "verify"]
+    },
+    "sha256sum": {
+      "keywords": ["sha256sum", "sha256", "checksum", "hash"],
+      "patterns": ["\\bsha256sum\\b", "\\bsha256\\b"],
+      "context_keywords": ["sha256", "checksum", "hash"]
+    },
+    "sha1sum": {
+      "keywords": ["sha1sum", "sha1", "checksum", "hash"],
+      "patterns": ["\\bsha1sum\\b", "\\bsha1\\b"],
+      "context_keywords": ["sha1", "checksum", "hash"]
+    },
+    "base64": {
+      "keywords": ["base64", "encode base64", "decode base64", "base64 encoding"],
+      "patterns": ["\\bbase64\\b", "\\bencode.*base64\\b", "\\bdecode.*base64\\b"],
+      "context_keywords": ["base64", "encode", "decode"]
+    },
+    "xxd": {
+      "keywords": ["xxd", "hex dump", "hexadecimal", "binary to hex"],
+      "patterns": ["\\bxxd\\b", "\\bhex.*dump\\b", "\\bhexadecimal\\b"],
+      "context_keywords": ["hex", "dump", "binary", "hexadecimal"]
+    },
+    "od": {
+      "keywords": ["od", "octal dump", "binary dump", "dump file"],
+      "patterns": ["\\bod\\b", "\\boctal.*dump\\b", "\\bbinary.*dump\\b"],
+      "context_keywords": ["octal", "dump", "binary", "file"]
+    },
+    "hexdump": {
+      "keywords": ["hexdump", "hex dump", "hexadecimal dump"],
+      "patterns": ["\\bhexdump\\b", "\\bhex.*dump\\b"],
+      "context_keywords": ["hex", "dump", "hexadecimal"]
+    },
+    "strings": {
+      "keywords": ["strings", "extract strings", "printable strings", "binary strings"],
+      "patterns": ["\\bstrings\\b", "\\bextract.*strings\\b", "\\bprintable.*strings\\b"],
+      "context_keywords": ["strings", "extract", "printable", "binary"]
+    },
+    "objdump": {
+      "keywords": ["objdump", "object dump", "disassemble", "binary info"],
+      "patterns": ["\\bobjdump\\b", "\\bobject.*dump\\b", "\\bdisassemble\\b"],
+      "context_keywords": ["object", "dump", "disassemble", "binary"]
+    },
+    "readelf": {
+      "keywords": ["readelf", "elf info", "elf file", "binary info"],
+      "patterns": ["\\breadelf\\b", "\\belf.*info\\b"],
+      "context_keywords": ["elf", "binary", "info", "read"]
+    },
+    "nm": {
+      "keywords": ["nm", "symbols", "list symbols", "binary symbols"],
+      "patterns": ["\\bnm\\b", "\\blist.*symbols\\b"],
+      "context_keywords": ["symbols", "binary", "list"]
+    },
+    "ldd": {
+      "keywords": ["ldd", "shared libraries", "dependencies", "library dependencies"],
+      "patterns": ["\\bldd\\b", "\\bshared.*libraries\\b", "\\blibrary.*dependencies\\b"],
+      "context_keywords": ["libraries", "shared", "dependencies"]
+    },
+    "strip": {
+      "keywords": ["strip", "strip symbols", "remove symbols", "strip binary"],
+      "patterns": ["\\bstrip\\b", "\\bstrip.*symbols\\b", "\\bremove.*symbols\\b"],
+      "context_keywords": ["strip", "symbols", "remove", "binary"]
+    },
+    "ar": {
+      "keywords": ["ar", "archive", "static library", "create archive"],
+      "patterns": ["\\bar\\b", "\\bstatic.*library\\b", "\\bcreate.*archive\\b"],
+      "context_keywords": ["archive", "static", "library", "create"]
+    },
+    "ranlib": {
+      "keywords": ["ranlib", "index archive", "library index"],
+      "patterns": ["\\branlib\\b", "\\bindex.*archive\\b"],
+      "context_keywords": ["ranlib", "index", "archive", "library"]
+    },
+    "size": {
+      "keywords": ["size", "section sizes", "binary size", "segment sizes"],
+      "patterns": ["\\bsize\\b", "\\bsection.*sizes\\b", "\\bbinary.*size\\b"],
+      "context_keywords": ["size", "section", "binary", "segment"]
+    },
+    "gdb": {
+      "keywords": ["gdb", "debugger", "debug", "gnu debugger"],
+      "patterns": ["\\bgdb\\b", "\\bdebugger\\b", "\\bgnu.*debugger\\b"],
+      "context_keywords": ["debug", "gdb", "debugger", "gnu"]
+    },
+    "valgrind": {
+      "keywords": ["valgrind", "memory leak", "memory check", "profiler"],
+      "patterns": ["\\bvalgrind\\b", "\\bmemory.*leak\\b", "\\bmemory.*check\\b"],
+      "context_keywords": ["valgrind", "memory", "leak", "check"]
+    },
+    "perf": {
+      "keywords": ["perf", "performance", "profiling", "cpu profiler"],
+      "patterns": ["\\bperf\\b", "\\bperformance\\b", "\\bprofiling\\b"],
+      "context_keywords": ["perf", "performance", "profiling", "cpu"]
+    }
+  },
+  "context_weights": {
+    "action_keyword": 0.6,
+    "context_keyword": 0.3,
+    "pattern_match": 0.8,
+    "exact_command": 1.0
+  }
+}

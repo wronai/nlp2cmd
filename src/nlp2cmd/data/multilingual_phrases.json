@@ -1,0 +1,545 @@
+{
+  "version": "1.0",
+  "description": "Multilingual phrase schema for fuzzy matching - language agnostic",
+  "phrases": [
+    {
+      "phrase": "list files",
+      "domain": "shell",
+      "intent": "list",
+      "language": "en",
+      "aliases": ["show files", "display files", "ls", "dir", "directory listing"]
+    },
+    {
+      "phrase": "lista plików",
+      "domain": "shell",
+      "intent": "list",
+      "language": "pl",
+      "aliases": ["pokaż pliki", "wyświetl pliki", "listuj pliki", "lista plikow", "pokaz pliki"]
+    },
+    {
+      "phrase": "liste dateien",
+      "domain": "shell",
+      "intent": "list",
+      "language": "de",
+      "aliases": ["dateien anzeigen", "verzeichnis auflisten"]
+    },
+    {
+      "phrase": "lister fichiers",
+      "domain": "shell",
+      "intent": "list",
+      "language": "fr",
+      "aliases": ["afficher fichiers", "montrer fichiers"]
+    },
+    {
+      "phrase": "listar archivos",
+      "domain": "shell",
+      "intent": "list",
+      "language": "es",
+      "aliases": ["mostrar archivos", "ver archivos"]
+    },
+    {
+      "phrase": "find file",
+      "domain": "shell",
+      "intent": "find",
+      "language": "en",
+      "aliases": ["search file", "locate file", "look for file"]
+    },
+    {
+      "phrase": "znajdź plik",
+      "domain": "shell",
+      "intent": "find",
+      "language": "pl",
+      "aliases": ["szukaj pliku", "wyszukaj plik", "znajdz plik", "szukaj plik"]
+    },
+    {
+      "phrase": "datei finden",
+      "domain": "shell",
+      "intent": "find",
+      "language": "de",
+      "aliases": ["datei suchen", "suche datei"]
+    },
+    {
+      "phrase": "delete file",
+      "domain": "shell",
+      "intent": "delete",
+      "language": "en",
+      "aliases": ["remove file", "rm", "erase file"]
+    },
+    {
+      "phrase": "usuń plik",
+      "domain": "shell",
+      "intent": "delete",
+      "language": "pl",
+      "aliases": ["skasuj plik", "usun plik", "kasuj plik", "wymaż plik"]
+    },
+    {
+      "phrase": "datei löschen",
+      "domain": "shell",
+      "intent": "delete",
+      "language": "de",
+      "aliases": ["datei entfernen", "lösche datei"]
+    },
+    {
+      "phrase": "copy file",
+      "domain": "shell",
+      "intent": "copy",
+      "language": "en",
+      "aliases": ["cp", "duplicate file"]
+    },
+    {
+      "phrase": "kopiuj plik",
+      "domain": "shell",
+      "intent": "copy",
+      "language": "pl",
+      "aliases": ["skopiuj plik", "kopia pliku"]
+    },
+    {
+      "phrase": "move file",
+      "domain": "shell",
+      "intent": "move",
+      "language": "en",
+      "aliases": ["mv", "rename file", "relocate file"]
+    },
+    {
+      "phrase": "przenieś plik",
+      "domain": "shell",
+      "intent": "move",
+      "language": "pl",
+      "aliases": ["przenies plik", "zmień nazwę pliku", "zmien nazwe pliku"]
+    },
+    {
+      "phrase": "show processes",
+      "domain": "shell",
+      "intent": "list_processes",
+      "language": "en",
+      "aliases": ["list processes", "ps", "running processes", "top"]
+    },
+    {
+      "phrase": "pokaż procesy",
+      "domain": "shell",
+      "intent": "list_processes",
+      "language": "pl",
+      "aliases": ["pokaz procesy", "lista procesów", "lista procesow", "wyświetl procesy"]
+    },
+    {
+      "phrase": "create directory",
+      "domain": "shell",
+      "intent": "mkdir",
+      "language": "en",
+      "aliases": ["make directory", "mkdir", "new folder", "create folder"]
+    },
+    {
+      "phrase": "utwórz katalog",
+      "domain": "shell",
+      "intent": "mkdir",
+      "language": "pl",
+      "aliases": ["utworz katalog", "stwórz katalog", "stworz katalog", "nowy folder"]
+    },
+    {
+      "phrase": "check disk space",
+      "domain": "shell",
+      "intent": "disk_usage",
+      "language": "en",
+      "aliases": ["disk usage", "df", "free space", "storage"]
+    },
+    {
+      "phrase": "sprawdź miejsce na dysku",
+      "domain": "shell",
+      "intent": "disk_usage",
+      "language": "pl",
+      "aliases": ["sprawdz miejsce", "miejsce na dysku", "wolne miejsce"]
+    },
+    {
+      "phrase": "check memory",
+      "domain": "shell",
+      "intent": "memory_usage",
+      "language": "en",
+      "aliases": ["memory usage", "free", "ram usage"]
+    },
+    {
+      "phrase": "sprawdź pamięć",
+      "domain": "shell",
+      "intent": "memory_usage",
+      "language": "pl",
+      "aliases": ["sprawdz pamiec", "użycie pamięci", "ram"]
+    },
+    {
+      "phrase": "start system",
+      "domain": "shell",
+      "intent": "system_start",
+      "language": "en",
+      "aliases": ["boot system", "initialize system", "power on", "system up"]
+    },
+    {
+      "phrase": "restart system",
+      "domain": "shell",
+      "intent": "system_restart",
+      "language": "en",
+      "aliases": ["reboot system", "reboot", "system restart", "restart computer"]
+    },
+    {
+      "phrase": "shutdown system",
+      "domain": "shell",
+      "intent": "system_shutdown",
+      "language": "en",
+      "aliases": ["power off", "turn off", "system down", "halt system"]
+    },
+    {
+      "phrase": "uruchom system",
+      "domain": "shell",
+      "intent": "system_start",
+      "language": "pl",
+      "aliases": ["start system", "włącz system", "system start", "uruchom komputer"]
+    },
+    {
+      "phrase": "uruchom aplikację",
+      "domain": "shell",
+      "intent": "run_application",
+      "language": "pl",
+      "aliases": ["uruchom aplikacje", "urucham aplikację", "urucham aplikacje", "start aplikację", "start aplikacje"]
+    },
+    {
+      "phrase": "run application",
+      "domain": "shell",
+      "intent": "run_application",
+      "language": "en",
+      "aliases": ["start application", "launch application", "execute application", "run app", "start app"]
+    },
+    {
+      "phrase": "start npm",
+      "domain": "shell",
+      "intent": "npm_start",
+      "language": "en",
+      "aliases": ["npm start", "start npm project", "run npm", "uruchom npm"]
+    },
+    {
+      "phrase": "run python script",
+      "domain": "shell",
+      "intent": "run_python",
+      "language": "en",
+      "aliases": ["python script", "execute python", "run py", "uruchom skrypt python"]
+    },
+    {
+      "phrase": "start server",
+      "domain": "shell",
+      "intent": "start_server",
+      "language": "en",
+      "aliases": ["run server", "launch server", "start web server", "uruchom serwer"]
+    },
+    {
+      "phrase": "uruchom serwer",
+      "domain": "shell",
+      "intent": "start_server",
+      "language": "pl",
+      "aliases": ["start serwer", "uruchom web serwer", "odpal serwer", "start web server"]
+    },
+    {
+      "phrase": "uruchom npm",
+      "domain": "shell",
+      "intent": "npm_start",
+      "language": "pl",
+      "aliases": ["npm start", "start npm", "uruchom projekt npm"]
+    },
+    {
+      "phrase": "uruchom skrypt python",
+      "domain": "shell",
+      "intent": "run_python",
+      "language": "pl",
+      "aliases": ["python skrypt", "uruchom plik py", "wykonaj skrypt python"]
+    },
+    {
+      "phrase": "start service",
+      "domain": "shell",
+      "intent": "service_start",
+      "language": "en",
+      "aliases": ["systemctl start", "start service", "enable service", "run service"]
+    },
+    {
+      "phrase": "stop service",
+      "domain": "shell",
+      "intent": "service_stop",
+      "language": "en",
+      "aliases": ["systemctl stop", "stop service", "disable service", "halt service"]
+    },
+    {
+      "phrase": "restart service",
+      "domain": "shell",
+      "intent": "service_restart",
+      "language": "en",
+      "aliases": ["systemctl restart", "restart service", "reload service"]
+    },
+    {
+      "phrase": "uruchom usługę",
+      "domain": "shell",
+      "intent": "service_start",
+      "language": "pl",
+      "aliases": ["start usługę", "systemctl start", "włącz usługę", "uruchom serwis"]
+    },
+    {
+      "phrase": "zatrzymaj usługę",
+      "domain": "shell",
+      "intent": "service_stop",
+      "language": "pl",
+      "aliases": ["stop usługę", "systemctl stop", "wyłącz usługę", "zatrzymaj serwis"]
+    },
+    {
+      "phrase": "zrestartuj usługę",
+      "domain": "shell",
+      "intent": "service_restart",
+      "language": "pl",
+      "aliases": ["restart usługę", "systemctl restart", "przeładuj usługę", "zrestartuj serwis"]
+    },
+    {
+      "phrase": "docker run",
+      "domain": "docker",
+      "intent": "docker_run",
+      "language": "en",
+      "aliases": ["run docker container", "docker start container", "start container"]
+    },
+    {
+      "phrase": "docker stop",
+      "domain": "docker",
+      "intent": "docker_stop",
+      "language": "en",
+      "aliases": ["stop docker container", "docker kill container", "kill container"]
+    },
+    {
+      "phrase": "docker build",
+      "domain": "docker",
+      "intent": "docker_build",
+      "language": "en",
+      "aliases": ["build docker image", "docker build image", "create docker image"]
+    },
+    {
+      "phrase": "docker compose up",
+      "domain": "docker",
+      "intent": "docker_compose_up",
+      "language": "en",
+      "aliases": ["docker-compose up", "compose up", "start docker compose"]
+    },
+    {
+      "phrase": "docker compose down",
+      "domain": "docker",
+      "intent": "docker_compose_down",
+      "language": "en",
+      "aliases": ["docker-compose down", "compose down", "stop docker compose"]
+    },
+    {
+      "phrase": "uruchom kontener docker",
+      "domain": "docker",
+      "intent": "docker_run",
+      "language": "pl",
+      "aliases": ["docker run", "start kontenera", "uruchom docker", "docker start"]
+    },
+    {
+      "phrase": "zatrzymaj kontener docker",
+      "domain": "docker",
+      "intent": "docker_stop",
+      "language": "pl",
+      "aliases": ["docker stop", "stop kontenera", "zabij kontener", "docker kill"]
+    },
+    {
+      "phrase": "zbuduj obraz docker",
+      "domain": "docker",
+      "intent": "docker_build",
+      "language": "pl",
+      "aliases": ["docker build", "buduj docker", "stwórz obraz", "docker create image"]
+    },
+    {
+      "phrase": "docker compose uruchom",
+      "domain": "docker",
+      "intent": "docker_compose_up",
+      "language": "pl",
+      "aliases": ["docker-compose up", "compose up", "uruchom docker compose"]
+    },
+    {
+      "phrase": "docker compose zatrzymaj",
+      "domain": "docker",
+      "intent": "docker_compose_down",
+      "language": "pl",
+      "aliases": ["docker-compose down", "compose down", "zatrzymaj docker compose"]
+    },
+    {
+      "phrase": "copy",
+      "domain": "shell",
+      "intent": "copy",
+      "language": "en",
+      "aliases": ["cp", "copy file", "duplicate", "file copy"]
+    },
+    {
+      "phrase": "move",
+      "domain": "shell",
+      "intent": "move",
+      "language": "en",
+      "aliases": ["mv", "move file", "rename", "file move"]
+    },
+    {
+      "phrase": "delete",
+      "domain": "shell",
+      "intent": "delete",
+      "language": "en",
+      "aliases": ["rm", "remove", "delete file", "erase"]
+    },
+    {
+      "phrase": "mkdir",
+      "domain": "shell",
+      "intent": "mkdir",
+      "language": "en",
+      "aliases": ["create directory", "make directory", "new directory", "create folder"]
+    },
+    {
+      "phrase": "kopiuj",
+      "domain": "shell",
+      "intent": "copy",
+      "language": "pl",
+      "aliases": ["skopiuj", "cp", "kopiowanie pliku", "duplikuj"]
+    },
+    {
+      "phrase": "przenieś",
+      "domain": "shell",
+      "intent": "move",
+      "language": "pl",
+      "aliases": ["move", "mv", "przeniesienie", "zmień nazwę"]
+    },
+    {
+      "phrase": "usuń",
+      "domain": "shell",
+      "intent": "delete",
+      "language": "pl",
+      "aliases": ["remove", "rm", "kasuj", "skasuj"]
+    },
+    {
+      "phrase": "utwórz katalog",
+      "domain": "shell",
+      "intent": "mkdir",
+      "language": "pl",
+      "aliases": ["stwórz katalog", "mkdir", "nowy katalog", "utwórz folder"]
+    },
+    {
+      "phrase": "kill process",
+      "domain": "shell",
+      "intent": "process_kill",
+      "language": "en",
+      "aliases": ["kill", "terminate process", "stop process", "kill -9"]
+    },
+    {
+      "phrase": "monitor processes",
+      "domain": "shell",
+      "intent": "process_monitor",
+      "language": "en",
+      "aliases": ["top", "htop", "monitor", "process list", "show processes"]
+    },
+    {
+      "phrase": "find process",
+      "domain": "shell",
+      "intent": "process_find",
+      "language": "en",
+      "aliases": ["ps aux", "find process", "search process", "grep process"]
+    },
+    {
+      "phrase": "zabij proces",
+      "domain": "shell",
+      "intent": "process_kill",
+      "language": "pl",
+      "aliases": ["kill", "zatrzymaj proces", "terminate", "zabij -9"]
+    },
+    {
+      "phrase": "monitoruj procesy",
+      "domain": "shell",
+      "intent": "process_monitor",
+      "language": "pl",
+      "aliases": ["top", "htop", "monitor", "lista procesów", "pokaż procesy"]
+    },
+    {
+      "phrase": "znajdź proces",
+      "domain": "shell",
+      "intent": "process_find",
+      "language": "pl",
+      "aliases": ["ps aux", "znajdź proces", "szukaj procesu", "grep proces"]
+    },
+    {
+      "phrase": "zrestartuj system",
+      "domain": "shell",
+      "intent": "system_restart",
+      "language": "pl",
+      "aliases": ["restart system", "reboot system", "zrestartuj komputer", "restartuj system"]
+    },
+    {
+      "phrase": "wyłącz system",
+      "domain": "shell",
+      "intent": "system_shutdown",
+      "language": "pl",
+      "aliases": ["shutdown system", "zamknij system", "wyłącz komputer", "system down"]
+    },
+    {
+      "phrase": "select from table",
+      "domain": "sql",
+      "intent": "select",
+      "language": "en",
+      "aliases": ["query table", "get from", "fetch from", "show all from"]
+    },
+    {
+      "phrase": "wybierz z tabeli",
+      "domain": "sql",
+      "intent": "select",
+      "language": "pl",
+      "aliases": ["pokaż z tabeli", "pobierz z tabeli", "zapytanie do tabeli"]
+    },
+    {
+      "phrase": "insert into table",
+      "domain": "sql",
+      "intent": "insert",
+      "language": "en",
+      "aliases": ["add to table", "create record"]
+    },
+    {
+      "phrase": "wstaw do tabeli",
+      "domain": "sql",
+      "intent": "insert",
+      "language": "pl",
+      "aliases": ["dodaj do tabeli", "utwórz rekord"]
+    },
+    {
+      "phrase": "run container",
+      "domain": "docker",
+      "intent": "run",
+      "language": "en",
+      "aliases": ["start container", "docker run", "launch container"]
+    },
+    {
+      "phrase": "uruchom kontener",
+      "domain": "docker",
+      "intent": "run",
+      "language": "pl",
+      "aliases": ["startuj kontener", "odpal kontener"]
+    },
+    {
+      "phrase": "stop container",
+      "domain": "docker",
+      "intent": "stop",
+      "language": "en",
+      "aliases": ["halt container", "docker stop"]
+    },
+    {
+      "phrase": "zatrzymaj kontener",
+      "domain": "docker",
+      "intent": "stop",
+      "language": "pl",
+      "aliases": ["stop kontener", "wyłącz kontener"]
+    },
+    {
+      "phrase": "list containers",
+      "domain": "docker",
+      "intent": "list",
+      "language": "en",
+      "aliases": ["show containers", "docker ps", "running containers"]
+    },
+    {
+      "phrase": "lista kontenerów",
+      "domain": "docker",
+      "intent": "list",
+      "language": "pl",
+      "aliases": ["pokaż kontenery", "wyświetl kontenery"]
+    }
+  ]
+}

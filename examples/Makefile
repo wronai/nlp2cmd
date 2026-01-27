@@ -28,7 +28,10 @@ all:
 	@echo "Uruchamianie WSZYSTKICH przykładów..."
 	@echo "To może zająć dużo czasu. Ctrl+C aby przerwać."
 	@sleep 3
-	@for dir in 0*; do \
+	@export NLP2CMD_KEYWORD_DETECTOR_CONFIG="$(CURDIR)/../data/keyword_intent_detector_config.json"; \
+	export NLP2CMD_PATTERNS_FILE="$(CURDIR)/../data/patterns.json"; \
+	export PYTHONPATH="$(CURDIR)/../src:$$PYTHONPATH"; \
+	for dir in 0*; do \
 		if [ -d "$$dir" ]; then \
 			echo ""; \
 			echo "=== $$dir ==="; \
@@ -42,6 +45,9 @@ all:
 	@echo "Uruchamianie przykładów z folderu: $@"
 	@if [ -d "$@" ]; then \
 		cd "$@"; \
+		export NLP2CMD_KEYWORD_DETECTOR_CONFIG="$(CURDIR)/../data/keyword_intent_detector_config.json"; \
+		export NLP2CMD_PATTERNS_FILE="$(CURDIR)/../data/patterns.json"; \
+		export PYTHONPATH="$(CURDIR)/../src:$$PYTHONPATH"; \
 		for subdir in */; do \
 			if [ -d "$$subdir" ]; then \
 				echo ""; \

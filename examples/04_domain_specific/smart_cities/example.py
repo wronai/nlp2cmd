@@ -115,7 +115,10 @@ async def demo_public_transport():
     
     print(f"\n🚌 Public transport network:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy savings: {result.energy_estimate.get('savings_digital_percent', 0):.1f}%")
+    if result.energy_estimate:
+        print(f"   Energy savings: {result.energy_estimate.get('savings_digital_percent', 0):.1f}%")
+    else:
+        print(f"   Energy savings: N/A")
 
 
 async def demo_parking_management():

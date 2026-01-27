@@ -1275,51 +1275,111 @@ class KeywordIntentDetector:
 
         return baseline
 
-    def _detect_normalized(self, text_lower: str) -> DetectionResult:
-        # Try ML classifier first for high-confidence matches (fastest, <1ms)
+    def _detect_ml_classifier(self, text_lower: str) -> Optional[DetectionResult]:
+        """Try ML classifier for high-confidence matches (fastest, <1ms)."""
         ml_classifier = _get_ml_classifier()
-        if ml_classifier:
-            ml_result = ml_classifier.predict(text_lower)
-            if ml_result and ml_result.confidence >= 0.9:
-                return DetectionResult(
-                    domain=ml_result.domain,
-                    intent=ml_result.intent,
-                    confidence=ml_result.confidence,
-                    matched_keyword=f"ml:{ml_result.method}",
-                )
-        
-        # Try multilingual schema matching for high-confidence matches
-        schema_matcher = _get_fuzzy_schema_matcher()
-        if schema_matcher:
-            schema_result = schema_matcher.match(text_lower)
-            if schema_result and schema_result.matched:
-                # Accept if confidence is high OR if phrase is contained within input
-                if (schema_result.confidence >= 0.85 or 
-                    (schema_result.confidence >= 0.7 and 
-                     schema_matcher._normalize(schema_result.phrase) in text_lower)):
-                    return DetectionResult(
-                        domain=schema_result.domain,
-                        intent=schema_result.intent,
-                        confidence=schema_result.confidence,
-                        matched_keyword=schema_result.phrase,
-                    )
-        
-        # ML classifier fallback for medium confidence (still useful)
-        if ml_classifier and ml_result and ml_result.confidence >= 0.7:
+        if not ml_classifier:
+            self._last_ml_result = None
+            return None
+
+        ml_result = ml_classifier.predict(text_lower)
+        self._last_ml_result = ml_result
+        if ml_result and ml_result.confidence >= 0.9:
             return DetectionResult(
                 domain=ml_result.domain,
                 intent=ml_result.intent,
                 confidence=ml_result.confidence,
                 matched_keyword=f"ml:{ml_result.method}",
             )
-        
-        fast_path = self._detect_fast_path(text_lower)
-        if fast_path is not None:
-            return fast_path
 
-        sql_context, sql_explicit = self._compute_sql_context(text_lower)
+        return None
 
-        sql_drop = self._detect_sql_drop_table(text_lower, sql_context=sql_context, sql_explicit=sql_explicit)
+    def _detect_ml_medium_confidence(self) -> Optional[DetectionResult]:
+        """ML classifier fallback for medium confidence (still useful)."""
+        ml_result = getattr(self, "_last_ml_result", None)
+        if ml_result and ml_result.confidence >= 0.7:
+            return DetectionResult(
+                domain=ml_result.domain,
+                intent=ml_result.intent,
+                confidence=ml_result.confidence,
+                matched_keyword=f"ml:{ml_result.method}",
+            )
+        return None
+
+    def _detect_schema_matcher(self, text_lower: str) -> Optional[DetectionResult]:
+        """Try multilingual schema matching for high-confidence matches."""
+        schema_matcher = _get_fuzzy_schema_matcher()
+        if not schema_matcher:
+            return None
+
+        schema_result = schema_matcher.match(text_lower)
+        if schema_result and schema_result.matched:
+            # Accept if confidence is high OR if phrase is contained within input
+            if (
+                schema_result.confidence >= 0.85
+                or (
+                    schema_result.confidence >= 0.7
+                    and schema_matcher._normalize(schema_result.phrase) in text_lower
+                )
+            ):
+                return DetectionResult(
+                    domain=schema_result.domain,
+                    intent=schema_result.intent,
+                    confidence=schema_result.confidence,
+                    matched_keyword=schema_result.phrase,
+                )
+        return None
+
+    def _detect_schema_fallback(self, text_lower: str) -> Optional[DetectionResult]:
+        """Fallback: Try multilingual fuzzy schema matching."""
+        schema_matcher = _get_fuzzy_schema_matcher()
+        if schema_matcher:
+            schema_result = schema_matcher.match(text_lower)
+            if schema_result and schema_result.matched:
+                return DetectionResult(
+                    domain=schema_result.domain,
+                    intent=schema_result.intent,
+                    confidence=schema_result.confidence,
+                    matched_keyword=schema_result.phrase,
+                )
+        return None
+
+    def _detect_semantic_fallback(self, text_lower: str) -> Optional[DetectionResult]:
+        """Semantic matching fallback for typos and paraphrases (slower)."""
+        semantic_matcher = _get_semantic_matcher()
+        if semantic_matcher:
+            try:
+                semantic_result = semantic_matcher.match(text_lower)
+            except Exception:
+                semantic_result = None
+            if semantic_result and semantic_result.confidence >= 0.9:
+                return DetectionResult(
+                    domain=semantic_result.domain,
+                    intent=semantic_result.intent,
+                    confidence=semantic_result.confidence,
+                    matched_keyword=f"semantic:{semantic_result.matched_phrase}",
+                )
+        return None
+
+    def _detect_fuzzy_match(self, text_lower: str) -> Optional[DetectionResult]:
+        """Try fuzzy matching if available."""
+        if fuzz is not None and process is not None:
+            return self._detect_best_from_fuzzy(text_lower)
+        return None
+
+    def _detect_explicit_matches(
+        self,
+        text_lower: str,
+        *,
+        sql_context: bool,
+        sql_explicit: bool,
+    ) -> Optional[DetectionResult]:
+        """Detect explicit domain-specific matches."""
+        sql_drop = self._detect_sql_drop_table(
+            text_lower,
+            sql_context=sql_context,
+            sql_explicit=sql_explicit,
+        )
         if sql_drop is not None:
             return sql_drop
 
@@ -1339,6 +1399,16 @@ class KeywordIntentDetector:
         if service_restart is not None:
             return service_restart
 
+        return None
+
+    def _detect_pattern_matches(
+        self,
+        text_lower: str,
+        *,
+        sql_context: bool,
+        sql_explicit: bool,
+    ) -> Optional[DetectionResult]:
+        """Detect matches from priority intents and general patterns."""
         priority_match = self._detect_best_from_priority_intents(
             text_lower,
             sql_context=sql_context,
@@ -1355,38 +1425,54 @@ class KeywordIntentDetector:
         if best_match is not None:
             return best_match
 
-        if fuzz is not None and process is not None:
-            fuzzy_match = self._detect_best_from_fuzzy(text_lower)
-            if fuzzy_match is not None:
-                return fuzzy_match
+        return None
 
-        # Fallback: Try multilingual fuzzy schema matching
-        schema_matcher = _get_fuzzy_schema_matcher()
-        if schema_matcher:
-            schema_result = schema_matcher.match(text_lower)
-            if schema_result and schema_result.matched:
-                return DetectionResult(
-                    domain=schema_result.domain,
-                    intent=schema_result.intent,
-                    confidence=schema_result.confidence,
-                    matched_keyword=schema_result.phrase,
-                )
+    def _detect_normalized(self, text_lower: str) -> DetectionResult:
+        result = self._detect_ml_classifier(text_lower)
+        if result is not None:
+            return result
 
-        # Semantic matching fallback for typos and paraphrases (slower).
-        # Keep it last so it can't override deterministic keyword/pattern matching.
-        semantic_matcher = _get_semantic_matcher()
-        if semantic_matcher:
-            try:
-                semantic_result = semantic_matcher.match(text_lower)
-            except Exception:
-                semantic_result = None
-            if semantic_result and semantic_result.confidence >= 0.9:
-                return DetectionResult(
-                    domain=semantic_result.domain,
-                    intent=semantic_result.intent,
-                    confidence=semantic_result.confidence,
-                    matched_keyword=f"semantic:{semantic_result.matched_phrase}",
-                )
+        result = self._detect_schema_matcher(text_lower)
+        if result is not None:
+            return result
+
+        result = self._detect_ml_medium_confidence()
+        if result is not None:
+            return result
+
+        fast_path = self._detect_fast_path(text_lower)
+        if fast_path is not None:
+            return fast_path
+
+        sql_context, sql_explicit = self._compute_sql_context(text_lower)
+
+        result = self._detect_explicit_matches(
+            text_lower,
+            sql_context=sql_context,
+            sql_explicit=sql_explicit,
+        )
+        if result is not None:
+            return result
+
+        result = self._detect_pattern_matches(
+            text_lower,
+            sql_context=sql_context,
+            sql_explicit=sql_explicit,
+        )
+        if result is not None:
+            return result
+
+        result = self._detect_fuzzy_match(text_lower)
+        if result is not None:
+            return result
+
+        result = self._detect_schema_fallback(text_lower)
+        if result is not None:
+            return result
+
+        result = self._detect_semantic_fallback(text_lower)
+        if result is not None:
+            return result
 
         return DetectionResult(
             domain='unknown',
