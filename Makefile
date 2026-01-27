@@ -23,7 +23,8 @@
 
 .PHONY: help install setup-cache test test-unit test-e2e test-web-schema lint format clean \
         docker-build docker-up docker-down docker-test docker-e2e docker-push \
-        dev demo test-examples bump-patch bump-minor bump-major publish publish-test push git-tag report
+        dev demo demo-benchmark test-examples bump-patch bump-minor bump-major publish publish-test push git-tag report \
+        scripts-maintenance scripts-thermo scripts-test
 
 # Default target
 .DEFAULT_GOAL := help
@@ -213,6 +214,9 @@ docker-push: ## Push Docker image to registry
 demo: ## Run the end-to-end demo
 	$(PYTHON) examples/architecture/end_to_end_demo.py
 
+demo-benchmark: ## Run the benchmark demo
+	PYTHONPATH=src $(PYTHON) examples/benchmark_nlp2cmd.py
+
 demo-web: ## Demo web schema extraction
 	@echo "$(BLUE)Demo: Web schema extraction...$(NC)"
 	$(PYTHON) -m $(PROJECT_NAME) web-schema extract https://httpbin.org/forms/post --headless
@@ -319,15 +323,15 @@ publish-test: build ## Publish to TestPyPI
 
 bump-patch: ## Bump patch version (X.Y.Z -> X.Y.Z+1)
 	@echo "$(YELLOW)Bumping patch version...$(NC)"
-	$(PYTHON) bump_version.py patch
+	$(PYTHON) scripts/bump_version.py patch
 
 bump-minor: ## Bump minor version (X.Y.Z -> X.Y+1.0)
 	@echo "$(YELLOW)Bumping minor version...$(NC)"
-	$(PYTHON) bump_version.py minor
+	$(PYTHON) scripts/bump_version.py minor
 
 bump-major: ## Bump major version (X.Y.Z -> X+1.0.0)
 	@echo "$(YELLOW)Bumping major version...$(NC)"
-	$(PYTHON) bump_version.py major
+	$(PYTHON) scripts/bump_version.py major
 
 publish: build ## Publish to PyPI (with version bump)
 	@echo "$(YELLOW)Bumping patch version...$(NC)"
@@ -401,7 +405,7 @@ info: ## Show project info
 report: ## Generate performance benchmark report
 	@echo "$(BLUE)Running NLP2CMD performance benchmark...$(NC)"
 	@echo "$(YELLOW)This will test single vs sequential command processing speed.$(NC)"
-	$(PYTHON) benchmark_nlp2cmd.py
+	PYTHONPATH=src $(PYTHON) examples/benchmark_nlp2cmd.py
 	@echo ""
 	@echo "$(GREEN)✓ Benchmark complete!$(NC)"
 	@echo "$(BLUE)Reports generated:$(NC)"
@@ -447,3 +451,53 @@ benchmark-md: ## View the full markdown report
 benchmark-clean: ## Clean benchmark reports
 	rm -f benchmark_report.json benchmark_report.md benchmark_results.csv
 	@echo "$(GREEN)✓ Benchmark reports cleaned!$(NC)"
+
+# =============================================================================
+# Scripts Organization
+# =============================================================================
+
+scripts-maintenance: ## List maintenance scripts
+	@echo "$(BLUE)Maintenance Scripts:$(NC)"
+	@ls -la scripts/maintenance/
+	@echo ""
+	@echo "$(YELLOW)Available scripts:$(NC)"
+	@for script in scripts/maintenance/*.py; do \
+		if [ -f "$$script" ]; then \
+			echo "  $$(basename $$script) - $$(grep '^"""' "$$script" | head -1 | sed 's/"""//g' | sed 's/^[[:space:]]*//')"; \
+		fi; \
+	done
+
+scripts-thermo: ## List thermodynamic scripts
+	@echo "$(BLUE)Thermodynamic Scripts:$(NC)"
+	@ls -la scripts/thermodynamic/
+	@echo ""
+	@echo "$(YELLOW)Available scripts:$(NC)"
+	@for script in scripts/thermodynamic/*.py; do \
+		if [ -f "$$script" ]; then \
+			echo "  $$(basename $$script) - $$(grep '^"""' "$$script" | head -1 | sed 's/"""//g' | sed 's/^[[:space:]]*//')"; \
+		fi; \
+	done
+
+scripts-test: ## List testing scripts
+	@echo "$(BLUE)Testing Scripts:$(NC)"
+	@ls -la scripts/testing/
+	@echo ""
+	@echo "$(YELLOW)Available scripts:$(NC)"
+	@for script in scripts/testing/*.py; do \
+		if [ -f "$$script" ]; then \
+			echo "  $$(basename $$script) - $$(grep '^"""' "$$script" | head -1 | sed 's/"""//g' | sed 's/^[[:space:]]*//')"; \
+		fi; \
+	done
+
+scripts-all: ## List all organized scripts
+	@echo "$(BLUE)All Scripts Organization:$(NC)"
+	@echo ""
+	$(MAKE) scripts-maintenance
+	@echo ""
+	$(MAKE) scripts-thermo
+	@echo ""
+	$(MAKE) scripts-test
+
+run-thermo: ## Run thermodynamic demo
+	@echo "$(BLUE)Running thermodynamic demo...$(NC)"
+	$(PYTHON) scripts/thermodynamic/termo_demo.py
