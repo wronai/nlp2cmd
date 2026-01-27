@@ -6,21 +6,20 @@ w energetyce i utilities.
 """
 
 import asyncio
-import time
-from nlp2cmd.generation.thermodynamic import ThermodynamicGenerator
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_metrics, run_thermo_demo
 
 
 async def demo_unit_commitment():
-    start_time = time.time()
     """Harmonogramowanie pracy elektrowni (Unit Commitment)."""
-    print("=" * 70)
-    print("  Energy - Power Plant Scheduling (Unit Commitment)")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Unit commitment problem
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Energy - Power Plant Scheduling (Unit Commitment)",
+        """
         Zaplanuj pracę 10 bloków energetycznych na 24h:
         - 3x węglowe (500 MW, slow ramp)
         - 4x gazowe (200 MW, fast ramp)
@@ -29,26 +28,20 @@ async def demo_unit_commitment():
         
         Prognoza zapotrzebowania: peak 2500 MW o 19:00
         Minimalizuj koszty paliwa i emisję CO2.
-    """)
+    """,
+    )
     
     print(result.decoded_output)
     print(f"\n⚡ Generation schedule metrics:")
-    print(f"   Energy: {result.energy:.4f}")
-    print(f"   Converged: {result.converged}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, energy=True, converged=True, solution_quality=True)
 
 
 async def demo_renewable_integration():
-    start_time = time.time()
     """Integracja OZE z siecią."""
-    print("\n" + "=" * 70)
-    print("  Energy - Renewable Energy Integration")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Integracja OZE
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Energy - Renewable Energy Integration",
+        """
         Zoptymalizuj wykorzystanie OZE w regionie:
         - Farmy wiatrowe: 500 MW (zmienna produkcja)
         - Farmy PV: 300 MW (tylko dzień)
@@ -57,24 +50,21 @@ async def demo_renewable_integration():
         
         Prognoza wiatru i słońca na 48h dostępna.
         Maksymalizuj udział OZE, minimalizuj curtailment.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🌬️ Renewable integration:")
     print(f"   {result.decoded_output}")
-    print(f"   Latency: {result.latency_ms:.1f}ms")
+    print_metrics(result, latency=True)
 
 
 async def demo_water_distribution():
-    start_time = time.time()
     """Optymalizacja sieci wodociągowej."""
-    print("\n" + "=" * 70)
-    print("  Energy - Water Distribution Network")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Sieć wodociągowa
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Energy - Water Distribution Network",
+        """
         Zoptymalizuj pracę 5 pompowni w sieci wodociągowej:
         - Zapotrzebowanie zmienne w ciągu doby
         - Zbiorniki wyrównawcze (pojemność 10,000 m³)
@@ -82,24 +72,21 @@ async def demo_water_distribution():
         - Min ciśnienie w sieci: 3 bar
         
         Minimalizuj koszty energii, zapewnij ciągłość dostaw.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n💧 Water distribution:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution feasible: {result.solution_quality.is_feasible}")
+    print_metrics(result, solution_feasible=True)
 
 
 async def demo_gas_network():
-    start_time = time.time()
     """Optymalizacja sieci gazowej."""
-    print("\n" + "=" * 70)
-    print("  Energy - Gas Network Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Sieć gazowa
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Energy - Gas Network Optimization",
+        """
         Zoptymalizuj przesył gazu w sieci:
         - 1000 km rurociągów, 5 stacji kompresorowych
         - Zapotrzebowanie: zimą 500 MCM/h, latem 200 MCM/h
@@ -107,24 +94,21 @@ async def demo_gas_network():
         - Kontrakty długoterminowe: 300 MCM/dzień
         
         Minimalizaj koszty kompresji, zapewnij stabilność.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🔥 Gas network optimization:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy savings: {result.energy_estimate.get('savings_digital_percent', 0):.1f}%")
+    print_metrics(result, energy_estimate=True, energy_estimate_label="Energy savings")
 
 
 async def demo_electric_vehicle_charging():
-    start_time = time.time()
     """Zarządzanie stacjami ładowania EV."""
-    print("\n" + "=" * 70)
-    print("  Energy - EV Charging Station Management")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Ładowanie EV
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Energy - EV Charging Station Management",
+        """
         Zoptymalizuj ładowanie 1000 pojazdów elektrycznych:
         - 50 stacji ładowania (10x fast 150kW, 40x slow 22kW)
         - Ceny energii: dynamiczne (0.3-1.5 PLN/kWh)
@@ -132,24 +116,21 @@ async def demo_electric_vehicle_charging():
         - Czas ładowania: 30 min (fast), 4h (slow)
         
         Minimalizuj koszty, unikaj przeciążenia sieci.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🔋 EV charging schedule:")
     print(f"   {result.decoded_output}")
-    print(f"   Sampler steps: {result.sampler_steps}")
+    print_metrics(result, sampler_steps=True)
 
 
 async def demo_demand_response():
-    start_time = time.time()
     """Programy Demand Response."""
-    print("\n" + "=" * 70)
-    print("  Energy - Demand Response Programs")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Demand response
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Energy - Demand Response Programs",
+        """
         Zaprojektuj program Demand Response:
         - 10,000 uczestników, max 100 MW redukcji
         - Wyzwalanie: szczyt obciążenia, awarie sieci
@@ -157,24 +138,21 @@ async def demo_demand_response():
         - Segmenty: przemysł, handel, gospodarstwa domowe
         
         Maksymalizuj udział, minimalizuj koszty programu.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n📊 Demand response program:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, solution_quality=True)
 
 
 async def demo_microgrid():
-    start_time = time.time()
     """Optymalizacja mikrosieci."""
-    print("\n" + "=" * 70)
-    print("  Energy - Microgrid Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Mikrosieć
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Energy - Microgrid Optimization",
+        """
         Zoptymalizuj mikrosieć przemysłową:
         - PV: 2 MW, wiatr: 1 MW, baterie: 5 MWh
         - Zapotrzebowanie: 1.5 MW (dzienne), 0.3 MW (nocne)
@@ -182,12 +160,13 @@ async def demo_microgrid():
         - Możliwość sprzedaży nadwyżek: 0.6 PLN/kWh
         
         Minimalizuj koszty, maksymalizuj autokonsumpcję.
-    """)
+    """,
+        leading_newline=True,
+    )
     
-    start_time = time.time()
     print(f"\n🏭 Microgrid operation:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy: {result.energy:.4f}")
+    print_metrics(result, energy=True)
 
 
 async def main():

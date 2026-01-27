@@ -6,21 +6,20 @@ analitycznych w bioinformatyce.
 """
 
 import asyncio
-import time
-from nlp2cmd.generation.thermodynamic import ThermodynamicGenerator
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_metrics, run_thermo_demo
 
 
 async def demo_genomic_pipeline():
-    start_time = time.time()
     """Optymalizacja pipeline'u analizy genomowej."""
-    print("=" * 70)
-    print("  Bioinformatyka - Genomic Pipeline Scheduling")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja pipeline'u genomowego
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Bioinformatyka - Genomic Pipeline Scheduling",
+        """
         Zaplanuj analizę 100 próbek DNA:
         - FastQC (5 min/próbka)
         - Trimming (10 min/próbka)
@@ -32,26 +31,20 @@ async def demo_genomic_pipeline():
         Alignment wymaga 8GB RAM per job
         
         Minimalizuj czas przy zachowaniu kolejności kroków.
-    """)
+    """,
+    )
     
     print(result.decoded_output)
     print(f"\n📊 Pipeline metrics:")
-    print(f"   Energy: {result.energy:.4f}")
-    print(f"   Converged: {result.converged}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, energy=True, converged=True, solution_quality=True)
 
 
 async def demo_protein_folding():
-    start_time = time.time()
     """Alokacja zasobów dla symulacji foldingu białek."""
-    print("\n" + "=" * 70)
-    print("  Bioinformatyka - Protein Folding Resource Allocation")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Alokacja zasobów dla foldingu białek
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Bioinformatyka - Protein Folding Resource Allocation",
+        """
         Przydziel zasoby obliczeniowe dla 50 symulacji foldingu:
         - 10 dużych białek (>500 aminokwasów): wymagają GPU
         - 25 średnich (200-500 aa): GPU lub CPU cluster
@@ -62,30 +55,29 @@ async def demo_protein_folding():
         - 128 CPU cores (łącznie 10 TFLOPS)
         
         Maksymalizuj wykorzystanie GPU, minimalizuj czas.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🧬 Protein folding allocation:")
     print(f"   {result.decoded_output}")
-    print(f"   Latency: {result.latency_ms:.1f}ms")
+    print_metrics(result, latency=True)
 
 
 async def demo_crispr_optimization():
-    start_time = time.time()
     """Optymalizacja sekwencji guide RNA."""
-    print("\n" + "=" * 70)
-    print("  Bioinformatyka - CRISPR Guide RNA Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja CRISPR guide RNA
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Bioinformatyka - CRISPR Guide RNA Optimization",
+        """
         Zaprojektuj 5 guide RNA dla genu BRCA1:
         - Minimalizuj off-target effects
         - Maksymalizuj on-target efficiency
         - Unikaj sekwencji z więcej niż 4 T z rzędu
         - GC content między 40-60%
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🧬 CRISPR guide RNA design:")
     print(f"   {result.decoded_output}")
@@ -93,16 +85,11 @@ async def demo_crispr_optimization():
 
 
 async def demo_proteomics_analysis():
-    start_time = time.time()
     """Planowanie analizy proteomicznej."""
-    print("\n" + "=" * 70)
-    print("  Bioinformatyka - Proteomics Analysis Pipeline")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Pipeline analizy proteomicznej
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Bioinformatyka - Proteomics Analysis Pipeline",
+        """
         Zaplanuj analizę proteomiczną 200 próbek:
         - Sample prep (30 min/próbka)
         - Digestion trypsyną (2h, batch 20 próbek)
@@ -112,24 +99,21 @@ async def demo_proteomics_analysis():
         - Statistical analysis (2h total)
         
         Minimalizuj całkowity czas, optymalizuj użycie instrumentów.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🔬 Proteomics pipeline:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution feasible: {result.solution_quality.is_feasible}")
+    print_metrics(result, solution_feasible=True)
 
 
 async def demo_drug_discovery():
-    start_time = time.time()
     """Optymalizacja procesu odkrywania leków."""
-    print("\n" + "=" * 70)
-    print("  Bioinformatyka - Drug Discovery Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja screeningu leków
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Bioinformatyka - Drug Discovery Optimization",
+        """
         Zoptymalizuj screening 10000 związków chemicznych:
         - Faza 1: In silico docking (1 min/związek, 100 CPU cores)
         - Faza 2: ADME/Tox prediction (30s/związek, 50 cores)
@@ -137,12 +121,13 @@ async def demo_drug_discovery():
         - Faza 4: In vivo testing (tydzień/batch 10 związków)
         
         Wybierz top 100 kandydatów, minimalizuj czas i koszt.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n💊 Drug discovery pipeline:")
     print(f"   {result.decoded_output}")
-    start_time = time.time()
-    print(f"   Energy savings: {result.energy_estimate.get('savings_digital_percent', 0):.1f}%")
+    print_metrics(result, energy_estimate=True, energy_estimate_label="Energy savings")
 
 
 async def main():

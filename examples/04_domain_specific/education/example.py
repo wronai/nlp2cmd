@@ -6,21 +6,20 @@ edukacyjnych i zarządzania uczelnią.
 """
 
 import asyncio
-import time
-from nlp2cmd.generation.thermodynamic import ThermodynamicGenerator
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_metrics, run_thermo_demo
 
 
 async def demo_course_timetabling():
-    start_time = time.time()
     """Układanie planu zajęć na uczelni."""
-    print("=" * 70)
-    print("  Education - Course Timetabling")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Planowanie zajęć
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Education - Course Timetabling",
+        """
         Ułóż plan zajęć dla Wydziału Informatyki:
         - 50 kursów, 200 grup
         - 30 sal (różne pojemności)
@@ -33,26 +32,20 @@ async def demo_course_timetabling():
         - Laboratoria tylko w salach komputerowych
         
         Minimalizuj "okienka" między zajęciami.
-    """)
+    """,
+    )
     
     print(result.decoded_output)
     print(f"\n📊 Timetabling metrics:")
-    print(f"   Energy: {result.energy:.4f}")
-    print(f"   Converged: {result.converged}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, energy=True, converged=True, solution_quality=True)
 
 
 async def demo_exam_scheduling():
-    start_time = time.time()
     """Harmonogram sesji egzaminacyjnej."""
-    print("\n" + "=" * 70)
-    print("  Education - Exam Scheduling")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Harmonogram egzaminów
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Education - Exam Scheduling",
+        """
         Zaplanuj 100 egzaminów w 2 tygodnie:
         - 5000 studentów
         - Student nie może mieć 2 egzaminów tego samego dnia
@@ -60,24 +53,21 @@ async def demo_exam_scheduling():
         - Sale egzaminacyjne o różnej pojemności
         
         Minimalizuj konflikty i maksymalizuj czas na przygotowanie.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n📝 Exam schedule:")
     print(f"   {result.decoded_output}")
-    print(f"   Latency: {result.latency_ms:.1f}ms")
+    print_metrics(result, latency=True)
 
 
 async def demo_learning_path():
-    start_time = time.time()
     """Personalizacja ścieżki nauki."""
-    print("\n" + "=" * 70)
-    print("  Education - Learning Path Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Personalizacja ścieżki nauki
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Education - Learning Path Optimization",
+        """
         Zaplanuj ścieżkę nauki programowania dla studenta:
         - Cel: Full-stack developer w 6 miesięcy
         - Dostępny czas: 20h/tydzień
@@ -85,48 +75,42 @@ async def demo_learning_path():
         
         Kursy do wyboru: 30 kursów, różne zależności
         Optymalizuj kolejność dla najszybszego postępu.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🎓 Learning path:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution feasible: {result.solution_quality.is_feasible}")
+    print_metrics(result, solution_feasible=True)
 
 
 async def demo_classroom_allocation():
-    start_time = time.time()
     """Alokacja sal wykładowych."""
-    print("\n" + "=" * 70)
-    print("  Education - Classroom Allocation")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Alokacja sal
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Education - Classroom Allocation",
+        """
         Przydziel 200 zajęć do 50 sal:
         - Sale: 10x małe (20-30 osób), 30x średnie (50-100), 10x duże (100+)
         - Laboratoria: 5x komputerowe, 3x chemiczne, 2x fizyczne
         - Preferencje: wykłady w dużych salach, lab w specjalistycznych
         
         Minimalizuj dystans między zajęciami dla studentów.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🏫 Classroom allocation:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy savings: {result.energy_estimate.get('savings_digital_percent', 0):.1f}%")
+    print_metrics(result, energy_estimate=True, energy_estimate_label="Energy savings")
 
 
 async def demo_student_grouping():
-    start_time = time.time()
     """Tworzenie grup projektowych."""
-    print("\n" + "=" * 70)
-    print("  Education - Student Group Formation")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Grupowanie studentów
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Education - Student Group Formation",
+        """
         Stwórz 40 grup projektowych z 200 studentów:
         - Grupy po 4-5 osób
         - Zbalansuj umiejętności: programowanie, design, prezentacja
@@ -134,24 +118,21 @@ async def demo_student_grouping():
         - Maksymalizuj różnorodność w grupach
         
         Minimalizuj niezgodności preferencji.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n👥 Student groups:")
     print(f"   {result.decoded_output}")
-    print(f"   Sampler steps: {result.sampler_steps}")
+    print_metrics(result, sampler_steps=True)
 
 
 async def demo_resource_optimization():
-    start_time = time.time()
     """Optymalizacja zasobów edukacyjnych."""
-    print("\n" + "=" * 70)
-    print("  Education - Educational Resource Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja zasobów
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Education - Educational Resource Optimization",
+        """
         Zoptymalizuj wykorzystanie zasobów na uczelni:
         - 100 wykładowców, 50 asystentów
         - 200 sal, 20 laboratoriów
@@ -159,24 +140,21 @@ async def demo_resource_optimization():
         - Wymagania: 5000 studentów, różne kierunki
         
         Maksymalizuj dostępność, minimalizuj koszty.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n📚 Resource optimization:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, solution_quality=True)
 
 
 async def demo_curriculum_planning():
-    start_time = time.time()
     """Planowanie programu nauczania."""
-    print("\n" + "=" * 70)
-    print("  Education - Curriculum Planning")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Planowanie programu
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Education - Curriculum Planning",
+        """
         Zaprojektuj program studiów informatycznych:
         - 7 semestrów, 180 ECTS
         - Podstawy: matematyka, programowanie, algorytmy
@@ -184,12 +162,13 @@ async def demo_curriculum_planning():
         - Praktyki: 6 miesięcy, 30 ECTS
         
         Zapewnij zgodność z wymaganiami ACM/IEEE.
-    """)
+    """,
+        leading_newline=True,
+    )
     
-    start_time = time.time()
     print(f"\n📖 Curriculum design:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy: {result.energy:.4f}")
+    print_metrics(result, energy=True)
 
 
 async def main():

@@ -60,8 +60,8 @@ class MultiCommandDetector:
         r'\s+potem\s+',          # Polish "potem" (then)
         r'\s+nast[eę]pnie\s+',   # Polish "następnie" (next)
         r'\s+oraz\s+',           # Polish "oraz" (and also)
-        r'\s+then\s+',           # English "then"
         r'\s+and\s+then\s+',     # English "and then"
+        r'\s+then\s+',           # English "then"
         r'\s+after\s+that\s+',   # English "after that"
         r'\s+i\s+',              # Polish "i" (and) - last because it's short
         r'\s+and\s+',            # English "and" - last because it's short

@@ -6,21 +6,21 @@ i zarządzania ryzykiem.
 """
 
 import asyncio
-import time
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_metrics, run_thermo_demo
 from nlp2cmd.generation.thermodynamic import ThermodynamicGenerator
 
 
 async def demo_portfolio_optimization():
-    start_time = time.time()
     """Optymalizacja portfela inwestycyjnego (Markowitz)."""
-    print("=" * 70)
-    print("  Finanse - Portfolio Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja portfela
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Finanse - Portfolio Optimization",
+        """
         Zoptymalizuj portfel 20 akcji:
         - Budżet: 1,000,000 PLN
         - Max 15% w jednej akcji
@@ -28,7 +28,8 @@ async def demo_portfolio_optimization():
         - Docelowe ryzyko (std): 12% rocznie
         
         Maksymalizuj oczekiwany zwrot przy zadanym ryzyku.
-    """)
+    """,
+    )
     
     print("Optimal Portfolio:")
     # Symulacja wyników
@@ -55,43 +56,35 @@ async def demo_portfolio_optimization():
     
     print(f"\n📊 Optimization result:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy: {result.energy:.4f}")
+    print_metrics(result, energy=True)
 
 
 async def demo_trade_execution():
-    start_time = time.time()
     """Optymalizacja wykonania dużego zlecenia (TWAP/VWAP)."""
-    print("\n" + "=" * 70)
-    print("  Finanse - Trade Execution Scheduling")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja wykonania zlecenia
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Finanse - Trade Execution Scheduling",
+        """
         Wykonaj zlecenie kupna 100,000 akcji XYZ:
         - Horyzont: 4 godziny
         - Minimalizuj market impact
         - Max 5% dziennego wolumenu w każdym interwale
         - Uwzględnij historyczny profil wolumenu
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n📈 Execution schedule:")
     print(f"   {result.decoded_output}")
-    print(f"   Latency: {result.latency_ms:.1f}ms")
+    print_metrics(result, latency=True)
 
 
 async def demo_risk_allocation():
-    start_time = time.time()
     """Alokacja limitów ryzyka między deskami tradingowymi."""
-    print("\n" + "=" * 70)
-    print("  Finanse - Risk Limit Allocation")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Alokacja limitów ryzyka
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Finanse - Risk Limit Allocation",
+        """
         Przydziel limity VaR (100M PLN łącznie) do 5 desków:
         - Equity: historyczny Sharpe 1.2
         - Fixed Income: Sharpe 0.8
@@ -100,24 +93,21 @@ async def demo_risk_allocation():
         - Derivatives: Sharpe 1.8
         
         Maksymalizuj oczekiwany P&L przy całkowitym VaR ≤ 100M.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n⚠️ Risk allocation:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution feasible: {result.solution_quality.is_feasible}")
+    print_metrics(result, solution_feasible=True)
 
 
 async def demo_arbitrage_detection():
-    start_time = time.time()
     """Wykrywanie i optymalizacja arbitrażu."""
-    print("\n" + "=" * 70)
-    print("  Finanse - Arbitrage Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja arbitrażu
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Finanse - Arbitrage Optimization",
+        """
         Zidentyfikuj i zoptymalizuj arbitraż na 10 parach walut:
         - EUR/PLN, USD/PLN, GBP/PLN, CHF/PLN, JPY/PLN
         - Koszty transakcyjne: 0.1% per trade
@@ -125,24 +115,21 @@ async def demo_arbitrage_detection():
         - Minimalny spread: 0.05%
         
         Maksymalizuj oczekiwany zysk przy kontrolowanym ryzyku.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n💱 Arbitrage opportunities:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy savings: {result.energy_estimate.get('savings_digital_percent', 0):.1f}%")
+    print_metrics(result, energy_estimate=True, energy_estimate_label="Energy savings")
 
 
 async def demo_options_strategy():
-    start_time = time.time()
     """Optymalizacja strategii opcji."""
-    print("\n" + "=" * 70)
-    print("  Finanse - Options Strategy Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja strategii opcji
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Finanse - Options Strategy Optimization",
+        """
         Zaprojektuj strategię opcji na indeks WIG20:
         - Horyzont: 3 miesiące
         - Początkowa kapitalizacja: 100,000 PLN
@@ -150,24 +137,21 @@ async def demo_options_strategy():
         - Preferowany scenariusz: umiarkowana hossa
         
         Optymalizuj payoff przy ograniczonym ryzyku.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n📊 Options strategy:")
     print(f"   {result.decoded_output}")
-    print(f"   Sampler steps: {result.sampler_steps}")
+    print_metrics(result, sampler_steps=True)
 
 
 async def demo_credit_scoring():
-    start_time = time.time()
     """Optymalizacja modeli credit scoring."""
-    print("\n" + "=" * 70)
-    print("  Finanse - Credit Scoring Model Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja modeli scoringowych
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Finanse - Credit Scoring Model Optimization",
+        """
         Zoptymalizuj model credit scoring dla 1000 aplikacji:
         - Cechy: dochód, wiek, historia kredytowa, zatrudnienie
         - Cel: minimalizacja false negatives (default)
@@ -175,12 +159,13 @@ async def demo_credit_scoring():
         - Waga: default koszt = 10x koszt odrzucenia
         
         Znajdź optymalny próg scoringowy.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n💳 Credit scoring model:")
-    start_time = time.time()
     print(f"   {result.decoded_output}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, solution_quality=True)
 
 
 async def main():

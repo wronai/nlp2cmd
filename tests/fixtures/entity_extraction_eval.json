@@ -1,0 +1,59 @@
+[
+  {
+    "text": "Pokaż dane z tabeli users",
+    "domain": "sql",
+    "expected": {
+      "table": "users"
+    }
+  },
+  {
+    "text": "Select from orders where status = active",
+    "domain": "sql",
+    "expected": {
+      "table": "orders"
+    }
+  },
+  {
+    "text": "Pokaż 10 rekordów z tabeli products",
+    "domain": "sql",
+    "expected": {
+      "table": "products",
+      "limit": "10"
+    }
+  },
+  {
+    "text": "Znajdź pliki .py w katalogu /home/user",
+    "domain": "shell",
+    "expected_contains": {
+      "path": "/home/user"
+    }
+  },
+  {
+    "text": "pliki większe niż 100MB",
+    "domain": "shell",
+    "expected_contains": {
+      "size": "100"
+    }
+  },
+  {
+    "text": "logi kontenera webapp na porcie 8080",
+    "domain": "docker",
+    "expected": {
+      "container": "webapp"
+    }
+  },
+  {
+    "text": "pody w namespace production",
+    "domain": "kubernetes",
+    "expected": {
+      "namespace": "production"
+    }
+  },
+  {
+    "text": "skaluj do 3 replik",
+    "domain": "kubernetes",
+    "expected": {
+      "replica_count": "3"
+    }
+  }
+]

@@ -9,29 +9,20 @@ import asyncio
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from nlp2cmd.generation.thermodynamic import (
-    ThermodynamicGenerator,
-    OptimizationProblem,
-)
+from nlp2cmd.generation.thermodynamic import OptimizationProblem
 
 from _demo_helpers import (
     print_fallback_note,
     print_projected,
     project_sample,
+    run_thermo_demo,
 )
 
 
 async def demo_hyperparameter_optimization():
     """Optymalizacja hiperparametrów modelu ML."""
-    print("=" * 70)
-    print("  Data Science - Hyperparameter Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Problem optymalizacji hiperparametrów
     problem = OptimizationProblem(
         problem_type="hyperparameter",
@@ -46,9 +37,10 @@ async def demo_hyperparameter_optimization():
         objective_field="val_loss",
     )
     
-    result = await thermo.generate(
+    result = await run_thermo_demo(
+        "Data Science - Hyperparameter Optimization",
         "Znajdź optymalne hiperparametry dla modelu LSTM",
-        problem=problem
+        problem=problem,
     )
     
     raw_sample = result.solution.get("raw_sample", [])
@@ -62,19 +54,17 @@ async def demo_hyperparameter_optimization():
 
 async def demo_feature_selection():
     """Optymalizacja wyboru cech dla modelu ML."""
-    print("\n" + "=" * 70)
-    print("  Data Science - Feature Selection")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     start_time = time.time()
     # Optymalizacja wyboru cech
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Data Science - Feature Selection",
+        """
         Wybierz 10 najważniejszych cech z 50 dostępnych
         dla modelu predykcji churnu.
         Maksymalizuj AUC-ROC przy minimalnej korelacji między cechami.
-    """)
+    """,
+        leading_newline=True,
+    )
     elapsed = (time.time() - start_time) * 1000  # Convert to milliseconds
     
     print(f"\n📊 Feature selection result:")
@@ -86,15 +76,11 @@ async def demo_feature_selection():
 
 async def demo_experiment_scheduling():
     """Planowanie eksperymentów ML na klastrze GPU."""
-    print("\n" + "=" * 70)
-    print("  Data Science - Experiment Scheduling")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     start_time = time.time()
     # Planowanie eksperymentów ML
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Data Science - Experiment Scheduling",
+        """
         Zaplanuj 20 eksperymentów ML na 4 GPU:
         - GPU A100: najszybsze, 2 dostępne
         - GPU V100: średnie, 2 dostępne
@@ -105,7 +91,9 @@ async def demo_experiment_scheduling():
         - 5x small models (dowolne GPU, 1h każdy)
         
         Minimalizuj całkowity czas i koszt.
-    """)
+    """,
+        leading_newline=True,
+    )
     elapsed = (time.time() - start_time) * 1000  # Convert to milliseconds
     
     print(f"\n🧪 Experiment schedule:")
@@ -117,15 +105,11 @@ async def demo_experiment_scheduling():
 
 async def demo_model_ensemble_optimization():
     """Optymalizacja ensemble modeli."""
-    print("\n" + "=" * 70)
-    print("  Data Science - Model Ensemble Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     start_time = time.time()
     # Optymalizacja wag ensemble
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Data Science - Model Ensemble Optimization",
+        """
         Zoptymalizuj wagi dla ensemble 5 modeli:
         - Random Forest: accuracy 0.85, fast inference
         - XGBoost: accuracy 0.87, medium inference  
@@ -136,7 +120,9 @@ async def demo_model_ensemble_optimization():
         Maksymalizuj accuracy przy ograniczeniu:
         - Całkowity czas inference < 100ms
         - Max waga dla jednego modelu: 40%
-    """)
+    """,
+        leading_newline=True,
+    )
     elapsed = (time.time() - start_time) * 1000  # Convert to milliseconds
     
     print(f"\n🤖 Ensemble weights:")

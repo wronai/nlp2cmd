@@ -6,21 +6,20 @@ w inteligentnych miastach i systemach IoT.
 """
 
 import asyncio
-import time
-from nlp2cmd.generation.thermodynamic import ThermodynamicGenerator
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_metrics, run_thermo_demo
 
 
 async def demo_traffic_optimization():
-    start_time = time.time()
     """Optymalizacja sygnalizacji świetlnej."""
-    print("=" * 70)
-    print("  Smart Cities - Traffic Light Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja świateł
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Smart Cities - Traffic Light Optimization",
+        """
         Zoptymalizuj cykle świateł na 20 skrzyżowaniach:
         - Dane o natężeniu ruchu (7:00-9:00 szczyt poranny)
         - Koordynacja "zielonej fali" na głównej arterii
@@ -28,26 +27,20 @@ async def demo_traffic_optimization():
         - Min czas zielony dla pieszych: 15s
         
         Minimalizuj średni czas przejazdu przez miasto.
-    """)
+    """,
+    )
     
     print(result.decoded_output)
     print(f"\n🚦 Traffic metrics:")
-    print(f"   Energy: {result.energy:.4f}")
-    print(f"   Converged: {result.converged}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, energy=True, converged=True, solution_quality=True)
 
 
 async def demo_smart_grid():
-    start_time = time.time()
     """Bilansowanie obciążenia sieci energetycznej."""
-    print("\n" + "=" * 70)
-    print("  Smart Cities - Smart Grid Load Balancing")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Smart grid optimization
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Smart Cities - Smart Grid Load Balancing",
+        """
         Zbalansuj obciążenie sieci Smart Grid:
         - 10,000 gospodarstw domowych
         - 500 prosumentów z panelami PV
@@ -60,24 +53,21 @@ async def demo_smart_grid():
         - Dynamic pricing dla demand response
         
         Minimalizuj peak load i koszty.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n⚡ Smart grid schedule:")
     print(f"   {result.decoded_output}")
-    print(f"   Latency: {result.latency_ms:.1f}ms")
+    print_metrics(result, latency=True)
 
 
 async def demo_waste_management():
-    start_time = time.time()
     """Optymalizacja tras wywozu odpadów."""
-    print("\n" + "=" * 70)
-    print("  Smart Cities - Waste Collection Routing")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja wywozu odpadów
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Smart Cities - Waste Collection Routing",
+        """
         Zaplanuj trasy 10 śmieciarek na tydzień:
         - 500 punktów odbioru (różna częstotliwość)
         - Pojemność: 10 ton
@@ -86,24 +76,21 @@ async def demo_waste_management():
         - Smart bins z czujnikami wypełnienia
         
         Minimalizuj dystans i emisję CO2.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🗑️ Waste collection routes:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution feasible: {result.solution_quality.is_feasible}")
+    print_metrics(result, solution_feasible=True)
 
 
 async def demo_public_transport():
-    start_time = time.time()
     """Optymalizacja transportu publicznego."""
-    print("\n" + "=" * 70)
-    print("  Smart Cities - Public Transport Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja transportu publicznego
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Smart Cities - Public Transport Optimization",
+        """
         Zoptymalizuj sieć autobusową:
         - 20 linii autobusowych, 100 autobusów
         - 200 przystanków, 50,000 pasażerów dziennie
@@ -111,27 +98,21 @@ async def demo_public_transport():
         - Koszt przejazdu: 3 PLN, budżet: 100,000 PLN/dzień
         
         Maksymalizuj pokrycie, minimalizaj czas podróży.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🚌 Public transport network:")
     print(f"   {result.decoded_output}")
-    if result.energy_estimate:
-        print(f"   Energy savings: {result.energy_estimate.get('savings_digital_percent', 0):.1f}%")
-    else:
-        print(f"   Energy savings: N/A")
+    print_metrics(result, energy_estimate=True, energy_estimate_label="Energy savings")
 
 
 async def demo_parking_management():
-    start_time = time.time()
     """Zarządzanie parkingami."""
-    print("\n" + "=" * 70)
-    print("  Smart Cities - Parking Management")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Zarządzanie parkingami
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Smart Cities - Parking Management",
+        """
         Zoptymalizuj system parkingowy:
         - 5 parkingów, 2000 miejsc
         - Strefy: centrum (10 PLN/h), peryferia (2 PLN/h)
@@ -139,24 +120,21 @@ async def demo_parking_management():
         - 5000 kierowców dziennie, 80% obłożenie w szczycie
         
         Maksymalizaj wykorzystanie, minimalizuj szukanie miejsc.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🅿️ Parking system:")
     print(f"   {result.decoded_output}")
-    print(f"   Sampler steps: {result.sampler_steps}")
+    print_metrics(result, sampler_steps=True)
 
 
 async def demo_air_quality():
-    start_time = time.time()
     """Monitorowanie i optymalizacja jakości powietrza."""
-    print("\n" + "=" * 70)
-    print("  Smart Cities - Air Quality Management")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Jakość powietrza
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Smart Cities - Air Quality Management",
+        """
         Zoptymalizuj sieć monitoringu jakości powietrza:
         - 50 czujników PM2.5, PM10, NO2, O3
         - Koszt czujnika: 5000 PLN, budżet: 200,000 PLN
@@ -164,24 +142,21 @@ async def demo_air_quality():
         - Czas aktualizacji: 5 min
         
         Maksymalizuj pokrycie obszarów wysokiego ryzyka.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🌬️ Air quality monitoring:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, solution_quality=True)
 
 
 async def demo_water_management():
-    start_time = time.time()
     """Zarządzanie systemem wodociągowym."""
-    print("\n" + "=" * 70)
-    print("  Smart Cities - Water Management System")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Zarządzanie wodą
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Smart Cities - Water Management System",
+        """
         Zoptymalizuj system wodociągowy:
         - 100 km rurociągów, 10 stacji pomp
         - 50,000 mieszkańców, 15,000 m³/dzień
@@ -189,12 +164,13 @@ async def demo_water_management():
         - Wykrywanie wycieków, predykcja popytu
         
         Minimalizuj straty wody, zapewnij ciągłość dostaw.
-    """)
+    """,
+        leading_newline=True,
+    )
     
-    start_time = time.time()
     print(f"\n💧 Water management system:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy: {result.energy:.4f}")
+    print_metrics(result, energy=True)
 
 
 async def main():

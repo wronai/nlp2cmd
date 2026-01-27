@@ -6,21 +6,20 @@ medycznych i zarządzania szpitalem.
 """
 
 import asyncio
-import time
-from nlp2cmd.generation.thermodynamic import ThermodynamicGenerator
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_metrics, run_thermo_demo
 
 
 async def demo_or_scheduling():
-    start_time = time.time()
     """Harmonogramowanie sal operacyjnych."""
-    print("=" * 70)
-    print("  Healthcare - Operating Room Scheduling")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Harmonogramowanie sal operacyjnych
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Healthcare - Operating Room Scheduling",
+        """
         Zaplanuj operacje na 5 sal przez tydzień:
         - 80 zaplanowanych operacji
         - Różne czasy trwania (30 min - 8h)
@@ -29,26 +28,20 @@ async def demo_or_scheduling():
         - Czas na sterylizację między operacjami: 30 min
         
         Maksymalizuj wykorzystanie sal, minimalizuj nadgodziny.
-    """)
+    """,
+    )
     
     print(result.decoded_output)
     print(f"\n📊 Scheduling metrics:")
-    print(f"   Energy: {result.energy:.4f}")
-    print(f"   Converged: {result.converged}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, energy=True, converged=True, solution_quality=True)
 
 
 async def demo_nurse_scheduling():
-    start_time = time.time()
     """Grafik dyżurów pielęgniarek."""
-    print("\n" + "=" * 70)
-    print("  Healthcare - Nurse Scheduling")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Grafik pielęgniarek
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Healthcare - Nurse Scheduling",
+        """
         Ułóż grafik dla 30 pielęgniarek na miesiąc:
         - 3 zmiany: dzienna, wieczorna, nocna
         - Min 2 dni wolne między nockami
@@ -57,24 +50,21 @@ async def demo_nurse_scheduling():
         - Uwzględnij preferencje i urlopy
         
         Zapewnij minimum 5 osób na zmianę, sprawiedliwy rozkład.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n👩‍⚕️ Nurse schedule:")
     print(f"   {result.decoded_output}")
-    print(f"   Latency: {result.latency_ms:.1f}ms")
+    print_metrics(result, latency=True)
 
 
 async def demo_patient_allocation():
-    start_time = time.time()
     """Alokacja pacjentów do ramion badania klinicznego."""
-    print("\n" + "=" * 70)
-    print("  Healthcare - Clinical Trial Patient Allocation")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Alokacja pacjentów do badania klinicznego
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Healthcare - Clinical Trial Patient Allocation",
+        """
         Przydziel 200 pacjentów do 4 ramion badania:
         - Ramię A: nowy lek, max 60 pacjentów
         - Ramię B: lek + terapia, max 60 pacjentów
@@ -87,24 +77,21 @@ async def demo_patient_allocation():
         - Stadium choroby (I-IV)
         
         Minimalizuj bias, maksymalizuj power statystyczny.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🧪 Clinical trial allocation:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution feasible: {result.solution_quality.is_feasible}")
+    print_metrics(result, solution_feasible=True)
 
 
 async def demo_emergency_department():
-    start_time = time.time()
     """Optymalizacja pracy oddziału ratunkowego."""
-    print("\n" + "=" * 70)
-    print("  Healthcare - Emergency Department Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja oddziału ratunkowego
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Healthcare - Emergency Department Optimization",
+        """
         Zoptymalizuj pracę oddziału ratunkowego:
         - 15 łóżek, 3 gabinety lekarskie
         - Pacjenci przybywają wg rozkładu Poisson (średnio 20/h)
@@ -113,24 +100,21 @@ async def demo_emergency_department():
         - Kategoria zielona: do 2h
         
         Minimalizuj czas oczekiwania, optymalizuj personel.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🚑 Emergency department flow:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy savings: {result.energy_estimate.get('savings_digital_percent', 0):.1f}%")
+    print_metrics(result, energy_estimate=True, energy_estimate_label="Energy savings")
 
 
 async def demo_ambulance_dispatch():
-    start_time = time.time()
     """Dyspozycja karetek pogotowia."""
-    print("\n" + "=" * 70)
-    print("  Healthcare - Ambulance Dispatch Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja dyspozycji karetek
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Healthcare - Ambulance Dispatch Optimization",
+        """
         Zoptymalizuj dyspozycję 10 karetek w mieście:
         - 5 baz rozmieszczonych w mieście
         - Średnio 15 wezwań na godzinę
@@ -138,24 +122,21 @@ async def demo_ambulance_dispatch():
         - Priorytety: życie zagrożone < 5 min, inne < 15 min
         
         Minimalizuj średni czas dojazdu, optymalizuj pozycjonowanie baz.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🚑 Ambulance dispatch:")
     print(f"   {result.decoded_output}")
-    print(f"   Sampler steps: {result.sampler_steps}")
+    print_metrics(result, sampler_steps=True)
 
 
 async def demo_icu_bed_management():
-    start_time = time.time()
     """Zarządzanie łóżkami na OIOM."""
-    print("\n" + "=" * 70)
-    print("  Healthcare - ICU Bed Management")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Zarządzanie łóżkami OIOM
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Healthcare - ICU Bed Management",
+        """
         Zoptymalizuj zarządzanie 20 łóżkami OIOM:
         - Przyjęcia wg skali NEWS 2-9
         - Średni pobyt: 5 dni
@@ -163,24 +144,21 @@ async def demo_icu_bed_management():
         - Personel: 1 pielęgniarka na 2 pacjentów
         
         Maksymalizuj wykorzystanie, minimalizuj czas oczekiwania.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🏥 ICU bed management:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, solution_quality=True)
 
 
 async def demo_pharmacy_inventory():
-    start_time = time.time()
     """Zarządzanie zapasami w aptece szpitalnej."""
-    print("\n" + "=" * 70)
-    print("  Healthcare - Pharmacy Inventory Management")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Zarządzanie zapasami leków
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Healthcare - Pharmacy Inventory Management",
+        """
         Zoptymalizuj zapasy 500 leków w aptece:
         - Koszt przechowywania: 5% wartości/miesiąc
         - Koszt braku: 100x koszt leku
@@ -188,12 +166,13 @@ async def demo_pharmacy_inventory():
         - Sezonowość: grypa +200% zimą
         
         Minimalizuj całkowity koszt przy 99% dostępności.
-    """)
+    """,
+        leading_newline=True,
+    )
     
-    start_time = time.time()
     print(f"\n💊 Pharmacy inventory policy:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy: {result.energy:.4f}")
+    print_metrics(result, energy=True)
 
 
 async def main():

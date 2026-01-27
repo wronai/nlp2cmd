@@ -6,21 +6,20 @@ badawczych w fizyce i symulacjach.
 """
 
 import asyncio
-import time
-from nlp2cmd.generation.thermodynamic import ThermodynamicGenerator
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_metrics, run_thermo_demo
 
 
 async def demo_particle_collision():
-    start_time = time.time()
     """Planowanie eksperymentów w akceleratorze cząstek."""
-    print("=" * 70)
-    print("  Physics - Particle Collision Experiment Scheduling")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Planowanie eksperymentów
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Physics - Particle Collision Experiment Scheduling",
+        """
         Zaplanuj 24h beam time w akceleratorze:
         - 8 grup badawczych, każda potrzebuje 2-4h
         - Niektóre eksperymenty wymagają specyficznej energii wiązki
@@ -28,26 +27,20 @@ async def demo_particle_collision():
         - Priorytet dla eksperymentów z deadline'em publikacji
         
         Minimalizuj czas na zmiany konfiguracji.
-    """)
+    """,
+    )
     
     print(result.decoded_output)
     print(f"\n⚛️ Beam time schedule:")
-    print(f"   Energy: {result.energy:.4f}")
-    print(f"   Converged: {result.converged}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, energy=True, converged=True, solution_quality=True)
 
 
 async def demo_molecular_dynamics():
-    start_time = time.time()
     """Optymalizacja parametrów symulacji MD."""
-    print("\n" + "=" * 70)
-    print("  Physics - Molecular Dynamics Simulation")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Parametry symulacji MD
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Physics - Molecular Dynamics Simulation",
+        """
         Optymalizuj parametry symulacji MD wody TIP4P:
         - timestep: 0.5-2.0 fs
         - cutoff radius: 8-12 Å
@@ -55,48 +48,42 @@ async def demo_molecular_dynamics():
         - pressure: 1 atm (NPT ensemble)
         
         Minimalizuj energy drift przy zachowaniu accuracy.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🔬 MD simulation parameters:")
     print(f"   {result.decoded_output}")
-    print(f"   Latency: {result.latency_ms:.1f}ms")
+    print_metrics(result, latency=True)
 
 
 async def demo_telescope_scheduling():
-    start_time = time.time()
     """Harmonogram obserwacji teleskopowych."""
-    print("\n" + "=" * 70)
-    print("  Physics - Telescope Observation Scheduling")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Obserwacje teleskopowe
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Physics - Telescope Observation Scheduling",
+        """
         Zaplanuj obserwacje na 8-godzinną noc:
         - 15 obiektów do obserwacji
         - Różne czasy ekspozycji (5-60 min)
         - Niektóre obiekty widoczne tylko w określonych godzinach
         - Minimalizuj czas na przesunięcie teleskopu między obiektami
         - Priorytet dla obiektów bliskich horyzontowi (krótkie okno)
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🔭 Telescope schedule:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution feasible: {result.solution_quality.is_feasible}")
+    print_metrics(result, solution_feasible=True)
 
 
 async def demo_quantum_computing():
-    start_time = time.time()
     """Optymalizacja obwodów kwantowych."""
-    print("\n" + "=" * 70)
-    print("  Physics - Quantum Circuit Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Optymalizacja obwodów kwantowych
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Physics - Quantum Circuit Optimization",
+        """
         Zoptymalizuj obwód kwantowy dla algorytmu Grovera:
         - 10 qubitów, 20 bramek
         - Czas koherencji: 100 μs
@@ -104,24 +91,21 @@ async def demo_quantum_computing():
         - Błędy: 0.1% per bramka
         
         Minimalizuj głębokość, maksymalizuj fidelity.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n⚛️ Quantum circuit optimization:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy savings: {result.energy_estimate.get('savings_digital_percent', 0):.1f}%")
+    print_metrics(result, energy_estimate=True, energy_estimate_label="Energy savings")
 
 
 async def demo_climate_modeling():
-    start_time = time.time()
     """Optymalizacja parametrów modelu klimatu."""
-    print("\n" + "=" * 70)
-    print("  Physics - Climate Model Parameter Optimization")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Parametry modelu klimatu
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Physics - Climate Model Parameter Optimization",
+        """
         Kalibruj parametry modelu klimatu:
         - Cloud cover fraction: 0.3-0.7
         - Albedo: 0.2-0.4
@@ -129,24 +113,21 @@ async def demo_climate_modeling():
         - Ocean heat uptake: 0.5-2.0 W/m²/K
         
         Dopasuj do danych obserwacyjnych 1970-2020.
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n🌍 Climate model calibration:")
     print(f"   {result.decoded_output}")
-    print(f"   Sampler steps: {result.sampler_steps}")
+    print_metrics(result, sampler_steps=True)
 
 
 async def demo_particle_physics():
-    start_time = time.time()
     """Analiza danych z fizyki cząstek."""
-    print("\n" + "=" * 70)
-    print("  Physics - Particle Physics Data Analysis")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Analiza danych
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Physics - Particle Physics Data Analysis",
+        """
         Zoptymalizuj analizę danych z detektora cząstek:
         - 1M zdarzeń, 1000 zmiennych each
         - Cuts: pT > 20 GeV, |η| < 2.5
@@ -154,24 +135,21 @@ async def demo_particle_physics():
         - Signal efficiency: > 50%
         
         Maksymalizuj significance = S/√(S+B).
-    """)
+    """,
+        leading_newline=True,
+    )
     
     print(f"\n📊 Particle physics analysis:")
     print(f"   {result.decoded_output}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, solution_quality=True)
 
 
 async def demo_materials_science():
-    start_time = time.time()
     """Optymalizacja eksperymentów materiałoznawstwa."""
-    print("\n" + "=" * 70)
-    print("  Physics - Materials Science Experiments")
-    print("=" * 70)
-    
-    thermo = ThermodynamicGenerator()
-    
     # Eksperymenty materiałoznawcze
-    result = await thermo.generate("""
+    result = await run_thermo_demo(
+        "Physics - Materials Science Experiments",
+        """
         Zaplanuj eksperymenty badawcze nowych materiałów:
         - 50 próbek, różne kompozycje
         - Testy: wytrzymałość, twardość, przewodnictwo
@@ -179,12 +157,13 @@ async def demo_materials_science():
         - 5 maszyn testowych dostępnych
         
         Minimalizuj całkowity czas, optymalizuj wykorzystanie.
-    """)
+    """,
+        leading_newline=True,
+    )
     
-    start_time = time.time()
     print(f"\n🔬 Materials science experiments:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy: {result.energy:.4f}")
+    print_metrics(result, energy=True)
 
 
 async def main():
