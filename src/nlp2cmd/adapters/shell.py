@@ -762,23 +762,84 @@ class ShellAdapter(BaseDSLAdapter):
 
     def _generate_process_management(self, entities: dict[str, Any]) -> str:
         """Generate process management command."""
-        action = entities.get("action", "")
-        process_name = entities.get("process_name", "")
-        pid = entities.get("pid", "")
-        full_text = str(entities.get("_full_text", "")).lower()
-
-        if self._process_is_direct_ps_request(full_text):
+        context = self._build_process_context(entities)
+        if context["direct_ps"]:
             return "ps aux"
 
-        if not action and not process_name:
-            action, process_name = self._infer_process_action_and_name(full_text)
-
+        action, process_name = self._resolve_process_action(context)
         service_name, is_service = self._map_service_name(process_name)
 
         action_str = str(action)
         process_str = str(process_name)
 
-        handlers = (
+        dispatch = self._dispatch_process_action(
+            entities=entities,
+            action_str=action_str,
+            process_str=process_str,
+            pid=context["pid"],
+            is_service=is_service,
+            service_name=service_name,
+        )
+        if dispatch is not None:
+            return dispatch
+
+        fallback = self._handle_process_fallback(action, process_str, context["pid"])
+        if fallback is not None:
+            return fallback
+
+        return f"# Process action: {action}"
+
+    def _build_process_context(self, entities: dict[str, Any]) -> dict[str, Any]:
+        full_text = str(entities.get("_full_text", "")).lower()
+        return {
+            "action": entities.get("action", ""),
+            "process_name": entities.get("process_name", ""),
+            "pid": entities.get("pid", ""),
+            "full_text": full_text,
+            "direct_ps": self._process_is_direct_ps_request(full_text),
+        }
+
+    def _resolve_process_action(self, context: dict[str, Any]) -> tuple[str, str]:
+        action = context["action"]
+        process_name = context["process_name"]
+        if not action and not process_name:
+            action, process_name = self._infer_process_action_and_name(context["full_text"])
+        return action, process_name
+
+    def _dispatch_process_action(
+        self,
+        *,
+        entities: dict[str, Any],
+        action_str: str,
+        process_str: str,
+        pid: str,
+        is_service: bool,
+        service_name: str,
+    ) -> Optional[str]:
+        handlers = self._build_process_handlers(
+            entities=entities,
+            action_str=action_str,
+            process_str=process_str,
+            pid=pid,
+            is_service=is_service,
+            service_name=service_name,
+        )
+        for predicate, handler in handlers:
+            if predicate(action_str):
+                return handler()
+        return None
+
+    def _build_process_handlers(
+        self,
+        *,
+        entities: dict[str, Any],
+        action_str: str,
+        process_str: str,
+        pid: str,
+        is_service: bool,
+        service_name: str,
+    ) -> tuple[tuple[callable, callable], ...]:
+        return (
             (self._process_action_is_kill, lambda: self._handle_process_kill(pid, process_str)),
             (
                 self._process_action_is_start,
@@ -808,16 +869,6 @@ class ShellAdapter(BaseDSLAdapter):
             ),
             (self._process_action_is_status, lambda: self._handle_process_status(entities, action_str, process_str)),
         )
-
-        for predicate, handler in handlers:
-            if predicate(action_str):
-                return handler()
-
-        fallback = self._handle_process_fallback(action, process_str, pid)
-        if fallback is not None:
-            return fallback
-
-        return f"# Process action: {action}"
 
     def _process_is_direct_ps_request(self, full_text: str) -> bool:
         if "ps aux" in full_text or "ps " in full_text:
@@ -1122,45 +1173,77 @@ class ShellAdapter(BaseDSLAdapter):
         target = entities.get("target", "")
         destination = entities.get("destination", "")
         fmt = entities.get("format", "tar.gz")
-        
-        # Handle specific Polish patterns
-        if "backup" in str(action) or "kopia" in str(action):
-            if "utwórz" in str(action) or "create" in str(action):
-                if "katalogu" in str(target) or "directory" in str(target):
-                    return f"tar -czf backup.tar.gz {target}"
-                else:
-                    return f"tar -czf backup.tar.gz {target}"
-            elif "skopiuj" in str(action) or "copy" in str(action):
-                return f"rsync -av {target} {destination}"
-            elif "odtwórz" in str(action) or "restore" in str(action):
-                return f"tar -xzf backup.tar.gz {target}"
-            elif "integralność" in str(action) or "integrity" in str(action):
-                return f"md5sum {target}"
-            elif "status" in str(action):
-                return f"ls -la {destination}"
-            elif "stare" in str(action) and "backupi" in str(target):
-                return f"find {destination} -mtime +7 -delete"
-            elif "rozmiar" in str(target) or "size" in str(target):
-                return f"du -sh {target}"
-            elif "harmonogram" in str(action) or "schedule" in str(action):
-                return "crontab -l"
-        elif "skompresuj" in str(action) or "compress" in action:
+
+        action_str = str(action)
+        target_str = str(target)
+
+        if self._archive_is_backup(action_str):
+            backup_cmd = self._archive_backup_command(action_str, target_str, target, destination)
+            if backup_cmd:
+                return backup_cmd
+        elif self._archive_is_compress(action_str):
             return f"tar -czf archive.tar.gz {target}"
-        elif "spakuj" in str(action) or "pack" in action:
+        elif self._archive_is_pack(action_str):
             return f"tar -czf {fmt} {target}"
 
+        fallback = self._archive_action_fallback(action, target, destination, fmt)
+        if fallback is not None:
+            return fallback
+
+        return f"# Archive action: {action}"
+
+    def _archive_is_backup(self, action_str: str) -> bool:
+        return "backup" in action_str or "kopia" in action_str
+
+    def _archive_is_compress(self, action_str: str) -> bool:
+        return "skompresuj" in action_str or "compress" in action_str
+
+    def _archive_is_pack(self, action_str: str) -> bool:
+        return "spakuj" in action_str or "pack" in action_str
+
+    def _archive_backup_command(
+        self,
+        action_str: str,
+        target_str: str,
+        target: str,
+        destination: str,
+    ) -> str | None:
+        if "utwórz" in action_str or "create" in action_str:
+            if "katalogu" in target_str or "directory" in target_str:
+                return f"tar -czf backup.tar.gz {target}"
+            return f"tar -czf backup.tar.gz {target}"
+        if "skopiuj" in action_str or "copy" in action_str:
+            return f"rsync -av {target} {destination}"
+        if "odtwórz" in action_str or "restore" in action_str:
+            return f"tar -xzf backup.tar.gz {target}"
+        if "integralność" in action_str or "integrity" in action_str:
+            return f"md5sum {target}"
+        if "status" in action_str:
+            return f"ls -la {destination}"
+        if "stare" in action_str and "backupi" in target_str:
+            return f"find {destination} -mtime +7 -delete"
+        if "rozmiar" in target_str or "size" in target_str:
+            return f"du -sh {target}"
+        if "harmonogram" in action_str or "schedule" in action_str:
+            return "crontab -l"
+        return None
+
+    def _archive_action_fallback(
+        self,
+        action: str,
+        target: str,
+        destination: str,
+        fmt: str,
+    ) -> str | None:
         if action in ["compress", "pack", "spakuj"]:
             if fmt == "zip":
                 return f"zip -r {shlex.quote(destination or target + '.zip')} {shlex.quote(target)}"
-            else:
-                return f"tar -czvf {shlex.quote(destination or target + '.tar.gz')} {shlex.quote(target)}"
-        elif action in ["extract", "unpack", "rozpakuj"]:
+            return f"tar -czvf {shlex.quote(destination or target + '.tar.gz')} {shlex.quote(target)}"
+        if action in ["extract", "unpack", "rozpakuj"]:
             if target.endswith(".zip"):
                 return f"unzip {shlex.quote(target)}"
-            else:
-                return f"tar -xzvf {shlex.quote(target)}"
-
-        return f"# Archive action: {action}"
+            return f"tar -xzvf {shlex.quote(target)}"
+        return None
 
     def _generate_text_processing(self, entities: dict[str, Any]) -> str:
         """Generate text processing command."""
@@ -1205,45 +1288,78 @@ class ShellAdapter(BaseDSLAdapter):
         action = entities.get("action", "")
         target = entities.get("target", "")
         full_text = str(entities.get("_full_text", "")).lower()
-        
-        # Fallback: extract action from full text if not in entities
-        if not action and full_text:
-            if "aktualizuj" in full_text or "update" in full_text or "aktualizacja" in full_text:
-                action = "aktualizuj"
-            elif "czyść" in full_text or "clean" in full_text:
-                action = "czyść"
-            elif "sprawdź" in full_text:
-                action = "sprawdź"
-        
-        # Fallback: extract target from full text if not in entities
-        if not target and full_text:
-            if "system" in full_text or "systemu" in full_text:
-                target = "system"
-            elif "cache" in full_text:
-                target = "cache"
-            elif "logi" in full_text:
-                target = "logi"
-            elif "cron" in full_text:
-                target = "cron"
-        
-        if "aktualizuj" in action or "update" in action or "aktualizacja" in full_text:
-            # Try non-sudo check first, fall back to sudo if needed
-            return "apt list --upgradable 2>/dev/null | grep -v 'WARNING:' || sudo apt update && sudo apt upgrade -y"
-        elif "czyść" in action or "clean" in action:
-            if "cache" in target:
-                return "apt clean && apt autoclean"
-            elif "tmp" in target:
-                return "rm -rf /tmp/*"
-            else:
-                return "apt autoremove"
-        elif "logi" in target:
-            return "tail -n 50 /var/log/syslog"
-        elif "cron" in target:
-            return "systemctl status cron"
-        elif "defragmentacja" in action:
-            return "defrag /dev/sda1"
-        
+
+        action, target = self._system_maintenance_apply_fallbacks(action, target, full_text)
+        action_str = str(action)
+        target_str = str(target)
+
+        handlers = (
+            (lambda: self._system_maintenance_is_update(action_str, full_text), self._system_maintenance_update_cmd),
+            (lambda: self._system_maintenance_is_clean(action_str), lambda: self._system_maintenance_clean_cmd(target_str)),
+            (lambda: self._system_maintenance_is_logs(target_str), lambda: "tail -n 50 /var/log/syslog"),
+            (lambda: self._system_maintenance_is_cron(target_str), lambda: "systemctl status cron"),
+            (lambda: self._system_maintenance_is_defrag(action_str), lambda: "defrag /dev/sda1"),
+        )
+
+        for predicate, handler in handlers:
+            if predicate():
+                return handler()
+
         return f"# System maintenance: {action}"
+
+    def _system_maintenance_apply_fallbacks(
+        self,
+        action: str,
+        target: str,
+        full_text: str,
+    ) -> tuple[str, str]:
+        new_action = action
+        new_target = target
+
+        if not new_action and full_text:
+            if "aktualizuj" in full_text or "update" in full_text or "aktualizacja" in full_text:
+                new_action = "aktualizuj"
+            elif "czyść" in full_text or "clean" in full_text:
+                new_action = "czyść"
+            elif "sprawdź" in full_text:
+                new_action = "sprawdź"
+
+        if not new_target and full_text:
+            if "system" in full_text or "systemu" in full_text:
+                new_target = "system"
+            elif "cache" in full_text:
+                new_target = "cache"
+            elif "logi" in full_text:
+                new_target = "logi"
+            elif "cron" in full_text:
+                new_target = "cron"
+
+        return new_action, new_target
+
+    def _system_maintenance_is_update(self, action_str: str, full_text: str) -> bool:
+        return "aktualizuj" in action_str or "update" in action_str or "aktualizacja" in full_text
+
+    def _system_maintenance_update_cmd(self) -> str:
+        return "apt list --upgradable 2>/dev/null | grep -v 'WARNING:' || sudo apt update && sudo apt upgrade -y"
+
+    def _system_maintenance_is_clean(self, action_str: str) -> bool:
+        return "czyść" in action_str or "clean" in action_str
+
+    def _system_maintenance_clean_cmd(self, target_str: str) -> str:
+        if "cache" in target_str:
+            return "apt clean && apt autoclean"
+        if "tmp" in target_str:
+            return "rm -rf /tmp/*"
+        return "apt autoremove"
+
+    def _system_maintenance_is_logs(self, target_str: str) -> bool:
+        return "logi" in target_str
+
+    def _system_maintenance_is_cron(self, target_str: str) -> bool:
+        return "cron" in target_str
+
+    def _system_maintenance_is_defrag(self, action_str: str) -> bool:
+        return "defragmentacja" in action_str
 
     def _generate_development(self, entities: dict[str, Any]) -> str:
         """Generate development command."""

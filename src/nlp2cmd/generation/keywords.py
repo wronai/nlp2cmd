@@ -1192,15 +1192,30 @@ class KeywordIntentDetector:
         Returns:
             DetectionResult with domain, intent, confidence
         """
+        raw_lower, text_lower = self._prepare_text(text)
+
+        override = self._detect_explicit_overrides(text_lower)
+        if override is not None:
+            return override
+
+        result = self._detect_normalized(text_lower)
+        if result.domain != 'unknown' or result.confidence > 0.0:
+            return self._normalize_detection_result(result, text_lower)
+
+        return self._detect_with_lemmatization(raw_lower, result)
+
+    def _prepare_text(self, text: str) -> tuple[str, str]:
         raw_lower = text.lower()
-        
+
         # Apply STT error normalization for Polish text
         polish = _get_polish_support()
         if polish:
             raw_lower = polish.normalize_stt_errors(raw_lower)
-        
-        text_lower = self._normalize_text_lower(raw_lower)
 
+        text_lower = self._normalize_text_lower(raw_lower)
+        return raw_lower, text_lower
+
+    def _detect_explicit_overrides(self, text_lower: str) -> Optional[DetectionResult]:
         # Explicit overrides for common CLI queries.
         # These must run before generic matching (including priority intents).
         if re.search(r"\b(adres\s+ip|ip\s+address)\b", text_lower):
@@ -1212,45 +1227,53 @@ class KeywordIntentDetector:
             )
 
         if self._has_shell_file_context(text_lower):
-            if re.search(r"\b(zawartosc|zawartos\w*)\b", text_lower) and re.search(
-                r"\b(plik\w*|file\w*)\b",
-                text_lower,
-            ):
-                return DetectionResult(
-                    domain="shell",
-                    intent="text_cat",
-                    confidence=0.9,
-                    matched_keyword="file content",
-                )
-            if re.search(r"\b(parsuj\s+json|parse\s+json|jq)\b", text_lower):
-                return DetectionResult(
-                    domain="shell",
-                    intent="json_jq",
-                    confidence=0.9,
-                    matched_keyword="json",
-                )
+            file_override = self._detect_file_context_overrides(text_lower)
+            if file_override is not None:
+                return file_override
 
-        result = self._detect_normalized(text_lower)
-        if result.domain != 'unknown' or result.confidence > 0.0:
-            try:
-                result.intent = self._normalize_intent(result.domain, result.intent, text_lower)
-            except Exception:
-                pass
-            return result
+        return None
 
+    def _detect_file_context_overrides(self, text_lower: str) -> Optional[DetectionResult]:
+        if re.search(r"\b(zawartosc|zawartos\w*)\b", text_lower) and re.search(
+            r"\b(plik\w*|file\w*)\b",
+            text_lower,
+        ):
+            return DetectionResult(
+                domain="shell",
+                intent="text_cat",
+                confidence=0.9,
+                matched_keyword="file content",
+            )
+        if re.search(r"\b(parsuj\s+json|parse\s+json|jq)\b", text_lower):
+            return DetectionResult(
+                domain="shell",
+                intent="json_jq",
+                confidence=0.9,
+                matched_keyword="json",
+            )
+        return None
+
+    def _normalize_detection_result(self, result: DetectionResult, text_lower: str) -> DetectionResult:
+        try:
+            result.intent = self._normalize_intent(result.domain, result.intent, text_lower)
+        except Exception:
+            pass
+        return result
+
+    def _detect_with_lemmatization(
+        self,
+        raw_lower: str,
+        baseline: DetectionResult,
+    ) -> DetectionResult:
         # Lazy lemmatization fallback (loads spaCy only if needed)
         lemmatized = self._maybe_lemmatize_text_lower(raw_lower)
         if lemmatized != raw_lower:
             lemmatized_norm = self._normalize_text_lower(lemmatized)
             fallback = self._detect_normalized(lemmatized_norm)
-            if fallback.domain != 'unknown' and fallback.confidence >= result.confidence:
-                try:
-                    fallback.intent = self._normalize_intent(fallback.domain, fallback.intent, lemmatized_norm)
-                except Exception:
-                    pass
-                return fallback
+            if fallback.domain != 'unknown' and fallback.confidence >= baseline.confidence:
+                return self._normalize_detection_result(fallback, lemmatized_norm)
 
-        return result
+        return baseline
 
     def _detect_normalized(self, text_lower: str) -> DetectionResult:
         # Try ML classifier first for high-confidence matches (fastest, <1ms)

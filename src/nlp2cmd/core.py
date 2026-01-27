@@ -590,150 +590,180 @@ class NLP2CMD:
         normalized = dict(entities)
 
         if dsl == "sql":
-            if "table" not in normalized:
-                default_table = context.get("default_table") or context.get("previous_table")
-                if default_table:
-                    normalized["table"] = default_table
-
-            if "filters" not in normalized and "where_field" in normalized and "where_value" in normalized:
-                normalized["filters"] = [
-                    {
-                        "field": normalized.get("where_field"),
-                        "operator": "=",
-                        "value": normalized.get("where_value"),
-                    }
-                ]
-
-            if "ordering" not in normalized and "order_by" in normalized:
-                normalized["ordering"] = [
-                    {
-                        "field": normalized.get("order_by"),
-                        "direction": normalized.get("order_direction", "ASC"),
-                    }
-                ]
-
+            self._normalize_sql_entities(normalized, context)
         if dsl == "shell":
-            if intent == "file_search":
-                scope = normalized.get("scope") or normalized.get("path") or "."
-                normalized.setdefault("scope", scope)
-                normalized.setdefault("target", "files")
-
-                filters: list[dict[str, Any]] = []
-
-                ext = normalized.get("file_pattern")
-                pattern = normalized.get("pattern")
-                
-                # Avoid duplicate extension filters
-                extension_value = None
-                
-                if ext and isinstance(ext, str):
-                    extension_value = ext
-                
-                if pattern and isinstance(pattern, str) and pattern.startswith("*."):
-                    pattern_ext = pattern[2:]
-                    if extension_value is None:  # Only use pattern if file_pattern wasn't set
-                        extension_value = pattern_ext
-                
-                if extension_value:
-                    filters.append({"attribute": "extension", "operator": "=", "value": extension_value})
-
-                filename = normalized.get("filename")
-                if filename and isinstance(filename, str):
-                    filters.append({"attribute": "name", "operator": "=", "value": filename})
-
-                size = normalized.get("size")
-                size_parsed = normalized.get("size_parsed")
-                # Use full text for operator detection, not just query
-                full_text = context.get("text", "") or normalized.get("query", "")
-                
-                # Detect operator from query text
-                operator = ">"
-                if "mniejsz" in full_text.lower() or "smaller" in full_text.lower():
-                    operator = "<"
-                elif "większ" in full_text.lower() or "larger" in full_text.lower() or "bigger" in full_text.lower():
-                    operator = ">"
-                
-                # Handle size as either dict (size_parsed) or string (size)
-                if isinstance(size_parsed, dict) and "value" in size_parsed:
-                    filters.append(
-                        {
-                            "attribute": "size",
-                            "operator": operator,
-                            "value": f"{size_parsed.get('value')}{size_parsed.get('unit', '')}",
-                        }
-                    )
-                elif isinstance(size, str) and size.strip():
-                    # Parse string size like "10MB"
-                    import re
-                    m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", size.strip())
-                    if m:
-                        filters.append(
-                            {
-                                "attribute": "size",
-                                "operator": operator,
-                                "value": f"{m.group(1)}{m.group(2)}",
-                            }
-                        )
-
-                age = normalized.get("age")
-                if isinstance(age, dict) and "value" in age:
-                    # Detect operator for age from query text
-                    age_operator = ">"
-                    if "ostatnich" in full_text.lower() or "last" in full_text.lower() or "recent" in full_text.lower():
-                        age_operator = "<"  # newer files (last N days)
-                    elif "starsze" in full_text.lower() or "older" in full_text.lower():
-                        age_operator = ">"  # older files
-                    
-                    filters.append(
-                        {
-                            "attribute": "mtime",
-                            "operator": age_operator,
-                            "value": f"{age.get('value')}_days",
-                        }
-                    )
-
-                normalized["filters"] = filters
-
+            self._normalize_shell_entities(intent, normalized, context)
         if dsl == "docker":
-            if "port" in normalized and "ports" not in normalized:
-                port = normalized.get("port")
-                if isinstance(port, dict):
-                    normalized["ports"] = [port]
-                elif port is not None:
-                    normalized["ports"] = [port]
-
-            if "tail_lines" in normalized and "tail" not in normalized:
-                try:
-                    normalized["tail"] = int(str(normalized.get("tail_lines")))
-                except (TypeError, ValueError):
-                    pass
-
-            env_var = normalized.get("env_var")
-            if env_var and "environment" not in normalized:
-                if isinstance(env_var, dict) and "name" in env_var and "value" in env_var:
-                    normalized["environment"] = {env_var["name"]: env_var["value"]}
-
-            if intent == "container_run":
-                normalized.setdefault("detach", True)
-
+            self._normalize_docker_entities(intent, normalized)
         if dsl == "kubernetes":
-            if intent == "get":
-                rt = normalized.get("resource_type")
-                if isinstance(rt, str):
-                    normalized["resource_type"] = rt
-
-            if intent == "scale":
-                rc = normalized.get("replica_count")
-                if isinstance(rc, str) and rc.isdigit():
-                    normalized["replica_count"] = int(rc)
-
+            self._normalize_kubernetes_entities(intent, normalized)
         if dsl == "dql":
-            if "entity" not in normalized:
-                default_entity = context.get("default_entity")
-                if default_entity:
-                    normalized["entity"] = default_entity
+            self._normalize_dql_entities(normalized, context)
 
         return normalized
+
+    def _normalize_sql_entities(self, normalized: dict[str, Any], context: dict[str, Any]) -> None:
+        if "table" not in normalized:
+            default_table = context.get("default_table") or context.get("previous_table")
+            if default_table:
+                normalized["table"] = default_table
+
+        if "filters" not in normalized and "where_field" in normalized and "where_value" in normalized:
+            normalized["filters"] = [
+                {
+                    "field": normalized.get("where_field"),
+                    "operator": "=",
+                    "value": normalized.get("where_value"),
+                }
+            ]
+
+        if "ordering" not in normalized and "order_by" in normalized:
+            normalized["ordering"] = [
+                {
+                    "field": normalized.get("order_by"),
+                    "direction": normalized.get("order_direction", "ASC"),
+                }
+            ]
+
+    def _normalize_shell_entities(
+        self,
+        intent: str,
+        normalized: dict[str, Any],
+        context: dict[str, Any],
+    ) -> None:
+        if intent != "file_search":
+            return
+        scope = normalized.get("scope") or normalized.get("path") or "."
+        normalized.setdefault("scope", scope)
+        normalized.setdefault("target", "files")
+
+        filters: list[dict[str, Any]] = []
+
+        extension_value = self._extract_shell_extension_value(normalized)
+        if extension_value:
+            filters.append({"attribute": "extension", "operator": "=", "value": extension_value})
+
+        filename = normalized.get("filename")
+        if filename and isinstance(filename, str):
+            filters.append({"attribute": "name", "operator": "=", "value": filename})
+
+        full_text = context.get("text", "") or normalized.get("query", "")
+        size_filter = self._build_shell_size_filter(normalized, full_text)
+        if size_filter:
+            filters.append(size_filter)
+
+        age_filter = self._build_shell_age_filter(normalized, full_text)
+        if age_filter:
+            filters.append(age_filter)
+
+        normalized["filters"] = filters
+
+    def _extract_shell_extension_value(self, normalized: dict[str, Any]) -> Optional[str]:
+        ext = normalized.get("file_pattern")
+        pattern = normalized.get("pattern")
+
+        extension_value = None
+        if ext and isinstance(ext, str):
+            extension_value = ext
+
+        if pattern and isinstance(pattern, str) and pattern.startswith("*."):
+            pattern_ext = pattern[2:]
+            if extension_value is None:
+                extension_value = pattern_ext
+
+        return extension_value
+
+    def _build_shell_size_filter(
+        self,
+        normalized: dict[str, Any],
+        full_text: str,
+    ) -> Optional[dict[str, Any]]:
+        size = normalized.get("size")
+        size_parsed = normalized.get("size_parsed")
+
+        operator = ">"
+        if "mniejsz" in full_text.lower() or "smaller" in full_text.lower():
+            operator = "<"
+        elif "większ" in full_text.lower() or "larger" in full_text.lower() or "bigger" in full_text.lower():
+            operator = ">"
+
+        if isinstance(size_parsed, dict) and "value" in size_parsed:
+            return {
+                "attribute": "size",
+                "operator": operator,
+                "value": f"{size_parsed.get('value')}{size_parsed.get('unit', '')}",
+            }
+        if isinstance(size, str) and size.strip():
+            import re
+
+            m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", size.strip())
+            if m:
+                return {
+                    "attribute": "size",
+                    "operator": operator,
+                    "value": f"{m.group(1)}{m.group(2)}",
+                }
+        return None
+
+    def _build_shell_age_filter(
+        self,
+        normalized: dict[str, Any],
+        full_text: str,
+    ) -> Optional[dict[str, Any]]:
+        age = normalized.get("age")
+        if not isinstance(age, dict) or "value" not in age:
+            return None
+
+        age_operator = ">"
+        if "ostatnich" in full_text.lower() or "last" in full_text.lower() or "recent" in full_text.lower():
+            age_operator = "<"
+        elif "starsze" in full_text.lower() or "older" in full_text.lower():
+            age_operator = ">"
+
+        return {
+            "attribute": "mtime",
+            "operator": age_operator,
+            "value": f"{age.get('value')}_days",
+        }
+
+    def _normalize_docker_entities(self, intent: str, normalized: dict[str, Any]) -> None:
+        if "port" in normalized and "ports" not in normalized:
+            port = normalized.get("port")
+            if isinstance(port, dict):
+                normalized["ports"] = [port]
+            elif port is not None:
+                normalized["ports"] = [port]
+
+        if "tail_lines" in normalized and "tail" not in normalized:
+            try:
+                normalized["tail"] = int(str(normalized.get("tail_lines")))
+            except (TypeError, ValueError):
+                pass
+
+        env_var = normalized.get("env_var")
+        if env_var and "environment" not in normalized:
+            if isinstance(env_var, dict) and "name" in env_var and "value" in env_var:
+                normalized["environment"] = {env_var["name"]: env_var["value"]}
+
+        if intent == "container_run":
+            normalized.setdefault("detach", True)
+
+    def _normalize_kubernetes_entities(self, intent: str, normalized: dict[str, Any]) -> None:
+        if intent == "get":
+            rt = normalized.get("resource_type")
+            if isinstance(rt, str):
+                normalized["resource_type"] = rt
+
+        if intent == "scale":
+            rc = normalized.get("replica_count")
+            if isinstance(rc, str) and rc.isdigit():
+                normalized["replica_count"] = int(rc)
+
+    def _normalize_dql_entities(self, normalized: dict[str, Any], context: dict[str, Any]) -> None:
+        if "entity" not in normalized:
+            default_entity = context.get("default_entity")
+            if default_entity:
+                normalized["entity"] = default_entity
 
     def transform(
         self,

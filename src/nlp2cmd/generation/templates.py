@@ -947,62 +947,74 @@ class TemplateGenerator:
             result['name_flag_count'] = ''
 
     def _apply_shell_find_flags(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
-        result['type_flag'] = ''
+        target = self._infer_shell_find_target(intent, entities)
+        result['type_flag'] = self._build_shell_find_type_flag(target)
+        result['name_flag'] = self._build_shell_find_name_flag(result.get('pattern', '*'))
+        result['exec_flag'] = self._build_shell_find_exec_flag(intent, entities)
+        result['size_flag'] = self._build_shell_find_size_flag(entities)
+        result['time_flag'] = self._build_shell_find_time_flag(entities)
+
+    def _infer_shell_find_target(self, intent: str, entities: dict[str, Any]) -> str:
         target = entities.get('target')
         if not target and intent == 'find':
             text_lower = str(entities.get('text') or '').lower()
             if any(x in text_lower for x in ('pliki', 'files', 'file ')):
-                target = 'files'
-            elif any(x in text_lower for x in ('katalogi', 'directories', 'folder', 'folders')):
-                target = 'directories'
+                return 'files'
+            if any(x in text_lower for x in ('katalogi', 'directories', 'folder', 'folders')):
+                return 'directories'
+        return str(target or '')
 
+    def _build_shell_find_type_flag(self, target: str) -> str:
         if target == 'files':
-            result['type_flag'] = '-type f'
-        elif target == 'directories':
-            result['type_flag'] = '-type d'
+            return '-type f'
+        if target == 'directories':
+            return '-type d'
+        return ''
 
-        result['name_flag'] = f"-name '{result['pattern']}'" if result['pattern'] != '*' else ''
+    def _build_shell_find_name_flag(self, pattern: str) -> str:
+        return f"-name '{pattern}'" if pattern and pattern != '*' else ''
 
-        if intent == 'find' and any(x in str(entities.get('text') or '').lower() for x in ('wyświetl', 'wyswietl', 'lista', 'listę', 'liste', 'list')):
-            result['exec_flag'] = "-ls"
-        else:
-            result['exec_flag'] = ''
+    def _build_shell_find_exec_flag(self, intent: str, entities: dict[str, Any]) -> str:
+        if intent != 'find':
+            return ''
+        text_lower = str(entities.get('text') or '').lower()
+        if any(x in text_lower for x in ('wyświetl', 'wyswietl', 'lista', 'listę', 'liste', 'list')):
+            return '-ls'
+        return ''
 
+    def _build_shell_find_size_flag(self, entities: dict[str, Any]) -> str:
         size = entities.get('size')
-        text = entities.get('text', '')
+        text = str(entities.get('text', ''))
         size_operator = str(entities.get('size_operator') or entities.get('operator') or '>')
         if "mniejsz" in text.lower() or "smaller" in text.lower():
-            size_operator = "<"
+            size_operator = '<'
         elif "większ" in text.lower() or "larger" in text.lower() or "bigger" in text.lower():
-            size_operator = ">"
+            size_operator = '>'
 
         if size and isinstance(size, dict):
             val = size.get('value', 0)
             unit = str(size.get('unit', 'M') or 'M').upper()
             sign = '+' if size_operator in {'>', '>='} else '-' if size_operator in {'<', '<='} else ''
-            result['size_flag'] = f"-size {sign}{val}{unit[0]}"
-        elif isinstance(size, str) and size.strip():
+            return f"-size {sign}{val}{unit[0]}"
+        if isinstance(size, str) and size.strip():
             m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", size.strip())
             if m:
                 sign = '+' if size_operator in {'>', '>='} else '-' if size_operator in {'<', '<='} else ''
-                result['size_flag'] = f"-size {sign}{m.group(1)}{m.group(2).upper()}"
-            else:
-                result['size_flag'] = ''
-        else:
-            result['size_flag'] = ''
+                return f"-size {sign}{m.group(1)}{m.group(2).upper()}"
+        return ''
 
+    def _build_shell_find_time_flag(self, entities: dict[str, Any]) -> str:
         age = entities.get('age')
         if age and isinstance(age, dict):
             val = age.get('value', 0)
-            text = entities.get('text', '')
+            text = str(entities.get('text', ''))
             time_operator = '+'
             if "ostatnich" in text.lower() or "ostatnie" in text.lower() or "last" in text.lower() or "recent" in text.lower():
                 time_operator = '-'
             elif "starsze" in text.lower() or "older" in text.lower():
                 time_operator = '+'
-            result['time_flag'] = f"-mtime {time_operator}{val}"
-        else:
-            result['time_flag'] = ''
+            return f"-mtime {time_operator}{val}"
+        return ''
 
     def _apply_shell_common_defaults(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
         result.setdefault('metric', 'mem')
@@ -1023,6 +1035,31 @@ class TemplateGenerator:
             result.setdefault('lines', str(entities.get('lines', entities.get('limit', '10'))))
             if not result.get('file'):
                 result['file'] = 'app.log'
+
+        if intent in {'text_cat', 'text_cat_number'}:
+            result.setdefault(
+                'file',
+                entities.get(
+                    'file',
+                    entities.get(
+                        'path',
+                        entities.get('target', entities.get('filename', '')),
+                    ),
+                ),
+            )
+
+        if intent in {'json_jq', 'json_jq_pretty', 'json_jq_keys'}:
+            result.setdefault(
+                'file',
+                entities.get(
+                    'file',
+                    entities.get(
+                        'path',
+                        entities.get('target', entities.get('filename', '')),
+                    ),
+                ),
+            )
+            result.setdefault('filter', '.')
 
     def _shell_intent_file_search(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
         result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'py')))
@@ -1053,25 +1090,68 @@ class TemplateGenerator:
 
     def _shell_intent_file_operation(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
         text_lower = str(entities.get('text', '')).lower()
-        if 'wszystkie' in text_lower or 'all' in text_lower:
-            result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
-        elif 'katalog' in text_lower or 'directory' in text_lower or 'utwórz' in text_lower:
-            result.setdefault('directory', entities.get('target', ''))
-        elif 'zmień nazwę' in text_lower or 'rename' in text_lower:
-            result.setdefault('old_name', entities.get('old_name', ''))
-            result.setdefault('new_name', entities.get('new_name', ''))
-        elif 'rozmiar' in text_lower or 'size' in text_lower:
-            result.setdefault('file_path', entities.get('target', ''))
-        elif 'skopiuj' in text_lower or 'copy' in text_lower:
-            result.setdefault('source', entities.get('source', '.'))
-            result.setdefault('destination', entities.get('destination', '.'))
-        elif 'przenieś' in text_lower or 'move' in text_lower:
-            result.setdefault('source', entities.get('source', '.'))
-            result.setdefault('destination', entities.get('destination', '.'))
-        elif 'usuń' in text_lower or 'delete' in text_lower or 'remove' in text_lower:
-            result.setdefault('target', entities.get('target', ''))
-        else:
-            result.setdefault('target', entities.get('target', ''))
+        handlers = (
+            (self._shell_file_op_is_all, self._shell_file_op_all),
+            (self._shell_file_op_is_directory, self._shell_file_op_directory),
+            (self._shell_file_op_is_rename, self._shell_file_op_rename),
+            (self._shell_file_op_is_size, self._shell_file_op_size),
+            (self._shell_file_op_is_copy, self._shell_file_op_copy),
+            (self._shell_file_op_is_move, self._shell_file_op_move),
+            (self._shell_file_op_is_delete, self._shell_file_op_delete),
+        )
+        for predicate, handler in handlers:
+            if predicate(text_lower):
+                handler(entities, result)
+                return
+        self._shell_file_op_default(entities, result)
+
+    def _shell_file_op_is_all(self, text_lower: str) -> bool:
+        return 'wszystkie' in text_lower or 'all' in text_lower
+
+    def _shell_file_op_is_directory(self, text_lower: str) -> bool:
+        return 'katalog' in text_lower or 'directory' in text_lower or 'utwórz' in text_lower
+
+    def _shell_file_op_is_rename(self, text_lower: str) -> bool:
+        return 'zmień nazwę' in text_lower or 'rename' in text_lower
+
+    def _shell_file_op_is_size(self, text_lower: str) -> bool:
+        return 'rozmiar' in text_lower or 'size' in text_lower
+
+    def _shell_file_op_is_copy(self, text_lower: str) -> bool:
+        return 'skopiuj' in text_lower or 'copy' in text_lower
+
+    def _shell_file_op_is_move(self, text_lower: str) -> bool:
+        return 'przenieś' in text_lower or 'move' in text_lower
+
+    def _shell_file_op_is_delete(self, text_lower: str) -> bool:
+        return 'usuń' in text_lower or 'delete' in text_lower or 'remove' in text_lower
+
+    def _shell_file_op_all(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
+
+    def _shell_file_op_directory(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('directory', entities.get('target', ''))
+
+    def _shell_file_op_rename(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('old_name', entities.get('old_name', ''))
+        result.setdefault('new_name', entities.get('new_name', ''))
+
+    def _shell_file_op_size(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('file_path', entities.get('target', ''))
+
+    def _shell_file_op_copy(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('source', entities.get('source', '.'))
+        result.setdefault('destination', entities.get('destination', '.'))
+
+    def _shell_file_op_move(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('source', entities.get('source', '.'))
+        result.setdefault('destination', entities.get('destination', '.'))
+
+    def _shell_file_op_delete(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('target', entities.get('target', ''))
+
+    def _shell_file_op_default(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('target', entities.get('target', ''))
 
     def _shell_intent_process_user(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
         result.setdefault('user', self._get_default('shell.user', os.environ.get('USER') or getpass.getuser()))
