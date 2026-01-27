@@ -10,6 +10,7 @@
 - **[Contributing Guide](../../CONTRIBUTING.md)** - Development guidelines
 
 Spis treści:
+
 - [IT & DevOps](#it--devops)
 - [Shell DSL Commands](#shell-dsl-commands)
 - [Data Science & ML](#data-science--ml)
@@ -42,14 +43,16 @@ Szczegółowa dokumentacja: [docs/README.md](../../docs/README.md)
 
 ## Shell DSL Commands
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python dsl_commands_demo.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Shell DSL - Operacje na plikach
 ======================================================================
@@ -77,7 +80,8 @@ python dsl_commands_demo.py
    ⚡ Latency: 0.7ms
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - **Operacje na plikach** - find, cp, rm, cat, mv
 - **Monitorowanie systemu** - ps, top, df, htop, netstat
 - **Operacje sieciowe** - ping, ip, curl, netstat, ss
@@ -90,6 +94,7 @@ python dsl_commands_demo.py
 ### 📊 **Obsługiwane komendy shell:**
 
 #### 📁 **Pliki i katalogi:**
+
 - `find` - wyszukiwanie plików
 - `cp`, `mv`, `rm` - operacje na plikach
 - `ls`, `du`, `df` - informacje o plikach
@@ -97,30 +102,35 @@ python dsl_commands_demo.py
 - `tar`, `zip`, `gzip` - archiwizacja
 
 #### 🖥️ **Monitorowanie systemu:**
+
 - `ps`, `top`, `htop` - procesy
 - `free`, `vmstat` - pamięć
 - `df`, `du` - dysk
 - `uptime`, `w` - system
 
 #### 🌐 **Sieć:**
+
 - `ping`, `traceroute` - łączność
 - `ip`, `ifconfig` - konfiguracja
 - `netstat`, `ss` - porty i połączenia
 - `curl`, `wget` - HTTP
 
 #### ⚙️ **Procesy:**
+
 - `kill`, `killall` - zatrzymywanie
 - `nohup`, `&` - tło
 - `systemctl`, `service` - usługi
 - `crontab` - harmonogram
 
 #### 💻 **Deweloping:**
+
 - `git` - kontrola wersji
 - `npm`, `pip`, `maven` - pakiety
 - `pytest`, `jest` - testy
 - `node`, `python` - runtime
 
 #### 🔒 **Bezpieczeństwo:**
+
 - `who`, `last`, `w` - użytkownicy
 - `chmod`, `chown` - uprawnienia
 - `sudo`, `su` - uprawnienia administratora
@@ -130,14 +140,16 @@ python dsl_commands_demo.py
 
 ## IT & DevOps
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python devops_automation.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   IT & DevOps - Podstawowe komendy
 ======================================================================
@@ -159,7 +171,8 @@ python devops_automation.py
    ⚡ Latency: 0.1ms
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - Automatyzację komend Kubernetes
 - Optymalizację CI/CD pipeline
 - Incident response automation
@@ -169,14 +182,16 @@ python devops_automation.py
 
 ## Data Science & ML
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python data_science_ml.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Data Science - Hyperparameter Optimization
 ======================================================================
@@ -193,7 +208,8 @@ python data_science_ml.py
 
 **Uwaga:** Wyniki mogą być ograniczone przez prostą implementację. W produkcji z pełnym backendem LLM, wyniki będą bardziej szczegółowe.
 
-### Co demonstruje:
+Co demonstruje:
+
 - Optymalizację hiperparametrów modeli ML
 - Wybór cech (feature selection)
 - Planowanie eksperymentów na klastrze GPU
@@ -203,14 +219,16 @@ python data_science_ml.py
 
 ## Bioinformatyka
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python bioinformatics.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Bioinformatyka - Genomic Pipeline Scheduling
 ======================================================================
@@ -229,7 +247,8 @@ Throughput: 8 samples/hour
 ⚡ Latency: 1,104.4ms
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - Optymalizację pipeline'ów genomowych
 - Alokację zasobów dla symulacji foldingu białek
 - Projektowanie CRISPR guide RNA
@@ -239,14 +258,16 @@ Throughput: 8 samples/hour
 
 ## Drug Discovery
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python drug_discovery.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Drug Discovery - Lead Optimization
 ======================================================================
@@ -266,7 +287,8 @@ Energy: 0.1421
 Converged: True
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - Wielokryterialną optymalizację cząsteczek (lead optimization)
 - Równoważenie profilu ADMET (toksyczność, biodostępność)
 - Mapowanie surowej próbki Langevina na zakresy fizykochemiczne
@@ -275,14 +297,16 @@ Converged: True
 
 ## Fizyka i symulacje
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python physics_simulations.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Physics - Particle Collision Experiment Scheduling
 ======================================================================
@@ -303,7 +327,8 @@ Beam utilization: 92%
 ⚡ Latency: 2,043.4ms
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - Planowanie eksperymentów w akceleratorach
 - Optymalizację parametrów symulacji MD
 - Harmonogramowanie obserwacji teleskopowych
@@ -313,14 +338,16 @@ Beam utilization: 92%
 
 ## Logistyka i Supply Chain
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python logistics_supply_chain.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Logistyka - Vehicle Routing Problem (VRP)
 ======================================================================
@@ -339,7 +366,8 @@ All time windows satisfied: ✓
 ⚡ Latency: 1,188.6ms
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - Optymalizację tras dostaw (VRP)
 - Zarządzanie magazynem
 - Harmonogramowanie produkcji
@@ -349,14 +377,16 @@ All time windows satisfied: ✓
 
 ## Finanse i Trading
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python finance_trading.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Finanse - Portfolio Optimization
 ======================================================================
@@ -379,7 +409,8 @@ Sharpe ratio: 0.82
 ⚡ Latency: 1,495.5ms
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - Optymalizację portfela inwestycyjnego
 - Wykonywanie zleceń giełdowych
 - Alokację limitów ryzyka
@@ -389,14 +420,16 @@ Sharpe ratio: 0.82
 
 ## Medycyna i Healthcare
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python healthcare.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Healthcare - Operating Room Scheduling
 ======================================================================
@@ -418,7 +451,8 @@ All constraints satisfied: ✓
 ⚡ Latency: 1,494.9ms
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - Harmonogramowanie sal operacyjnych
 - Tworzenie grafików pielęgniarek
 - Alokację pacjentów do badań klinicznych
@@ -428,14 +462,16 @@ All constraints satisfied: ✓
 
 ## Edukacja
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python education.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Education - Course Timetabling
 ======================================================================
@@ -457,7 +493,8 @@ Statistics:
 ⚡ Latency: 2,035.4ms
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - Planowanie zajęć na uczelni
 - Harmonogramowanie egzaminów
 - Personalizację ścieżek nauki
@@ -467,14 +504,16 @@ Statistics:
 
 ## Smart Cities & IoT
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python smart_cities.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Smart Cities - Traffic Light Optimization
 ======================================================================
@@ -494,7 +533,8 @@ Results:
 ⚡ Latency: 1,899.1ms
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - Optymalizację sygnalizacji świetlnej
 - Zarządzanie smart grid
 - Optymalizację wywozu odpadów
@@ -504,14 +544,16 @@ Results:
 
 ## Energia i Utilities
 
-### Uruchomienie:
+Uruchomienie:
+
 ```bash
 cd examples/use_cases
 python energy_utilities.py
 ```
 
-### Przykładowy output:
-```
+Przykładowy output:
+
+```text
 ======================================================================
   Energy - Power Plant Scheduling (Unit Commitment)
 ======================================================================
@@ -529,7 +571,8 @@ Renewable curtailment: 0%
 ⚡ Latency: 2,047.3ms
 ```
 
-### Co demonstruje:
+Co demonstruje:
+
 - Harmonogramowanie elektrowni (Unit Commitment)
 - Integrację OZE z siecią
 - Zarządzanie siecią wodociągową
@@ -539,19 +582,22 @@ Renewable curtailment: 0%
 
 ## Uruchomienie wszystkich demonstracji
 
-### Wszystkie naraz:
+### Wszystkie naraz
+
 ```bash
 cd examples/use_cases
 python run_all.py
 ```
 
-### Tylko tabela zastosowań:
+### Tylko tabela zastosowań
+
 ```bash
 cd examples/use_cases
 python run_all.py --summary
 ```
 
-### Walidacja komend shell:
+### Walidacja komend shell
+
 ```bash
 cd examples/use_cases
 python run_all.py --validate
@@ -559,7 +605,8 @@ python run_all.py --validate
 python shell_validation.py
 ```
 
-### Pojedynczo:
+### Pojedynczo
+
 ```bash
 cd examples/use_cases
 python shell_validation.py          # Walidacja komend shell
@@ -609,18 +656,21 @@ python physics_simulations.py        # Fizyka
 ## ⚠️ Realistyczne oczekiwania
 
 ### 🎯 **Co działa dobrze:**
+
 - **IT & DevOps**: Bezpośrednie komendy DSL (<2ms)
 - **Routing**: 100% trafność dla prostych zapytań
 - **Thermodynamic core**: Konwergencja problemów optymalizacyjnych
 - **Wydajność**: Adaptacyjne kroki i early stopping
 
 ### 🔧 **Aktualne ograniczenia:**
+
 - **Data Science**: Uproszczone wyniki bez pełnego LLM backend
 - **Jakość rozwiązań**: Niektóre problemy wymagają lepszych modeli energii
 - **Interpretacja**: Wyniki mogą być abstrakcyjne bez kontekstu
 - **Skalowalność**: Duże problemy (>100 zmiennych) mogą być wolniejsze
 
 ### 🚀 **Potencjał rozwoju:**
+
 - **Pełny LLM backend**: Lepsze rozumienie i generowanie
 - **Domenowe modele**: Specjalizowane modele energii dla każdego problemu
 - **Integracja API**: Połączenie z rzeczywistymi systemami
@@ -647,4 +697,4 @@ python physics_simulations.py        # Fizyka
 
 ---
 
-*NLP2CMD - Natural Language to Command Transformation*
+NLP2CMD - Natural Language to Command Transformation.

@@ -774,6 +774,14 @@ class KeywordIntentDetector:
         if not has_docker_context:
             return None
 
+        if re.search(r"\bwejdz\b", text_lower) and re.search(r"\b(kontener|container)\b", text_lower):
+            return DetectionResult(
+                domain='docker',
+                intent='exec',
+                confidence=0.85,
+                matched_keyword='wejdz kontener',
+            )
+
         if (
             re.search(r"\bzatrzyman\w*\b", text_lower)
             and re.search(r"\b(uruchom|odpal|start)\b", text_lower)
@@ -995,7 +1003,7 @@ class KeywordIntentDetector:
         # Special handling for shell vs docker ambiguity
         if domain == 'shell':
             # Check if we have specific docker indicators that should override shell
-            docker_specific = ['logi', 'logs', 'kontener', 'container', 'obraz', 'image']
+            docker_specific = ['kontener', 'container', 'obraz', 'image']
             if any(word in text_lower for word in docker_specific):
                 # If we have docker-specific words, don't allow shell to take precedence
                 return False
@@ -1432,14 +1440,6 @@ class KeywordIntentDetector:
         if result is not None:
             return result
 
-        result = self._detect_schema_matcher(text_lower)
-        if result is not None:
-            return result
-
-        result = self._detect_ml_medium_confidence()
-        if result is not None:
-            return result
-
         fast_path = self._detect_fast_path(text_lower)
         if fast_path is not None:
             return fast_path
@@ -1460,6 +1460,19 @@ class KeywordIntentDetector:
             sql_explicit=sql_explicit,
         )
         if result is not None:
+            return result
+
+        result = self._detect_ml_medium_confidence()
+        if result is not None:
+            return result
+
+        result = self._detect_schema_matcher(text_lower)
+        if result is not None and self._domain_scan_allowed(
+            text_lower,
+            result.domain,
+            sql_context=sql_context,
+            sql_explicit=sql_explicit,
+        ):
             return result
 
         result = self._detect_fuzzy_match(text_lower)
