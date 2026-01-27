@@ -527,6 +527,7 @@ await generator.generate("optimize city traffic with 1000 intersections")
 ### Adding Custom Examples
 
 1. **Create new example file**
+
 ```python
 # examples/use_cases/my_custom_example.py
 from nlp2cmd.generation import HybridThermodynamicGenerator
