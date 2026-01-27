@@ -766,36 +766,100 @@ class ShellAdapter(BaseDSLAdapter):
         process_name = entities.get("process_name", "")
         pid = entities.get("pid", "")
         full_text = str(entities.get("_full_text", "")).lower()
-        
-        # Direct ps command detection
-        if "ps aux" in full_text or "ps " in full_text:
+
+        if self._process_is_direct_ps_request(full_text):
             return "ps aux"
-        if full_text.strip() == "ps":
-            return "ps aux"
-        
-        # If no entities extracted, use full text parsing
+
         if not action and not process_name:
-            
-            # Detect action
-            if "uruchom" in full_text or "start" in full_text:
-                action = "uruchom"
-            elif "zatrzymaj" in full_text or "stop" in full_text:
-                action = "zatrzymaj"
-            elif "zabij" in full_text or "kill" in full_text:
-                action = "zabij"
-            elif "restartuj" in full_text or "restart" in full_text:
-                action = "restartuj"
-            
-            # Detect service name
-            for service in ["apache", "apache2", "httpd", "nginx", "mysql", "mariadb", "postgresql", "postgres", "docker", "redis", "mongodb"]:
-                if service in full_text:
-                    process_name = service
-                    break
-        
-        # Common service mappings
+            action, process_name = self._infer_process_action_and_name(full_text)
+
+        service_name, is_service = self._map_service_name(process_name)
+
+        action_str = str(action)
+        process_str = str(process_name)
+
+        handlers = (
+            (self._process_action_is_kill, lambda: self._handle_process_kill(pid, process_str)),
+            (
+                self._process_action_is_start,
+                lambda: self._handle_process_start(
+                    action_str=action_str,
+                    process_name=process_str,
+                    is_service=is_service,
+                    service_name=service_name,
+                ),
+            ),
+            (
+                self._process_action_is_stop,
+                lambda: self._handle_process_stop(
+                    action_str=action_str,
+                    process_name=process_str,
+                    is_service=is_service,
+                    service_name=service_name,
+                ),
+            ),
+            (
+                self._process_action_is_restart,
+                lambda: self._handle_process_restart(
+                    entities=entities,
+                    action_str=action_str,
+                    process_name=process_str,
+                ),
+            ),
+            (self._process_action_is_status, lambda: self._handle_process_status(entities, action_str, process_str)),
+        )
+
+        for predicate, handler in handlers:
+            if predicate(action_str):
+                return handler()
+
+        fallback = self._handle_process_fallback(action, process_str, pid)
+        if fallback is not None:
+            return fallback
+
+        return f"# Process action: {action}"
+
+    def _process_is_direct_ps_request(self, full_text: str) -> bool:
+        if "ps aux" in full_text or "ps " in full_text:
+            return True
+        return full_text.strip() == "ps"
+
+    def _infer_process_action_and_name(self, full_text: str) -> tuple[str, str]:
+        action = ""
+        process_name = ""
+
+        if "uruchom" in full_text or "start" in full_text:
+            action = "uruchom"
+        elif "zatrzymaj" in full_text or "stop" in full_text:
+            action = "zatrzymaj"
+        elif "zabij" in full_text or "kill" in full_text:
+            action = "zabij"
+        elif "restartuj" in full_text or "restart" in full_text:
+            action = "restartuj"
+
+        for service in [
+            "apache",
+            "apache2",
+            "httpd",
+            "nginx",
+            "mysql",
+            "mariadb",
+            "postgresql",
+            "postgres",
+            "docker",
+            "redis",
+            "mongodb",
+        ]:
+            if service in full_text:
+                process_name = service
+                break
+
+        return action, process_name
+
+    def _map_service_name(self, process_name: str) -> tuple[str, bool]:
         service_mappings = {
             "apache": "apache2",
-            "apache2": "apache2", 
+            "apache2": "apache2",
             "httpd": "httpd",
             "nginx": "nginx",
             "mysql": "mysql",
@@ -804,75 +868,82 @@ class ShellAdapter(BaseDSLAdapter):
             "postgres": "postgresql",
             "docker": "docker",
             "redis": "redis",
-            "mongodb": "mongod"
+            "mongodb": "mongod",
         }
-        
-        # Map common service names
-        if process_name.lower() in service_mappings:
-            service_name = service_mappings[process_name.lower()]
-            is_service = True
-        else:
-            service_name = process_name
-            is_service = False
-        
-        # Handle specific Polish patterns
-        if "zabij" in action or "kill" in action:
-            if pid:
-                return f"kill -9 {pid}"
-            elif process_name:
-                return f"pkill -f {process_name}"
-            else:
-                return "kill -9 PID"
-        elif "uruchom" in action or "start" in action:
-            if "w tle" in str(action) or "background" in str(action):
-                if process_name:
-                    return f"nohup {process_name} &"
-                else:
-                    return "nohup python script.py &"
-            elif "skrypt" in str(process_name) or "script" in str(process_name):
-                return f"./{process_name}"
-            elif "usługę" in str(action) or "service" in str(action) or is_service or "serwer" in str(process_name):
-                return f"systemctl start {service_name}"
-            else:
-                # Fallback: if no process_name but action suggests service start
-                if not process_name and ("serwer" in str(action) or "usługę" in str(action)):
-                    return "systemctl start"
-                elif process_name:
-                    return f"{process_name}"
-                else:
-                    return "# Process action"
-        elif "zatrzymaj" in action or "stop" in action:
-            if "usługę" in str(action) or "service" in str(action) or is_service or "serwer" in str(process_name):
-                return f"systemctl stop {service_name}"
-            elif process_name:
-                return f"pkill -f {process_name}"
-            else:
-                return "stop"
-        elif "restartuj" in action or "restart" in action or "ponownie" in action:
-            if "serwer" in str(process_name) or "server" in str(process_name):
-                service_name = entities.get("service_name", "apache2")
-                return f"systemctl restart {service_name}"
-            elif "usługę" in str(action) or "service" in str(action):
-                service_name = entities.get("service_name", process_name)
-                return f"systemctl restart {service_name}"
-            else:
-                return f"restart {process_name}"
-        elif "status" in action:
-            if "usługi" in str(action) or "service" in str(action):
-                service_name = entities.get("service_name", process_name)
-                return f"systemctl status {service_name}"
-            else:
-                return f"status {process_name}"
 
+        key = str(process_name or "").lower()
+        if key in service_mappings:
+            return service_mappings[key], True
+        return process_name, False
+
+    def _process_action_is_kill(self, action: str) -> bool:
+        return "zabij" in action or "kill" in action
+
+    def _process_action_is_start(self, action: str) -> bool:
+        return "uruchom" in action or "start" in action
+
+    def _process_action_is_stop(self, action: str) -> bool:
+        return "zatrzymaj" in action or "stop" in action
+
+    def _process_action_is_restart(self, action: str) -> bool:
+        return "restartuj" in action or "restart" in action or "ponownie" in action
+
+    def _process_action_is_status(self, action: str) -> bool:
+        return "status" in action
+
+    def _handle_process_kill(self, pid: str, process_name: str) -> str:
+        if pid:
+            return f"kill -9 {pid}"
+        if process_name:
+            return f"pkill -f {process_name}"
+        return "kill -9 PID"
+
+    def _handle_process_start(self, action_str: str, process_name: str, is_service: bool, service_name: str) -> str:
+        if "w tle" in action_str or "background" in action_str:
+            if process_name:
+                return f"nohup {process_name} &"
+            return "nohup python script.py &"
+        if "skrypt" in process_name or "script" in process_name:
+            return f"./{process_name}"
+        if "usługę" in action_str or "service" in action_str or is_service or "serwer" in process_name:
+            return f"systemctl start {service_name}"
+        if not process_name and ("serwer" in action_str or "usługę" in action_str):
+            return "systemctl start"
+        if process_name:
+            return f"{process_name}"
+        return "# Process action"
+
+    def _handle_process_stop(self, action_str: str, process_name: str, is_service: bool, service_name: str) -> str:
+        if "usługę" in action_str or "service" in action_str or is_service or "serwer" in process_name:
+            return f"systemctl stop {service_name}"
+        if process_name:
+            return f"pkill -f {process_name}"
+        return "stop"
+
+    def _handle_process_restart(self, entities: dict[str, Any], action_str: str, process_name: str) -> str:
+        if "serwer" in process_name or "server" in process_name:
+            service_name = entities.get("service_name", "apache2")
+            return f"systemctl restart {service_name}"
+        if "usługę" in action_str or "service" in action_str:
+            service_name = entities.get("service_name", process_name)
+            return f"systemctl restart {service_name}"
+        return f"restart {process_name}"
+
+    def _handle_process_status(self, entities: dict[str, Any], action_str: str, process_name: str) -> str:
+        if "usługi" in action_str or "service" in action_str:
+            service_name = entities.get("service_name", process_name)
+            return f"systemctl status {service_name}"
+        return f"status {process_name}"
+
+    def _handle_process_fallback(self, action: str, process_name: str, pid: str) -> str | None:
         if action in ["kill", "stop"]:
             if pid:
                 return f"kill {pid}"
-            elif process_name:
+            if process_name:
                 return f"pkill {shlex.quote(process_name)}"
-        elif action == "start":
+        if action == "start":
             return f"{process_name} &"
-
-        return f"# Process action: {action}"
+        return None
 
     def _generate_process_monitoring(self, entities: dict[str, Any]) -> str:
         """Generate process monitoring command."""
@@ -880,44 +951,73 @@ class ShellAdapter(BaseDSLAdapter):
         limit = entities.get("limit", 10)
         projection = entities.get("projection", [])
         metric_lower = str(metric).lower()
-        
-        # Handle specific Polish patterns
-        if "cpu" in metric_lower and "memory" not in metric_lower and "pamię" not in metric_lower:
-            return "top -n 1"
-        elif "procesy" in str(metric) or "działające" in str(metric):
-            return "ps aux"
-        elif "zużywające" in str(metric):
-            if "pamięć" in str(metric) or "memory" in str(metric):
-                return "ps aux --sort=-%mem | head -10"
-            elif "cpu" in str(metric):
-                return "ps aux --sort=-%cpu | head -10"
-            else:
-                return "ps aux | head -10"
-        elif "użytkownika" in str(metric):
-            user = entities.get("user", "tom")
-            return f"ps aux | grep {user}"
-        elif "zombie" in str(metric):
-            return "ps aux | awk '{print $8}' | grep -v '^\\[' | sort | uniq -c"
-        elif "drzewo" in str(metric) or "tree" in str(metric):
-            return "pstree"
-        elif "monitor" in str(metric) or "htop" in str(metric):
-            return "htop"
+        metric_str = str(metric)
 
+        handlers = (
+            (lambda: self._process_monitoring_is_top(metric_lower), lambda: "top -n 1"),
+            (lambda: self._process_monitoring_is_ps(metric_str), lambda: "ps aux"),
+            (lambda: self._process_monitoring_is_consumers(metric_str), lambda: self._process_monitoring_consumers(metric_str)),
+            (lambda: self._process_monitoring_is_user(metric_str), lambda: self._process_monitoring_user(entities)),
+            (lambda: self._process_monitoring_is_zombie(metric_str), lambda: "ps aux | awk '{print $8}' | grep -v '^\\[' | sort | uniq -c"),
+            (lambda: self._process_monitoring_is_tree(metric_str), lambda: "pstree"),
+            (lambda: self._process_monitoring_is_htop(metric_str), lambda: "htop"),
+        )
+
+        for predicate, handler in handlers:
+            if predicate():
+                return handler()
+
+        sort_flag = self._process_monitoring_sort_flag(metric)
+        cmd = self._process_monitoring_base_cmd(sort_flag, limit)
+        cmd = self._process_monitoring_apply_projection(cmd, projection, limit)
+        return cmd
+
+    def _process_monitoring_is_top(self, metric_lower: str) -> bool:
+        return "cpu" in metric_lower and "memory" not in metric_lower and "pamię" not in metric_lower
+
+    def _process_monitoring_is_ps(self, metric_str: str) -> bool:
+        return "procesy" in metric_str or "działające" in metric_str
+
+    def _process_monitoring_is_consumers(self, metric_str: str) -> bool:
+        return "zużywające" in metric_str
+
+    def _process_monitoring_is_user(self, metric_str: str) -> bool:
+        return "użytkownika" in metric_str
+
+    def _process_monitoring_is_zombie(self, metric_str: str) -> bool:
+        return "zombie" in metric_str
+
+    def _process_monitoring_is_tree(self, metric_str: str) -> bool:
+        return "drzewo" in metric_str or "tree" in metric_str
+
+    def _process_monitoring_is_htop(self, metric_str: str) -> bool:
+        return "monitor" in metric_str or "htop" in metric_str
+
+    def _process_monitoring_consumers(self, metric_str: str) -> str:
+        if "pamięć" in metric_str or "memory" in metric_str:
+            return "ps aux --sort=-%mem | head -10"
+        if "cpu" in metric_str:
+            return "ps aux --sort=-%cpu | head -10"
+        return "ps aux | head -10"
+
+    def _process_monitoring_user(self, entities: dict[str, Any]) -> str:
+        user = entities.get("user", "tom")
+        return f"ps aux | grep {user}"
+
+    def _process_monitoring_sort_flag(self, metric: Any) -> str:
         if metric == "memory_usage" or metric == "memory":
-            sort_flag = "-%mem"
-        else:
-            sort_flag = "-%cpu"
+            return "-%mem"
+        return "-%cpu"
 
-        # Build command with pipeline
-        cmd = f"ps aux --sort={sort_flag} | head -{limit + 1}"
+    def _process_monitoring_base_cmd(self, sort_flag: str, limit: Any) -> str:
+        return f"ps aux --sort={sort_flag} | head -{limit + 1}"
 
+    def _process_monitoring_apply_projection(self, cmd: str, projection: Any, limit: Any) -> str:
         if projection:
-            # Add awk to filter columns
             if "process_name" in projection and "memory_percent" in projection:
                 cmd += " | tail -{} | awk '{{print $11, $4\"%\"}}'".format(limit)
             elif "process_name" in projection:
                 cmd += " | tail -{} | awk '{{print $11}}'".format(limit)
-
         return cmd
 
     def _generate_network(self, entities: dict[str, Any]) -> str:
@@ -925,43 +1025,74 @@ class ShellAdapter(BaseDSLAdapter):
         action = entities.get("action", "")
         host = entities.get("host", "")
         port = entities.get("port", "")
-        
-        # Handle specific Polish patterns
-        if "połączenie" in str(action) or "ping" in action:
-            if host:
-                return f"ping -c 4 {host}"
-            else:
-                return "ping -c 4 google.com"
-        elif "port" in str(action) or "porty" in action:
-            if "otwarte" in str(action) or "nasłuchujące" in str(action):
-                return "netstat -tuln | grep LISTEN"
-            elif port:
-                return f"lsof -i :{port}"
-            else:
-                return "netstat -tuln"
-        elif "adres" in str(action) or "ip" in action:
-            return "ip addr show"
-        elif "konfiguracja" in str(action) or "config" in action:
-            return "ifconfig -a"
-        elif "urządzenia" in str(action) or "nmap" in action:
-            return "nmap -sn 192.168.1.0/24"
-        elif "prędkość" in str(action) or "speed" in action:
-            return "curl -o /dev/null -s -w '%{time_total}' http://speedtest.net"
-        elif "aktywne" in str(action) or "connections" in action:
-            return "ss -tulpn"
 
-        if action == "ping":
-            return f"ping -c 4 {shlex.quote(host)}"
-        elif action == "check_port":
-            return f"nc -zv {shlex.quote(host)} {port}"
-        elif action == "curl":
-            return f"curl -s {shlex.quote(host)}"
-        elif action == "wget":
-            return f"wget {shlex.quote(host)}"
-        elif action == "ports":
-            return "netstat -tuln"
+        action_str = str(action)
+
+        handlers = (
+            (lambda: self._network_is_ping(action_str), lambda: self._network_ping(host)),
+            (lambda: self._network_is_ports(action_str), lambda: self._network_ports(action_str, port)),
+            (lambda: self._network_is_ip(action_str), lambda: "ip addr show"),
+            (lambda: self._network_is_config(action_str), lambda: "ifconfig -a"),
+            (lambda: self._network_is_nmap(action_str), lambda: "nmap -sn 192.168.1.0/24"),
+            (lambda: self._network_is_speedtest(action_str), lambda: "curl -o /dev/null -s -w '%{time_total}' http://speedtest.net"),
+            (lambda: self._network_is_connections(action_str), lambda: "ss -tulpn"),
+        )
+
+        for predicate, handler in handlers:
+            if predicate():
+                return handler()
+
+        fallback = self._network_action_fallback(action, host, port)
+        if fallback is not None:
+            return fallback
 
         return f"# Network action: {action}"
+
+    def _network_is_ping(self, action_str: str) -> bool:
+        return "połączenie" in action_str or "ping" in action_str
+
+    def _network_is_ports(self, action_str: str) -> bool:
+        return "port" in action_str or "porty" in action_str
+
+    def _network_is_ip(self, action_str: str) -> bool:
+        return "adres" in action_str or "ip" in action_str
+
+    def _network_is_config(self, action_str: str) -> bool:
+        return "konfiguracja" in action_str or "config" in action_str
+
+    def _network_is_nmap(self, action_str: str) -> bool:
+        return "urządzenia" in action_str or "nmap" in action_str
+
+    def _network_is_speedtest(self, action_str: str) -> bool:
+        return "prędkość" in action_str or "speed" in action_str
+
+    def _network_is_connections(self, action_str: str) -> bool:
+        return "aktywne" in action_str or "connections" in action_str
+
+    def _network_ping(self, host: str) -> str:
+        if host:
+            return f"ping -c 4 {host}"
+        return "ping -c 4 google.com"
+
+    def _network_ports(self, action_str: str, port: Any) -> str:
+        if "otwarte" in action_str or "nasłuchujące" in action_str:
+            return "netstat -tuln | grep LISTEN"
+        if port:
+            return f"lsof -i :{port}"
+        return "netstat -tuln"
+
+    def _network_action_fallback(self, action: str, host: str, port: Any) -> str | None:
+        if action == "ping":
+            return f"ping -c 4 {shlex.quote(host)}"
+        if action == "check_port":
+            return f"nc -zv {shlex.quote(host)} {port}"
+        if action == "curl":
+            return f"curl -s {shlex.quote(host)}"
+        if action == "wget":
+            return f"wget {shlex.quote(host)}"
+        if action == "ports":
+            return "netstat -tuln"
+        return None
 
     def _generate_disk(self, entities: dict[str, Any]) -> str:
         """Generate disk command."""
