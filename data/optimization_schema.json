@@ -23,7 +23,14 @@
     "assign",
     "plan",
     "minimize",
-    "maximize"
+    "maximize",
+    "trasa",
+    "route",
+    "routing",
+    "tsp",
+    "vrp",
+    "miasta",
+    "komiwojażer"
   ],
   "hard_optimization_keywords": [
     "przydziel",
@@ -32,7 +39,10 @@
     "zaplanuj",
     "schedule",
     "harmonogram",
-    "zad"
+    "zad",
+    "trasa",
+    "route",
+    "tsp"
   ],
   "soft_optimization_keywords": [
     "optymalizuj",
@@ -40,7 +50,8 @@
     "rozłóż",
     "balance",
     "assign",
-    "route"
+    "routing",
+    "vrp"
   ],
   "soft_complexity_threshold": 0.35
 }

@@ -402,12 +402,14 @@ class KeywordIntentDetector:
         k = (kw or "").strip().lower()
         if not k:
             return False
+        if k in {"test", "build", "run", "debug", "lint", "version"}:
+            return re.search(rf"(?<![a-z0-9_]){re.escape(k)}(?![a-z0-9_])", text_lower) is not None
         if k in {"fold"}:
-            return re.search(rf"(?<![a-z0-9]){re.escape(k)}(?![a-z0-9])", text_lower) is not None
+            return re.search(rf"(?<![a-z0-9_]){re.escape(k)}(?![a-z0-9_])", text_lower) is not None
         if k == "deploy":
-            return re.search(r"(?<![a-z0-9])deploy(?![a-z0-9])", text_lower) is not None
+            return re.search(r"(?<![a-z0-9_])deploy(?![a-z0-9_])", text_lower) is not None
         if len(k) <= 3 and re.fullmatch(r"[a-z0-9]+", k):
-            return re.search(rf"(?<![a-z0-9]){re.escape(k)}(?![a-z0-9])", text_lower) is not None
+            return re.search(rf"(?<![a-z0-9_]){re.escape(k)}(?![a-z0-9_])", text_lower) is not None
         # Use regex with flexible spacing for multi-word keywords to handle extra spaces
         if ' ' in k:
             pattern = r'\s+'.join(map(re.escape, k.split()))
@@ -588,6 +590,14 @@ class KeywordIntentDetector:
                 intent="user_list",
                 confidence=0.9,
                 matched_keyword="system users",
+            )
+
+        if re.search(r"\b(adres\s+ip|ip\s+address)\b", text_lower):
+            return DetectionResult(
+                domain="shell",
+                intent="network",
+                confidence=0.92,
+                matched_keyword="adres ip",
             )
 
         if (
@@ -1018,6 +1028,13 @@ class KeywordIntentDetector:
                 if intent not in self.patterns[domain]:
                     continue
 
+                if (
+                    domain == 'shell'
+                    and intent == 'development'
+                    and self._has_shell_file_context(text_lower)
+                ):
+                    continue
+
                 if domain == 'sql' and intent == 'delete':
                     if self._has_shell_file_context(text_lower):
                         continue
@@ -1125,6 +1142,12 @@ class KeywordIntentDetector:
                 continue
 
             for intent, keywords in intents.items():
+                if (
+                    domain == 'shell'
+                    and intent == 'development'
+                    and self._has_shell_file_context(text_lower)
+                ):
+                    continue
                 for kw in keywords:
                     if self._match_keyword(text_lower, kw):
                         if domain == 'sql' and intent == 'delete':
@@ -1177,6 +1200,35 @@ class KeywordIntentDetector:
             raw_lower = polish.normalize_stt_errors(raw_lower)
         
         text_lower = self._normalize_text_lower(raw_lower)
+
+        # Explicit overrides for common CLI queries.
+        # These must run before generic matching (including priority intents).
+        if re.search(r"\b(adres\s+ip|ip\s+address)\b", text_lower):
+            return DetectionResult(
+                domain="shell",
+                intent="network",
+                confidence=0.92,
+                matched_keyword="adres ip",
+            )
+
+        if self._has_shell_file_context(text_lower):
+            if re.search(r"\b(zawartosc|zawartos\w*)\b", text_lower) and re.search(
+                r"\b(plik\w*|file\w*)\b",
+                text_lower,
+            ):
+                return DetectionResult(
+                    domain="shell",
+                    intent="text_cat",
+                    confidence=0.9,
+                    matched_keyword="file content",
+                )
+            if re.search(r"\b(parsuj\s+json|parse\s+json|jq)\b", text_lower):
+                return DetectionResult(
+                    domain="shell",
+                    intent="json_jq",
+                    confidence=0.9,
+                    matched_keyword="json",
+                )
 
         result = self._detect_normalized(text_lower)
         if result.domain != 'unknown' or result.confidence > 0.0:

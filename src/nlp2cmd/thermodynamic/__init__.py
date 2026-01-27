@@ -105,6 +105,10 @@ class EnergyModel(ABC):
     
     Energy function V(z; c) defines the probability distribution:
     p(z | c) ∝ exp(-V(z; c) / kT)
+    
+    Based on Whitelam 2025 "Generative Thermodynamic Computing":
+    - Lower energy = higher probability = better solution
+    - Gradient guides Langevin dynamics toward minima
     """
     
     @abstractmethod
@@ -116,6 +120,24 @@ class EnergyModel(ABC):
     def gradient(self, z: np.ndarray, condition: Dict[str, Any]) -> np.ndarray:
         """Compute energy gradient ∇V(z; c)."""
         raise NotImplementedError
+    
+    def numerical_gradient(
+        self, z: np.ndarray, condition: Dict[str, Any], eps: float = 1e-5
+    ) -> np.ndarray:
+        """
+        Compute gradient numerically via finite differences.
+        
+        Useful as fallback when analytical gradient is complex.
+        Uses central differences for better accuracy.
+        """
+        grad = np.zeros_like(z)
+        for i in range(len(z)):
+            z_plus = z.copy()
+            z_plus[i] += eps
+            z_minus = z.copy()
+            z_minus[i] -= eps
+            grad[i] = (self.energy(z_plus, condition) - self.energy(z_minus, condition)) / (2 * eps)
+        return grad
     
     def __call__(self, z: np.ndarray, condition: Dict[str, Any]) -> float:
         return self.energy(z, condition)

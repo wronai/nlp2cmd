@@ -91,6 +91,7 @@ __all__ = [
     "OptimizationProblem",
     "SchedulingEnergy",
     "AllocationEnergy",
+    "RoutingEnergy",
     "HybridThermodynamicGenerator",
     "create_thermodynamic_generator",
 ]
@@ -140,6 +141,7 @@ _LAZY_EXPORTS: dict[str, tuple[str, str]] = {
     "OptimizationProblem": ("nlp2cmd.generation.thermodynamic", "OptimizationProblem"),
     "SchedulingEnergy": ("nlp2cmd.generation.thermodynamic", "SchedulingEnergy"),
     "AllocationEnergy": ("nlp2cmd.generation.thermodynamic", "AllocationEnergy"),
+    "RoutingEnergy": ("nlp2cmd.generation.thermodynamic", "RoutingEnergy"),
     "HybridThermodynamicGenerator": ("nlp2cmd.generation.thermodynamic", "HybridThermodynamicGenerator"),
     "create_thermodynamic_generator": ("nlp2cmd.generation.thermodynamic", "create_thermodynamic_generator"),
 }

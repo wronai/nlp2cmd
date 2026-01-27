@@ -652,9 +652,15 @@ class TemplateGenerator:
                 normalized_entities.setdefault("application", normalized_intent)
                 normalized_intent = "run_application"
 
+        # Some detectors emit utility-like domains that still map to shell commands.
+        effective_domain = domain
+        if domain not in self.templates:
+            if domain in {"utility", "networking_ext", "hardware_info", "data_processing"}:
+                effective_domain = "shell"
+
         # Get template
-        domain_templates = self.templates.get(normalized_domain, {})
-        template = domain_templates.get(normalized_intent)
+        domain_templates = self.templates.get(effective_domain, {})
+        template = domain_templates.get(intent)
         
         # Special case: for shell domain with list intent, always check for alternatives
         if normalized_domain == 'shell' and normalized_intent == 'list':
@@ -663,21 +669,21 @@ class TemplateGenerator:
                 template = domain_templates.get(alternative_template)
         elif not template:
             # Try to find alternative template
-            alternative_template = self._find_alternative_template(normalized_domain, normalized_intent, normalized_entities)
+            alternative_template = self._find_alternative_template(effective_domain, intent, entities)
             if alternative_template:
                 template = domain_templates.get(alternative_template)
         
         if not template:
             return TemplateResult(
-                command=f"# Unknown: {normalized_domain}/{normalized_intent}",
+                command=f"# Unknown: {domain}/{intent}",
                 template_used="",
-                entities_used=normalized_entities,
+                entities_used=entities,
                 missing_entities=[],
                 success=False,
             )
         
         # Prepare entities with defaults
-        prepared = self._prepare_entities(normalized_domain, normalized_intent, normalized_entities)
+        prepared = self._prepare_entities(effective_domain, intent, entities)
         
         # Fill template
         try:
@@ -721,6 +727,7 @@ class TemplateGenerator:
                 'process_monitoring': 'process_top',
                 'disk': 'disk_usage',
                 'archive': 'archive_tar',
+                'network': 'network_ip',
             },
             'docker': {
                 'container_list': 'list',
@@ -904,35 +911,28 @@ class TemplateGenerator:
         except Exception:
             return f"/home/{username}"
 
-    def _prepare_shell_entities(self, intent: str, entities: dict[str, Any]) -> dict[str, Any]:
-        """Prepare shell entities."""
-        result = entities.copy()
-
-        # Path default - handle user directory
+    def _apply_shell_path_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
         if 'user' in entities and entities['user'] == 'current':
-            result.setdefault('path', '~')  # User home directory
+            result.setdefault('path', '~')
         elif 'username' in entities:
             username = entities['username']
-            # Handle specific username paths
             if username == 'root':
-                result['path'] = '/root'  # Root user home
+                result['path'] = '/root'
             elif username.lower() in ['folders', 'użytkownika', 'usera', 'user', 'użytkownik']:
-                # These are not actual usernames but generic user references
-                result['path'] = '~'  # Default to current user home
+                result['path'] = '~'
             else:
                 result['path'] = self._get_user_home_dir(str(username))
         else:
-            # Check if query suggests user context without explicit username
             text_lower = str(entities.get('text') or '').lower()
             if any(word in text_lower for word in ['usera', 'użytkownika', 'user', 'użytkownik']):
                 if intent == 'list':
-                    result['path'] = '~'  # Default to current user home for list operations
+                    result['path'] = '~'
                 else:
-                    result.setdefault('path', '.')  # Current directory
+                    result.setdefault('path', '.')
             else:
-                result.setdefault('path', '.')  # Current directory
-        
-        # Pattern
+                result.setdefault('path', '.')
+
+    def _apply_shell_pattern_defaults(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
         pattern = entities.get('pattern', entities.get('file_pattern'))
         if pattern:
             if not pattern.startswith('*'):
@@ -941,13 +941,12 @@ class TemplateGenerator:
         else:
             result['pattern'] = '*'
 
-        # Count templates can optionally filter by pattern
         if result.get('pattern') and result.get('pattern') != '*':
             result['name_flag_count'] = f"-name '{result['pattern']}'"
         else:
             result['name_flag_count'] = ''
 
-        # Find flags
+    def _apply_shell_find_flags(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
         result['type_flag'] = ''
         target = entities.get('target')
         if not target and intent == 'find':
@@ -961,32 +960,28 @@ class TemplateGenerator:
             result['type_flag'] = '-type f'
         elif target == 'directories':
             result['type_flag'] = '-type d'
-        
+
         result['name_flag'] = f"-name '{result['pattern']}'" if result['pattern'] != '*' else ''
 
-        # Exec flag (optional detailed listing)
         if intent == 'find' and any(x in str(entities.get('text') or '').lower() for x in ('wyświetl', 'wyswietl', 'lista', 'listę', 'liste', 'list')):
             result['exec_flag'] = "-ls"
         else:
             result['exec_flag'] = ''
 
-        # Size flag
         size = entities.get('size')
-        # Detect operator from text if not explicitly provided
         text = entities.get('text', '')
         size_operator = str(entities.get('size_operator') or entities.get('operator') or '>')
         if "mniejsz" in text.lower() or "smaller" in text.lower():
             size_operator = "<"
         elif "większ" in text.lower() or "larger" in text.lower() or "bigger" in text.lower():
             size_operator = ">"
-        
+
         if size and isinstance(size, dict):
             val = size.get('value', 0)
             unit = str(size.get('unit', 'M') or 'M').upper()
             sign = '+' if size_operator in {'>', '>='} else '-' if size_operator in {'<', '<='} else ''
             result['size_flag'] = f"-size {sign}{val}{unit[0]}"
         elif isinstance(size, str) and size.strip():
-            # Keep original units in template output for tests (e.g. '100MB')
             m = re.match(r"^(\d+)\s*([a-zA-Z]+)$", size.strip())
             if m:
                 sign = '+' if size_operator in {'>', '>='} else '-' if size_operator in {'<', '<='} else ''
@@ -996,226 +991,245 @@ class TemplateGenerator:
         else:
             result['size_flag'] = ''
 
-        # Time flag
         age = entities.get('age')
         if age and isinstance(age, dict):
             val = age.get('value', 0)
-            # Detect operator for age from text
             text = entities.get('text', '')
             time_operator = '+'
             if "ostatnich" in text.lower() or "ostatnie" in text.lower() or "last" in text.lower() or "recent" in text.lower():
-                time_operator = '-'  # newer files (last N days)
+                time_operator = '-'
             elif "starsze" in text.lower() or "older" in text.lower():
-                time_operator = '+'  # older files
+                time_operator = '+'
             result['time_flag'] = f"-mtime {time_operator}{val}"
         else:
             result['time_flag'] = ''
 
-        # Process monitoring
+    def _apply_shell_common_defaults(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
         result.setdefault('metric', 'mem')
         result.setdefault('limit', '10')
         result.setdefault('process_name', '')
 
-        
-        # Archive
         result.setdefault('archive', 'archive.tar.gz')
         result.setdefault('source', '.')
         result.setdefault('destination', '.')
-        
-        # Copy/move
+
         result.setdefault('flags', '')
         result.setdefault('target', '')
         result.setdefault('file', '')
 
-        # Text processing defaults
+    def _apply_shell_text_processing_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
         if intent in {'text_tail', 'text_head', 'text_tail_follow'}:
-            # Prefer explicit `file` entity, then `filename`
             result.setdefault('file', entities.get('file', entities.get('filename', '')))
-            # Prefer explicit `lines`, then `limit`
             result.setdefault('lines', str(entities.get('lines', entities.get('limit', '10'))))
             if not result.get('file'):
                 result['file'] = 'app.log'
-        
-        # Polish-specific defaults
-        if intent == 'file_search':
-            result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'py')))
-            result.setdefault('path', '.')
-        elif intent == 'file_content':
-            result.setdefault('file_path', entities.get('target', ''))
-        elif intent == 'file_tail':
-            result.setdefault('lines', '10')
-            result.setdefault('file_path', entities.get('target', ''))
-        elif intent == 'file_size':
-            result.setdefault('file_path', entities.get('target', ''))
-        elif intent == 'file_rename':
+
+    def _shell_intent_file_search(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'py')))
+        result.setdefault('path', '.')
+
+    def _shell_intent_file_content(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('file_path', entities.get('target', ''))
+
+    def _shell_intent_file_tail(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('lines', '10')
+        result.setdefault('file_path', entities.get('target', ''))
+
+    def _shell_intent_file_size(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('file_path', entities.get('target', ''))
+
+    def _shell_intent_file_rename(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('old_name', entities.get('old_name', ''))
+        result.setdefault('new_name', entities.get('new_name', ''))
+
+    def _shell_intent_file_delete_all(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
+
+    def _shell_intent_dir_create(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('directory', entities.get('target', ''))
+
+    def _shell_intent_remove_all(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
+
+    def _shell_intent_file_operation(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        text_lower = str(entities.get('text', '')).lower()
+        if 'wszystkie' in text_lower or 'all' in text_lower:
+            result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
+        elif 'katalog' in text_lower or 'directory' in text_lower or 'utwórz' in text_lower:
+            result.setdefault('directory', entities.get('target', ''))
+        elif 'zmień nazwę' in text_lower or 'rename' in text_lower:
             result.setdefault('old_name', entities.get('old_name', ''))
             result.setdefault('new_name', entities.get('new_name', ''))
-        elif intent == 'file_delete_all':
-            result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
-        elif intent == 'dir_create':
-            result.setdefault('directory', entities.get('target', ''))
-        elif intent == 'remove_all':
-            result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
-        elif intent == 'file_operation':
-            # Handle file_operation context-aware
-            text_lower = str(entities.get('text', '')).lower()
-            if 'wszystkie' in text_lower or 'all' in text_lower:
-                result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'tmp')))
-            elif 'katalog' in text_lower or 'directory' in text_lower or 'utwórz' in text_lower:
-                result.setdefault('directory', entities.get('target', ''))
-            elif 'zmień nazwę' in text_lower or 'rename' in text_lower:
-                result.setdefault('old_name', entities.get('old_name', ''))
-                result.setdefault('new_name', entities.get('new_name', ''))
-            elif 'rozmiar' in text_lower or 'size' in text_lower:
-                result.setdefault('file_path', entities.get('target', ''))
-            elif 'skopiuj' in text_lower or 'copy' in text_lower:
-                result.setdefault('source', entities.get('source', '.'))
-                result.setdefault('destination', entities.get('destination', '.'))
-            elif 'przenieś' in text_lower or 'move' in text_lower:
-                result.setdefault('source', entities.get('source', '.'))
-                result.setdefault('destination', entities.get('destination', '.'))
-            elif 'usuń' in text_lower or 'delete' in text_lower or 'remove' in text_lower:
-                result.setdefault('target', entities.get('target', ''))
-            else:
-                result.setdefault('target', entities.get('target', ''))
-        elif intent == 'process_monitor':
-            pass  # Uses top -n 1
-        elif intent == 'process_memory':
-            pass  # Uses ps aux --sort=-%mem | head -10
-        elif intent == 'process_cpu':
-            pass  # Uses ps aux --sort=-%cpu | head -10
-        elif intent == 'process_tree':
-            pass  # Uses pstree
-        elif intent == 'process_user':
-            result.setdefault('user', self._get_default('shell.user', os.environ.get('USER') or getpass.getuser()))
-        elif intent == 'process_zombie':
-            pass  # Uses ps aux | awk command
-        elif intent == 'system_monitor':
-            pass  # Uses htop
-        elif intent == 'network_ping':
-            result.setdefault('host', self._get_default('shell.ping_host', os.environ.get('NLP2CMD_DEFAULT_PING_HOST') or 'google.com'))
-        elif intent == 'network_port':
-            pass  # Uses netstat -tuln | grep LISTEN
-        elif intent == 'network_lsof':
-            result.setdefault('port', self._get_default('shell.default_port', os.environ.get('NLP2CMD_DEFAULT_PORT') or '8080'))
-        elif intent == 'network_ip':
-            pass  # Uses ip addr show
-        elif intent == 'network_config':
-            pass  # Uses ifconfig -a
-        elif intent == 'network_scan':
-            result.setdefault('cidr', self._get_default('shell.scan_cidr', os.environ.get('NLP2CMD_DEFAULT_SCAN_CIDR') or '192.168.1.0/24'))
-        elif intent == 'network_speed':
-            result.setdefault('url', self._get_default('shell.speedtest_url', os.environ.get('NLP2CMD_DEFAULT_SPEEDTEST_URL') or 'http://speedtest.net'))
-        elif intent == 'network_connections':
-            pass  # Uses ss -tulpn
-        elif intent == 'disk_health':
-            result.setdefault('device', self._get_default('shell.disk_device', os.environ.get('NLP2CMD_DEFAULT_DISK_DEVICE') or '/dev/sda1'))
-        elif intent == 'disk_defrag':
-            result.setdefault('device', self._get_default('shell.disk_device', os.environ.get('NLP2CMD_DEFAULT_DISK_DEVICE') or '/dev/sda1'))
-        elif intent == 'backup_create':
-            result.setdefault('source', entities.get('target', '.'))
-        elif intent == 'backup_copy':
+        elif 'rozmiar' in text_lower or 'size' in text_lower:
+            result.setdefault('file_path', entities.get('target', ''))
+        elif 'skopiuj' in text_lower or 'copy' in text_lower:
             result.setdefault('source', entities.get('source', '.'))
             result.setdefault('destination', entities.get('destination', '.'))
-        elif intent == 'backup_restore':
-            result.setdefault('file', entities.get('target', ''))
-        elif intent == 'backup_integrity':
-            result.setdefault(
-                'file',
-                entities.get(
-                    'target',
-                    self._get_default('shell.backup_archive', os.environ.get('NLP2CMD_DEFAULT_BACKUP_ARCHIVE') or 'backup.tar.gz'),
-                ),
-            )
-        elif intent == 'backup_status':
-            result.setdefault('path', entities.get('path', self._get_default('shell.backup_path', os.environ.get('NLP2CMD_DEFAULT_BACKUP_PATH') or './backup')))
-        elif intent == 'backup_cleanup':
-            result.setdefault('path', entities.get('path', self._get_default('shell.backup_path', os.environ.get('NLP2CMD_DEFAULT_BACKUP_PATH') or './backup')))
-        elif intent == 'backup_size':
-            result.setdefault(
-                'file',
-                entities.get(
-                    'target',
-                    self._get_default('shell.backup_archive', os.environ.get('NLP2CMD_DEFAULT_BACKUP_ARCHIVE') or 'backup.tar.gz'),
-                ),
-            )
-        elif intent == 'backup_schedule':
-            pass  # Uses crontab -l
-        elif intent == 'system_update':
-            pass  # Uses apt update && apt upgrade -y
-        elif intent == 'system_clean':
-            pass  # Uses rm -rf /tmp/*
-        elif intent == 'system_logs':
-            result.setdefault('file', self._get_default('shell.system_log_file', os.environ.get('NLP2CMD_DEFAULT_SYSTEM_LOG_FILE') or '/var/log/syslog'))
-        elif intent == 'system_cron':
-            pass  # Uses systemctl status cron
-        elif intent == 'dev_test':
-            pass  # Uses pytest tests/
-        elif intent == 'dev_build_maven':
-            pass  # Uses mvn clean install
-        elif intent == 'dev_install_npm':
-            pass  # Uses npm install
-        elif intent == 'dev_server':
-            pass  # Uses python manage.py runserver
-        elif intent == 'dev_version_node':
-            pass  # Uses node --version
-        elif intent == 'dev_lint':
-            result.setdefault('path', 'src')
-        elif intent == 'dev_logs':
-            result.setdefault('file', self._get_default('shell.dev_log_file', os.environ.get('NLP2CMD_DEFAULT_DEV_LOG_FILE') or 'app.log'))
-        elif intent == 'dev_debug':
-            result.setdefault('script', self._get_default('shell.debug_script', os.environ.get('NLP2CMD_DEFAULT_DEBUG_SCRIPT') or 'script.py'))
-        elif intent == 'dev_clean':
-            pass  # Uses rm -rf __pycache__
-        elif intent == 'dev_docs':
-            result.setdefault('path', 'docs')
-        elif intent == 'security_who':
-            pass  # Uses who
-        elif intent == 'security_last':
-            pass  # Uses last -n 10
-        elif intent == 'security_permissions':
-            result.setdefault('file_path', entities.get('file_path', 'config.conf'))
-        elif intent == 'security_suid':
-            pass  # Uses find / -perm -4000 -type f
-        elif intent == 'security_firewall':
-            pass  # Uses iptables -L
-        elif intent == 'security_logs':
-            pass  # Uses tail -n 100 /var/log/auth.log
-        elif intent == 'security_suspicious':
-            pass  # Uses ps aux | grep -v '\['
-        elif intent == 'security_packages':
-            pass  # Uses dpkg -l | grep -i security
-        elif intent == 'security_users':
-            pass  # Uses cat /etc/passwd
-        elif intent == 'process_kill':
-            result.setdefault('pid', 'PID')
-        elif intent == 'process_background':
-            result.setdefault('command', 'python script.py')
-        elif intent == 'process_script':
-            result.setdefault('script', entities.get('target', 'script.sh'))
-        elif intent == 'service_start':
-            result.setdefault('service', entities.get('service', self._get_default('shell.default_service', os.environ.get('NLP2CMD_DEFAULT_SERVICE') or 'nginx')))
-        elif intent == 'service_stop':
-            result.setdefault('service', entities.get('service', self._get_default('shell.default_service', os.environ.get('NLP2CMD_DEFAULT_SERVICE') or 'nginx')))
-        elif intent == 'service_restart':
-            result.setdefault('service', entities.get('service', self._get_default('shell.default_service', os.environ.get('NLP2CMD_DEFAULT_SERVICE') or 'nginx')))
-        elif intent == 'service_status':
-            result.setdefault('service', entities.get('service', self._get_default('shell.default_service', os.environ.get('NLP2CMD_DEFAULT_SERVICE') or 'nginx')))
-        elif intent == 'text_search_errors':
-            result.setdefault('file', self._get_default('shell.system_log_file', os.environ.get('NLP2CMD_DEFAULT_SYSTEM_LOG_FILE') or '/var/log/syslog'))
-        elif intent in ('open_url', 'open_browser', 'browse'):
-            url = entities.get('url', '')
-            if url and not url.startswith(('http://', 'https://')):
-                url = 'https://' + url
-            result['url'] = url or self._get_default('shell.default_url', os.environ.get('NLP2CMD_DEFAULT_URL') or 'https://google.com')
-        elif intent == 'search_web':
-            query = entities.get('query', '')
-            if not query:
-                text = entities.get('text', '')
-                match = re.search(r'(?:wyszukaj|search|szukaj|google)\s+(.+?)(?:\s+w\s+|\s*$)', text, re.IGNORECASE)
-                if match:
-                    query = match.group(1).strip()
-            result['query'] = query or 'nlp2cmd'
+        elif 'przenieś' in text_lower or 'move' in text_lower:
+            result.setdefault('source', entities.get('source', '.'))
+            result.setdefault('destination', entities.get('destination', '.'))
+        elif 'usuń' in text_lower or 'delete' in text_lower or 'remove' in text_lower:
+            result.setdefault('target', entities.get('target', ''))
+        else:
+            result.setdefault('target', entities.get('target', ''))
+
+    def _shell_intent_process_user(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('user', self._get_default('shell.user', os.environ.get('USER') or getpass.getuser()))
+
+    def _shell_intent_network_ping(self, result: dict[str, Any]) -> None:
+        result.setdefault('host', self._get_default('shell.ping_host', os.environ.get('NLP2CMD_DEFAULT_PING_HOST') or 'google.com'))
+
+    def _shell_intent_network_lsof(self, result: dict[str, Any]) -> None:
+        result.setdefault('port', self._get_default('shell.default_port', os.environ.get('NLP2CMD_DEFAULT_PORT') or '8080'))
+
+    def _shell_intent_network_scan(self, result: dict[str, Any]) -> None:
+        result.setdefault('cidr', self._get_default('shell.scan_cidr', os.environ.get('NLP2CMD_DEFAULT_SCAN_CIDR') or '192.168.1.0/24'))
+
+    def _shell_intent_network_speed(self, result: dict[str, Any]) -> None:
+        result.setdefault('url', self._get_default('shell.speedtest_url', os.environ.get('NLP2CMD_DEFAULT_SPEEDTEST_URL') or 'http://speedtest.net'))
+
+    def _shell_intent_disk_device(self, result: dict[str, Any]) -> None:
+        result.setdefault('device', self._get_default('shell.disk_device', os.environ.get('NLP2CMD_DEFAULT_DISK_DEVICE') or '/dev/sda1'))
+
+    def _shell_intent_backup_create(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('source', entities.get('target', '.'))
+
+    def _shell_intent_backup_copy(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('source', entities.get('source', '.'))
+        result.setdefault('destination', entities.get('destination', '.'))
+
+    def _shell_intent_backup_restore(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('file', entities.get('target', ''))
+
+    def _shell_intent_backup_integrity(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault(
+            'file',
+            entities.get(
+                'target',
+                self._get_default('shell.backup_archive', os.environ.get('NLP2CMD_DEFAULT_BACKUP_ARCHIVE') or 'backup.tar.gz'),
+            ),
+        )
+
+    def _shell_intent_backup_path(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('path', entities.get('path', self._get_default('shell.backup_path', os.environ.get('NLP2CMD_DEFAULT_BACKUP_PATH') or './backup')))
+
+    def _shell_intent_backup_size(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault(
+            'file',
+            entities.get(
+                'target',
+                self._get_default('shell.backup_archive', os.environ.get('NLP2CMD_DEFAULT_BACKUP_ARCHIVE') or 'backup.tar.gz'),
+            ),
+        )
+
+    def _shell_intent_system_logs(self, result: dict[str, Any]) -> None:
+        result.setdefault('file', self._get_default('shell.system_log_file', os.environ.get('NLP2CMD_DEFAULT_SYSTEM_LOG_FILE') or '/var/log/syslog'))
+
+    def _shell_intent_dev_lint(self, result: dict[str, Any]) -> None:
+        result.setdefault('path', 'src')
+
+    def _shell_intent_dev_logs(self, result: dict[str, Any]) -> None:
+        result.setdefault('file', self._get_default('shell.dev_log_file', os.environ.get('NLP2CMD_DEFAULT_DEV_LOG_FILE') or 'app.log'))
+
+    def _shell_intent_dev_debug(self, result: dict[str, Any]) -> None:
+        result.setdefault('script', self._get_default('shell.debug_script', os.environ.get('NLP2CMD_DEFAULT_DEBUG_SCRIPT') or 'script.py'))
+
+    def _shell_intent_dev_docs(self, result: dict[str, Any]) -> None:
+        result.setdefault('path', 'docs')
+
+    def _shell_intent_security_permissions(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('file_path', entities.get('file_path', 'config.conf'))
+
+    def _shell_intent_process_kill(self, result: dict[str, Any]) -> None:
+        result.setdefault('pid', 'PID')
+
+    def _shell_intent_process_background(self, result: dict[str, Any]) -> None:
+        result.setdefault('command', 'python script.py')
+
+    def _shell_intent_process_script(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('script', entities.get('target', 'script.sh'))
+
+    def _shell_intent_service(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        result.setdefault('service', entities.get('service', self._get_default('shell.default_service', os.environ.get('NLP2CMD_DEFAULT_SERVICE') or 'nginx')))
+
+    def _shell_intent_text_search_errors(self, result: dict[str, Any]) -> None:
+        result.setdefault('file', self._get_default('shell.system_log_file', os.environ.get('NLP2CMD_DEFAULT_SYSTEM_LOG_FILE') or '/var/log/syslog'))
+
+    def _shell_intent_open_url(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        url = entities.get('url', '')
+        if url and not url.startswith(('http://', 'https://')):
+            url = 'https://' + url
+        result['url'] = url or self._get_default('shell.default_url', os.environ.get('NLP2CMD_DEFAULT_URL') or 'https://google.com')
+
+    def _shell_intent_search_web(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        query = entities.get('query', '')
+        if not query:
+            text = entities.get('text', '')
+            match = re.search(r'(?:wyszukaj|search|szukaj|google)\s+(.+?)(?:\s+w\s+|\s*$)', text, re.IGNORECASE)
+            if match:
+                query = match.group(1).strip()
+        result['query'] = query or 'nlp2cmd'
+
+    def _apply_shell_intent_specific_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        handlers: dict[str, Any] = {
+            'file_search': self._shell_intent_file_search,
+            'file_content': self._shell_intent_file_content,
+            'file_tail': self._shell_intent_file_tail,
+            'file_size': self._shell_intent_file_size,
+            'file_rename': self._shell_intent_file_rename,
+            'file_delete_all': self._shell_intent_file_delete_all,
+            'dir_create': self._shell_intent_dir_create,
+            'remove_all': self._shell_intent_remove_all,
+            'file_operation': self._shell_intent_file_operation,
+            'process_user': self._shell_intent_process_user,
+            'network_ping': lambda e, r: self._shell_intent_network_ping(r),
+            'network_lsof': lambda e, r: self._shell_intent_network_lsof(r),
+            'network_scan': lambda e, r: self._shell_intent_network_scan(r),
+            'network_speed': lambda e, r: self._shell_intent_network_speed(r),
+            'disk_health': lambda e, r: self._shell_intent_disk_device(r),
+            'disk_defrag': lambda e, r: self._shell_intent_disk_device(r),
+            'backup_create': self._shell_intent_backup_create,
+            'backup_copy': self._shell_intent_backup_copy,
+            'backup_restore': self._shell_intent_backup_restore,
+            'backup_integrity': self._shell_intent_backup_integrity,
+            'backup_status': self._shell_intent_backup_path,
+            'backup_cleanup': self._shell_intent_backup_path,
+            'backup_size': self._shell_intent_backup_size,
+            'system_logs': lambda e, r: self._shell_intent_system_logs(r),
+            'dev_lint': lambda e, r: self._shell_intent_dev_lint(r),
+            'dev_logs': lambda e, r: self._shell_intent_dev_logs(r),
+            'dev_debug': lambda e, r: self._shell_intent_dev_debug(r),
+            'dev_docs': lambda e, r: self._shell_intent_dev_docs(r),
+            'security_permissions': self._shell_intent_security_permissions,
+            'process_kill': lambda e, r: self._shell_intent_process_kill(r),
+            'process_background': lambda e, r: self._shell_intent_process_background(r),
+            'process_script': self._shell_intent_process_script,
+            'service_start': self._shell_intent_service,
+            'service_stop': self._shell_intent_service,
+            'service_restart': self._shell_intent_service,
+            'service_status': self._shell_intent_service,
+            'text_search_errors': lambda e, r: self._shell_intent_text_search_errors(r),
+            'search_web': self._shell_intent_search_web,
+        }
+
+        if intent in ('open_url', 'open_browser', 'browse'):
+            self._shell_intent_open_url(entities, result)
+            return
+
+        handler = handlers.get(intent)
+        if handler is not None:
+            handler(entities, result)
+
+    def _prepare_shell_entities(self, intent: str, entities: dict[str, Any]) -> dict[str, Any]:
+        """Prepare shell entities."""
+        result = entities.copy()
+
+        self._apply_shell_path_defaults(intent, entities, result)
+        self._apply_shell_pattern_defaults(entities, result)
+        self._apply_shell_find_flags(intent, entities, result)
+        self._apply_shell_common_defaults(entities, result)
+        self._apply_shell_text_processing_defaults(intent, entities, result)
+        self._apply_shell_intent_specific_defaults(intent, entities, result)
         
         return result
     

@@ -6,7 +6,16 @@ Integrate Langevin sampling for complex optimization problems:
 - Energy-based constraint satisfaction
 - Hybrid LLM formalization + thermodynamic sampling
 
-IMPROVEMENTS v1.1:
+Based on Whitelam 2025 "Generative Thermodynamic Computing" (arXiv:2506.15121).
+
+Key concepts:
+- Langevin dynamics: dz = -μ∇V(z;c)dt + √(2μkT) dW
+- Energy minimization for constraint satisfaction
+- Majority voting across parallel samples
+- Entropy production regularization
+
+IMPROVEMENTS v1.2:
+- [REFACTOR] Gradient computation uses base class numerical_gradient
 - [FIX] Router now correctly identifies optimization problems (lowered threshold)
 - [FIX] Allocation energy model uses correct number of resources from text
 - [PERF] Adaptive n_steps based on problem size (smaller problems = fewer steps)
@@ -183,17 +192,8 @@ class SchedulingEnergy(EnergyModel):
         return total_energy
 
     def gradient(self, z: np.ndarray, condition: dict[str, Any]) -> np.ndarray:
-        """Compute gradient numerically."""
-        eps = 1e-5
-        grad = np.zeros_like(z)
-        e0 = self.energy(z, condition)
-
-        for i in range(len(z)):
-            z_plus = z.copy()
-            z_plus[i] += eps
-            grad[i] = (self.energy(z_plus, condition) - e0) / eps
-
-        return grad
+        """Compute gradient using central differences from base class."""
+        return self.numerical_gradient(z, condition)
 
     def _decode_assignments(self, z: np.ndarray) -> list[int]:
         """Decode continuous z to discrete slot assignments."""
@@ -272,17 +272,8 @@ class AllocationEnergy(EnergyModel):
         return total_energy
 
     def gradient(self, z: np.ndarray, condition: dict[str, Any]) -> np.ndarray:
-        """Compute gradient numerically."""
-        eps = 1e-5
-        grad = np.zeros_like(z)
-        e0 = self.energy(z, condition)
-
-        for i in range(len(z)):
-            z_plus = z.copy()
-            z_plus[i] += eps
-            grad[i] = (self.energy(z_plus, condition) - e0) / eps
-
-        return grad
+        """Compute gradient using central differences from base class."""
+        return self.numerical_gradient(z, condition)
 
     def _decode_allocation(self, z: np.ndarray) -> np.ndarray:
         """Decode continuous z to allocation matrix."""
@@ -294,6 +285,80 @@ class AllocationEnergy(EnergyModel):
 
         # Apply sigmoid to get [0, 1] allocation values
         return 1 / (1 + np.exp(-matrix))
+
+
+class RoutingEnergy(EnergyModel):
+    """
+    Energy model for routing problems (TSP, VRP).
+
+    Encodes z as permutation relaxation using doubly stochastic matrix.
+    Uses softmax for soft assignment with entropy regularization.
+
+    Penalizes:
+    - Total route distance
+    - Row/column constraint violations (each city visited once)
+    """
+
+    DISTANCE_WEIGHT = 1.0
+    ROW_PENALTY = 10.0
+    COL_PENALTY = 10.0
+
+    def __init__(self, n_cities: int):
+        self.n_cities = n_cities
+
+    def energy(self, z: np.ndarray, condition: dict[str, Any]) -> float:
+        """Compute routing energy."""
+        distances = condition.get("distances", np.zeros((self.n_cities, self.n_cities)))
+        if isinstance(distances, list):
+            distances = np.array(distances)
+
+        # Reshape to matrix and apply softmax
+        Z = z[: self.n_cities ** 2].reshape(self.n_cities, self.n_cities)
+        P = self._softmax_matrix(Z)
+
+        total_energy = 0.0
+
+        # Distance cost (expected under soft assignment)
+        for i in range(self.n_cities - 1):
+            for j in range(self.n_cities):
+                for k in range(self.n_cities):
+                    total_energy += self.DISTANCE_WEIGHT * P[i, j] * P[i + 1, k] * distances[j, k]
+
+        # Row sum = 1 constraint
+        row_sums = P.sum(axis=1)
+        total_energy += self.ROW_PENALTY * np.sum((row_sums - 1) ** 2)
+
+        # Column sum = 1 constraint
+        col_sums = P.sum(axis=0)
+        total_energy += self.COL_PENALTY * np.sum((col_sums - 1) ** 2)
+
+        return total_energy
+
+    def gradient(self, z: np.ndarray, condition: dict[str, Any]) -> np.ndarray:
+        """Compute gradient using central differences from base class."""
+        return self.numerical_gradient(z, condition)
+
+    def _softmax_matrix(self, Z: np.ndarray) -> np.ndarray:
+        """Apply softmax to make soft assignment matrix."""
+        exp_Z = np.exp(Z - np.max(Z))
+        return exp_Z / (exp_Z.sum() + 1e-10)
+
+    def decode_route(self, z: np.ndarray) -> list[int]:
+        """Decode z to route (permutation of cities)."""
+        Z = z[: self.n_cities ** 2].reshape(self.n_cities, self.n_cities)
+        P = self._softmax_matrix(Z)
+        # Greedy assignment
+        route = []
+        available = set(range(self.n_cities))
+        for i in range(self.n_cities):
+            probs = P[i].copy()
+            for j in range(self.n_cities):
+                if j not in available:
+                    probs[j] = -np.inf
+            city = int(np.argmax(probs))
+            route.append(city)
+            available.discard(city)
+        return route
 
 
 class ThermodynamicGenerator:
@@ -317,6 +382,7 @@ class ThermodynamicGenerator:
     ENERGY_MODELS: dict[str, type[EnergyModel]] = {
         "schedule": SchedulingEnergy,
         "allocate": AllocationEnergy,
+        "route": RoutingEnergy,
     }
 
     def __init__(
@@ -326,6 +392,8 @@ class ThermodynamicGenerator:
         n_samples: int = 5,
         voting_strategy: str = "energy",
         adaptive_steps: bool = True,  # NEW: adaptively reduce steps for small problems
+        parallel_sampling: bool = False,  # Use parallel thread pool for sampling
+        max_workers: int = 4,  # Max threads for parallel sampling
     ):
         self.llm = llm_client
         self.base_langevin_config = langevin_config or LangevinConfig(
@@ -340,6 +408,8 @@ class ThermodynamicGenerator:
         self.energy_estimator = EnergyEstimator()
         self.regularizer = EntropyProductionRegularizer()
         self.adaptive_steps = adaptive_steps
+        self.parallel_sampling = parallel_sampling
+        self.max_workers = max_workers
 
         if llm_client:
             self.planner = StructuredLLMPlanner(llm_client)
@@ -427,9 +497,14 @@ class ThermodynamicGenerator:
             # Configure sampler with adaptive config
             sampler = LangevinSampler(energy_model, config)
 
-            # Sample multiple solutions
+            # Sample multiple solutions (parallel or sequential)
             condition = problem.to_condition()
-            results = sampler.sample(condition, n_samples=n_samples)
+            if self.parallel_sampling and n_samples > 1:
+                results = sampler.sample_parallel(
+                    condition, n_samples=n_samples, max_workers=self.max_workers
+                )
+            else:
+                results = sampler.sample(condition, n_samples=n_samples)
 
             if not isinstance(results, list):
                 results = [results]
@@ -530,9 +605,15 @@ class ThermodynamicGenerator:
             "przydziel", "allocate", "zasobów", "zasoby", "alokuj",
             "rozdziel", "podziel", "zasobow"  # fallback for encoding issues
         ]
+        routing_keywords = [
+            "trasa", "route", "routing", "tsp", "vrp", "miasta", "city",
+            "odwiedź", "visit", "podróż", "travel", "komiwojażer"
+        ]
 
         # Detect problem type
-        if "przydziel" in text_lower or "allocate" in text_lower or "zasob" in text_lower:
+        if any(kw in text_lower for kw in routing_keywords):
+            problem_type = "route"
+        elif "przydziel" in text_lower or "allocate" in text_lower or "zasob" in text_lower:
             problem_type = "allocate"
         elif "zaplanuj" in text_lower or "schedule" in text_lower or "zad" in text_lower:
             problem_type = "schedule"
@@ -616,6 +697,16 @@ class ThermodynamicGenerator:
                 n_slots=slot_count,
             )
 
+        if problem_type == "route":
+            # Extract number of cities from text
+            m = re.search(r'(\d+)\s+(?:miast\w*|cit\w*|punkt\w*|lokal\w*)', text_lower)
+            n_cities = int(m.group(1)) if m else (numbers[0] if numbers else 5)
+            return OptimizationProblem(
+                problem_type=problem_type,
+                variables=[f"city_{i}" for i in range(n_cities)],
+                constraints=constraints,
+            )
+
         consumer_count = n_consumers or (numbers[1] if len(numbers) > 1 else (numbers[0] if numbers else 3))
         resource_count = n_resources or (numbers[0] if numbers else 2)
         
@@ -643,6 +734,11 @@ class ThermodynamicGenerator:
             n_resources = problem.n_resources or 5
             n_consumers = problem.n_consumers or n_vars
             return AllocationEnergy(n_resources=n_resources, n_consumers=n_consumers)
+
+        elif problem.problem_type == "route":
+            # Routing/TSP problems
+            n_cities = len(problem.variables) or 5
+            return RoutingEnergy(n_cities=n_cities)
 
         else:
             # Generic constraint energy
@@ -675,6 +771,14 @@ class ThermodynamicGenerator:
                 "raw_sample": z.tolist(),
             }
 
+        elif isinstance(energy_model, RoutingEnergy):
+            route = energy_model.decode_route(z)
+            return {
+                "route": route,
+                "n_cities": energy_model.n_cities,
+                "raw_sample": z.tolist(),
+            }
+
         return {"raw_sample": z.tolist()}
 
     def _format_output(
@@ -698,6 +802,15 @@ class ThermodynamicGenerator:
                 row = row[:n_resources] if n_resources else row
                 resources = ", ".join(f"R{j}={v:.2f}" for j, v in enumerate(row))
                 lines.append(f"  Consumer {i}: {resources}")
+            return "\n".join(lines)
+
+        elif problem.problem_type == "route":
+            route = solution.get("route", [])
+            lines = ["# Route (TSP):"]
+            route_str = " → ".join(f"City_{c}" for c in route)
+            lines.append(f"  {route_str}")
+            if route:
+                lines.append(f"  (Return to City_{route[0]})")
             return "\n".join(lines)
 
         return f"# Solution:\n{solution}"
@@ -765,6 +878,24 @@ class ThermodynamicGenerator:
                                         f"Consumer {consumer_idx} allocated {allocated:.2f} below demand {demand}"
                                     )
 
+        elif problem.problem_type == "route":
+            route = solution.get("route", [])
+            n_cities = solution.get("n_cities", len(route))
+            
+            # Check all cities visited exactly once
+            if len(route) != n_cities:
+                violations.append(f"Route has {len(route)} cities, expected {n_cities}")
+            
+            visited = set(route)
+            if len(visited) != len(route):
+                duplicates = [c for c in route if route.count(c) > 1]
+                violations.append(f"Duplicate cities in route: {set(duplicates)}")
+            
+            expected_cities = set(range(n_cities))
+            missing = expected_cities - visited
+            if missing:
+                violations.append(f"Missing cities: {missing}")
+
         is_feasible = len(violations) == 0
 
         if best_energy is None or not np.isfinite(best_energy):
@@ -811,6 +942,9 @@ class HybridThermodynamicGenerator:
         # English
         "schedule", "allocate", "optimize", "balance", "distribute",
         "assign", "plan", "minimize", "maximize",
+        # Routing (TSP/VRP)
+        "trasa", "route", "routing", "tsp", "vrp", "miasta",
+        "odwiedź", "komiwojażer", "travel",
     ]
 
     @staticmethod
@@ -895,16 +1029,30 @@ def create_thermodynamic_generator(
     llm_client: Optional[LLMClient] = None,
     n_samples: int = 5,
     n_steps: int = 500,
-    adaptive_steps: bool = True,  # NEW parameter
+    adaptive_steps: bool = True,
+    parallel_sampling: bool = False,
+    max_workers: int = 4,
 ) -> ThermodynamicGenerator:
     """
     Factory function for thermodynamic generator.
+
+    Based on Whitelam 2025 "Generative Thermodynamic Computing" (arXiv:2506.15121).
 
     Args:
         llm_client: Optional LLM client for problem parsing
         n_samples: Number of samples for voting (default: 5)
         n_steps: Base number of Langevin steps (default: 500)
         adaptive_steps: If True, reduce steps for small problems (default: True)
+        parallel_sampling: If True, use thread pool for parallel sampling (default: False)
+        max_workers: Max threads for parallel sampling (default: 4)
+
+    Returns:
+        ThermodynamicGenerator configured for optimization problems
+
+    Example:
+        >>> generator = create_thermodynamic_generator(n_samples=5)
+        >>> result = await generator.generate("Zaplanuj 5 zadań w 10 slotach")
+        >>> print(result.decoded_output)
     """
     config = LangevinConfig(
         n_steps=n_steps,
@@ -918,4 +1066,6 @@ def create_thermodynamic_generator(
         langevin_config=config,
         n_samples=n_samples,
         adaptive_steps=adaptive_steps,
+        parallel_sampling=parallel_sampling,
+        max_workers=max_workers,
     )
