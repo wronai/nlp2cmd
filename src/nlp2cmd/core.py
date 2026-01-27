@@ -414,11 +414,28 @@ class RuleBasedBackend(NLPBackend):
     def _is_regex_dsl(self, dsl: Optional[str]) -> bool:
         return dsl in {"sql", "shell", "docker", "kubernetes"}
 
-    def _extract_regex_entities(self, text: str, dsl: str) -> list[Entity]:
+    def _should_use_semantic_extractor(self, dsl: str) -> bool:
+        if dsl != "shell":
+            return False
+        mode = os.environ.get("NLP2CMD_ENTITY_EXTRACTOR_MODE")
+        if not isinstance(mode, str):
+            return False
+        return mode.strip().lower() in {"semantic", "shadow", "ab"}
+
+    def _extract_with_configured_extractor(self, text: str, dsl: str):
+        if self._should_use_semantic_extractor(dsl):
+            from nlp2cmd.generation.semantic_entities import SemanticEntityExtractor
+
+            extractor = SemanticEntityExtractor()
+            return extractor.extract(text, dsl)
+
         from nlp2cmd.generation.regex import RegexEntityExtractor
 
         extractor = RegexEntityExtractor()
-        extracted = extractor.extract(text, dsl)
+        return extractor.extract(text, dsl)
+
+    def _extract_regex_entities(self, text: str, dsl: str) -> list[Entity]:
+        extracted = self._extract_with_configured_extractor(text, dsl)
 
         entities = [
             Entity(name=name, value=value, type=self._infer_entity_type(value))

@@ -1295,8 +1295,141 @@ class TemplateGenerator:
                 query = match.group(1).strip()
         result['query'] = query or 'nlp2cmd'
 
+    def _apply_shell_backup_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> bool:
+        backup_handlers = {
+            'backup_create': self._shell_intent_backup_create,
+            'backup_copy': self._shell_intent_backup_copy,
+            'backup_restore': self._shell_intent_backup_restore,
+            'backup_integrity': self._shell_intent_backup_integrity,
+            'backup_status': self._shell_intent_backup_path,
+            'backup_cleanup': self._shell_intent_backup_path,
+            'backup_size': self._shell_intent_backup_size,
+        }
+
+        handler = backup_handlers.get(intent)
+        if handler is None:
+            return False
+        handler(entities, result)
+        return True
+
+    def _apply_shell_system_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> bool:
+        system_handlers = {
+            'system_logs': lambda e, r: self._shell_intent_system_logs(r),
+        }
+
+        handler = system_handlers.get(intent)
+        if handler is None:
+            return False
+        handler(entities, result)
+        return True
+
+    def _apply_shell_dev_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> bool:
+        dev_handlers = {
+            'dev_lint': lambda e, r: self._shell_intent_dev_lint(r),
+            'dev_logs': lambda e, r: self._shell_intent_dev_logs(r),
+            'dev_debug': lambda e, r: self._shell_intent_dev_debug(r),
+            'dev_docs': lambda e, r: self._shell_intent_dev_docs(r),
+        }
+
+        handler = dev_handlers.get(intent)
+        if handler is None:
+            return False
+        handler(entities, result)
+        return True
+
+    def _apply_shell_security_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> bool:
+        security_handlers = {
+            'security_permissions': self._shell_intent_security_permissions,
+        }
+
+        handler = security_handlers.get(intent)
+        if handler is None:
+            return False
+        handler(entities, result)
+        return True
+
+    def _apply_shell_text_search_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> bool:
+        text_handlers = {
+            'text_search_errors': lambda e, r: self._shell_intent_text_search_errors(r),
+        }
+
+        handler = text_handlers.get(intent)
+        if handler is None:
+            return False
+        handler(entities, result)
+        return True
+
+    def _apply_shell_network_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> bool:
+        network_handlers = {
+            'network_ping': lambda e, r: self._shell_intent_network_ping(r),
+            'network_lsof': lambda e, r: self._shell_intent_network_lsof(r),
+            'network_scan': lambda e, r: self._shell_intent_network_scan(r),
+            'network_speed': lambda e, r: self._shell_intent_network_speed(r),
+        }
+
+        handler = network_handlers.get(intent)
+        if handler is None:
+            return False
+        handler(entities, result)
+        return True
+
+    def _apply_shell_disk_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> bool:
+        disk_handlers = {
+            'disk_health': lambda e, r: self._shell_intent_disk_device(r),
+            'disk_defrag': lambda e, r: self._shell_intent_disk_device(r),
+        }
+
+        handler = disk_handlers.get(intent)
+        if handler is None:
+            return False
+        handler(entities, result)
+        return True
+
+    def _apply_shell_process_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> bool:
+        process_handlers = {
+            'process_user': self._shell_intent_process_user,
+            'process_kill': lambda e, r: self._shell_intent_process_kill(r),
+            'process_background': lambda e, r: self._shell_intent_process_background(r),
+            'process_script': self._shell_intent_process_script,
+        }
+
+        handler = process_handlers.get(intent)
+        if handler is None:
+            return False
+        handler(entities, result)
+        return True
+
+    def _apply_shell_service_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> bool:
+        service_intents = {
+            'service_start': self._shell_intent_service,
+            'service_stop': self._shell_intent_service,
+            'service_restart': self._shell_intent_service,
+            'service_status': self._shell_intent_service,
+        }
+
+        handler = service_intents.get(intent)
+        if handler is None:
+            return False
+        handler(entities, result)
+        return True
+
+    def _apply_shell_browser_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> bool:
+        if intent in ('open_url', 'open_browser', 'browse'):
+            self._shell_intent_open_url(entities, result)
+            return True
+
+        browser_handlers = {
+            'search_web': self._shell_intent_search_web,
+        }
+
+        handler = browser_handlers.get(intent)
+        if handler is None:
+            return False
+        handler(entities, result)
+        return True
+
     def _apply_shell_intent_specific_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
-        handlers: dict[str, Any] = {
+        file_handlers: dict[str, Any] = {
             'file_search': self._shell_intent_file_search,
             'file_content': self._shell_intent_file_content,
             'file_tail': self._shell_intent_file_tail,
@@ -1306,44 +1439,29 @@ class TemplateGenerator:
             'dir_create': self._shell_intent_dir_create,
             'remove_all': self._shell_intent_remove_all,
             'file_operation': self._shell_intent_file_operation,
-            'process_user': self._shell_intent_process_user,
-            'network_ping': lambda e, r: self._shell_intent_network_ping(r),
-            'network_lsof': lambda e, r: self._shell_intent_network_lsof(r),
-            'network_scan': lambda e, r: self._shell_intent_network_scan(r),
-            'network_speed': lambda e, r: self._shell_intent_network_speed(r),
-            'disk_health': lambda e, r: self._shell_intent_disk_device(r),
-            'disk_defrag': lambda e, r: self._shell_intent_disk_device(r),
-            'backup_create': self._shell_intent_backup_create,
-            'backup_copy': self._shell_intent_backup_copy,
-            'backup_restore': self._shell_intent_backup_restore,
-            'backup_integrity': self._shell_intent_backup_integrity,
-            'backup_status': self._shell_intent_backup_path,
-            'backup_cleanup': self._shell_intent_backup_path,
-            'backup_size': self._shell_intent_backup_size,
-            'system_logs': lambda e, r: self._shell_intent_system_logs(r),
-            'dev_lint': lambda e, r: self._shell_intent_dev_lint(r),
-            'dev_logs': lambda e, r: self._shell_intent_dev_logs(r),
-            'dev_debug': lambda e, r: self._shell_intent_dev_debug(r),
-            'dev_docs': lambda e, r: self._shell_intent_dev_docs(r),
-            'security_permissions': self._shell_intent_security_permissions,
-            'process_kill': lambda e, r: self._shell_intent_process_kill(r),
-            'process_background': lambda e, r: self._shell_intent_process_background(r),
-            'process_script': self._shell_intent_process_script,
-            'service_start': self._shell_intent_service,
-            'service_stop': self._shell_intent_service,
-            'service_restart': self._shell_intent_service,
-            'service_status': self._shell_intent_service,
-            'text_search_errors': lambda e, r: self._shell_intent_text_search_errors(r),
-            'search_web': self._shell_intent_search_web,
         }
 
-        if intent in ('open_url', 'open_browser', 'browse'):
-            self._shell_intent_open_url(entities, result)
-            return
-
-        handler = handlers.get(intent)
+        handler = file_handlers.get(intent)
         if handler is not None:
             handler(entities, result)
+            return
+
+        category_handlers = (
+            self._apply_shell_backup_defaults,
+            self._apply_shell_system_defaults,
+            self._apply_shell_dev_defaults,
+            self._apply_shell_security_defaults,
+            self._apply_shell_text_search_defaults,
+            self._apply_shell_network_defaults,
+            self._apply_shell_disk_defaults,
+            self._apply_shell_process_defaults,
+            self._apply_shell_service_defaults,
+            self._apply_shell_browser_defaults,
+        )
+
+        for handler_func in category_handlers:
+            if handler_func(intent, entities, result):
+                return
 
     def _prepare_shell_entities(self, intent: str, entities: dict[str, Any]) -> dict[str, Any]:
         """Prepare shell entities."""

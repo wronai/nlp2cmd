@@ -136,6 +136,21 @@ class SemanticShellBackend(NLPBackend):
 
         entities["filters"] = filters
 
+        semantic_meta: dict[str, Any] = {}
+        try:
+            from nlp2cmd.generation.semantic_entities import SemanticEntityExtractor
+
+            semantic_extractor = SemanticEntityExtractor()
+            semantic_result = semantic_extractor.extract(text, "shell")
+            semantic_mode = semantic_extractor.last_mode
+            if semantic_mode == "shadow":
+                semantic_meta["shadow_entities"] = semantic_extractor.last_semantic_entities
+            elif semantic_mode == "semantic":
+                entities.update(semantic_result.entities)
+            semantic_meta["entity_extractor_mode"] = semantic_mode
+        except Exception:
+            semantic_meta = {}
+
         confidence = intent_confidence
         if size_filter is not None or age_filter is not None:
             confidence = max(confidence, 0.8)
@@ -147,7 +162,11 @@ class SemanticShellBackend(NLPBackend):
             entities=entities,
             confidence=confidence,
             text=text or "",
-            metadata={"backend": "semantic_shell_light", "spacy_model": self.model},
+            metadata={
+                "backend": "semantic_shell_light",
+                "spacy_model": self.model,
+                **semantic_meta,
+            },
         )
 
     @staticmethod

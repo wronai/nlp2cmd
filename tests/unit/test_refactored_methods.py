@@ -88,36 +88,36 @@ class TestRefactoredTemplateGenerator:
     @pytest.fixture
     def template_gen(self):
         """Create a TemplateGenerator instance."""
-        # Apply the refactor first
-        from scripts.maintenance.refactor_shell_entities import apply_refactor_to_template_generator
-        apply_refactor_to_template_generator()
         return TemplateGenerator()
     
     def test_apply_shell_backup_defaults(self, template_gen):
         """Test backup defaults application."""
         entities = {"target": "/data"}
         result = {}
-        
-        template_gen._apply_shell_backup_defaults("backup_create", entities, result)
-        
+
+        applied = template_gen._apply_shell_backup_defaults("backup_create", entities, result)
+
+        assert applied is True
         assert result["source"] == "/data"
     
     def test_apply_shell_system_defaults(self, template_gen):
         """Test system defaults application."""
         entities = {}
         result = {}
-        
-        template_gen._apply_shell_system_defaults("system_reboot", entities, result)
-        
-        assert result["force"] is False
+
+        applied = template_gen._apply_shell_system_defaults("system_logs", entities, result)
+
+        assert applied is True
+        assert "file" in result
     
     def test_apply_shell_dev_defaults(self, template_gen):
         """Test development defaults application."""
         entities = {}
         result = {}
-        
-        template_gen._apply_shell_dev_defaults("dev_lint", entities, result)
-        
+
+        applied = template_gen._apply_shell_dev_defaults("dev_lint", entities, result)
+
+        assert applied is True
         assert result["path"] == "src"
     
     def test_apply_shell_intent_specific_defaults_dispatch(self, template_gen):
@@ -135,18 +135,20 @@ class TestRefactoredTemplateGenerator:
         """Test network defaults application."""
         entities = {}
         result = {}
-        
-        template_gen._apply_shell_network_defaults("network_ping", entities, result)
-        
+
+        applied = template_gen._apply_shell_network_defaults("network_ping", entities, result)
+
+        assert applied is True
         assert "host" in result
     
     def test_apply_shell_browser_defaults(self, template_gen):
         """Test browser defaults application."""
         entities = {"url": "example.com"}
         result = {}
-        
-        template_gen._apply_shell_browser_defaults("open_url", entities, result)
-        
+
+        applied = template_gen._apply_shell_browser_defaults("open_url", entities, result)
+
+        assert applied is True
         assert result["url"] == "https://example.com"
 
 

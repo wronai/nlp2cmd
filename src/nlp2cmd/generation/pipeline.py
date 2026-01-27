@@ -41,6 +41,23 @@ _DEFAULT_USE_ENHANCED_CONTEXT = str(os.environ.get("NLP2CMD_USE_ENHANCED_CONTEXT
     "on",
 }
 
+_SEMANTIC_ENTITY_MODES = {"semantic", "shadow", "ab"}
+
+
+def _should_use_semantic_extractor() -> bool:
+    mode = os.environ.get("NLP2CMD_ENTITY_EXTRACTOR_MODE")
+    if not isinstance(mode, str):
+        return False
+    return mode.strip().lower() in _SEMANTIC_ENTITY_MODES
+
+
+def _create_default_extractor() -> Any:
+    if _should_use_semantic_extractor():
+        from nlp2cmd.generation.semantic_entities import SemanticEntityExtractor
+
+        return SemanticEntityExtractor()
+    return RegexEntityExtractor()
+
 
 @dataclass
 class PipelineResult:
@@ -101,7 +118,7 @@ class RuleBasedPipeline:
     def __init__(
         self,
         detector: Optional[KeywordIntentDetector] = None,
-        extractor: Optional[RegexEntityExtractor] = None,
+        extractor: Optional[Any] = None,
         generator: Optional[TemplateGenerator] = None,
         confidence_threshold: float = 0.5,
         use_enhanced_context: bool = _DEFAULT_USE_ENHANCED_CONTEXT,
@@ -111,13 +128,13 @@ class RuleBasedPipeline:
         
         Args:
             detector: Intent detector (default: KeywordIntentDetector)
-            extractor: Entity extractor (default: RegexEntityExtractor)
+            extractor: Entity extractor (default: RegexEntityExtractor or SemanticEntityExtractor)
             generator: Template generator (default: TemplateGenerator)
             confidence_threshold: Minimum confidence to proceed
             use_enhanced_context: Use enhanced NLP context detection
         """
         self.detector = detector or KeywordIntentDetector()
-        self.extractor = extractor or RegexEntityExtractor()
+        self.extractor = extractor or _create_default_extractor()
         self.generator = generator or TemplateGenerator()
         self.confidence_threshold = confidence_threshold
         self.use_enhanced_context = use_enhanced_context
@@ -1012,7 +1029,7 @@ def create_pipeline(
         Configured RuleBasedPipeline
     """
     detector = KeywordIntentDetector(confidence_threshold=confidence_threshold)
-    extractor = RegexEntityExtractor()
+    extractor = _create_default_extractor()
     generator = TemplateGenerator(custom_templates=custom_templates)
     
     # Add custom patterns if provided
