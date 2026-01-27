@@ -587,6 +587,8 @@ class RegexEntityExtractor:
                 result['grouping'] = [entities['group_by']]
         
         elif domain == 'shell':
+            if 'filename' in entities and entities.get('filename') and 'file' not in entities:
+                result['file'] = entities['filename']
             # Check for user folders pattern in raw text first
             if re.search(r'show\s+list\s+user\s+folders|pokaż\s+listę\s+użytkownik\s+foldery|list\s+user\s+folders|show\s+user\s+folders', text_lower):
                 result['path'] = '~'
@@ -603,10 +605,11 @@ class RegexEntityExtractor:
                     result['path'] = path
             # Handle "folderze użytkownika" -> default to ~ if no path found
             elif 'path' not in entities or not entities['path']:
-                if re.search(r'folderze\s+użytkownika|katalogu\s+użytkownika|listę\s+folderów\s+użytkownika|listę\s+katalogów\s+użytkownika|foldery\s+użytkownika|user\s+folders|show\s+list\s+user\s+folders|show\s+user\s+folders|list\s+user\s+folders|user\s+folders', text_lower):
-                    result['path'] = '~'
-                else:
-                    result['path'] = '.'
+                if 'file' not in result and 'filename' not in entities:
+                    if re.search(r'folderze\s+użytkownika|katalogu\s+użytkownika|listę\s+folderów\s+użytkownika|listę\s+katalogów\s+użytkownika|foldery\s+użytkownika|user\s+folders|show\s+list\s+user\s+folders|show\s+user\s+folders|list\s+user\s+folders|user\s+folders', text_lower):
+                        result['path'] = '~'
+                    else:
+                        result['path'] = '.'
             
             # Normalize path
             if 'path' in result and result['path']:

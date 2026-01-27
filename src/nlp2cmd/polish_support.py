@@ -164,6 +164,10 @@ class PolishLanguageSupport:
             if incorrect in text_lower:
                 text_lower = text_lower.replace(incorrect, correct)
                 return text_lower
+
+        words = text_lower.split()
+        if len(words) < 3:
+            return text_lower
         
         # Try fuzzy matching against known phrases
         best_match = self._find_best_phrase_match(text_lower)
@@ -171,7 +175,6 @@ class PolishLanguageSupport:
             return best_match
         
         # Try joining adjacent words and matching
-        words = text_lower.split()
         if len(words) >= 2:
             # Try joining pairs of words
             for i in range(len(words) - 1):

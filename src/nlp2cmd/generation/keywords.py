@@ -774,12 +774,26 @@ class KeywordIntentDetector:
         if not has_docker_context:
             return None
 
+        if re.search(r"\b(kubernetes|k8s|kubectl|pod\w*|pods?)\b", text_lower):
+            return None
+
         if re.search(r"\bwejdz\b", text_lower) and re.search(r"\b(kontener|container)\b", text_lower):
             return DetectionResult(
                 domain='docker',
                 intent='exec',
                 confidence=0.85,
                 matched_keyword='wejdz kontener',
+            )
+
+        if re.search(r"\b(usuń|usun|remove|skasuj)\b", text_lower) and re.search(
+            r"\b(kontener|container)\b",
+            text_lower,
+        ):
+            return DetectionResult(
+                domain='docker',
+                intent='remove',
+                confidence=0.86,
+                matched_keyword='remove container',
             )
 
         if (
@@ -872,6 +886,14 @@ class KeywordIntentDetector:
         )
         if not has_k8s_context:
             return None
+
+        if re.search(r"\blogi\b", text_lower) and re.search(r"\b(pod\w*|pods?)\b", text_lower):
+            return DetectionResult(
+                domain='kubernetes',
+                intent='logs',
+                confidence=0.85,
+                matched_keyword='pod logs',
+            )
 
         if re.search(r"\b(zastosuj|apply)\b", text_lower) and re.search(
             r"\b(konfiguracj\w*|yaml|yml|manifest)\b",
@@ -1202,6 +1224,14 @@ class KeywordIntentDetector:
         """
         raw_lower, text_lower = self._prepare_text(text)
 
+        if text_lower.strip() == "cd":
+            return DetectionResult(
+                domain="unknown",
+                intent="unknown",
+                confidence=0.0,
+                matched_keyword=None,
+            )
+
         override = self._detect_explicit_overrides(text_lower)
         if override is not None:
             return override
@@ -1322,14 +1352,19 @@ class KeywordIntentDetector:
 
         schema_result = schema_matcher.match(text_lower)
         if schema_result and schema_result.matched:
+            normalized_phrase = schema_matcher._normalize(schema_result.phrase)
             # Accept if confidence is high OR if phrase is contained within input
             if (
                 schema_result.confidence >= 0.85
                 or (
                     schema_result.confidence >= 0.7
-                    and schema_matcher._normalize(schema_result.phrase) in text_lower
+                    and normalized_phrase in text_lower
                 )
             ):
+                if normalized_phrase not in text_lower:
+                    boosters = self.domain_boosters.get(schema_result.domain, [])
+                    if boosters and not any(b.lower() in text_lower for b in boosters):
+                        return None
                 return DetectionResult(
                     domain=schema_result.domain,
                     intent=schema_result.intent,
@@ -1344,6 +1379,11 @@ class KeywordIntentDetector:
         if schema_matcher:
             schema_result = schema_matcher.match(text_lower)
             if schema_result and schema_result.matched:
+                normalized_phrase = schema_matcher._normalize(schema_result.phrase)
+                if normalized_phrase not in text_lower:
+                    boosters = self.domain_boosters.get(schema_result.domain, [])
+                    if boosters and not any(b.lower() in text_lower for b in boosters):
+                        return None
                 return DetectionResult(
                     domain=schema_result.domain,
                     intent=schema_result.intent,
