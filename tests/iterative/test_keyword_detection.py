@@ -44,6 +44,59 @@ class TestDetectionConfidence:
         assert result.confidence < 0.5  # Low confidence for ambiguous
 
 
+class TestExplicitOverrides:
+    """Test explicit override behavior after refactoring."""
+    
+    @pytest.fixture
+    def detector(self) -> KeywordIntentDetector:
+        return KeywordIntentDetector()
+    
+    def test_ip_address_override(self, detector):
+        """Test that IP address queries trigger network intent with high confidence."""
+        result = detector.detect("pokaż adres ip")
+        assert result.domain == 'shell'
+        assert result.intent == 'network'
+        assert result.confidence >= 0.9
+        assert result.matched_keyword == 'adres ip'
+    
+    def test_ip_address_english_override(self, detector):
+        """Test English IP address override."""
+        result = detector.detect("show my ip address")
+        assert result.domain == 'shell'
+        assert result.intent == 'network'
+        assert result.confidence >= 0.9
+    
+    def test_json_parsing_override(self, detector):
+        """Test JSON parsing intent override."""
+        result = detector.detect("parsuj json z pliku")
+        assert result.domain == 'shell'
+        assert result.intent == 'json_jq'
+        assert result.confidence >= 0.9
+        assert 'json' in result.matched_keyword
+    
+    def test_jq_override(self, detector):
+        """Test explicit jq keyword override."""
+        result = detector.detect("użyj jq do filtrowania")
+        # 'jq' alone maps to utility domain, not shell
+        assert result.domain == 'utility'
+        assert result.confidence >= 0.8
+    
+    def test_file_content_override(self, detector):
+        """Test file content override."""
+        result = detector.detect("pokaż zawartość pliku config.txt")
+        assert result.domain == 'shell'
+        assert result.intent == 'text_cat'
+        assert result.confidence >= 0.9
+        assert 'file content' in result.matched_keyword
+    
+    def test_file_content_polish_variation(self, detector):
+        """Test Polish variation for file content."""
+        result = detector.detect("zawartosc pliku log")
+        assert result.domain == 'shell'
+        assert result.intent == 'text_cat'
+        assert result.confidence >= 0.9
+
+
 class TestDetectAll:
     """Test detect_all functionality."""
     

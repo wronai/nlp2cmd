@@ -5,6 +5,44 @@ All notable changes to NLP2CMD will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.31] - 2026-01-27
+
+### 🚀 Performance Benchmarking Suite
+- **Comprehensive Benchmarking Tool** - Added `benchmark_nlp2cmd.py` for performance analysis
+- **Markdown Report Generation** - Detailed reports with thermodynamic analysis
+- **Sequential vs Single Command Testing** - Measure efficiency gains of batch processing
+- **Time Savings Analysis** - Quantifies performance improvements (up to 34.9% efficiency gain)
+- **Throughput Metrics** - Commands per second measurement across adapters
+
+### 📊 Thermodynamic Performance Analysis
+- **Energy Efficiency Metrics** - Track initialization vs processing energy
+- **Bottleneck Identification** - Pinpoint performance bottlenecks in the system
+- **Optimization Strategies** - Three modes: Individual, Sequential, Thermodynamic Hybrid
+- **Adapter Performance Comparison** - Shell, SQL, and Docker adapter benchmarks
+
+### 🗂️ Project Structure Reorganization
+- **Script Categorization** - Organized scripts into logical directories:
+  - `scripts/maintenance/` - Setup, fixes, and maintenance utilities
+  - `scripts/thermodynamic/` - Thermodynamic optimization scripts
+  - `scripts/testing/` - Testing utilities and runners
+- **Example Consolidation** - All examples moved to `examples/` directory
+- **Makefile Integration** - New targets for script management and benchmarking
+- **Documentation Updates** - `PROJECT_STRUCTURE.md` with detailed organization guide
+
+### 🔧 Code Quality Improvements
+- **Template Generation Refactoring** - Simplified conditional logic in `_apply_shell_find_flags`
+- **Better Error Handling** - Improved file path resolution in templates
+- **Cleaner Code Structure** - Removed nested `setdefault` calls for readability
+
+### 🛠️ Build System Updates
+- **New Makefile Targets**:
+  - `make report` - Generate performance benchmark report
+  - `make demo-benchmark` - Run benchmark demonstration
+  - `make scripts-all` - List all organized scripts
+  - `make benchmark-md` - View markdown benchmark report
+- **Improved Path Handling** - Proper PYTHONPATH configuration for all scripts
+- **GitIgnore Updates** - Added `publish-env` to ignore list
+
 ## [1.0.30] - 2025-01-25
 
 ### 🎨 Major UI/UX Improvements

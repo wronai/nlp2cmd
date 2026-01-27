@@ -1050,29 +1050,24 @@ class TemplateGenerator:
                 result['file'] = 'app.log'
 
         if intent in {'text_cat', 'text_cat_number'}:
-            result.setdefault(
-                'file',
-                entities.get(
-                    'file',
-                    entities.get(
-                        'path',
-                        entities.get('target', entities.get('filename', '')),
-                    ),
-                ),
-            )
+            if not result.get('file'):
+                result['file'] = (
+                    entities.get('file')
+                    or entities.get('path')
+                    or entities.get('target')
+                    or entities.get('filename', '')
+                )
 
         if intent in {'json_jq', 'json_jq_pretty', 'json_jq_keys'}:
-            result.setdefault(
-                'file',
-                entities.get(
-                    'file',
-                    entities.get(
-                        'path',
-                        entities.get('target', entities.get('filename', '')),
-                    ),
-                ),
-            )
-            result.setdefault('filter', '.')
+            if not result.get('file'):
+                result['file'] = (
+                    entities.get('file')
+                    or entities.get('path')
+                    or entities.get('target')
+                    or entities.get('filename', '')
+                )
+            if not result.get('filter'):
+                result['filter'] = '.'
 
     def _shell_intent_file_search(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
         result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'py')))
