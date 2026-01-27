@@ -11,7 +11,7 @@ This guide provides a comprehensive overview of all NLP2CMD examples, organized 
 
 ## 🗂️ Examples Structure
 
-```
+```text
 examples/
 ├── thermodynamic_example.py     # Standalone thermodynamic demo
 ├── use_cases/                    # Real-world scenarios
@@ -68,6 +68,7 @@ nlp2cmd analyze-env
 ```
 
 **What you'll learn:**
+
 - Basic CLI syntax
 - Different DSL types
 - Environment analysis
@@ -84,6 +85,7 @@ python3 examples/use_cases/simple_demo_examples.py
 ```
 
 **What you'll learn:**
+
 - Python API concepts
 - Shell command patterns
 - Mixed workflow approaches
@@ -108,6 +110,7 @@ result = await generator.generate("Zoptymalizuj przydzielanie zasobów")
 ```
 
 **What you'll learn:**
+
 - HybridThermodynamicGenerator usage
 - DSL vs thermodynamic routing
 - Context-aware queries
@@ -130,6 +133,7 @@ python3 examples/thermodynamic_example.py
 ### SQL Examples
 
 **Basic SQL** (`examples/sql/basic_sql.py`)
+
 ```python
 from nlp2cmd import NLP2CMD, SQLAdapter
 
@@ -145,6 +149,7 @@ print(result.command)  # SELECT * FROM users WHERE city = 'Warszawa' AND created
 ```
 
 **Advanced SQL** (`examples/sql/advanced_sql.py`)
+
 - Joins and subqueries
 - Aggregation functions
 - Window functions
@@ -153,6 +158,7 @@ print(result.command)  # SELECT * FROM users WHERE city = 'Warszawa' AND created
 ### Shell Examples
 
 **Basic Shell** (`examples/shell/basic_shell.py`)
+
 ```python
 from nlp2cmd import NLP2CMD, ShellAdapter
 
@@ -168,6 +174,7 @@ print(result.command)  # ps aux --sort=-%mem | head
 ```
 
 **Environment Analysis** (`examples/shell/environment_analysis.py`)
+
 - System monitoring
 - Resource usage
 - Network analysis
@@ -176,6 +183,7 @@ print(result.command)  # ps aux --sort=-%mem | head
 ### Docker Examples
 
 **Basic Docker** (`examples/docker/basic_docker.py`)
+
 ```python
 from nlp2cmd import NLP2CMD, DockerAdapter
 
@@ -193,6 +201,7 @@ print(result.command)  # docker image prune -f
 ### Kubernetes Examples
 
 **Basic Kubernetes** (`examples/kubernetes/basic_kubernetes.py`)
+
 ```python
 from nlp2cmd import NLP2CMD, KubernetesAdapter
 
@@ -236,6 +245,7 @@ async def devops_workflow():
 ```
 
 **Scenarios covered:**
+
 - System monitoring
 - Log analysis
 - Resource optimization
@@ -258,6 +268,7 @@ result = await generator.generate("Wyczyść i przygotuj dane do analizy")
 ```
 
 **Scenarios covered:**
+
 - Data analysis
 - Model training
 - Feature engineering
@@ -280,6 +291,7 @@ result = await generator.generate("Rozdziel personel medyczny zgodnie z obciąż
 ```
 
 **Scenarios covered:**
+
 - Patient data analysis
 - Treatment scheduling
 - Resource optimization
@@ -302,6 +314,7 @@ result = await generator.generate("Zaproponuj strategię handlową")
 ```
 
 **Scenarios covered:**
+
 - Portfolio optimization
 - Risk assessment
 - Trading algorithms
@@ -324,6 +337,7 @@ result = await generator.generate("Zaplanuj trasy transportu publicznego")
 ```
 
 **Scenarios covered:**
+
 - Traffic management
 - Energy optimization
 - Public transport
@@ -332,7 +346,7 @@ result = await generator.generate("Zaplanuj trasy transportu publicznego")
 
 ## 🔬 Advanced Examples
 
-### Thermodynamic Optimization
+### Thermodynamic Optimization Benchmarks
 
 **File:** `examples/use_cases/physics_simulations.py`
 
@@ -410,24 +424,24 @@ if repair["changes"]:
 
 ### Intermediate Level
 
-3. **Python API basics** (`complete_python_shell_examples.py`)
+1. **Python API basics** (`complete_python_shell_examples.py`)
    - HybridThermodynamicGenerator
    - Context-aware queries
    - Error handling
 
-4. **Domain-specific examples**
+2. **Domain-specific examples**
    - SQL: `examples/sql/basic_sql.py`
    - Shell: `examples/shell/basic_shell.py`
    - Docker: `examples/docker/basic_docker.py`
 
 ### Advanced Level
 
-5. **Real-world use cases**
+1. **Real-world use cases**
    - DevOps: `examples/use_cases/devops_automation.py`
    - Data Science: `examples/use_cases/data_science_ml.py`
    - Healthcare: `examples/use_cases/healthcare.py`
 
-6. **Complex workflows**
+2. **Complex workflows**
    - Thermodynamic: `examples/use_cases/physics_simulations.py`
    - Pipelines: `examples/pipelines/log_analysis.py`
    - Architecture: `examples/architecture/end_to_end_demo.py`

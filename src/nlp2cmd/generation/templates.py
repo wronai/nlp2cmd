@@ -1030,25 +1030,81 @@ class TemplateGenerator:
         return ''
 
     def _apply_shell_common_defaults(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
-        if intent in {'text_cat', 'text_cat_number'}:
-            if not result.get('file'):
-                result['file'] = (
-                    entities.get('file')
-                    or entities.get('path')
-                    or entities.get('target')
-                    or entities.get('filename', '')
-                )
+        result.setdefault('metric', 'mem')
+        result.setdefault('limit', '10')
+        result.setdefault('process_name', '')
 
-        if intent in {'json_jq', 'json_jq_pretty', 'json_jq_keys'}:
-            if not result.get('file'):
-                result['file'] = (
-                    entities.get('file')
-                    or entities.get('path')
-                    or entities.get('target')
-                    or entities.get('filename', '')
-                )
-            if not result.get('filter'):
-                result['filter'] = '.'
+        result.setdefault('archive', 'archive.tar.gz')
+        result.setdefault('source', '.')
+        result.setdefault('destination', '.')
+
+        result.setdefault('flags', '')
+        result.setdefault('target', '')
+        result.setdefault('file', '')
+
+    def _apply_shell_text_processing_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        self._apply_shell_text_tail_defaults(intent, entities, result)
+        self._apply_shell_text_cat_defaults(intent, entities, result)
+        self._apply_shell_json_defaults(intent, entities, result)
+        self._apply_shell_text_wc_defaults(intent, entities, result)
+
+    def _apply_shell_file_default(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        if result.get('file'):
+            return
+        result['file'] = (
+            entities.get('file')
+            or entities.get('path')
+            or entities.get('target')
+            or entities.get('filename', '')
+        )
+
+    def _apply_shell_text_tail_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        if intent not in {'text_tail', 'text_head', 'text_tail_follow'}:
+            return
+        result.setdefault('lines', str(entities.get('lines', entities.get('limit', '10'))))
+
+        self._apply_shell_file_default(entities, result)
+        if not result.get('file'):
+            result['file'] = 'app.log'
+
+        text_lower = str(entities.get('text') or '').lower()
+        if not result.get('lines') or str(result.get('lines')) == '10':
+            m = re.search(r"\b(\d{1,4})\s*(?:lini\w*|line\w*)\b", text_lower)
+            if m:
+                result['lines'] = m.group(1)
+
+    def _apply_shell_text_cat_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        if intent not in {'text_cat', 'text_cat_number'}:
+            return
+        self._apply_shell_file_default(entities, result)
+
+    def _apply_shell_json_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        if intent not in {'json_jq', 'json_jq_pretty', 'json_jq_keys'}:
+            return
+        self._apply_shell_file_default(entities, result)
+        if not result.get('filter'):
+            result['filter'] = '.'
+
+    def _apply_shell_text_wc_defaults(self, intent: str, entities: dict[str, Any], result: dict[str, Any]) -> None:
+        if intent not in {'text_wc', 'text_wc_lines', 'text_wc_words'}:
+            return
+        self._apply_shell_file_default(entities, result)
+        if not result.get('file'):
+            result['file'] = 'app.log'
+
+        if intent == 'text_wc_lines':
+            result.setdefault('flags', '-l')
+            return
+        if intent == 'text_wc_words':
+            result.setdefault('flags', '-w')
+            return
+
+        if not result.get('flags'):
+            text_lower = str(entities.get('text') or '').lower()
+            if any(x in text_lower for x in ('linie', 'linijek', 'lines')):
+                result['flags'] = '-l'
+            elif any(x in text_lower for x in ('słow', 'slow', 'words')):
+                result['flags'] = '-w'
 
     def _shell_intent_file_search(self, entities: dict[str, Any], result: dict[str, Any]) -> None:
         result.setdefault('extension', entities.get('file_pattern', entities.get('extension', 'py')))

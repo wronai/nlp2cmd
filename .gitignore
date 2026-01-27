@@ -2,6 +2,7 @@
 .idea
 .projektor
 test-env
+push-e
 publish-env
 nlp2cmd-repo
 # Byte-compiled / optimized / DLL files
