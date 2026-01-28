@@ -7,14 +7,15 @@ import sys
 from pathlib import Path
 
 # Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+_repo_root = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(_repo_root / "src"))
 
 # Simple demo without full dependencies
 class ToonDemo:
     """Demo class showing TOON usage patterns"""
     
     def __init__(self):
-        self.toon_file = Path("project.unified.toon")
+        self.toon_file = _repo_root / "project.unified.toon"
         self.data = self._load_toon_data()
     
     def _load_toon_data(self):

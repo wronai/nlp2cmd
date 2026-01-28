@@ -7,7 +7,8 @@ import sys
 from pathlib import Path
 
 # Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+_repo_root = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(_repo_root / "src"))
 
 
 def demo_basic_usage():
@@ -224,7 +225,7 @@ def main():
     print("=== PROSTE PRZYKŁADY UŻYCIA TOON ===\n")
     
     # Check if TOON file exists
-    toon_file = Path("project.unified.toon")
+    toon_file = _repo_root / "project.unified.toon"
     if not toon_file.exists():
         print(f"Błąd: Plik TOON nie znaleziony: {toon_file}")
         print("Upewnij się, że plik project.unified.toon istnieje w głównym katalogu projektu.")

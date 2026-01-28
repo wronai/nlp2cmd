@@ -9,7 +9,8 @@ import json
 from pathlib import Path
 
 # Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+_repo_root = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(_repo_root / "src"))
 
 # Mock the old system for comparison
 class OldSystemLoader:
@@ -212,7 +213,8 @@ def benchmark_performance():
     
     # New TOON system
     print("2. New TOON System:")
-    toon_parser = SimpleToonParser("project.unified.toon")
+    toon_path = _repo_root / "project.unified.toon"
+    toon_parser = SimpleToonParser(str(toon_path))
     
     start_time = time.time()
     new_commands = toon_parser.get_commands()
@@ -364,7 +366,7 @@ def main():
     print("=== TOON vs Old System Comparison Demo ===\n")
     
     # Check if TOON file exists
-    toon_file = Path("project.unified.toon")
+    toon_file = _repo_root / "project.unified.toon"
     if not toon_file.exists():
         print(f"Error: TOON file not found: {toon_file}")
         print("Please ensure project.unified.toon exists in the project root.")

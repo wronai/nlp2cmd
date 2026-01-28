@@ -16,6 +16,7 @@ Uruchomienie:
 
 import asyncio
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -266,6 +267,11 @@ async def main():
     )
     
     args = parser.parse_args()
+
+    if args.example == "interactive" and (not sys.stdin.isatty() or "MAKELEVEL" in os.environ or "MAKEFLAGS" in os.environ):
+        print("Non-interactive environment detected; skipping interactive web demo.")
+        print("Re-run this script in a TTY (default) or use: python demo.py --example all")
+        return
     
     print("""
 ╔══════════════════════════════════════════════════════════════════════╗

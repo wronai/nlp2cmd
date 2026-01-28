@@ -7,7 +7,8 @@ import sys
 from pathlib import Path
 
 # Add src to path for imports
-sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
+_repo_root = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(_repo_root / "src"))
 
 from nlp2cmd.core.toon_integration import get_data_manager
 from nlp2cmd.parsing.toon_parser import get_parser
@@ -17,8 +18,13 @@ def main():
     """Demonstrate TOON usage"""
     print("=== TOON Unified Format Usage Example ===\n")
     
+    toon_path = _repo_root / "project.unified.toon"
+    if not toon_path.exists():
+        print(f"TOON file not found: {toon_path}")
+        return
+
     # Get data manager
-    manager = get_data_manager()
+    manager = get_data_manager(str(toon_path))
     
     # 1. Project Metadata
     print("1. Project Metadata:")
@@ -85,9 +91,9 @@ def main():
         print(f"   {key}: {value}")
     print()
     
-    # 8. Direct Parser Access
+    # 8. Direct Parser Access:
     print("8. Direct Parser Access:")
-    parser = get_parser()
+    parser = get_parser(str(toon_path))
     
     # Get specific command
     git_command = parser.get_commands('shell').get('git')
