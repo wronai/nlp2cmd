@@ -13,8 +13,8 @@ from urllib.parse import urlparse
 from nlp2cmd.adapters.base import SafetyPolicy
 from nlp2cmd.ir import ActionIR
 from nlp2cmd.utils.data_files import find_data_file
-from rich.table import Table
 from rich.console import Console
+from nlp2cmd.utils.yaml_compat import yaml
 
 
 class _MarkdownConsoleWrapper:
@@ -479,24 +479,28 @@ class PipelineRunner:
                             if not fields:
                                 console_wrapper.print("No form fields detected on this page", language="text")
                             else:
-                                # Debug: Show all detected fields
-                                debug_table = Table()
-                                debug_table.add_column("Field", style="yellow")
-                                debug_table.add_column("Type", style="dim")
-                                debug_table.add_column("Selector", style="cyan")
-                                debug_table.add_column("Name/ID", style="magenta")
-                                
-                                for f in fields:
-                                    name_id = f.name or f.id or ""
-                                    debug_table.add_row(
-                                        f.get_display_name(),
-                                        f.field_type,
-                                        f.selector,
-                                        name_id,
-                                    )
-                                
                                 console_wrapper.print("🔍 Detected form fields:", language="text")
-                                console_wrapper.print(debug_table)
+                                console_wrapper.print(
+                                    yaml.safe_dump(
+                                        {
+                                            "status": "form_fields_detected",
+                                            "count": len(fields),
+                                            "fields": [
+                                                {
+                                                    "field": f.get_display_name(),
+                                                    "type": f.field_type,
+                                                    "selector": f.selector,
+                                                    "name": f.name,
+                                                    "id": f.id,
+                                                }
+                                                for f in fields
+                                            ],
+                                        },
+                                        sort_keys=False,
+                                        allow_unicode=True,
+                                    ).rstrip(),
+                                    language="yaml",
+                                )
                                 
                                 # Automatic fill from .env and data/ files
                                 if data_loader.has_data():

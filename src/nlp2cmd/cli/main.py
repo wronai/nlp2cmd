@@ -929,7 +929,7 @@ def _handle_run_query(
             steps = pipeline.process_steps(query)
             if len(steps) > 1:
                 if not only_output:
-                    console.print("\n[cyan]Multi-step plan detected:[/cyan]")
+                    plan_steps: list[dict[str, Any]] = []
                 executable_indices: list[int] = []
                 for i, step in enumerate(steps, 1):
                     cmd = (step.command or "").strip()
@@ -937,7 +937,26 @@ def _handle_run_query(
                     if ok:
                         executable_indices.append(i)
                     if not only_output:
-                        console.print(f"  {i}. [{step.domain}/{step.intent}] {cmd}")
+                        plan_steps.append(
+                            {
+                                "step": i,
+                                "domain": step.domain,
+                                "intent": step.intent,
+                                "command": cmd,
+                                "executable": bool(ok),
+                            }
+                        )
+
+                if not only_output:
+                    print_yaml_block(
+                        {
+                            "status": "multi_step_plan_detected",
+                            "steps_total": len(steps),
+                            "steps": plan_steps,
+                            "executable_steps": executable_indices,
+                        },
+                        console=console,
+                    )
 
                 if not executable_indices:
                     if any(s.domain == "sql" for s in steps):

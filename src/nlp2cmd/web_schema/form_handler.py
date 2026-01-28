@@ -13,8 +13,6 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 
 from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
 
 from nlp2cmd.web_schema.form_data_loader import FormDataLoader
 
@@ -33,7 +31,12 @@ class FormField:
     
     def get_display_name(self) -> str:
         """Get human-readable field name."""
-        return self.label or self.placeholder or self.name or self.id or "Unnamed field"
+        for candidate in (self.label, self.placeholder, self.name, self.id):
+            if isinstance(candidate, str):
+                v = candidate.strip()
+                if v:
+                    return v
+        return "Unnamed field"
 
 
 @dataclass
@@ -59,6 +62,14 @@ class FormHandler:
             print_markdown_block(renderable, language=language, console=self.console)
         else:
             self.console.print(renderable)
+
+    def _print_yaml(self, data: Any) -> None:
+        if self.use_markdown:
+            from nlp2cmd.cli.markdown_output import print_yaml_block
+            print_yaml_block(data, console=self.console)
+        else:
+            from nlp2cmd.utils.yaml_compat import yaml
+            self.console.print(yaml.safe_dump(data, sort_keys=False, allow_unicode=True).rstrip())
     
     def detect_form_fields(self, page) -> list[FormField]:
         """
@@ -89,9 +100,14 @@ class FormHandler:
                 required = inp.get_attribute('required') is not None
                 
                 # Debug output
-                self._print(
-                    f"Input: type={inp_type}, name={name}, id={inp_id}, placeholder={placeholder}",
-                    language="text",
+                self._print_yaml(
+                    {
+                        "status": "form_input_detected",
+                        "type": inp_type,
+                        "name": name,
+                        "id": inp_id,
+                        "placeholder": placeholder,
+                    }
                 )
                 
                 # Try to find label
@@ -133,7 +149,14 @@ class FormHandler:
                 required = ta.get_attribute('required') is not None
                 
                 # Debug output
-                self._print(f"Textarea: name={name}, id={ta_id}, placeholder={placeholder}", language="text")
+                self._print_yaml(
+                    {
+                        "status": "form_textarea_detected",
+                        "name": name,
+                        "id": ta_id,
+                        "placeholder": placeholder,
+                    }
+                )
                 
                 # Try to find label
                 label = None
@@ -172,7 +195,13 @@ class FormHandler:
                 ce_class = ce.get_attribute('class')
                 
                 # Debug output
-                self._print(f"ContentEditable: id={ce_id}, class={ce_class}", language="text")
+                self._print_yaml(
+                    {
+                        "status": "form_contenteditable_detected",
+                        "id": ce_id,
+                        "class": ce_class,
+                    }
+                )
                 
                 # Try to find label by looking for preceding text or label
                 label = None
@@ -213,9 +242,14 @@ class FormHandler:
                 data_field = div.get_attribute('data-field')
                 
                 # Debug output
-                self._print(
-                    f"DivInput: id={div_id}, role={div_role}, data-input={data_input}, data-field={data_field}",
-                    language="text",
+                self._print_yaml(
+                    {
+                        "status": "form_div_input_detected",
+                        "id": div_id,
+                        "role": div_role,
+                        "data_input": data_input,
+                        "data_field": data_field,
+                    }
                 )
                 
                 # Generate selector
@@ -323,11 +357,8 @@ class FormHandler:
         skip_fields = loader.get_skip_fields()
         
         self._print("📋 Auto-filling form fields:", language="text")
-        
-        table = Table()
-        table.add_column("Field", style="yellow")
-        table.add_column("Value", style="green")
-        table.add_column("Source", style="dim")
+
+        filled_rows: list[dict[str, Any]] = []
         
         for f in fields:
             field_name_lower = (f.name or "").lower()
@@ -352,10 +383,14 @@ class FormHandler:
                 
                 if consent_value and consent_value.lower() in ('true', '1', 'yes', 'tak'):
                     form_data.fields[f.selector] = '__checkbox__'
-                    table.add_row(
-                        f.get_display_name()[:30],
-                        "✓ (checked)",
-                        ".env / data/",
+                    filled_rows.append(
+                        {
+                            "field": f.get_display_name(),
+                            "selector": f.selector,
+                            "type": "checkbox",
+                            "value": True,
+                            "source": ".env / data/",
+                        }
                     )
                 continue
             
@@ -374,14 +409,24 @@ class FormHandler:
             
             if value:
                 form_data.fields[f.selector] = value
-                table.add_row(
-                    f.get_display_name(),
-                    value[:40] + "..." if len(value) > 40 else value,
-                    ".env / data/",
+                filled_rows.append(
+                    {
+                        "field": f.get_display_name(),
+                        "selector": f.selector,
+                        "type": f.field_type,
+                        "value": value,
+                        "source": ".env / data/",
+                    }
                 )
         
         if form_data.fields:
-            self._print(table)
+            self._print_yaml(
+                {
+                    "status": "auto_fill",
+                    "filled_count": len(filled_rows),
+                    "filled": filled_rows,
+                }
+            )
         else:
             self._print("No matching data found in .env or data/ files", language="text")
             self._print("Create .env with FORM_NAME, FORM_EMAIL, etc. or data/form_data.json", language="text")
@@ -406,23 +451,25 @@ class FormHandler:
         prefill = prefill or {}
         
         self.console.print("\n[cyan]📋 Form fields detected:[/cyan]\n")
-        
-        table = Table()
-        table.add_column("#", style="cyan")
-        table.add_column("Field", style="yellow")
-        table.add_column("Type", style="dim")
-        table.add_column("Required", style="red")
-        
-        for i, f in enumerate(fields, 1):
-            req = "✓" if f.required else ""
-            table.add_row(
-                str(i),
-                f.get_display_name(),
-                f.field_type,
-                req,
-            )
-        
-        self.console.print(table)
+
+        self._print_yaml(
+            {
+                "status": "form_fields_detected",
+                "count": len(fields),
+                "fields": [
+                    {
+                        "index": i,
+                        "field": f.get_display_name(),
+                        "type": f.field_type,
+                        "required": bool(f.required),
+                        "selector": f.selector,
+                        "name": f.name,
+                        "id": f.id,
+                    }
+                    for i, f in enumerate(fields, 1)
+                ],
+            }
+        )
         
         # Collect values
         form_data = FormData()
