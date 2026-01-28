@@ -12,34 +12,27 @@ Wersja: 1.0.4
 
 import asyncio
 import subprocess
+import sys
 import time
 from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import (
+    print_full_result as _print_full_result,
+    print_separator as _print_separator,
+)
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 
 
 def print_separator(title: str):
     """Drukuj ładny separator z tytułem."""
-    print("\n" + "=" * 80)
-    print(f"  {title}")
-    print("=" * 80)
+    _print_separator(title, leading_newline=True, width=80)
 
 
 def print_result(query: str, result: dict, elapsed: float, source: str = "Python API"):
     """Wyświetl wynik w standardowym formacie."""
-    print(f"\n📝 Zapytanie: {query}")
-    print(f"🔧 Źródło: {source}")
-    
-    if result['source'] == 'dsl':
-        print(f"⚡ Komenda: {result['result'].command}")
-        print(f"🎯 Domena: {result['result'].domain}")
-        print(f"📊 Pewność: {result['result'].confidence:.2f}")
-    else:  # thermodynamic
-        print(f"🧪 Rozwiązanie: {result['result'].decoded_output}")
-        if result['result'].solution_quality:
-            print(f"✅ Wykonalne: {result['result'].solution_quality.is_feasible}")
-            print(f"📈 Jakość: {result['result'].solution_quality.optimality_gap:.2f}")
-    
-    print(f"⏱️  Latencja: {elapsed:.1f}ms")
+    _print_full_result(query, result, elapsed, source=source)
 
 
 async def demo_python_api():

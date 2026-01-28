@@ -6,11 +6,20 @@ from typing import Dict, Iterable, List, Optional
 from nlp2cmd.generation.thermodynamic import ThermodynamicGenerator
 
 
-def print_demo_header(title: str, *, leading_newline: bool = False) -> None:
+def print_separator(
+    title: str,
+    *,
+    leading_newline: bool = False,
+    width: int = 70,
+) -> None:
     prefix = "\n" if leading_newline else ""
-    print(f"{prefix}{'=' * 70}")
+    print(f"{prefix}{'=' * width}")
     print(f"  {title}")
-    print("=" * 70)
+    print("=" * width)
+
+
+def print_demo_header(title: str, *, leading_newline: bool = False) -> None:
+    print_separator(title, leading_newline=leading_newline, width=70)
 
 
 async def run_thermo_demo(
@@ -56,6 +65,42 @@ def print_metrics(
             print(f"   {energy_estimate_label}: {savings:.1f}%")
         else:
             print(f"   {energy_estimate_label}: N/A")
+
+
+def print_simple_result(query: str, result: dict, elapsed_ms: float) -> None:
+    print(f"\n📝 Query: {query}")
+
+    if result["source"] == "dsl":
+        print(f"   Command: {result['result'].command}")
+    else:
+        print(f"   Solution: {result['result'].decoded_output}")
+
+    print(f"   ⚡ Latency: {elapsed_ms:.1f}ms")
+
+
+def print_full_result(
+    query: str,
+    result: dict,
+    elapsed_ms: float,
+    *,
+    source: str = "Python API",
+) -> None:
+    print(f"\n📝 Zapytanie: {query}")
+    print(f"🔧 Źródło: {source}")
+
+    if result["source"] == "dsl":
+        print(f"⚡ Komenda: {result['result'].command}")
+        print(f"🎯 Domena: {result['result'].domain}")
+        print(f"📊 Pewność: {result['result'].confidence:.2f}")
+    else:
+        print(f"🧪 Rozwiązanie: {result['result'].decoded_output}")
+        if result["result"].solution_quality:
+            print(f"✅ Wykonalne: {result['result'].solution_quality.is_feasible}")
+            print(
+                f"📈 Jakość: {result['result'].solution_quality.optimality_gap:.2f}"
+            )
+
+    print(f"⏱️  Latencja: {elapsed_ms:.1f}ms")
 
 
 def sigmoid(value: float) -> float:

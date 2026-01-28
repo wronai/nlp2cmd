@@ -6,21 +6,19 @@ bezpośrednio z języka naturalnego.
 """
 
 import asyncio
+import sys
 import time
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_separator, print_simple_result
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 
 
 def print_result(query, result, elapsed):
     """Helper function to print results for both DSL and Thermodynamic sources."""
-    print(f"\n📝 Query: {query}")
-    
-    # Handle both DSL and Thermodynamic results
-    if result['source'] == 'dsl':
-        print(f"   Command: {result['result'].command}")
-    else:
-        print(f"   Solution: {result['result'].decoded_output}")
-    
-    print(f"   ⚡ Latency: {elapsed:.1f}ms")
+    print_simple_result(query, result, elapsed)
 
 
 async def run_query_group(
@@ -30,10 +28,7 @@ async def run_query_group(
     *,
     leading_newline: bool = False,
 ) -> None:
-    prefix = "\n" if leading_newline else ""
-    print(f"{prefix}{'=' * 70}")
-    print(f"  {title}")
-    print("=" * 70)
+    print_separator(title, leading_newline=leading_newline, width=70)
 
     generator = HybridThermodynamicGenerator()
 

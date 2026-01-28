@@ -8,12 +8,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Optional
+import logging
 import json
 import os
 from pathlib import Path
 import re
 
 from nlp2cmd.utils.data_files import find_data_files
+
+logger = logging.getLogger(__name__)
 
 # Lazy import for polish support to avoid circular imports
 _polish_support = None
@@ -237,16 +240,35 @@ class KeywordIntentDetector:
         self._load_detector_config_from_json()
         self._load_patterns_from_json()
 
+        strict_config = str(os.environ.get("NLP2CMD_STRICT_CONFIG") or "").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "y",
+            "on",
+        }
+
         if not self.domain_boosters or not self.priority_intents:
-            raise FileNotFoundError(
-                "Keyword detector config not loaded. Expected keyword_intent_detector_config.json "
-                "to be available in the package data dir or user config dir, or set "
-                "NLP2CMD_KEYWORD_DETECTOR_CONFIG."
+            if strict_config:
+                raise FileNotFoundError(
+                    "Keyword detector config not loaded. Expected keyword_intent_detector_config.json "
+                    "to be available in the package data dir or user config dir, or set "
+                    "NLP2CMD_KEYWORD_DETECTOR_CONFIG."
+                )
+            logger.warning(
+                "Keyword detector config not loaded (keyword_intent_detector_config.json). "
+                "Continuing with limited intent detection. Set NLP2CMD_STRICT_CONFIG=1 to fail fast."
             )
+
         if not self.patterns:
-            raise FileNotFoundError(
-                "Keyword patterns not loaded. Expected patterns.json to be available in the package "
-                "data dir or user config dir, or set NLP2CMD_PATTERNS_FILE."
+            if strict_config:
+                raise FileNotFoundError(
+                    "Keyword patterns not loaded. Expected patterns.json to be available in the package "
+                    "data dir or user config dir, or set NLP2CMD_PATTERNS_FILE."
+                )
+            logger.warning(
+                "Keyword patterns not loaded (patterns.json). Continuing with limited intent detection. "
+                "Set NLP2CMD_STRICT_CONFIG=1 to fail fast."
             )
 
     def _load_detector_config_from_json(self) -> None:

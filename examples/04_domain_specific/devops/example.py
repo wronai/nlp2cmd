@@ -6,15 +6,19 @@ i zarządzania infrastrukturą Kubernetes.
 """
 
 import asyncio
+import sys
 import time
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_separator, print_simple_result
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 
 
 async def demo_devops_commands():
     """Podstawowe komendy DevOps."""
-    print("=" * 70)
-    print("  IT & DevOps - Podstawowe komendy")
-    print("=" * 70)
+    print_separator("IT & DevOps - Podstawowe komendy")
     
     generator = HybridThermodynamicGenerator()
     
@@ -30,16 +34,12 @@ async def demo_devops_commands():
         start_time = time.time()
         result = await generator.generate(query)
         elapsed = (time.time() - start_time) * 1000  # Convert to milliseconds
-        print(f"\n📝 Query: {query}")
-        print(f"   Command: {result['result'].command}")
-        print(f"   ⚡ Latency: {elapsed:.1f}ms")
+        print_simple_result(query, result, elapsed)
 
 
 async def demo_ci_cd_optimization():
     """Optymalizacja CI/CD Pipeline."""
-    print("\n" + "=" * 70)
-    print("  IT & DevOps - Optymalizacja CI/CD Pipeline")
-    print("=" * 70)
+    print_separator("IT & DevOps - Optymalizacja CI/CD Pipeline", leading_newline=True)
     
     from nlp2cmd.generation import create_thermodynamic_generator
     
@@ -68,9 +68,7 @@ async def demo_ci_cd_optimization():
 
 async def demo_incident_response():
     """Automatyczna analiza i response na incydenty."""
-    print("\n" + "=" * 70)
-    print("  IT & DevOps - Incident Response Automation")
-    print("=" * 70)
+    print_separator("IT & DevOps - Incident Response Automation", leading_newline=True)
     
     generator = HybridThermodynamicGenerator()
     
@@ -90,15 +88,12 @@ async def demo_incident_response():
 
 
 async def main():
-    start_time = time.time()
     """Uruchom wszystkie demonstracje DevOps."""
     await demo_devops_commands()
     await demo_ci_cd_optimization()
     await demo_incident_response()
     
-    print("\n" + "=" * 70)
-    print("  DevOps demos completed!")
-    print("=" * 70)
+    print_separator("DevOps demos completed!", leading_newline=True)
 
 
 if __name__ == "__main__":
