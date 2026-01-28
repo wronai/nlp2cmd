@@ -1,0 +1,208 @@
+{
+  "format": "app2schema.appspec",
+  "version": 1,
+  "app": {
+    "name": "app",
+    "kind": "shell",
+    "source": "docker",
+    "metadata": {
+      "target": "docker"
+    }
+  },
+  "actions": [
+    {
+      "id": "shell.docker",
+      "type": "shell",
+      "description": "A self-sufficient runtime for containers",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": "docker {subcommand} {options}"
+      },
+      "params": {
+        "config": {
+          "type": "boolean",
+          "required": false,
+          "description": "string      Location of client config files (default \"/home/tom/.docker\")",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tls": {
+          "type": "boolean",
+          "required": false,
+          "description": "Use TLS; implied by --tlsverify",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlscacert": {
+          "type": "boolean",
+          "required": false,
+          "description": "string   Trust certs signed only by this CA (default \"/home/tom/.docker/ca.pem\")",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlscert": {
+          "type": "boolean",
+          "required": false,
+          "description": "string     Path to TLS certificate file (default \"/home/tom/.docker/cert.pem\")",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlskey": {
+          "type": "boolean",
+          "required": false,
+          "description": "string      Path to TLS key file (default \"/home/tom/.docker/key.pem\")",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        },
+        "tlsverify": {
+          "type": "boolean",
+          "required": false,
+          "description": "Use TLS and verify the remote",
+          "default": null,
+          "enum": [],
+          "pattern": null,
+          "location": "option"
+        }
+      },
+      "schema": {
+        "command": "docker",
+        "help_lines": 82,
+        "text": "docker"
+      },
+      "match": {
+        "patterns": [
+          "docker [OPTIONS] COMMAND",
+          "a self-sufficient runtime for containers"
+        ],
+        "examples": [
+          "docker [OPTIONS] COMMAND"
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "docker",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    },
+    {
+      "id": "shell.git",
+      "type": "shell",
+      "description": "usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": "git {subcommand} {options}"
+      },
+      "params": {},
+      "schema": {
+        "command": "git",
+        "help_lines": 47,
+        "text": "git"
+      },
+      "match": {
+        "patterns": [
+          "git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]",
+          "usage: git [-v | --version] [-h | --help] [-c <path>] [-c <name>=<value>] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] [-p | --paginate | -p | --no-pager] [--no-replace-objects] [--no-lazy-fetch]"
+        ],
+        "examples": [
+          "git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]"
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "git",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    },
+    {
+      "id": "shell.kubectl",
+      "type": "shell",
+      "description": "kubectl controls the Kubernetes cluster manager.",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": "kubectl {subcommand} {options}"
+      },
+      "params": {},
+      "schema": {
+        "command": "kubectl",
+        "help_lines": 70,
+        "text": "kubectl"
+      },
+      "match": {
+        "patterns": [
+          "",
+          "kubectl controls the kubernetes cluster manager."
+        ],
+        "examples": [
+          ""
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "kubectl",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    },
+    {
+      "id": "shell.curl",
+      "type": "shell",
+      "description": "This is not the full help; this menu is split into categories. Use \"--help category\" to get an overview of all categories, which are: auth, connection, curl, deprecated, dns, file, ftp, global, http, imap, ldap, output, pop3, post, proxy, scp, sftp, smtp, ssh, telnet, tftp, timeout, tls, upload, verbose.",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": null
+      },
+      "params": {},
+      "schema": {
+        "command": "curl",
+        "help_lines": 20,
+        "text": "curl"
+      },
+      "match": {
+        "patterns": [
+          "curl [options...] <url>",
+          "this is not the full help; this menu is split into categories. use \"--help category\" to get an overview of all categories, which are: auth, connection, curl, deprecated, dns, file, ftp, global, http, imap, ldap, output, pop3, post, proxy, scp, sftp, smtp, ssh, telnet, tftp, timeout, tls, upload, verbose."
+        ],
+        "examples": [
+          "curl [options...] <url>"
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "curl",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    }
+  ],
+  "metadata": {
+    "merged": true
+  }
+}

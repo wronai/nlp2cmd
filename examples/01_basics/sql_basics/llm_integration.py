@@ -11,10 +11,16 @@ Note: Requires API keys to run.
 """
 
 import os
+import sys
+from pathlib import Path
 from typing import Optional
 
 from nlp2cmd import NLP2CMD, SQLAdapter
 from nlp2cmd.core import NLPBackend, ExecutionPlan, Entity, LLMBackend, RuleBasedBackend
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
 
 
 class MockLLMBackend(NLPBackend):
@@ -118,9 +124,7 @@ class MockLLMBackend(NLPBackend):
 
 def demonstrate_mock_llm():
     """Demonstrate with mock LLM backend."""
-    print("=" * 70)
-    print("Mock LLM Backend Demonstration")
-    print("=" * 70)
+    print_separator("Mock LLM Backend Demonstration", width=70)
 
     adapter = SQLAdapter(
         dialect="postgresql",
@@ -147,7 +151,7 @@ def demonstrate_mock_llm():
 
     for query in queries:
         print(f"\n📝 Query: {query}")
-        print("-" * 50)
+        print_rule(width=50)
 
         # Generate plan using mock LLM
         plan = backend.generate_plan(query)
@@ -162,9 +166,7 @@ def demonstrate_mock_llm():
 
 def demonstrate_rule_based_fallback():
     """Demonstrate with rule-based fallback."""
-    print("\n" + "=" * 70)
-    print("Rule-Based Fallback Demonstration")
-    print("=" * 70)
+    print_separator("Rule-Based Fallback Demonstration", leading_newline=True, width=70)
 
     # Rule-based backend for simple patterns
     rules = {
@@ -193,9 +195,7 @@ def demonstrate_rule_based_fallback():
 
 def demonstrate_real_llm_setup():
     """Show how to set up real LLM backends."""
-    print("\n" + "=" * 70)
-    print("Real LLM Backend Setup")
-    print("=" * 70)
+    print_separator("Real LLM Backend Setup", leading_newline=True, width=70)
 
     print("""
 To use real LLM backends, you need API keys:
@@ -248,7 +248,7 @@ To use real LLM backends, you need API keys:
     print(f"   OPENAI_API_KEY: {'✅ Available' if has_openai else '❌ Not set'}")
 
     if has_anthropic:
-        print("\n" + "─" * 50)
+        print_rule(width=50, char="─", leading_newline=True)
         print("Testing Claude backend...")
         try:
             backend = LLMBackend(
@@ -269,9 +269,7 @@ To use real LLM backends, you need API keys:
 
 def demonstrate_hybrid_approach():
     """Demonstrate hybrid LLM + rule-based approach."""
-    print("\n" + "=" * 70)
-    print("Hybrid Approach: LLM + Rule-Based")
-    print("=" * 70)
+    print_separator("Hybrid Approach: LLM + Rule-Based", leading_newline=True, width=70)
 
     print("""
 For production systems, consider a hybrid approach:
@@ -318,9 +316,7 @@ def main():
     demonstrate_real_llm_setup()
     demonstrate_hybrid_approach()
 
-    print("\n" + "=" * 70)
-    print("SUMMARY")
-    print("=" * 70)
+    print_separator("SUMMARY", leading_newline=True, width=70)
     print("""
 NLP2CMD supports multiple NLP backends:
 

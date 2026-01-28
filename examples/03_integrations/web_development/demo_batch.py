@@ -10,6 +10,10 @@ from pathlib import Path
 # Add the project root to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
+
 from nlp2cmd_web_controller import NLP2CMDWebController
 
 
@@ -23,9 +27,11 @@ async def run_batch_demo():
     print("║                                                                      ║")
     print("╚══════════════════════════════════════════════════════════════════════╝")
     
-    print("\n" + "=" * 70)
-    print("🤖 NLP2CMD - Tryb Batch (wszystkie komendy z prompt.txt)")
-    print("=" * 70)
+    print_separator(
+        "🤖 NLP2CMD - Tryb Batch (wszystkie komendy z prompt.txt)",
+        leading_newline=True,
+        width=70,
+    )
     
     # Read commands from prompt.txt
     prompt_file = Path("prompt.txt")
@@ -49,7 +55,7 @@ async def run_batch_demo():
     controller = NLP2CMDWebController(output_dir="./generated")
     
     print(f"\n🚀 Rozpoczynam wykonywanie komend...")
-    print("=" * 70)
+    print_rule(width=70, char="=")
     
     results = []
     
@@ -123,9 +129,7 @@ async def run_batch_demo():
         await asyncio.sleep(1)
     
     # Summary
-    print("\n" + "=" * 70)
-    print("📊 Podsumowanie wykonania")
-    print("=" * 70)
+    print_separator("📊 Podsumowanie wykonania", leading_newline=True, width=70)
     
     successful = sum(1 for r in results if r['success'])
     total = len(results)

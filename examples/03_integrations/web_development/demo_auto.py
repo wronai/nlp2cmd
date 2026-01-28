@@ -11,6 +11,10 @@ from pathlib import Path
 # Add the project root to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_separator
+
 from nlp2cmd_web_controller import NLP2CMDWebController
 
 
@@ -24,10 +28,8 @@ async def run_demo_with_test(interactive=False):
     print("║                                                                      ║")
     print("╚══════════════════════════════════════════════════════════════════════╝")
     
-    print("\n" + "=" * 70)
     mode = "Interaktywny" if interactive else "Automatyczny"
-    print(f"🤖 NLP2CMD - Tryb {mode}")
-    print("=" * 70)
+    print_separator(f"🤖 NLP2CMD - Tryb {mode}", leading_newline=True, width=70)
     
     # Clean up any existing files
     import shutil

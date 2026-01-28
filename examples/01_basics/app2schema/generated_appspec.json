@@ -1,0 +1,49 @@
+{
+  "format": "app2schema.appspec",
+  "version": 1,
+  "app": {
+    "name": "app",
+    "kind": "shell",
+    "source": "git",
+    "metadata": {
+      "target": "git"
+    }
+  },
+  "actions": [
+    {
+      "id": "shell.git",
+      "type": "shell",
+      "description": "usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]",
+      "dsl": {
+        "kind": "shell",
+        "output_format": "raw",
+        "template": "git {subcommand} {options}"
+      },
+      "params": {},
+      "schema": {
+        "command": "git",
+        "help_lines": 47,
+        "text": "git"
+      },
+      "match": {
+        "patterns": [
+          "git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]",
+          "usage: git [-v | --version] [-h | --help] [-c <path>] [-c <name>=<value>] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path] [-p | --paginate | -p | --no-pager] [--no-replace-objects] [--no-lazy-fetch]"
+        ],
+        "examples": [
+          "git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]"
+        ]
+      },
+      "executor": {
+        "kind": "shell",
+        "config": {}
+      },
+      "metadata": {
+        "source": "git",
+        "source_type": "shell_help"
+      },
+      "tags": []
+    }
+  ],
+  "metadata": {}
+}

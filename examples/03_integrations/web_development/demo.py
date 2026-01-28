@@ -22,6 +22,10 @@ from pathlib import Path
 # Add shared module to path
 sys.path.insert(0, str(Path(__file__).parent / "shared"))
 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_separator
+
 from nlp2cmd_web_controller import NLP2CMDWebController
 
 
@@ -30,9 +34,7 @@ async def demo_nlp_commands():
     
     controller = NLP2CMDWebController()
     
-    print("=" * 70)
-    print("🤖 NLP2CMD Web Controller - Interaktywna Demonstracja")
-    print("=" * 70)
+    print_separator("🤖 NLP2CMD Web Controller - Interaktywna Demonstracja", width=70)
     print("\nWpisz polecenia w języku naturalnym (polskim lub angielskim).")
     print("Wpisz 'help' aby zobaczyć przykłady, 'quit' aby wyjść.\n")
     
@@ -209,9 +211,7 @@ async def run_example(example_num: int):
     base_path = Path(__file__).parent
     
     if example_num == 1:
-        print("\n" + "=" * 70)
-        print("📌 PRZYKŁAD 1: Komunikator Real-Time")
-        print("=" * 70)
+        print_separator("📌 PRZYKŁAD 1: Komunikator Real-Time", leading_newline=True, width=70)
         
         spec = importlib.util.spec_from_file_location(
             "chat_example", 
@@ -225,9 +225,7 @@ async def run_example(example_num: int):
         await module.generate_chat_files()
         
     elif example_num == 2:
-        print("\n" + "=" * 70)
-        print("📌 PRZYKŁAD 2: Strona Kontaktowa")
-        print("=" * 70)
+        print_separator("📌 PRZYKŁAD 2: Strona Kontaktowa", leading_newline=True, width=70)
         
         spec = importlib.util.spec_from_file_location(
             "contact_example", 
@@ -241,9 +239,7 @@ async def run_example(example_num: int):
         await module.generate_contact_files()
         
     elif example_num == 3:
-        print("\n" + "=" * 70)
-        print("📌 PRZYKŁAD 3: Klient Email")
-        print("=" * 70)
+        print_separator("📌 PRZYKŁAD 3: Klient Email", leading_newline=True, width=70)
         
         spec = importlib.util.spec_from_file_location(
             "email_example", 
@@ -293,9 +289,7 @@ async def main():
         await run_example(2)
         await run_example(3)
         
-        print("\n" + "=" * 70)
-        print("✅ Wszystkie przykłady wygenerowane!")
-        print("=" * 70)
+        print_separator("✅ Wszystkie przykłady wygenerowane!", leading_newline=True, width=70)
         print("""
 📁 Struktura projektu:
 ├── communicator/     → Uruchom: cd communicator && docker-compose up

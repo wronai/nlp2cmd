@@ -12,8 +12,13 @@ Demonstrates configuration file validation and repair:
 from pathlib import Path
 import tempfile
 import os
+import sys
 
 from nlp2cmd.schemas import SchemaRegistry
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
 
 
 def create_sample_files(tmpdir: Path) -> dict[str, Path]:
@@ -103,7 +108,7 @@ def validate_file(registry: SchemaRegistry, path: Path, schema_name: str) -> Non
 
     print(f"\n📄 File: {path.name}")
     print(f"   Schema: {schema_name}")
-    print("   " + "-" * 50)
+    print_rule(width=50, indent="   ")
 
     result = registry.validate(content, schema_name)
 
@@ -133,7 +138,7 @@ def repair_file(
     content = path.read_text()
 
     print(f"\n🔧 Repairing: {path.name}")
-    print("   " + "-" * 50)
+    print_rule(width=50, indent="   ")
 
     result = registry.repair(content, schema_name, auto_fix=auto_fix)
 
@@ -170,9 +175,7 @@ def repair_file(
 
 
 def main():
-    print("=" * 70)
-    print("NLP2CMD File Repair Example")
-    print("=" * 70)
+    print_separator("NLP2CMD File Repair Example", width=70)
 
     registry = SchemaRegistry()
 
@@ -184,73 +187,69 @@ def main():
         files = create_sample_files(tmpdir)
 
         # SECTION 1: Dockerfile
-        print("\n" + "=" * 70)
-        print("1. DOCKERFILE VALIDATION AND REPAIR")
-        print("=" * 70)
+        print_separator("1. DOCKERFILE VALIDATION AND REPAIR", leading_newline=True, width=70)
 
         print("\n📋 Original content:")
-        print("-" * 40)
+        print_rule(width=40)
         print(files["dockerfile"].read_text())
 
         validate_file(registry, files["dockerfile"], "dockerfile")
         repair_file(registry, files["dockerfile"], "dockerfile")
 
         print("\n📋 After repair:")
-        print("-" * 40)
+        print_rule(width=40)
         print(files["dockerfile"].read_text())
 
         # SECTION 2: Docker Compose
-        print("\n" + "=" * 70)
-        print("2. DOCKER-COMPOSE VALIDATION AND REPAIR")
-        print("=" * 70)
+        print_separator(
+            "2. DOCKER-COMPOSE VALIDATION AND REPAIR",
+            leading_newline=True,
+            width=70,
+        )
 
         print("\n📋 Original content:")
-        print("-" * 40)
+        print_rule(width=40)
         print(files["compose"].read_text())
 
         validate_file(registry, files["compose"], "docker-compose")
         repair_file(registry, files["compose"], "docker-compose")
 
         # SECTION 3: Kubernetes
-        print("\n" + "=" * 70)
-        print("3. KUBERNETES MANIFEST VALIDATION")
-        print("=" * 70)
+        print_separator("3. KUBERNETES MANIFEST VALIDATION", leading_newline=True, width=70)
 
         print("\n📋 Original content:")
-        print("-" * 40)
+        print_rule(width=40)
         print(files["kubernetes"].read_text())
 
         validate_file(registry, files["kubernetes"], "kubernetes-deployment")
         repair_file(registry, files["kubernetes"], "kubernetes-deployment")
 
         # SECTION 4: Environment File
-        print("\n" + "=" * 70)
-        print("4. ENVIRONMENT FILE (.env) VALIDATION")
-        print("=" * 70)
+        print_separator(
+            "4. ENVIRONMENT FILE (.env) VALIDATION",
+            leading_newline=True,
+            width=70,
+        )
 
         print("\n📋 Original content:")
-        print("-" * 40)
+        print_rule(width=40)
         print(files["env"].read_text())
 
         validate_file(registry, files["env"], "env-file")
         repair_file(registry, files["env"], "env-file")
 
         # SECTION 5: GitHub Workflow
-        print("\n" + "=" * 70)
-        print("5. GITHUB WORKFLOW VALIDATION")
-        print("=" * 70)
+        print_separator("5. GITHUB WORKFLOW VALIDATION", leading_newline=True, width=70)
 
         print("\n📋 Original content:")
-        print("-" * 40)
+        print_rule(width=40)
         print(files["workflow"].read_text())
 
         validate_file(registry, files["workflow"], "github-workflow")
         repair_file(registry, files["workflow"], "github-workflow")
 
         # SECTION 6: Format Detection
-        print("\n" + "=" * 70)
-        print("6. AUTOMATIC FORMAT DETECTION")
-        print("=" * 70)
+        print_separator("6. AUTOMATIC FORMAT DETECTION", leading_newline=True, width=70)
 
         print("\n🔍 Detecting file formats:")
         for name, path in files.items():
@@ -262,9 +261,7 @@ def main():
                     print(f"   {path.name}: Unknown format")
 
         # SECTION 7: Summary
-        print("\n" + "=" * 70)
-        print("SUMMARY")
-        print("=" * 70)
+        print_separator("SUMMARY", leading_newline=True, width=70)
 
         print("""
 The SchemaRegistry provides:
