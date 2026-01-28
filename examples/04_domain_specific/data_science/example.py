@@ -15,6 +15,7 @@ from nlp2cmd.generation.thermodynamic import OptimizationProblem
 
 from _demo_helpers import (
     print_fallback_note,
+    print_metrics,
     print_projected,
     project_sample,
     run_thermo_demo,
@@ -48,8 +49,7 @@ async def demo_hyperparameter_optimization():
     projected = project_sample(problem, raw_sample)
 
     print_projected("\n✅ Projected hyperparameters:", projected)
-    print(f"  Energy: {result.energy:.4f}")
-    print(f"  Converged: {result.converged}")
+    print_metrics(result, energy=True, converged=True, indent="  ")
     print_fallback_note("hyperparameter")
 
 
@@ -70,8 +70,7 @@ async def demo_feature_selection():
     
     print(f"\n📊 Feature selection result:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy: {result.energy:.4f}")
-    print(f"   Solution quality: {result.solution_quality.explanation}")
+    print_metrics(result, energy=True, solution_quality=True)
     print(f"   ⚡ Latency: {elapsed:.1f}ms")
 
 
@@ -99,8 +98,7 @@ async def demo_experiment_scheduling():
     
     print(f"\n🧪 Experiment schedule:")
     print(f"   {result.decoded_output}")
-    print(f"   Latency: {result.latency_ms:.1f}ms")
-    print(f"   Sampler steps: {result.sampler_steps}")
+    print_metrics(result, sampler_steps=True)
     print(f"   ⚡ Latency: {elapsed:.1f}ms")
 
 
@@ -128,7 +126,7 @@ async def demo_model_ensemble_optimization():
     
     print(f"\n🤖 Ensemble weights:")
     print(f"   {result.decoded_output}")
-    print(f"   Energy savings: {result.energy_estimate.get('savings_digital_percent', 0):.1f}%")
+    print_metrics(result, energy_estimate=True, energy_estimate_label="Energy savings")
     print(f"   ⚡ Latency: {elapsed:.1f}ms")
 
 

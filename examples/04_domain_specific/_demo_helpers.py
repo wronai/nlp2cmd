@@ -52,6 +52,7 @@ async def run_thermo_demo(
 def print_metrics(
     result,
     *,
+    indent: str = "   ",
     energy: bool = False,
     converged: bool = False,
     solution_quality: bool = False,
@@ -62,24 +63,24 @@ def print_metrics(
     energy_estimate_label: str = "Energy savings",
 ) -> None:
     if energy:
-        print(f"   Energy: {result.energy:.4f}")
+        print(f"{indent}Energy: {result.energy:.4f}")
     if converged:
-        print(f"   Converged: {result.converged}")
+        print(f"{indent}Converged: {result.converged}")
     if solution_quality:
-        print(f"   Solution quality: {result.solution_quality.explanation}")
+        print(f"{indent}Solution quality: {result.solution_quality.explanation}")
     if solution_feasible:
-        print(f"   Solution feasible: {result.solution_quality.is_feasible}")
+        print(f"{indent}Solution feasible: {result.solution_quality.is_feasible}")
     if latency:
-        print(f"   Latency: {result.latency_ms:.1f}ms")
+        print(f"{indent}Latency: {result.latency_ms:.1f}ms")
     if sampler_steps:
-        print(f"   Sampler steps: {result.sampler_steps}")
+        print(f"{indent}Sampler steps: {result.sampler_steps}")
     if energy_estimate:
         estimate = getattr(result, "energy_estimate", None)
         if estimate:
             savings = estimate.get("savings_digital_percent", 0)
-            print(f"   {energy_estimate_label}: {savings:.1f}%")
+            print(f"{indent}{energy_estimate_label}: {savings:.1f}%")
         else:
-            print(f"   {energy_estimate_label}: N/A")
+            print(f"{indent}{energy_estimate_label}: N/A")
 
 
 def print_simple_result(query: str, result: dict, elapsed_ms: float) -> None:

@@ -17,6 +17,7 @@ status: success
 confidence: 1.0
 generated_command: playwright open https://www.prototypowanie.pl/kontakt/ && fill_form && submit
 ```
+![img_5.png](img_5.png)
 
 ![img_1.png](img_1.png)
 
