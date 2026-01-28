@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import io
 from typing import Any, Optional
 
 from rich.console import Console
@@ -13,7 +14,8 @@ def _render_to_text(renderable: Any) -> str:
         return ""
     if isinstance(renderable, str):
         return renderable.rstrip()
-    capture_console = Console(record=True, force_terminal=False, color_system=None)
+    stream = io.StringIO()
+    capture_console = Console(record=True, force_terminal=False, color_system=None, file=stream)
     capture_console.print(renderable)
     return capture_console.export_text().rstrip()
 
@@ -35,6 +37,13 @@ def print_markdown_block(
         lines.append(body)
     lines.append("```")
     console.print("\n".join(lines), markup=False)
+
+
+def print_yaml_block(data: Any, *, console: Optional[Console] = None) -> None:
+    from nlp2cmd.utils.yaml_compat import yaml
+
+    text = yaml.safe_dump(data, sort_keys=False, allow_unicode=True).rstrip()
+    print_markdown_block(text, language="yaml", console=console)
 
 
 class MarkdownConsoleProxy:

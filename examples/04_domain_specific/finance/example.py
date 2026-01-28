@@ -12,7 +12,6 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from _demo_helpers import print_metrics, print_separator, run_thermo_demo
-from nlp2cmd.generation.thermodynamic import ThermodynamicGenerator
 
 
 async def demo_portfolio_optimization():
