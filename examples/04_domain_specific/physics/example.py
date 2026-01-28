@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from _demo_helpers import print_metrics, run_thermo_demo
+from _demo_helpers import print_metrics, print_separator, run_thermo_demo
 
 
 async def demo_particle_collision():
@@ -175,10 +175,8 @@ async def main():
     await demo_climate_modeling()
     await demo_particle_physics()
     await demo_materials_science()
-    
-    print("\n" + "=" * 70)
-    print("  Physics & Simulations demos completed!")
-    print("=" * 70)
+
+    print_separator("Physics & Simulations demos completed!", leading_newline=True, width=70)
 
 
 if __name__ == "__main__":

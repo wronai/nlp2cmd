@@ -20,6 +20,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from _demo_helpers import (
     print_full_result as _print_full_result,
+    print_rule,
     print_separator as _print_separator,
 )
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
@@ -234,7 +235,7 @@ async def main():
     """Główna funkcja demonstracyjna."""
     print("🎯 NLP2CMD - Kompletne przykłady użycia")
     print("📚 Python API + Shell Commands")
-    print("=" * 80)
+    print_rule(width=80, char="=")
     
     start_total = time.time()
     
@@ -254,7 +255,7 @@ async def main():
     print("🐛 Bug reports: https://github.com/wronai/nlp2cmd/issues")
     print()
     print("🎉 Dzięki za użycie NLP2CMD!")
-    print("=" * 80)
+    print_rule(width=80, char="=")
 
 
 if __name__ == "__main__":

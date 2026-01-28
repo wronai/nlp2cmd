@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from _demo_helpers import print_metrics, run_thermo_demo
+from _demo_helpers import print_metrics, print_separator, run_thermo_demo
 
 
 async def demo_unit_commitment():
@@ -178,10 +178,8 @@ async def main():
     await demo_electric_vehicle_charging()
     await demo_demand_response()
     await demo_microgrid()
-    
-    print("\n" + "=" * 70)
-    print("  Energy & Utilities demos completed!")
-    print("=" * 70)
+
+    print_separator("Energy & Utilities demos completed!", leading_newline=True, width=70)
 
 
 if __name__ == "__main__":

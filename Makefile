@@ -24,7 +24,8 @@
 .PHONY: help install setup-cache test test-unit test-e2e test-web-schema lint format clean \
         docker-build docker-up docker-down docker-test docker-e2e docker-push \
         dev demo demo-benchmark test-examples bump-patch bump-minor bump-major publish publish-test push git-tag report \
-        scripts-maintenance scripts-thermo scripts-test
+        scripts-maintenance scripts-thermo scripts-test \
+        all 01_basics 02_benchmarks 03_integrations 04_domain_specific 05_advanced_features 06_tools_and_utilities
 
 # Default target
 .DEFAULT_GOAL := help
@@ -272,6 +273,12 @@ test-examples: ## Run all examples to test functionality
 	PYTHONPATH=src $(PYTHON) examples/validation/config_validation.py
 	@echo ""
 	@echo "$(GREEN)All examples completed!$(NC)"
+
+all:
+	$(MAKE) -C examples all
+
+01_basics 02_benchmarks 03_integrations 04_domain_specific 05_advanced_features 06_tools_and_utilities:
+	$(MAKE) -C examples $@
 
 repl: ## Start interactive REPL
 	$(PYTHON) -m $(PROJECT_NAME).cli

@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from _demo_helpers import print_metrics, run_thermo_demo
+from _demo_helpers import print_metrics, print_separator, run_thermo_demo
 
 
 async def demo_or_scheduling():
@@ -184,10 +184,8 @@ async def main():
     await demo_ambulance_dispatch()
     await demo_icu_bed_management()
     await demo_pharmacy_inventory()
-    
-    print("\n" + "=" * 70)
-    print("  Healthcare demos completed!")
-    print("=" * 70)
+
+    print_separator("Healthcare demos completed!", leading_newline=True, width=70)
 
 
 if __name__ == "__main__":

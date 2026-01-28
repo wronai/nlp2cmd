@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from _demo_helpers import print_metrics, run_thermo_demo
+from _demo_helpers import print_metrics, print_separator, run_thermo_demo
 from nlp2cmd.generation.thermodynamic import ThermodynamicGenerator
 
 
@@ -176,10 +176,8 @@ async def main():
     await demo_arbitrage_detection()
     await demo_options_strategy()
     await demo_credit_scoring()
-    
-    print("\n" + "=" * 70)
-    print("  Finance demos completed!")
-    print("=" * 70)
+
+    print_separator("Finance demos completed!", leading_newline=True, width=70)
 
 
 if __name__ == "__main__":

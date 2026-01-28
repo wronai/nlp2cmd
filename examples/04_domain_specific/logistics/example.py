@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from _demo_helpers import print_metrics, run_thermo_demo
+from _demo_helpers import print_metrics, print_separator, run_thermo_demo
 
 
 async def demo_vehicle_routing():
@@ -152,10 +152,8 @@ async def main():
     await demo_inventory_optimization()
     await demo_supply_chain_network()
     await demo_cross_docking()
-    
-    print("\n" + "=" * 70)
-    print("  Logistics demos completed!")
-    print("=" * 70)
+
+    print_separator("Logistics demos completed!", leading_newline=True, width=70)
 
 
 if __name__ == "__main__":

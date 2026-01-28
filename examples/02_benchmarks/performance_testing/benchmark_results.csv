@@ -1,4 +1,4 @@
 adapter,single_latency_ms,sequential_avg_ms,throughput_cmd_per_sec
-shell,40.32,30.53,32.71
-sql,29.97,29.61,33.73
-docker,30.00,30.31,32.96
+shell,40.32,32.37,30.86
+sql,32.54,31.85,31.37
+docker,34.96,33.70,29.65

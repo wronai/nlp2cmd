@@ -6,10 +6,16 @@ przez porównanie z oczekiwanymi wynikami.
 """
 
 import asyncio
+import sys
 import time
+from pathlib import Path
 from typing import Dict, List, Tuple
 from dataclasses import dataclass
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_rule
 
 
 @dataclass
@@ -592,7 +598,7 @@ class ShellCommandValidator:
         
         print("🔍 Walidacja komend shell...")
         print(f"Liczba testów: {len(test_cases)}")
-        print("=" * 70)
+        print_rule(width=70, char="=")
         
         for i, test in enumerate(test_cases, 1):
             print(f"\n[{i:2d}/{len(test_cases)}] {test.category}: {test.description}")
@@ -681,16 +687,15 @@ Statystyki per kategorii:
 async def main():
     """Uruchom walidację komend shell."""
     print("🔍 NLP2CMD - Walidacja komend shell")
-    print("=" * 70)
     print("Porównanie generowanych komend z oczekiwanymi wynikami")
-    print("=" * 70)
+    print_rule(width=70, char="=")
     
     validator = ShellCommandValidator()
     results = await validator.validate_all()
     
-    print("\n" + "=" * 70)
+    print_rule(width=70, char="=", leading_newline=True)
     print(validator.generate_report(results))
-    print("=" * 70)
+    print_rule(width=70, char="=")
     
     # Zapisz wyniki do pliku
     with open('shell_validation_report.txt', 'w') as f:

@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from _demo_helpers import print_metrics, run_thermo_demo
+from _demo_helpers import print_metrics, print_separator, run_thermo_demo
 
 
 async def demo_genomic_pipeline():
@@ -137,10 +137,8 @@ async def main():
     await demo_crispr_optimization()
     await demo_proteomics_analysis()
     await demo_drug_discovery()
-    
-    print("\n" + "=" * 70)
-    print("  Bioinformatics demos completed!")
-    print("=" * 70)
+
+    print_separator("Bioinformatics demos completed!", leading_newline=True, width=70)
 
 
 if __name__ == "__main__":

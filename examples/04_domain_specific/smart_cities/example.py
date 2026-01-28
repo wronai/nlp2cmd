@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from _demo_helpers import print_metrics, run_thermo_demo
+from _demo_helpers import print_metrics, print_separator, run_thermo_demo
 
 
 async def demo_traffic_optimization():
@@ -182,10 +182,8 @@ async def main():
     await demo_parking_management()
     await demo_air_quality()
     await demo_water_management()
-    
-    print("\n" + "=" * 70)
-    print("  Smart Cities demos completed!")
-    print("=" * 70)
+
+    print_separator("Smart Cities demos completed!", leading_newline=True, width=70)
 
 
 if __name__ == "__main__":

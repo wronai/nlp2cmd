@@ -27,13 +27,14 @@ from smart_cities import main as smart_cities_main
 from energy_utilities import main as energy_main
 from physics_simulations import main as physics_main
 
+from _demo_helpers import print_rule
+
 
 async def run_all_demos():
     """Uruchom wszystkie demonstracje."""
     print("🚀 NLP2CMD - Kompletny zestaw demonstracji")
-    print("=" * 70)
     print("Przykłady zastosowań w IT, nauce i biznesie")
-    print("=" * 70)
+    print_rule(width=70, char="=")
     
     demos = [
         ("Shell DSL Commands", dsl_main),
@@ -54,9 +55,9 @@ async def run_all_demos():
     successful_demos = 0
     
     for name, demo_func in demos:
-        print(f"\n{'='*70}")
+        print_rule(width=70, char="=", leading_newline=True)
         print(f"  Uruchamianie: {name}")
-        print(f"{'='*70}")
+        print_rule(width=70, char="=")
         
         try:
             import time
@@ -76,13 +77,13 @@ async def run_all_demos():
         
         # Przerwa między demonstracjami (usunięta)
         if demos.index((name, demo_func)) < len(demos) - 1:
-            print("\n" + "-"*50)
+            print_rule(width=50, char="-", leading_newline=True)
             # input("Naciśnij Enter, aby kontynuować do następnej demonstracji...")
     
     # Podsumowanie
-    print(f"\n{'='*70}")
+    print_rule(width=70, char="=", leading_newline=True)
     print("  PODSUMOWANIE WSZYSTKICH DEMONSTRACJI")
-    print(f"{'='*70}")
+    print_rule(width=70, char="=")
     print(f"Ukończone: {successful_demos}/{len(demos)} demonstracji")
     print(f"Całkowity czas: {total_time:.1f} sekund")
     print(f"Średni czas: {total_time/successful_demos:.1f} sekund/demo")
@@ -92,13 +93,13 @@ async def run_all_demos():
     else:
         print(f"\n⚠️  {len(demos) - successful_demos} demonstracji nie ukończone")
     
-    print(f"\n{'='*70}")
+    print_rule(width=70, char="=", leading_newline=True)
 
 
 def print_summary_table():
     """Wyświetl tabelę podsumowującą zastosowania."""
     print("\n📊 TABELA ZASTOSOWAŃ NLP2CMD")
-    print("=" * 70)
+    print_rule(width=70, char="=")
     
     applications = [
         ("IT & DevOps", "Scheduling, Automation", "80% redukcja pracy manualnej"),
@@ -115,7 +116,7 @@ def print_summary_table():
     ]
     
     print(f"{'Dziedzina':<20} {'Typ problemu':<25} {'Główna korzyść':<25}")
-    print("-" * 70)
+    print_rule(width=70, char="-")
     
     for domain, problem_type, benefit in applications:
         print(f"{domain:<20} {problem_type:<25} {benefit:<25}")

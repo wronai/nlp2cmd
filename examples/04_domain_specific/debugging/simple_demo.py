@@ -7,14 +7,19 @@ Pokazuje koncepcje użycia NLP2CMD zarówno przez Python API jak i przez shell.
 
 import asyncio
 import subprocess
+import sys
 import time
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_separator as _print_separator
+from _demo_helpers import print_rule
 
 
 def print_separator(title):
     """Drukuj separator z tytułem."""
-    print("\n" + "=" * 80)
-    print(f"  {title}")
-    print("=" * 80)
+    _print_separator(title, leading_newline=True, width=80)
 
 
 def demo_python_api_concept():
@@ -216,7 +221,7 @@ def main():
     """Główna funkcja demonstracyjna."""
     print("🎯 NLP2CMD - Kompletne przykłady użycia")
     print("📚 Python API + Shell Commands")
-    print("=" * 80)
+    print_rule(width=80, char="=")
     
     demo_python_api_concept()
     demo_shell_commands()
@@ -232,7 +237,7 @@ def main():
     print("   Shell: nlp2cmd 'twoje zapytanie'")
     print()
     print("🎉 Wybierz odpowiedni sposób dla swoich potrzeb!")
-    print("=" * 80)
+    print_rule(width=80, char="=")
 
 
 if __name__ == "__main__":

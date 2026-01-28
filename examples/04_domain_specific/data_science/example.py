@@ -18,6 +18,7 @@ from _demo_helpers import (
     print_projected,
     project_sample,
     run_thermo_demo,
+    print_separator,
 )
 
 
@@ -137,10 +138,8 @@ async def main():
     await demo_feature_selection()
     await demo_experiment_scheduling()
     await demo_model_ensemble_optimization()
-    
-    print("\n" + "=" * 70)
-    print("  Data Science demos completed!")
-    print("=" * 70)
+
+    print_separator("Data Science demos completed!", leading_newline=True, width=70)
 
 
 if __name__ == "__main__":
