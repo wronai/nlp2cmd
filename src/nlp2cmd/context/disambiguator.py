@@ -133,17 +133,33 @@ class CommandDisambiguator:
         if auto_select:
             return DisambiguationResult(selected_query=query)
         
-        # Show options to user
-        self.console.print("\n[yellow]🔍 Found similar previous commands:[/yellow]\n")
-        
+        from nlp2cmd.cli.markdown_output import print_yaml_block
+
+        options: list[dict[str, Any]] = []
         for i, (prev_query, prev_cmd, sim) in enumerate(similar, 1):
-            cmd_display = prev_cmd[:50] + "..." if len(prev_cmd) > 50 else prev_cmd
-            print(f"{i:2d}. {prev_query}")
-            print(f"    -> {cmd_display} ({sim:.0%})")
-            print()
-        
-        self.console.print(f"[cyan]0[/cyan] = Use current query: \"{query}\"")
-        self.console.print("[cyan]1-{}[/cyan] = Use previous command".format(len(similar)))
+            cmd_display = prev_cmd[:80] + "..." if len(prev_cmd) > 80 else prev_cmd
+            options.append(
+                {
+                    "option": i,
+                    "query": prev_query,
+                    "command_preview": cmd_display,
+                    "similarity": round(float(sim), 4),
+                }
+            )
+
+        payload: dict[str, Any] = {
+            "status": "found_similar_previous_commands",
+            "current_query": query,
+            "options": options,
+            "selection": {
+                "default": 0,
+                "0": "use_current_query",
+                "range": f"1-{len(similar)}",
+                "range_meaning": "use_previous_command",
+            },
+        }
+
+        print_yaml_block(payload, console=self.console)
         
         response = self.console.input("\n[bold]Select option [0]: [/bold]").strip()
         
