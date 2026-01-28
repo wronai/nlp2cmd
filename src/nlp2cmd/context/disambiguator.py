@@ -14,6 +14,15 @@ from difflib import SequenceMatcher
 from rich.console import Console
 from rich.table import Table
 
+try:
+    from nlp2cmd.cli.markdown_output import print_yaml_block
+except Exception:  # pragma: no cover
+    def print_yaml_block(data: Any, *, console: Optional[Console] = None) -> None:  # type: ignore
+        try:
+            (console or Console()).print(str(data))
+        except Exception:
+            return
+
 
 @dataclass
 class DisambiguationResult:
@@ -133,8 +142,6 @@ class CommandDisambiguator:
         if auto_select:
             return DisambiguationResult(selected_query=query)
         
-        from nlp2cmd.cli.markdown_output import print_yaml_block
-
         options: list[dict[str, Any]] = []
         for i, (prev_query, prev_cmd, sim) in enumerate(similar, 1):
             cmd_display = prev_cmd[:80] + "..." if len(prev_cmd) > 80 else prev_cmd

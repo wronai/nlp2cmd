@@ -135,6 +135,15 @@ except ImportError:
 from nlp2cmd.cli.display import display_command_result
 from nlp2cmd.cli.syntax_cache import get_cached_syntax
 
+try:
+    from nlp2cmd.cli.markdown_output import print_yaml_block
+except Exception:  # pragma: no cover
+    def print_yaml_block(data: Any, *, console: Optional[Console] = None) -> None:  # type: ignore
+        try:
+            (console or Console()).print(str(data))
+        except Exception:
+            return
+
 # Expose ExecutionRunner for unit tests (monkeypatching) while keeping
 # heavy imports lazy and avoiding circular dependencies.
 try:
@@ -871,7 +880,13 @@ def _handle_run_query(
             
             if result.from_history and result.selected_command:
                 if not only_output:
-                    console.print(f"\n[dim]Using previous command from history[/dim]")
+                    print_yaml_block(
+                        {
+                            "status": "using_previous_command_from_history",
+                            "selected_query": result.selected_query,
+                        },
+                        console=console,
+                    )
                 query = result.selected_query
                 # Could directly use result.selected_command here
         except Exception:
@@ -1256,7 +1271,14 @@ Rules:
             detected_intent = result.intent
         
         if not only_output:
-            console.print(f"[dim]Detected: {detected_domain}/{detected_intent}[/dim]")
+            print_yaml_block(
+                {
+                    "status": "detected",
+                    "domain": detected_domain,
+                    "intent": detected_intent,
+                },
+                console=console,
+            )
     else:
         adapter = adapter_map.get(dsl, lambda: ShellAdapter())()
         nlp = NLP2CMD(adapter=adapter)
@@ -1266,7 +1288,14 @@ Rules:
         detected_domain = dsl
         detected_intent = getattr(getattr(transform_result, "plan", None), "intent", "unknown")
         if not only_output:
-            console.print(f"[dim]Detected: {detected_domain}/{detected_intent}[/dim]")
+            print_yaml_block(
+                {
+                    "status": "detected",
+                    "domain": detected_domain,
+                    "intent": detected_intent,
+                },
+                console=console,
+            )
 
     if detected_domain == "sql":
         if only_output:
@@ -1316,7 +1345,14 @@ Rules:
             # Auto-enable execute_web if typing/clicking detected
             if detected_has_typing and not execute_web:
                 if not only_output:
-                    console.print("[dim]Auto-enabling browser automation (detected typing/clicking action)[/dim]")
+                    print_yaml_block(
+                        {
+                            "status": "browser_automation_auto_enabled",
+                            "reason": "detected_typing_clicking_or_form_action",
+                            "detected_has_typing": bool(detected_has_typing),
+                        },
+                        console=console,
+                    )
                 execute_web = True
     elif dsl == "browser":
         is_browser_command = True
@@ -1348,7 +1384,13 @@ Rules:
         
         if not ensure_playwright_installed(console=console, auto_install=auto_install):
             if not only_output:
-                console.print("[yellow]Browser automation skipped - Playwright not available[/yellow]")
+                print_yaml_block(
+                    {
+                        "status": "browser_automation_skipped",
+                        "reason": "playwright_not_available",
+                    },
+                    console=console,
+                )
             _fallback_open_url_from_query(query)
             return
         
@@ -1359,7 +1401,32 @@ Rules:
             ir = nlp_browser.transform_ir(query)
 
             if not only_output:
-                console.print(f"[dim]Actions: {ir.explanation}[/dim]\n")
+                payload: dict[str, Any] = {
+                    "status": "actions",
+                    "action_id": getattr(ir, "action_id", ""),
+                    "dsl_kind": getattr(ir, "dsl_kind", ""),
+                    "confidence": getattr(ir, "confidence", 0.0),
+                    "explanation": getattr(ir, "explanation", ""),
+                }
+                try:
+                    if isinstance(getattr(ir, "metadata", None), dict):
+                        payload["metadata"] = ir.metadata
+                except Exception:
+                    pass
+                try:
+                    dsl_payload = json.loads(getattr(ir, "dsl", "") or "")
+                    if isinstance(dsl_payload, dict):
+                        if isinstance(dsl_payload.get("url"), str) and dsl_payload.get("url"):
+                            payload["url"] = dsl_payload.get("url")
+                        actions = dsl_payload.get("actions")
+                        if isinstance(actions, list):
+                            payload["actions_count"] = len(actions)
+                            payload["actions"] = [
+                                a.get("action") for a in actions if isinstance(a, dict) and isinstance(a.get("action"), str)
+                            ]
+                except Exception:
+                    pass
+                print_yaml_block(payload, console=console)
             
             # Execute with PipelineRunner
             from nlp2cmd.pipeline_runner import PipelineRunner
@@ -1404,17 +1471,38 @@ Rules:
 
             if result.success:
                 if not only_output:
-                    console.print(f"\n[green]✅ Browser automation completed successfully[/green]")
-                    console.print(f"[dim]Executed {result.data.get('actions_executed', 0)} actions in {result.duration_ms:.1f}ms[/dim]")
+                    print_yaml_block(
+                        {
+                            "status": "browser_automation_completed",
+                            "success": True,
+                            "actions_executed": (result.data or {}).get("actions_executed", 0) if isinstance(result.data, dict) else 0,
+                            "duration_ms": float(result.duration_ms),
+                        },
+                        console=console,
+                    )
                 return
 
             if not only_output:
-                console.print(f"\n[red]❌ Browser automation failed: {result.error}[/red]")
+                print_yaml_block(
+                    {
+                        "status": "browser_automation_failed",
+                        "success": False,
+                        "error": str(result.error or ""),
+                    },
+                    console=console,
+                )
             _fallback_open_url(ir)
             return
         except Exception as e:
             if not only_output:
-                console.print(f"[red]Playwright error: {e}[/red]")
+                print_yaml_block(
+                    {
+                        "status": "playwright_error",
+                        "success": False,
+                        "error": str(e),
+                    },
+                    console=console,
+                )
             _fallback_open_url_from_query(query)
             return
     else:

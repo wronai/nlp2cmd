@@ -12,6 +12,15 @@ from typing import Optional
 
 from rich.console import Console
 
+try:
+    from nlp2cmd.cli.markdown_output import print_yaml_block
+except Exception:  # pragma: no cover
+    def print_yaml_block(data, *, console: Optional[Console] = None) -> None:  # type: ignore
+        try:
+            (console or Console()).print(str(data))
+        except Exception:
+            return
+
 
 def is_playwright_installed() -> bool:
     """Check if Playwright is installed."""
@@ -50,8 +59,14 @@ def install_playwright(console: Optional[Console] = None) -> bool:
     """
     if console is None:
         console = Console()
-    
-    console.print("\n[yellow]📦 Installing Playwright...[/yellow]")
+
+    print_yaml_block(
+        {
+            "status": "installing_dependency",
+            "dependency": "playwright",
+        },
+        console=console,
+    )
     
     try:
         # Install playwright package
@@ -62,13 +77,37 @@ def install_playwright(console: Optional[Console] = None) -> bool:
         )
         
         if result.returncode == 0:
-            console.print("[green]✓ Playwright package installed[/green]")
+            print_yaml_block(
+                {
+                    "status": "dependency_installed",
+                    "dependency": "playwright",
+                    "success": True,
+                },
+                console=console,
+            )
             return True
         else:
-            console.print(f"[red]✗ Failed to install Playwright: {result.stderr}[/red]")
+            print_yaml_block(
+                {
+                    "status": "dependency_install_failed",
+                    "dependency": "playwright",
+                    "success": False,
+                    "returncode": int(result.returncode),
+                    "stderr": (result.stderr or "").strip(),
+                },
+                console=console,
+            )
             return False
     except Exception as e:
-        console.print(f"[red]✗ Installation error: {e}[/red]")
+        print_yaml_block(
+            {
+                "status": "dependency_install_error",
+                "dependency": "playwright",
+                "success": False,
+                "error": str(e),
+            },
+            console=console,
+        )
         return False
 
 
@@ -84,9 +123,15 @@ def install_playwright_browsers(console: Optional[Console] = None) -> bool:
     """
     if console is None:
         console = Console()
-    
-    console.print("\n[yellow]🌐 Installing Chromium browser...[/yellow]")
-    console.print("[dim]This may take a few minutes (downloading ~170MB)...[/dim]")
+
+    print_yaml_block(
+        {
+            "status": "installing_browser",
+            "browser": "chromium",
+            "download_mb_estimate": 170,
+        },
+        console=console,
+    )
     
     try:
         # Install chromium browser
@@ -97,13 +142,37 @@ def install_playwright_browsers(console: Optional[Console] = None) -> bool:
         )
         
         if result.returncode == 0:
-            console.print("[green]✓ Chromium browser installed[/green]")
+            print_yaml_block(
+                {
+                    "status": "browser_installed",
+                    "browser": "chromium",
+                    "success": True,
+                },
+                console=console,
+            )
             return True
         else:
-            console.print(f"[red]✗ Failed to install browser: {result.stderr}[/red]")
+            print_yaml_block(
+                {
+                    "status": "browser_install_failed",
+                    "browser": "chromium",
+                    "success": False,
+                    "returncode": int(result.returncode),
+                    "stderr": (result.stderr or "").strip(),
+                },
+                console=console,
+            )
             return False
     except Exception as e:
-        console.print(f"[red]✗ Installation error: {e}[/red]")
+        print_yaml_block(
+            {
+                "status": "browser_install_error",
+                "browser": "chromium",
+                "success": False,
+                "error": str(e),
+            },
+            console=console,
+        )
         return False
 
 
@@ -127,10 +196,23 @@ def ensure_playwright_installed(
     # Check if package is installed
     if not is_playwright_installed():
         if not auto_install:
-            console.print("\n[yellow]⚠️  Playwright is required for browser automation[/yellow]")
+            print_yaml_block(
+                {
+                    "status": "dependency_required",
+                    "dependency": "playwright",
+                    "reason": "browser_automation",
+                },
+                console=console,
+            )
             response = console.input("[cyan]Install Playwright now? [Y/n]: [/cyan]").strip().lower()
             if response not in ("", "y", "yes", "tak"):
-                console.print("[yellow]Skipping browser automation[/yellow]")
+                print_yaml_block(
+                    {
+                        "status": "browser_automation_skipped",
+                        "reason": "user_declined_playwright_install",
+                    },
+                    console=console,
+                )
                 return False
         
         if not install_playwright(console):
@@ -139,14 +221,35 @@ def ensure_playwright_installed(
     # Check if browsers are installed
     if not is_playwright_browsers_installed():
         if not auto_install:
-            console.print("\n[yellow]⚠️  Chromium browser is required for browser automation[/yellow]")
+            print_yaml_block(
+                {
+                    "status": "browser_required",
+                    "browser": "chromium",
+                    "reason": "browser_automation",
+                },
+                console=console,
+            )
             response = console.input("[cyan]Install Chromium now? [Y/n]: [/cyan]").strip().lower()
             if response not in ("", "y", "yes", "tak"):
-                console.print("[yellow]Skipping browser automation[/yellow]")
+                print_yaml_block(
+                    {
+                        "status": "browser_automation_skipped",
+                        "reason": "user_declined_chromium_install",
+                    },
+                    console=console,
+                )
                 return False
         
         if not install_playwright_browsers(console):
             return False
     
-    console.print("[green]✓ Playwright is ready[/green]")
+    print_yaml_block(
+        {
+            "status": "playwright_ready",
+            "success": True,
+            "playwright_installed": True,
+            "chromium_installed": True,
+        },
+        console=console,
+    )
     return True
