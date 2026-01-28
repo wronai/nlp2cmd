@@ -215,22 +215,22 @@ class ConfigManager:
         self.manager = get_data_manager()
     
     def get_llm_settings(self):
-        """Pobierz ustawienia LLM"""
+        '''Pobierz ustawienia LLM'''
         return self.manager.get_llm_config()
     
     def update_llm_setting(self, key, value):
-        """Aktualizuj ustawienie LLM (demo)"""
+        '''Aktualizuj ustawienie LLM (demo)'''
         current_config = self.manager.get_llm_config()
         current_config[key] = value
         print(f"Zaktualizowano {key}: {value}")
         return current_config
     
     def get_test_commands(self):
-        """Pobierz listę komend testowych"""
+        '''Pobierz listę komend testowych'''
         return self.manager.get_test_commands()
     
     def validate_config(self):
-        """Walidacja konfiguracji"""
+        '''Walidacja konfiguracji'''
         config = self.manager.get_config()
         required_keys = ['schema_generation', 'test_commands']
         
@@ -254,7 +254,7 @@ class DataExporter:
         self.manager = get_data_manager()
     
     def export_all_data(self, format='json'):
-        """Eksportuj wszystkie dane"""
+        '''Eksportuj wszystkie dane'''
         data = {
             'commands': self.manager.export_category('commands', format),
             'config': self.manager.export_category('config', format),
@@ -265,11 +265,11 @@ class DataExporter:
         return data
     
     def export_category(self, category, format='json'):
-        """Eksportuj konkretną kategorię"""
+        '''Eksportuj konkretną kategorię'''
         return self.manager.export_category(category, format)
     
     def backup_data(self, backup_dir="backups"):
-        """Stwórz kopię zapasową"""
+        '''Stwórz kopię zapasową'''
         from datetime import datetime
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

@@ -59,13 +59,20 @@ class ToonParser:
         current_section = None
         
         for line_num, line in enumerate(lines):
-            line = line.strip()
-            if not line or line.startswith('#'):
+            raw_line = line
+            stripped = raw_line.strip()
+            if not stripped or stripped.startswith('#'):
                 continue
                 
             # Calculate depth
-            depth = len(line) - len(line.lstrip())
-            line = line.strip()
+            depth = len(raw_line) - len(raw_line.lstrip())
+            line = stripped
+
+            # Handle closing brackets/braces
+            if line in {']', '}'}:
+                if len(stack) > 1:
+                    stack.pop()
+                continue
             
             # Handle sections
             if line.startswith('===') and line.endswith('==='):
@@ -75,18 +82,73 @@ class ToonParser:
                 root.children[section_name] = section_node
                 stack.append((section_node, depth))
                 continue
+
+            # Multi-line container starts (top-level and nested)
+            array_start = re.match(r'^(\w+)\[$', line)
+            if array_start:
+                name = array_start.group(1)
+                node = ToonNode(ToonNodeType.ARRAY, [], {}, name=name)
+                while stack and stack[-1][1] >= depth:
+                    stack.pop()
+                parent, _ = stack[-1]
+                parent.children[name] = node
+                node.parent = parent
+                stack.append((node, depth))
+                continue
+
+            object_start = re.match(r'^(\w+)\{$', line)
+            if object_start:
+                name = object_start.group(1)
+                node = ToonNode(ToonNodeType.OBJECT, {}, {}, name=name)
+                while stack and stack[-1][1] >= depth:
+                    stack.pop()
+                parent, _ = stack[-1]
+                parent.children[name] = node
+                node.parent = parent
+                stack.append((node, depth))
+                continue
+
+            kv_array_start = re.match(r'^(\w+)\s*:\s*\[$', line)
+            if kv_array_start:
+                name = kv_array_start.group(1)
+                node = ToonNode(ToonNodeType.ARRAY, [], {}, name=name)
+                while stack and stack[-1][1] >= depth:
+                    stack.pop()
+                parent, _ = stack[-1]
+                parent.children[name] = node
+                node.parent = parent
+                stack.append((node, depth))
+                continue
+
+            kv_object_start = re.match(r'^(\w+)\s*:\s*\{$', line)
+            if kv_object_start:
+                name = kv_object_start.group(1)
+                node = ToonNode(ToonNodeType.OBJECT, {}, {}, name=name)
+                while stack and stack[-1][1] >= depth:
+                    stack.pop()
+                parent, _ = stack[-1]
+                parent.children[name] = node
+                node.parent = parent
+                stack.append((node, depth))
+                continue
             
             # Parse based on current context
-            if '[' in line and ']' in line:
-                # Array notation
+            # NOTE: use regex-based container detection to avoid treating braces in string values
+            # (e.g. templates like "{command} {options}") as object declarations.
+            if re.match(r'^(\w+)\[.*\]$', line):
+                # Array notation (single-line)
                 node = self._parse_array_node(line, current_section)
-            elif '{' in line and '}' in line:
-                # Object notation
+            elif re.match(r'^(\w+)\{.*\}$', line):
+                # Object notation (single-line)
                 node = self._parse_object_node(line, current_section)
             elif ':' in line:
                 # Key-value pair
                 node = self._parse_key_value(line, current_section)
             else:
+                # Bare values inside array containers
+                parent, _ = stack[-1]
+                if parent.type == ToonNodeType.ARRAY:
+                    parent.value.append(self._parse_value(line))
                 continue
             
             # Find parent at appropriate depth
@@ -269,7 +331,11 @@ class ToonParser:
             else:
                 return None
         
-        return current.value if current.type != ToonNodeType.OBJECT else self._node_to_dict(current)
+        if current.type == ToonNodeType.OBJECT:
+            return self._node_to_dict(current)
+        if current.type == ToonNodeType.ARRAY and current.children:
+            return self._node_to_dict(current)
+        return current.value
     
     def _node_to_dict(self, node: ToonNode) -> Dict[str, Any]:
         """Convert TOON node to dictionary"""
@@ -279,11 +345,23 @@ class ToonParser:
                 if child.type == ToonNodeType.OBJECT and child.children:
                     result[key] = self._node_to_dict(child)
                 elif child.type == ToonNodeType.ARRAY:
-                    result[key] = child.value
+                    result[key] = self._node_to_dict(child) if child.children else child.value
                 else:
                     result[key] = child.value
             return result
         elif node.type == ToonNodeType.ARRAY:
+            if node.children:
+                result = {}
+                for key, child in node.children.items():
+                    if child.type == ToonNodeType.OBJECT and child.children:
+                        result[key] = self._node_to_dict(child)
+                    elif child.type == ToonNodeType.ARRAY:
+                        result[key] = self._node_to_dict(child) if child.children else child.value
+                    else:
+                        result[key] = child.value
+                if node.value:
+                    result["_items"] = node.value
+                return result
             return node.value
         else:
             return node.value

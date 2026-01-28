@@ -12,6 +12,14 @@ import os
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Callable, Optional
+from pathlib import Path
+
+_core_pkg_dir = Path(__file__).resolve().parent / "core"
+if _core_pkg_dir.is_dir():
+    __path__ = [str(_core_pkg_dir)]
+    if __spec__ is not None:
+        __spec__.submodule_search_locations = __path__
+    __package__ = __name__
 
 try:
     from pydantic import BaseModel, Field

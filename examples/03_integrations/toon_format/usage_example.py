@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 # Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 
 from nlp2cmd.core.toon_integration import get_data_manager
 from nlp2cmd.parsing.toon_parser import get_parser
