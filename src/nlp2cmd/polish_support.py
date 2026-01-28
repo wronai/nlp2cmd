@@ -168,16 +168,39 @@ class PolishLanguageSupport:
         words = text_lower.split()
         if len(words) < 3:
             return text_lower
+
+        prepositions = {
+            "na",
+            "w",
+            "we",
+            "do",
+            "z",
+            "ze",
+            "od",
+            "po",
+            "pod",
+            "nad",
+            "przed",
+            "za",
+            "o",
+            "u",
+        }
         
         # Try fuzzy matching against known phrases
         best_match = self._find_best_phrase_match(text_lower)
         if best_match:
-            return best_match
+            input_words = text_lower.split()
+            match_words = best_match.split()
+            dropped = [w for w in input_words if w in prepositions and w not in match_words]
+            if not dropped:
+                return best_match
         
         # Try joining adjacent words and matching
         if len(words) >= 2:
             # Try joining pairs of words
             for i in range(len(words) - 1):
+                if words[i] in prepositions or words[i + 1] in prepositions:
+                    continue
                 joined = words[i] + words[i + 1]
                 # Check if joined word matches any known pattern
                 for phrase in KNOWN_PHRASES:
