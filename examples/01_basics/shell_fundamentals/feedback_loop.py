@@ -9,17 +9,22 @@ Demonstrates the interactive feedback loop with:
 - Confidence-based decisions
 """
 
+import sys
+from pathlib import Path
+
 from nlp2cmd import NLP2CMD, SQLAdapter, FeedbackAnalyzer
 from nlp2cmd.feedback import CorrectionEngine, FeedbackType
 from nlp2cmd.validators import SQLValidator
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
 
 
 def simulate_interactive_session():
     """Simulate an interactive session with feedback loop."""
 
-    print("=" * 70)
-    print("NLP2CMD Feedback Loop Demonstration")
-    print("=" * 70)
+    print_separator("NLP2CMD Feedback Loop Demonstration", width=70)
 
     # Setup
     adapter = SQLAdapter(
@@ -45,9 +50,9 @@ def simulate_interactive_session():
     )
 
     # Scenario 1: Successful transformation
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("Scenario 1: Successful Transformation")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     query1 = "Show all active users"
     plan1 = {
@@ -79,9 +84,9 @@ def simulate_interactive_session():
         print("✅ Transformation successful!")
 
     # Scenario 2: Transformation with warnings
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("Scenario 2: Transformation with Warnings")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     query2 = "Update all users to premium"
     plan2 = {
@@ -120,9 +125,9 @@ def simulate_interactive_session():
             print(f"   - {suggestion}")
 
     # Scenario 3: Syntax error with auto-correction
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("Scenario 3: Syntax Error with Auto-Correction")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     # Simulate a command with syntax error
     bad_command = "SELECT * FROM users WHERE (status = 'active'"  # Missing )
@@ -150,9 +155,9 @@ def simulate_interactive_session():
                     print(f"   Corrected: {corrected}")
 
     # Scenario 4: Ambiguous input requiring clarification
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("Scenario 4: Ambiguous Input")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     query4 = "Delete that thing"
 
@@ -172,9 +177,9 @@ def simulate_interactive_session():
             print(f"   - {question}")
 
     # Scenario 5: Exception handling
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("Scenario 5: Exception Analysis")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     exceptions = [
         FileNotFoundError("Table 'customers' does not exist"),
@@ -195,9 +200,9 @@ def simulate_interactive_session():
                 print(f"      - {s}")
 
     # Scenario 6: Feedback-driven refinement loop
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("Scenario 6: Iterative Refinement")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     print("\nSimulating iterative refinement process:")
 
@@ -229,9 +234,7 @@ def simulate_interactive_session():
             print("   ✅ Final result achieved!")
 
     # Summary
-    print("\n" + "=" * 70)
-    print("FEEDBACK LOOP SUMMARY")
-    print("=" * 70)
+    print_separator("FEEDBACK LOOP SUMMARY", leading_newline=True, width=70)
 
     print("""
 The NLP2CMD Feedback Loop provides:

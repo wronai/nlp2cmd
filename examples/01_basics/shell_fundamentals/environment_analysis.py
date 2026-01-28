@@ -12,6 +12,7 @@ Demonstrates environment analysis capabilities:
 """
 
 import json
+import sys
 from pathlib import Path
 
 from nlp2cmd.environment import (
@@ -19,6 +20,10 @@ from nlp2cmd.environment import (
     ToolInfo,
     ServiceInfo,
 )
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
 
 
 def format_size(gb: float) -> str:
@@ -29,16 +34,14 @@ def format_size(gb: float) -> str:
 
 
 def main():
-    print("=" * 70)
-    print("NLP2CMD Environment Analysis")
-    print("=" * 70)
+    print_separator("NLP2CMD Environment Analysis", width=70)
 
     analyzer = EnvironmentAnalyzer()
 
     # Section 1: Basic Environment Info
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("1. SYSTEM INFORMATION")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     env = analyzer.analyze()
 
@@ -61,9 +64,9 @@ def main():
     print(f"   {env['cwd']}")
 
     # Section 2: Tool Detection
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("2. TOOL DETECTION")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     tools_to_check = [
         "docker", "docker-compose", "kubectl",
@@ -101,9 +104,9 @@ def main():
             print(f"   • {tool.name}")
 
     # Section 3: Service Status
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("3. SERVICE STATUS")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     print("\n🔌 Checking services...")
     services = analyzer.check_services()
@@ -116,9 +119,9 @@ def main():
         print(f"   {status_icon} {name}{port_str}{reachable_str}")
 
     # Section 4: Configuration Files
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("4. CONFIGURATION FILES")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     print(f"\n📁 Scanning current directory: {Path.cwd()}")
 
@@ -139,9 +142,9 @@ def main():
         print("\n   No configuration files found in current directory")
 
     # Section 5: System Resources
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("5. SYSTEM RESOURCES")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     resources = analyzer._get_resources()
     disk = resources.get("disk", {})
@@ -170,9 +173,9 @@ def main():
         print(f"   [{bar}]")
 
     # Section 6: Command Validation
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("6. COMMAND VALIDATION")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     commands_to_validate = [
         "docker ps",
@@ -194,9 +197,9 @@ def main():
                 print(f"      └─ {warning}")
 
     # Section 7: Full Report
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("7. FULL ENVIRONMENT REPORT")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     report = analyzer.full_report()
 
@@ -210,9 +213,9 @@ def main():
         print("\n   ✅ No recommendations - environment looks good!")
 
     # Section 8: Export Report
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("8. EXPORT REPORT")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     report_data = {
         "os": report.os_info,
@@ -248,16 +251,14 @@ def main():
     }
 
     print("\n📝 Report JSON preview:")
-    print("-" * 40)
+    print_rule(width=40)
     print(json.dumps(report_data, indent=2)[:500] + "...")
 
     print("\n💾 To save full report:")
     print("   nlp2cmd --analyze-env --output env-report.json")
 
     # Summary
-    print("\n" + "=" * 70)
-    print("ENVIRONMENT ANALYSIS SUMMARY")
-    print("=" * 70)
+    print_separator("ENVIRONMENT ANALYSIS SUMMARY", leading_newline=True, width=70)
 
     available_count = len([t for t in tools.values() if t.available])
     running_count = len([s for s in services.values() if s.running])

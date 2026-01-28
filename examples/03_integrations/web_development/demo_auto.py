@@ -262,9 +262,7 @@ async def interactive_mode(controller):
     """Interactive mode for additional commands."""
     import sys
     
-    print("\n" + "=" * 70)
-    print("🎮 Tryb Interaktywny")
-    print("=" * 70)
+    print_separator("🎮 Tryb Interaktywny", leading_newline=True, width=70)
     print("Dostępne komendy:")
     print("  status - pokaż status kontenerów")
     print("  logs - pokaż logi kontenerów")

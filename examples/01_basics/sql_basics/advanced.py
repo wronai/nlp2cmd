@@ -10,7 +10,14 @@ Demonstrates complex SQL transformations including:
 - Schema-aware generation
 """
 
+import sys
+from pathlib import Path
+
 from nlp2cmd import NLP2CMD, SQLAdapter, SQLSafetyPolicy
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
 
 
 def main():
@@ -89,14 +96,12 @@ def main():
 
     nlp = NLP2CMD(adapter=adapter)
 
-    print("=" * 70)
-    print("NLP2CMD Advanced SQL Examples")
-    print("=" * 70)
+    print_separator("NLP2CMD Advanced SQL Examples", width=70)
 
     # Example 1: Basic SELECT with JOIN
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("1. JOIN Query: Orders with User Information")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     plan1 = {
         "intent": "select",
@@ -123,9 +128,9 @@ def main():
     print(adapter.generate(plan1))
 
     # Example 2: Aggregation with GROUP BY
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("2. Aggregation: Sales by Category")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     plan2 = {
         "intent": "aggregate",
@@ -165,9 +170,9 @@ def main():
     print(adapter.generate(plan2))
 
     # Example 3: Complex filtering with multiple conditions
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("3. Complex Filtering: Active Premium Users")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     plan3 = {
         "intent": "select",
@@ -188,9 +193,9 @@ def main():
     print(adapter.generate(plan3))
 
     # Example 4: Products with Average Rating
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("4. Aggregation with HAVING: Top Rated Products")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     plan4 = {
         "intent": "aggregate",
@@ -224,9 +229,9 @@ def main():
     print(adapter.generate(plan4))
 
     # Example 5: Customer Lifetime Value
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("5. Customer Lifetime Value Analysis")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     plan5 = {
         "intent": "aggregate",
@@ -259,9 +264,9 @@ def main():
     print(adapter.generate(plan5))
 
     # Example 6: Insert statement
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("6. INSERT: New User")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     plan6 = {
         "intent": "insert",
@@ -282,9 +287,9 @@ def main():
     print(adapter.generate(plan6))
 
     # Example 7: Update with conditions
-    print("\n" + "─" * 70)
+    print_rule(width=70, char="─", leading_newline=True)
     print("7. UPDATE: Upgrade User Subscription")
-    print("─" * 70)
+    print_rule(width=70, char="─")
 
     plan7 = {
         "intent": "update",
@@ -304,9 +309,7 @@ def main():
     print(adapter.generate(plan7))
 
     # Demonstrate safety policy
-    print("\n" + "=" * 70)
-    print("Safety Policy Demonstration")
-    print("=" * 70)
+    print_separator("Safety Policy Demonstration", leading_newline=True, width=70)
 
     # Try to delete without WHERE
     plan_unsafe = {

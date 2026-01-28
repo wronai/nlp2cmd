@@ -18,6 +18,17 @@ def print_separator(
     print("=" * width)
 
 
+def print_rule(
+    *,
+    width: int = 70,
+    char: str = "-",
+    indent: str = "",
+    leading_newline: bool = False,
+) -> None:
+    prefix = "\n" if leading_newline else ""
+    print(f"{prefix}{indent}{char * width}")
+
+
 def print_demo_header(title: str, *, leading_newline: bool = False) -> None:
     print_separator(title, leading_newline=leading_newline, width=70)
 

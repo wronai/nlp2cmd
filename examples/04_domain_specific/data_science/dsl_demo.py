@@ -12,7 +12,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from _demo_helpers import print_separator, print_simple_result
+from _demo_helpers import print_rule, print_separator, print_simple_result
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 
 
@@ -237,9 +237,8 @@ async def demo_system_maintenance():
 async def main():
     """Uruchom wszystkie demonstracje komend DSL."""
     print("🚀 NLP2CMD - Przykłady bezpośrednich komend DSL w shell")
-    print("=" * 70)
     print("Demonstracja generowania konkretnych komend shell z języka naturalnego")
-    print("=" * 70)
+    print_rule(width=70, char="=")
     
     start_total = time.time()
     
@@ -253,14 +252,12 @@ async def main():
     await demo_system_maintenance()
     
     total_time = (time.time() - start_total) * 1000
-    
-    print("\n" + "=" * 70)
-    print("  Podsumowanie demonstracji DSL")
-    print("=" * 70)
+
+    print_separator("Podsumowanie demonstracji DSL", leading_newline=True, width=70)
     print(f"Całkowity czas wykonania: {total_time:.1f}ms")
     print(f"Średnia latencja na zapytanie: ~{total_time/80:.1f}ms")
-    print("\n✅ Wszystkie przykłady komend DSL ukończone!")
-    print("=" * 70)
+
+    print_separator("✅ Wszystkie przykłady komend DSL ukończone!", leading_newline=True, width=70)
 
 
 if __name__ == "__main__":

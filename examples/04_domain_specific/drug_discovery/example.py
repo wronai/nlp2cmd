@@ -13,13 +13,14 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from nlp2cmd.generation.thermodynamic import (
     OptimizationProblem,
-    ThermodynamicGenerator,
 )
 
 from _demo_helpers import (
     print_fallback_note,
+    print_metrics,
     print_projected,
     project_sample,
+    run_thermo_demo,
 )
 
 
@@ -27,12 +28,6 @@ from _demo_helpers import (
 
 async def demo_lead_optimization() -> None:
     """Optymalizacja leadu z ograniczeniami fizykochemicznymi."""
-    print("=" * 70)
-    print("  Drug Discovery - Lead Optimization")
-    print("=" * 70)
-
-    thermo = ThermodynamicGenerator()
-
     problem = OptimizationProblem(
         problem_type="drug_discovery",
         variables=[
@@ -55,7 +50,8 @@ async def demo_lead_optimization() -> None:
         objective_field="binding_affinity",
     )
 
-    result = await thermo.generate(
+    result = await run_thermo_demo(
+        "Drug Discovery - Lead Optimization",
         "Zoptymalizuj lead: wysokie powinowactwo do celu, dobry profil ADMET.",
         problem=problem,
     )
@@ -65,19 +61,12 @@ async def demo_lead_optimization() -> None:
 
     print(result.decoded_output)
     print_projected("\n🔬 Projected physicochemical profile:", projected, precision=3)
-    print(f"\n   Energy: {result.energy:.4f}")
-    print(f"   Converged: {result.converged}")
+    print_metrics(result, energy=True, converged=True)
     print_fallback_note("drug_discovery")
 
 
 async def demo_admet_balancing() -> None:
     """Wielokryterialna optymalizacja ADMET."""
-    print("\n" + "=" * 70)
-    print("  Drug Discovery - ADMET Balancing")
-    print("=" * 70)
-
-    thermo = ThermodynamicGenerator()
-
     problem = OptimizationProblem(
         problem_type="drug_discovery",
         variables=[
@@ -98,9 +87,11 @@ async def demo_admet_balancing() -> None:
         objective_field="admet_score",
     )
 
-    result = await thermo.generate(
+    result = await run_thermo_demo(
+        "Drug Discovery - ADMET Balancing",
         "Zbalansuj ADMET: wysoka biodostępność, niska toksyczność, stabilność metaboliczna.",
         problem=problem,
+        leading_newline=True,
     )
 
     raw_sample = result.solution.get("raw_sample", [])
@@ -108,8 +99,7 @@ async def demo_admet_balancing() -> None:
 
     print(result.decoded_output)
     print_projected("\n🧪 Projected ADMET profile:", projected, precision=3)
-    print(f"\n   Energy: {result.energy:.4f}")
-    print(f"   Latency: {result.latency_ms:.1f}ms")
+    print_metrics(result, energy=True, latency=True)
     print_fallback_note("drug_discovery")
 
 
@@ -118,9 +108,9 @@ async def main() -> None:
     await demo_lead_optimization()
     await demo_admet_balancing()
 
-    print("\n" + "=" * 70)
-    print("  Drug Discovery demos completed!")
-    print("=" * 70)
+    from _demo_helpers import print_separator
+
+    print_separator("Drug Discovery demos completed!", leading_newline=True, width=70)
 
 
 if __name__ == "__main__":
