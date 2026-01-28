@@ -85,11 +85,11 @@ class FormHandler:
         
         # Debug: Show all input fields found
         all_inputs = page.query_selector_all('input')
-        self._print(f"Found {len(all_inputs)} total input elements", language="text")
+        self._print_yaml({"status": "form_inputs_total", "count": len(all_inputs)})
         
         # Detect input fields
         inputs = page.query_selector_all('input:not([type="hidden"]):not([type="submit"]):not([type="button"])')
-        self._print(f"Found {len(inputs)} visible input fields", language="text")
+        self._print_yaml({"status": "form_inputs_visible", "count": len(inputs)})
         
         for inp in inputs:
             try:
@@ -139,7 +139,7 @@ class FormHandler:
         
         # Detect textareas
         textareas = page.query_selector_all('textarea')
-        self._print(f"Found {len(textareas)} textarea fields", language="text")
+        self._print_yaml({"status": "form_textareas", "count": len(textareas)})
         
         for ta in textareas:
             try:
@@ -187,7 +187,7 @@ class FormHandler:
         
         # Detect contenteditable divs (often used as rich text editors)
         content_editables = page.query_selector_all('[contenteditable="true"]')
-        self._print(f"Found {len(content_editables)} contenteditable fields", language="text")
+        self._print_yaml({"status": "form_contenteditable", "count": len(content_editables)})
         
         for ce in content_editables:
             try:
@@ -232,7 +232,7 @@ class FormHandler:
         
         # Detect divs with form-like attributes (common in custom form builders)
         div_inputs = page.query_selector_all('div[role="textbox"], div[data-input], div[data-field]')
-        self._print(f"Found {len(div_inputs)} div-based input fields", language="text")
+        self._print_yaml({"status": "form_div_inputs", "count": len(div_inputs)})
         
         for div in div_inputs:
             try:
@@ -559,7 +559,13 @@ class FormHandler:
                 self.console.print(f"[green]✓[/green] Filled: {selector}")
                 
             except Exception as e:
-                self.console.print(f"[red]✗[/red] Error filling {selector}: {e}")
+                self._print_yaml(
+                    {
+                        "status": "form_fill_error",
+                        "selector": selector,
+                        "error": str(e),
+                    }
+                )
                 return False
         
         if submit and form_data.submit_selector:
@@ -568,7 +574,13 @@ class FormHandler:
                 page.wait_for_timeout(1000)
                 self.console.print("[green]✓[/green] Form submitted")
             except Exception as e:
-                self.console.print(f"[red]✗[/red] Submit error: {e}")
+                self._print_yaml(
+                    {
+                        "status": "form_submit_error",
+                        "submit_selector": form_data.submit_selector,
+                        "error": str(e),
+                    }
+                )
                 return False
         
         return True
