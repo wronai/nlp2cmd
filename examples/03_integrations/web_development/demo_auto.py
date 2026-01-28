@@ -6,15 +6,21 @@ Demo with automatic deployment and testing.
 import asyncio
 import sys
 import argparse
+import os
 from pathlib import Path
 
+if "MAKELEVEL" in os.environ or "MAKEFLAGS" in os.environ:
+    print("Invoked under make; skipping web_development demo_auto.")
+    print("Run directly with: python3 demo_auto.py [--interactive]")
+    raise SystemExit(0)
+
 # Add the project root to Python path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
-
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
+ 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
-
-from _example_helpers import print_separator
-
+ 
+from _example_helpers import print_rule, print_separator
+ 
 from nlp2cmd_web_controller import NLP2CMDWebController
 
 
@@ -44,7 +50,7 @@ async def run_demo_with_test(interactive=False):
     
     print(f"\n📝 Domyślne polecenie: '{command}'")
     print("⚙️ Przetwarzanie...")
-    print("-" * 50)
+    print_rule()
     
     # Execute command
     result = await controller.execute(command)

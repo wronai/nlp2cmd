@@ -21,6 +21,13 @@ Key principle: LLM plans. Code executes. System controls.
 - https://github.com/wronai/nlp2cmd/tree/main/examples/use_cases
 """
 
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
+
 from nlp2cmd import (
     # Core NLP
     NLP2CMD,
@@ -46,15 +53,14 @@ from nlp2cmd import (
 
 def print_section(title: str) -> None:
     """Print section header."""
-    print(f"\n{'='*60}")
-    print(f"  {title}")
-    print(f"{'='*60}\n")
+    print_separator(f"  {title}", leading_newline=True, width=60)
+    print()
 
 
 def print_step(step: str) -> None:
     """Print step indicator."""
     print(f"\n→ {step}")
-    print("-" * 40)
+    print_rule(width=40)
 
 
 # =============================================================================

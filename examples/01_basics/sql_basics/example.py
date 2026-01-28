@@ -13,10 +13,17 @@ with schema context and safety policies.
 🚀 More Examples:
 - https://github.com/wronai/nlp2cmd/tree/main/examples/use_cases
 """
-
+ 
+import sys
+from pathlib import Path
+ 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+ 
+from _example_helpers import print_rule, print_separator
+ 
 from nlp2cmd import NLP2CMD, SQLAdapter, SQLSafetyPolicy
-
-
+ 
+ 
 def main():
     # Configure schema context
     schema_context = {
@@ -69,13 +76,11 @@ def main():
         "List categories with more than 5 products",
     ]
 
-    print("=" * 60)
-    print("NLP2CMD SQL Examples")
-    print("=" * 60)
+    print_separator("NLP2CMD SQL Examples", width=60)
 
     for query in queries:
         print(f"\n📝 Query: {query}")
-        print("-" * 40)
+        print_rule(width=40)
 
         result = nlp.transform(query)
 
@@ -95,9 +100,7 @@ def main():
                 print(f"   - {suggestion}")
 
     # Example: Blocked operation
-    print("\n" + "=" * 60)
-    print("Safety Policy Demo: Blocked Operation")
-    print("=" * 60)
+    print_separator("Safety Policy Demo: Blocked Operation", leading_newline=True, width=60)
 
     result = nlp.transform("Delete all inactive users")
     print(f"\n📝 Query: Delete all inactive users")

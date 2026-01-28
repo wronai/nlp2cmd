@@ -17,6 +17,9 @@ from typing import List, Tuple
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_separator
 
 from nlp2cmd import NLP2CMD
 from nlp2cmd.adapters.shell import ShellAdapter
@@ -24,9 +27,8 @@ from nlp2cmd.adapters.shell import ShellAdapter
 
 def print_section(title: str) -> None:
     """Print section header."""
-    print(f"\n{'='*60}")
-    print(f"  {title}")
-    print(f"{'='*60}\n")
+    print_separator(f"  {title}", leading_newline=True, width=60)
+    print()
 
 
 def run_command_with_timing(nlp: NLP2CMD, command: str) -> Tuple[str, float]:

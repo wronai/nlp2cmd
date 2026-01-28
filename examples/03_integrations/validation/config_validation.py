@@ -11,15 +11,21 @@ Demonstrates validation and repair of various configuration files:
 
 Shows how to use SchemaRegistry for automated config validation.
 """
+ 
+import sys
+from pathlib import Path
 
 from nlp2cmd import SchemaRegistry
 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
 
+from _example_helpers import print_rule, print_separator
+ 
+ 
 def print_section(title: str):
     """Print section header."""
-    print(f"\n{'='*60}")
-    print(f"  {title}")
-    print(f"{'='*60}\n")
+    print_separator(f"  {title}", leading_newline=True, width=60)
+    print()
 
 
 def print_result(result: dict, title: str = "Result"):
@@ -59,7 +65,7 @@ CMD ["python", "app.py"]
 """
     
     print("Valid Dockerfile:")
-    print("-" * 40)
+    print_rule(width=40)
     result = registry.validate(valid_dockerfile, "dockerfile")
     print_result(result)
     
@@ -71,7 +77,7 @@ WORKDIR /app
 """
     
     print("\nDockerfile with issues:")
-    print("-" * 40)
+    print_rule(width=40)
     result = registry.validate(problematic_dockerfile, "dockerfile")
     print_result(result)
     
@@ -107,7 +113,7 @@ volumes:
 """
     
     print("Valid docker-compose.yml:")
-    print("-" * 40)
+    print_rule(width=40)
     result = registry.validate(valid_compose, "docker-compose")
     print_result(result)
     
@@ -119,7 +125,7 @@ services:
 """
     
     print("\ndocker-compose.yml with old version:")
-    print("-" * 40)
+    print_rule(width=40)
     result = registry.validate(old_compose, "docker-compose")
     print_result(result)
     
@@ -162,7 +168,7 @@ spec:
 """
     
     print("Valid Kubernetes Deployment:")
-    print("-" * 40)
+    print_rule(width=40)
     result = registry.validate(valid_k8s, "kubernetes-deployment")
     print_result(result)
     
@@ -183,7 +189,7 @@ spec:
 """
     
     print("\nIncomplete Kubernetes Deployment:")
-    print("-" * 40)
+    print_rule(width=40)
     result = registry.validate(incomplete_k8s, "kubernetes-deployment")
     print_result(result)
     
@@ -224,7 +230,7 @@ jobs:
 """
     
     print("Valid GitHub Actions Workflow:")
-    print("-" * 40)
+    print_rule(width=40)
     result = registry.validate(valid_workflow, "github-workflow")
     print_result(result)
     
@@ -238,7 +244,7 @@ jobs:
 """
     
     print("\nWorkflow missing runs-on:")
-    print("-" * 40)
+    print_rule(width=40)
     result = registry.validate(invalid_workflow, "github-workflow")
     print_result(result)
     
@@ -261,7 +267,7 @@ LOG_LEVEL=info
 """
     
     print("Valid .env file:")
-    print("-" * 40)
+    print_rule(width=40)
     result = registry.validate(valid_env, "env-file")
     print_result(result)
     
@@ -273,7 +279,7 @@ invalid line without equals
 """
     
     print("\n.env file with issues:")
-    print("-" * 40)
+    print_rule(width=40)
     result = registry.validate(problematic_env, "env-file")
     print_result(result)
     
@@ -289,7 +295,7 @@ services:
 """
     
     print("Original docker-compose.yml:")
-    print("-" * 40)
+    print_rule(width=40)
     print(compose_to_fix)
     
     print("\nAttempting repair...")
@@ -303,7 +309,7 @@ services:
     
     if repair_result.get("content"):
         print("\nRepaired content:")
-        print("-" * 40)
+        print_rule(width=40)
         print(repair_result["content"])
     
     # =========================================================================

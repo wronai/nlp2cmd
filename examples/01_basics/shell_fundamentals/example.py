@@ -19,6 +19,10 @@ import sys
 import json
 import tempfile
 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
+
 from app2schema import extract_appspec_to_file
 from nlp2cmd import NLP2CMD
 from nlp2cmd.schema_based import SchemaDrivenAppSpecAdapter
@@ -32,9 +36,7 @@ def main():
     env_info = env_analyzer.analyze()
     tools = env_analyzer.detect_tools(["docker", "git", "kubectl", "aws", "curl"])
 
-    print("=" * 60)
-    print("Environment Analysis")
-    print("=" * 60)
+    print_separator("Environment Analysis", width=60)
     print(f"OS: {env_info['os']['system']} {env_info['os']['release']}")
     print(f"Shell: {env_info['shell']['name']}")
     print(f"Available tools: {[t for t, i in tools.items() if i.available]}")
@@ -103,13 +105,11 @@ def main():
         "Show git commits from last week by author",
     ]
 
-    print("\n" + "=" * 60)
-    print("NLP2CMD Shell Examples")
-    print("=" * 60)
+    print_separator("NLP2CMD Shell Examples", leading_newline=True, width=60)
 
     for cmd in commands:
         print(f"\n📝 Request: {cmd}")
-        print("-" * 40)
+        print_rule(width=40)
 
         ir = nlp.transform_ir(cmd)
 
@@ -124,9 +124,7 @@ def main():
             print("Thanks! I've learned from that.")
 
     # Safety policy demo
-    print("\n" + "=" * 60)
-    print("Safety Policy Demo")
-    print("=" * 60)
+    print_separator("Safety Policy Demo", leading_newline=True, width=60)
 
     dangerous_commands = [
         "Delete everything in root directory",

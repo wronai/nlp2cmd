@@ -5,10 +5,11 @@ Batch demo - execute all commands from prompt.txt automatically.
 
 import asyncio
 import sys
+import os
 from pathlib import Path
 
 # Add the project root to Python path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
@@ -62,7 +63,7 @@ async def run_batch_demo():
     for i, command in enumerate(commands, 1):
         print(f"\n📝 Komenda {i}/{len(commands)}: {command}")
         print("⚙️ Przetwarzanie...")
-        print("-" * 50)
+        print_rule()
         
         try:
             # Execute command
@@ -266,4 +267,8 @@ async def test_postgres_service(container):
 
 
 if __name__ == "__main__":
+    if "MAKELEVEL" in os.environ or "MAKEFLAGS" in os.environ:
+        print("Invoked under make; skipping web_development demo_batch.")
+        print("Run directly with: python3 demo_batch.py")
+        raise SystemExit(0)
     asyncio.run(run_batch_demo())

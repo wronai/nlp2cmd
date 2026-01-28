@@ -10,6 +10,9 @@ Demonstrates checking health across multiple infrastructure layers:
 
 Shows cross-domain workflows and result aggregation.
 """
+ 
+import sys
+from pathlib import Path
 
 from nlp2cmd import (
     PlanExecutor,
@@ -23,11 +26,15 @@ from nlp2cmd import (
     ParamType,
 )
 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
 
+from _example_helpers import print_rule, print_separator
+ 
+ 
 # =============================================================================
 # Mock Handlers
 # =============================================================================
-
+ 
 def mock_docker_ps(**kwargs):
     """Mock: List Docker containers."""
     return [
@@ -36,8 +43,8 @@ def mock_docker_ps(**kwargs):
         {"id": "ghi789", "name": "db-1", "status": "running", "cpu": "8.2%", "memory": "1.2GB"},
         {"id": "jkl012", "name": "cache-1", "status": "running", "cpu": "0.5%", "memory": "128MB"},
     ]
-
-
+ 
+ 
 def mock_k8s_get(resource: str, **kwargs):
     """Mock: Get Kubernetes resources."""
     resources = {
@@ -58,8 +65,8 @@ def mock_k8s_get(resource: str, **kwargs):
         ],
     }
     return resources.get(resource, [])
-
-
+ 
+ 
 def mock_sql_select(table: str, **kwargs):
     """Mock: SQL query."""
     if table == "health_checks":
@@ -69,8 +76,8 @@ def mock_sql_select(table: str, **kwargs):
             {"service": "queue", "status": "degraded", "latency_ms": 150},
         ]
     return []
-
-
+ 
+ 
 def mock_process_list(**kwargs):
     """Mock: System process list."""
     return [
@@ -79,8 +86,8 @@ def mock_process_list(**kwargs):
         {"pid": 5678, "name": "nginx", "cpu": 2.1, "memory": 1.2},
         {"pid": 9012, "name": "postgres", "cpu": 5.5, "memory": 12.4},
     ]
-
-
+ 
+ 
 def check_health(data, **kwargs):
     """Custom handler: Analyze health status."""
     issues = []
@@ -106,12 +113,10 @@ def check_health(data, **kwargs):
         "issues": issues,
         "status": "CRITICAL" if len(issues) > 2 else "WARNING" if issues else "HEALTHY",
     }
-
-
+ 
+ 
 def main():
-    print("=" * 60)
-    print("  Infrastructure Health Check")
-    print("=" * 60)
+    print_separator("  Infrastructure Health Check", width=60)
     
     # Initialize
     registry = get_registry()
@@ -193,7 +198,7 @@ def main():
     )
     
     print("\n📋 Health Check Plan:")
-    print("-" * 40)
+    print_rule(width=40)
     print(f"  Steps: {len(plan.steps)}")
     print(f"  Domains: Docker, Kubernetes, SQL")
     
@@ -216,14 +221,14 @@ def main():
     
     # Display Docker status
     print("\n🐳 Docker Containers:")
-    print("-" * 40)
+    print_rule(width=40)
     print(f"  Running: {len(containers)}")
     for c in containers:
         print(f"    • {c['name']}: {c['status']} (CPU: {c['cpu']}, Mem: {c['memory']})")
     
     # Display Kubernetes status
     print("\n☸️  Kubernetes Pods:")
-    print("-" * 40)
+    print_rule(width=40)
     running = len([p for p in pods if p["status"] == "Running"])
     print(f"  Running: {running}/{len(pods)}")
     for p in pods:
@@ -232,32 +237,30 @@ def main():
         print(f"    {icon} {p['name']}: {p['status']}{restarts}")
     
     print("\n🖥️  Kubernetes Nodes:")
-    print("-" * 40)
+    print_rule(width=40)
     for n in nodes:
         icon = "✓" if n["status"] == "Ready" else "✗"
         print(f"    {icon} {n['name']}: {n['status']} (CPU: {n['cpu']}, Mem: {n['memory']})")
     
     # Display service health
     print("\n🔌 Service Health:")
-    print("-" * 40)
+    print_rule(width=40)
     for s in services:
         icon = "✓" if s["status"] == "healthy" else "⚠️"
         print(f"    {icon} {s['service']}: {s['status']} ({s['latency_ms']}ms)")
     
     # Overall health summary
-    print("\n" + "=" * 60)
-    print("  HEALTH SUMMARY")
-    print("=" * 60)
+    print_separator("  HEALTH SUMMARY", leading_newline=True, width=60)
     
     all_health = [pod_health, node_health, service_health]
     total_issues = sum(h["issues_found"] for h in all_health)
     
     print(f"\n  {'Component':<20} {'Status':<12} {'Issues':<10}")
-    print("  " + "-" * 42)
+    print_rule(width=42, indent="  ")
     print(f"  {'Pods':<20} {pod_health['status']:<12} {pod_health['issues_found']:<10}")
     print(f"  {'Nodes':<20} {node_health['status']:<12} {node_health['issues_found']:<10}")
     print(f"  {'Services':<20} {service_health['status']:<12} {service_health['issues_found']:<10}")
-    print("  " + "-" * 42)
+    print_rule(width=42, indent="  ")
     
     overall_status = "CRITICAL" if total_issues > 3 else "WARNING" if total_issues > 0 else "HEALTHY"
     status_icon = "🔴" if overall_status == "CRITICAL" else "🟡" if overall_status == "WARNING" else "🟢"

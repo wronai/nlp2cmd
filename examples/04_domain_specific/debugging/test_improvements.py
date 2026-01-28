@@ -9,6 +9,9 @@ from pathlib import Path
 
 # Dodaj ścieżkę do importów
 sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_rule
 
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 
@@ -16,7 +19,7 @@ from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 async def test_shell_improvements():
     """Test kilka konkretnych przypadków shell."""
     print("🔧 Testowanie poprawek shell DSL")
-    print("=" * 50)
+    print_rule(width=50, char="=")
     
     generator = HybridThermodynamicGenerator()
     
@@ -144,9 +147,9 @@ async def test_shell_improvements():
             print()
     
     # Podsumowanie
-    print("=" * 50)
+    print_rule(width=50, char="=")
     print("📊 PODSUMOWANIE TESTU")
-    print("=" * 50)
+    print_rule(width=50, char="=")
     print(f"Łącznie testów: {len(test_cases)}")
     print(f"Dokładne trafienia: {exact_matches} ({exact_matches/len(test_cases)*100:.1f}%)")
     print(f"Podobne trafienia: {similar_matches} ({similar_matches/len(test_cases)*100:.1f}%)")

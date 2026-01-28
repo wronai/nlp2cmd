@@ -21,6 +21,10 @@ from pathlib import Path
 # Add src to path for development
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_separator
+
 import numpy as np
 
 from nlp2cmd.generation import (
@@ -38,9 +42,7 @@ from nlp2cmd.thermodynamic import (
 
 async def example_scheduling():
     """Example 1: Scheduling tasks with Langevin dynamics."""
-    print("\n" + "=" * 60)
-    print("📅 Example 1: Scheduling Optimization")
-    print("=" * 60)
+    print_separator("📅 Example 1: Scheduling Optimization", leading_newline=True, width=60)
 
     # Create generator with adaptive steps for faster convergence
     generator = create_thermodynamic_generator(
@@ -75,9 +77,7 @@ async def example_scheduling():
 
 async def example_allocation():
     """Example 2: Resource allocation with thermodynamic sampling."""
-    print("\n" + "=" * 60)
-    print("📦 Example 2: Resource Allocation")
-    print("=" * 60)
+    print_separator("📦 Example 2: Resource Allocation", leading_newline=True, width=60)
 
     generator = create_thermodynamic_generator(
         n_samples=5,
@@ -105,9 +105,7 @@ async def example_allocation():
 
 async def example_energy_savings():
     """Example 3: Energy savings estimation."""
-    print("\n" + "=" * 60)
-    print("⚡ Example 3: Energy Savings Analysis")
-    print("=" * 60)
+    print_separator("⚡ Example 3: Energy Savings Analysis", leading_newline=True, width=60)
 
     estimator = EnergyEstimator()
 
@@ -132,9 +130,7 @@ async def example_energy_savings():
 
 async def example_majority_voting():
     """Example 4: Majority voting strategies."""
-    print("\n" + "=" * 60)
-    print("🗳️ Example 4: Majority Voting Strategies")
-    print("=" * 60)
+    print_separator("🗳️ Example 4: Majority Voting Strategies", leading_newline=True, width=60)
 
     from nlp2cmd.thermodynamic import QuadraticEnergy, SamplerResult
 
@@ -176,9 +172,7 @@ async def example_majority_voting():
 
 async def example_routing():
     """Example 5: Routing/TSP optimization with Langevin dynamics."""
-    print("\n" + "=" * 60)
-    print("🗺️ Example 5: Routing (TSP) Optimization")
-    print("=" * 60)
+    print_separator("🗺️ Example 5: Routing (TSP) Optimization", leading_newline=True, width=60)
 
     generator = create_thermodynamic_generator(
         n_samples=5,
@@ -210,9 +204,7 @@ async def example_routing():
 
 async def example_direct_problem():
     """Example 6: Direct problem definition (without NL parsing)."""
-    print("\n" + "=" * 60)
-    print("🎯 Example 6: Direct Problem Definition")
-    print("=" * 60)
+    print_separator("🎯 Example 6: Direct Problem Definition", leading_newline=True, width=60)
 
     # Define problem directly (bypasses NL parsing)
     problem = OptimizationProblem(
@@ -244,9 +236,11 @@ async def example_direct_problem():
 
 async def main():
     """Run all examples."""
-    print("\n" + "=" * 60)
-    print("🌡️ NLP2CMD Thermodynamic Computing Examples")
-    print("=" * 60)
+    print_separator(
+        "🌡️ NLP2CMD Thermodynamic Computing Examples",
+        leading_newline=True,
+        width=60,
+    )
     print("\nBased on Whitelam 2025 'Generative Thermodynamic Computing'")
     print("Framework: Langevin dynamics for optimization problems")
 
@@ -258,9 +252,7 @@ async def main():
         await example_routing()
         await example_direct_problem()
 
-        print("\n" + "=" * 60)
-        print("✅ All examples completed successfully!")
-        print("=" * 60)
+        print_separator("✅ All examples completed successfully!", leading_newline=True, width=60)
 
     except ImportError as e:
         print(f"\n❌ Import error: {e}")

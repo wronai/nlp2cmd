@@ -15,7 +15,7 @@ from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from _demo_helpers import print_rule
+from _demo_helpers import print_rule, rule_line
 
 
 @dataclass
@@ -645,11 +645,11 @@ class ShellCommandValidator:
         
         report = f"""
 📊 RAPORT WALIDACJI KOMEND SHELL
-{'='*70}
+{rule_line(width=70, char="=")}
 Podsumowanie:
 - Łącznie testów: {total_tests}
 - Dokładne trafienia: {exact_matches} ({exact_matches/total_tests*100:.1f}%)
-- Podobne (>80%): {similar_matches} ({similar_matches/total_tests*100:.1f}%)
+- Podobne trafienia: {similar_matches} ({similar_matches/total_tests*100:.1f}%)
 - Sukcesy ogólnie: {successful_tests} ({successful_tests/total_tests*100:.1f}%)
 - Średnia latencja: {avg_latency:.1f}ms
 

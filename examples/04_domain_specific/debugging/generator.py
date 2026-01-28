@@ -9,6 +9,9 @@ from pathlib import Path
 
 # Dodaj ścieżkę do importów
 sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_rule
 
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 from nlp2cmd.generation.keywords import KeywordIntentDetector
@@ -17,7 +20,7 @@ from nlp2cmd.generation.keywords import KeywordIntentDetector
 async def debug_generator():
     """Debug generator internals."""
     print("🔍 Debugowanie generator internals")
-    print("=" * 50)
+    print_rule(width=50, char="=")
     
     # Sprawdź czy mamy nową wersję KeywordIntentDetector
     detector = KeywordIntentDetector()

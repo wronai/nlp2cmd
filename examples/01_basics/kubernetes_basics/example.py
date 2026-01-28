@@ -6,9 +6,14 @@ Demonstrates natural language to kubectl command transformation
 and manifest generation with safety policies.
 """
 
+import sys
 from pathlib import Path
 
 from app2schema import extract_schema_to_file
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
 from nlp2cmd import NLP2CMD
 from nlp2cmd.adapters.dynamic import DynamicAdapter
 from nlp2cmd.adapters.kubernetes import KubernetesSafetyPolicy
@@ -60,13 +65,11 @@ def main():
         "Restart nginx deployment",
     ]
 
-    print("=" * 60)
-    print("NLP2CMD Kubernetes Examples")
-    print("=" * 60)
+    print_separator("NLP2CMD Kubernetes Examples", width=60)
 
     for cmd in commands:
         print(f"\n📝 Request: {cmd}")
-        print("-" * 40)
+        print_rule(width=40)
 
         result = nlp.transform(cmd)
 
@@ -81,9 +84,7 @@ def main():
                 print(f"   - {warning}")
 
     # Safety policy demo
-    print("\n" + "=" * 60)
-    print("Safety Policy Demo")
-    print("=" * 60)
+    print_separator("Safety Policy Demo", leading_newline=True, width=60)
 
     blocked_commands = [
         "Delete all pods in production",

@@ -22,10 +22,10 @@ from pathlib import Path
 
 # Add shared module to path
 sys.path.insert(0, str(Path(__file__).parent / "shared"))
-
+ 
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from _example_helpers import print_separator
+from _example_helpers import print_rule, print_separator
 
 from nlp2cmd_web_controller import NLP2CMDWebController
 
@@ -74,7 +74,7 @@ async def demo_nlp_commands():
             # Handle container management commands
             if command.lower() == 'status':
                 print(f"\n⚙️ Sprawdzanie statusu kontenerów...")
-                print("-" * 50)
+                print_rule()
                 
                 status_result = await controller.get_container_status()
                 if status_result.get('status') == 'success':
@@ -94,19 +94,19 @@ async def demo_nlp_commands():
             
             if command.lower() == 'logs':
                 print(f"\n📋 Pobieranie logów kontenerów...")
-                print("-" * 50)
+                print_rule()
                 await controller.show_container_logs(follow=False, lines=20)
                 continue
             
             if command.lower() == 'logs follow':
                 print(f"\n📋 Śledzenie logów kontenerów (Ctrl+C aby przerwać)...")
-                print("-" * 50)
+                print_rule()
                 await controller.show_container_logs(follow=True)
                 continue
             
             if command.lower() == 'stop':
                 print(f"\n🛑 Zatrzymywanie kontenerów...")
-                print("-" * 50)
+                print_rule()
                 stop_result = await controller.stop_containers()
                 if stop_result.get('status') == 'success':
                     print("✅ Kontenery zatrzymane pomyślnie")
@@ -116,7 +116,7 @@ async def demo_nlp_commands():
             
             # Execute command
             print(f"\n⚙️ Przetwarzanie: \"{command}\"")
-            print("-" * 50)
+            print_rule()
             
             result = await controller.execute(command)
             
@@ -268,7 +268,10 @@ async def main():
     
     args = parser.parse_args()
 
-    if args.example == "interactive" and (not sys.stdin.isatty() or "MAKELEVEL" in os.environ or "MAKEFLAGS" in os.environ):
+    noninteractive = os.environ.get("NLP2CMD_EXAMPLES_NONINTERACTIVE")
+    noninteractive_enabled = isinstance(noninteractive, str) and noninteractive.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+    if args.example == "interactive" and (noninteractive_enabled or not sys.stdin.isatty() or "MAKELEVEL" in os.environ or "MAKEFLAGS" in os.environ):
         print("Non-interactive environment detected; skipping interactive web demo.")
         print("Re-run this script in a TTY (default) or use: python demo.py --example all")
         return

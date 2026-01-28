@@ -10,6 +10,8 @@ Demonstrates a multi-step log analysis workflow:
 
 Shows how to use foreach loops and variable references.
 """
+import sys
+from pathlib import Path
 
 from nlp2cmd import (
     PlanExecutor,
@@ -20,6 +22,9 @@ from nlp2cmd import (
     get_registry,
 )
 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
 
 def mock_find_logs(**kwargs):
     """Mock: Find log files."""
@@ -49,9 +54,7 @@ def mock_read_file(path: str, **kwargs):
 
 
 def main():
-    print("=" * 60)
-    print("  Log Analysis Pipeline Example")
-    print("=" * 60)
+    print_separator("  Log Analysis Pipeline Example", width=60)
     
     # Initialize
     registry = get_registry()
@@ -103,7 +106,7 @@ def main():
     )
     
     print("\n📋 Execution Plan:")
-    print("-" * 40)
+    print_rule(width=40)
     for i, step in enumerate(plan.steps, 1):
         foreach = f" [foreach: ${step.foreach}]" if step.foreach else ""
         print(f"  {i}. {step.action}{foreach}")
@@ -113,7 +116,7 @@ def main():
     
     # Execute
     print("\n⚡ Executing...")
-    print("-" * 40)
+    print_rule(width=40)
     result = executor.execute(plan)
     
     # Show results
@@ -123,7 +126,7 @@ def main():
     print(f"   Success: {result.success}")
     
     print("\n📊 Step Results:")
-    print("-" * 40)
+    print_rule(width=40)
     
     for step_result in result.steps:
         status_icon = "✓" if step_result.status.value == "success" else "✗"
@@ -144,7 +147,7 @@ def main():
     
     # Generate formatted output
     print("\n📈 Analysis Summary:")
-    print("-" * 40)
+    print_rule(width=40)
     
     # Get the counts from context
     log_files = result.steps[0].result
@@ -152,7 +155,7 @@ def main():
     warning_counts = result.steps[2].result
     
     print(f"\n{'File':<30} {'ERRORs':<10} {'WARNINGs':<10}")
-    print("-" * 50)
+    print_rule(width=50)
     
     total_errors = 0
     total_warnings = 0
@@ -163,12 +166,12 @@ def main():
         total_errors += errors
         total_warnings += warnings
     
-    print("-" * 50)
+    print_rule(width=50)
     print(f"{'TOTAL':<30} {total_errors:<10} {total_warnings:<10}")
     
     # Critical threshold check
     print("\n🚨 Critical Issues:")
-    print("-" * 40)
+    print_rule(width=40)
     
     for i, (file, errors) in enumerate(zip(log_files, error_counts)):
         if errors > 100:

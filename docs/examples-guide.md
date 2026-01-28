@@ -538,7 +538,7 @@ async def custom_workflow():
     pass
 ```
 
-2. **Add to documentation**
+1. **Add to documentation**
    - Update this guide
    - Add to README examples section
    - Include in tests if needed

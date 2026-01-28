@@ -6,9 +6,14 @@ Demonstrates natural language to Docker command transformation
 with safety policies and compose file generation.
 """
 
+import sys
 from pathlib import Path
 
 from app2schema import extract_appspec_to_file
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_rule, print_separator
 from nlp2cmd import NLP2CMD
 from nlp2cmd.adapters import AppSpecAdapter
 from nlp2cmd.adapters.docker import DockerSafetyPolicy
@@ -54,13 +59,11 @@ def main():
         "Build image from current directory tagged as myapp",
     ]
 
-    print("=" * 60)
-    print("NLP2CMD Docker Examples")
-    print("=" * 60)
+    print_separator("NLP2CMD Docker Examples", width=60)
 
     for cmd in commands:
         print(f"\n📝 Request: {cmd}")
-        print("-" * 40)
+        print_rule(width=40)
 
         ir = nlp.transform_ir(cmd)
 
@@ -69,9 +72,7 @@ def main():
         print(f"   {ir.dsl}")
 
     # Safety policy demo
-    print("\n" + "=" * 60)
-    print("Safety Policy Demo")
-    print("=" * 60)
+    print_separator("Safety Policy Demo", leading_newline=True, width=60)
 
     dangerous_commands = [
         "docker run --privileged alpine:latest",

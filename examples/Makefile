@@ -30,6 +30,7 @@ all:
 	@sleep 3
 	@export NLP2CMD_KEYWORD_DETECTOR_CONFIG="$(CURDIR)/../data/keyword_intent_detector_config.json"; \
 	export NLP2CMD_PATTERNS_FILE="$(CURDIR)/../data/patterns.json"; \
+	export NLP2CMD_EXAMPLES_NONINTERACTIVE="1"; \
 	export PYTHONPATH="$(CURDIR)/../src:$$PYTHONPATH"; \
 	for dir in 0*; do \
 		if [ -d "$$dir" ]; then \
@@ -47,6 +48,7 @@ all:
 		cd "$@"; \
 		export NLP2CMD_KEYWORD_DETECTOR_CONFIG="$(CURDIR)/../data/keyword_intent_detector_config.json"; \
 		export NLP2CMD_PATTERNS_FILE="$(CURDIR)/../data/patterns.json"; \
+		export NLP2CMD_EXAMPLES_NONINTERACTIVE="1"; \
 		export PYTHONPATH="$(CURDIR)/../src:$$PYTHONPATH"; \
 		for subdir in */; do \
 			if [ -d "$$subdir" ]; then \

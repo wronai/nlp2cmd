@@ -28,6 +28,9 @@ from enum import Enum
 from pathlib import Path
 from datetime import datetime
 
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+from _example_helpers import print_rule
+
 # Import NLP2CMD core components
 from nlp2cmd.core import NLP2CMD, LLMBackend
 from nlp2cmd.generation.llm_simple import LiteLLMClient
@@ -210,7 +213,7 @@ class DockerManager:
         try:
             # Start services in detached mode
             print(f"\n🚀 Uruchamianie usług z: {self.compose_file}")
-            print("-" * 50)
+            print_rule()
             
             result = subprocess.run(
                 ["docker-compose", "-f", self.compose_file.name, "up", "-d"],
@@ -328,7 +331,7 @@ class DockerManager:
                 cmd.append(service)
             
             print(f"\n📋 Logi kontenerów{' (follow)' if follow else ''}:")
-            print("-" * 50)
+            print_rule()
             
             if follow:
                 # For follow mode, we need to stream the output

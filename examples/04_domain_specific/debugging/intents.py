@@ -9,6 +9,9 @@ from pathlib import Path
 
 # Dodaj ścieżkę do importów
 sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_rule
 
 from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 
@@ -16,7 +19,7 @@ from nlp2cmd.generation.thermodynamic import HybridThermodynamicGenerator
 async def debug_intents():
     """Debug intent detection."""
     print("🔍 Debugowanie intent detection")
-    print("=" * 50)
+    print_rule(width=50, char="=")
     
     generator = HybridThermodynamicGenerator()
     
@@ -120,9 +123,9 @@ async def debug_intents():
             print()
     
     # Podsumowanie
-    print("=" * 50)
+    print_rule(width=50, char="=")
     print("📊 PODSUMOWANIE INTENTÓW")
-    print("=" * 50)
+    print_rule(width=50, char="=")
     print("Domain counts:")
     for domain, count in sorted(domain_counts.items()):
         print(f"  {domain}: {count}")

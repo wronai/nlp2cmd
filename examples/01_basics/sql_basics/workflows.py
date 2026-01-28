@@ -9,6 +9,13 @@ Demonstrates SQL adapter capabilities:
 - Multiple dialects support
 """
 
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+
+from _example_helpers import print_separator
+
 from nlp2cmd import SQLAdapter
 from nlp2cmd.adapters import SQLSafetyPolicy
 from nlp2cmd.validators import SQLValidator
@@ -16,9 +23,8 @@ from nlp2cmd.validators import SQLValidator
 
 def print_section(title: str):
     """Print section header."""
-    print(f"\n{'='*60}")
-    print(f"  {title}")
-    print(f"{'='*60}\n")
+    print_separator(f"  {title}", leading_newline=True, width=60)
+    print()
 
 
 def main():

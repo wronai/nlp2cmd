@@ -8,6 +8,9 @@ from pathlib import Path
 
 # Dodaj ścieżkę do importów
 sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from _demo_helpers import print_rule
 
 from nlp2cmd.generation.keywords import KeywordIntentDetector
 
@@ -15,7 +18,7 @@ from nlp2cmd.generation.keywords import KeywordIntentDetector
 def debug_keywords():
     """Debug keyword patterns."""
     print("🔍 Debugowanie keyword patterns")
-    print("=" * 50)
+    print_rule(width=50, char="=")
     
     detector = KeywordIntentDetector()
     

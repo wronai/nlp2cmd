@@ -29,6 +29,10 @@ def print_rule(
     print(f"{prefix}{indent}{char * width}")
 
 
+def rule_line(*, width: int = 70, char: str = "-") -> str:
+    return char * width
+
+
 def print_demo_header(title: str, *, leading_newline: bool = False) -> None:
     print_separator(title, leading_newline=leading_newline, width=70)
 

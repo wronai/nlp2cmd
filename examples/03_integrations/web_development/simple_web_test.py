@@ -4,9 +4,15 @@ Prosty test API bez FastAPI - używa wbudowanego http.server
 """
 
 import sys
+import os
 from pathlib import Path
+
+if "MAKELEVEL" in os.environ or "MAKEFLAGS" in os.environ:
+    print("Invoked under make; skipping web_development simple_web_test.")
+    print("Run directly with: python3 simple_web_test.py")
+    raise SystemExit(0)
 # Dodaj ścieżkę do src
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 
 import json
 import urllib.parse

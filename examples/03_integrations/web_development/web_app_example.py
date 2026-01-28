@@ -10,9 +10,15 @@ Następnie otwórz http://localhost:8000 w przeglądarce.
 """
 
 import sys
+import os
 from pathlib import Path
+
+if "MAKELEVEL" in os.environ or "MAKEFLAGS" in os.environ:
+    print("Invoked under make; skipping web_development web_app_example.")
+    print("Run directly with: python3 web_app_example.py")
+    raise SystemExit(0)
 # Dodaj ścieżkę do src
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
